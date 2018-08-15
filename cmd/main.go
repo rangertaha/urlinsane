@@ -20,8 +20,7 @@
 
 package main
 
-import "github.com/rangertaha/urlinsane/cmd"
-
+import "github.com/rangertaha/urlinsane/cmd/urlinsane"
 
 func main() {
 	cmd.Execute()
