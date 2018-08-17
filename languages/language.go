@@ -28,6 +28,7 @@ type (
 		Name         string
 		Numerals     map[string][]string
 		Graphemes    []string
+		Vowels       []string
 		Misspellings [][]string
 		Homophones   [][]string
 		Homoglyphs   map[string][]string
@@ -49,7 +50,7 @@ var LANGUAGES = map[string]Language{
 
 var KEYBOARDS = map[string]Keyboard{}
 
-// GetLanguages looks up returns Language types.
+// GetLanguages looks up and returns Languages.
 func GetLanguages(codes []string) (lgs []Language) {
 	for _, name := range codes {
 		lang, ok := LANGUAGES[strings.ToLower(name)]
@@ -61,7 +62,7 @@ func GetLanguages(codes []string) (lgs []Language) {
 	return
 }
 
-// GetKeyboards looks up returns Language types.
+// GetKeyboards looks up and returns Keyboards.
 func GetKeyboards(names []string) (kbs []Keyboard) {
 	for _, name := range names {
 		if strings.ToLower(name) == "all" {
@@ -78,8 +79,8 @@ func GetKeyboards(names []string) (kbs []Keyboard) {
 	return
 }
 
-// KBRegister adds keyboards to a registry
-func KBRegister(keyboards []Keyboard) {
+// RegisterKeyboard adds keyboards to a registry
+func RegisterKeyboard(keyboards []Keyboard) {
 	for _, board := range keyboards {
 		KEYBOARDS[strings.ToLower(board.Code)] = board
 	}
@@ -121,11 +122,44 @@ func (urli *Keyboard) Adjacent(char string) (chars []string) {
 	return chars
 }
 
-// Similar
-func (lang *Language) Similar(key string) (chars []string) {
+// SimilarChars
+func (lang *Language) SimilarChars(key string) (chars []string) {
 	char, ok := lang.Homoglyphs[key]
 	if ok {
 		chars = append(chars, char...)
 	}
 	return chars
+}
+
+// SimilarSpellings
+func (lang *Language) SimilarSpellings(str string) (words []string) {
+	for _, wordset := range lang.Misspellings {
+		for _, word := range wordset {
+			if strings.Contains(str, word) {
+				for _, w := range wordset {
+					if w != word {
+						words = append(words, strings.Replace(str, word, w, -1))
+					}
+				}
+
+			}
+		}
+	}
+	return
+}
+// SimilarSounds
+func (lang *Language) SimilarSounds(str string) (words []string) {
+	for _, wordset := range lang.Homophones {
+		for _, word := range wordset {
+			if strings.Contains(str, word) {
+				for _, w := range wordset {
+					if w != word {
+						words = append(words, strings.Replace(str, word, w, -1))
+					}
+				}
+
+			}
+		}
+	}
+	return
 }

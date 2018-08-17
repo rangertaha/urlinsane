@@ -99,5 +99,5 @@ var FI_KEYBOARDS = []Keyboard{
 }
 
 func init() {
-	KBRegister(FI_KEYBOARDS)
+	RegisterKeyboard(FI_KEYBOARDS)
 }

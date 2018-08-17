@@ -24,33 +24,35 @@ import (
 	"fmt"
 	"os"
 	"sync"
+	"strings"
+	"net/url"
 	"text/tabwriter"
 
+	"golang.org/x/net/idna"
 	"github.com/spf13/cobra"
-
+	"golang.org/x/net/publicsuffix"
 	"github.com/olekukonko/tablewriter"
 	"github.com/rangertaha/urlinsane/languages"
-	"strings"
 )
 
 type (
 	URLInsane struct {
-		domains   []string
-		types     []Typo
-		keyboards []languages.Keyboard
-		languages []languages.Language
+		domains     []Domain
+		types       []Typo
+		keyboards   []languages.Keyboard
+		languages   []languages.Language
 
 		concurrency int
 		format      string
 		out         string
 		verbose     bool
 
-		wg sync.WaitGroup
+		wg          sync.WaitGroup
 	}
 	Domain struct {
-		Sub    string
-		Domain string
-		TLD    string
+		Subdomain string
+		Domain    string
+		Suffix    string
 	}
 	Typo struct {
 		Code        string
@@ -59,15 +61,16 @@ type (
 		Exec        TypoFunc
 	}
 	TypoConfig struct {
-		Domain    string
+		Domain    Domain
 		Keyboards []languages.Keyboard
 		Languages []languages.Language
 		Typo      Typo
 	}
 
 	TypoResult struct {
-		Domain string
+		Domain Domain
 		Typo   Typo
+		Extra  map[string]string
 	}
 
 	// TypoFunc defines a function to register typos.
@@ -93,7 +96,7 @@ func NewCLI(cmd *cobra.Command, args []string) (i URLInsane) {
 	verbose, _ := cmd.PersistentFlags().GetBool("verbose")
 
 	i = URLInsane{
-		domains:     args,
+		domains:     ExtractDomains(args),
 		keyboards:   languages.GetKeyboards(keyboards),
 		languages:   languages.GetLanguages(langs),
 		types:       GetTypos(types),
@@ -125,6 +128,26 @@ func GetTypos(codes []string) (typos []Typo) {
 	return
 }
 
+// Idna
+func (d *Domain) Idna() (punycode string) {
+	punycode, _ = idna.Punycode.ToASCII(d.String())
+	return
+}
+
+// String
+func (d *Domain) String()  (domain string) {
+	if d.Subdomain != "" {
+		domain = d.Subdomain + "."
+	}
+	if d.Domain != "" {
+		domain = domain + d.Domain
+	}
+	if d.Suffix != "" {
+		domain = domain + "." + d.Suffix
+	}
+	return
+}
+
 // GenTypoConfigs
 func (urli *URLInsane) GenTypoConfigs() <-chan TypoConfig {
 	out := make(chan TypoConfig)
@@ -141,7 +164,7 @@ func (urli *URLInsane) GenTypoConfigs() <-chan TypoConfig {
 }
 
 // worker executes the typosquatting algorithms
-func (urli *URLInsane) worker(id int, in <-chan TypoConfig, out chan<- TypoConfig) {
+func (urli *URLInsane) worker(id int, in <-chan TypoConfig, out chan <- TypoConfig) {
 	defer urli.wg.Done()
 	for c := range in {
 		for _, t := range c.Typo.Exec(c) {
@@ -171,7 +194,7 @@ func (urli *URLInsane) Results(in <-chan TypoConfig) <-chan TypoResult {
 	out := make(chan TypoResult)
 	go func() {
 		for r := range in {
-			out <- TypoResult{r.Domain, r.Typo}
+			out <- TypoResult{Domain: r.Domain, Typo: r.Typo}
 		}
 		close(out)
 	}()
@@ -198,10 +221,10 @@ func (urli *URLInsane) csvOutput(in <-chan TypoResult) {
 
 func (urli *URLInsane) stdOutput(in <-chan TypoResult) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Type", "Domain"})
+	table.SetHeader([]string{"Type", "Typo", "IDNA", "Ext"})
 
 	for v := range in {
-		table.Append([]string{v.Typo.Name, v.Domain})
+		table.Append([]string{strings.ToUpper(v.Typo.Code), v.Domain.Domain, v.Domain.Idna(), v.Domain.Suffix})
 	}
 	table.Render()
 
@@ -265,7 +288,7 @@ func ListLanguages(cmd *cobra.Command, args []string) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tName")
 	for _, lang := range urli.languages {
-		fmt.Fprintln(w, lang.Code+"\t"+lang.Name)
+		fmt.Fprintln(w, lang.Code + "\t" + lang.Name)
 	}
 	w.Flush()
 }
@@ -277,7 +300,26 @@ func ListTypos(cmd *cobra.Command, args []string) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
 	fmt.Fprintln(w, "ID\tName\tDescription")
 	for _, typo := range urli.types {
-		fmt.Fprintln(w, typo.Code+"\t"+typo.Name+"\t"+typo.Description)
+		fmt.Fprintln(w, typo.Code + "\t" + typo.Name + "\t" + typo.Description)
 	}
 	w.Flush()
+}
+
+func ExtractDomains(strs []string) (dmns []Domain) {
+	for _, str := range strs {
+		if strings.HasPrefix(str, "http") {
+			u, err := url.Parse(str)
+			if err != nil {
+				panic(err)
+			}
+			str = u.Host
+		}
+
+		eTLDPlus, _ := publicsuffix.EffectiveTLDPlusOne(str)
+		suffix, _ := publicsuffix.PublicSuffix(str)
+		subdomain := strings.TrimSuffix(strings.Replace(str, eTLDPlus, "", -1), ".")
+		domain := strings.TrimSuffix(strings.Replace(eTLDPlus, suffix, "", -1), ".")
+		dmns = append(dmns, Domain{Subdomain: subdomain, Domain: domain, Suffix: suffix})
+	}
+	return
 }

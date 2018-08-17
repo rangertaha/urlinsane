@@ -132,5 +132,5 @@ var RU_KEYBOARDS = []Keyboard{
 }
 
 func init() {
-	KBRegister(RU_KEYBOARDS)
+	RegisterKeyboard(RU_KEYBOARDS)
 }

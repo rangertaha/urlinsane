@@ -4791,6 +4791,7 @@ var ENGLISH = Language{
 		"h", "i", "j", "k", "l", "m", "n",
 		"o", "p", "q", "r", "s", "t", "u",
 		"v", "w", "x", "y", "z"},
+	Vowels: []string{"a", "e", "i", "o", "u"},
 	Misspellings: EN_SPELLINGS,
 	Homophones:   EN_HOMOPHONES,
 	Homoglyphs: map[string][]string{
@@ -4871,5 +4872,5 @@ var EN_KEYBOARDS = []Keyboard{
 }
 
 func init() {
-	KBRegister(EN_KEYBOARDS)
+	RegisterKeyboard(EN_KEYBOARDS)
 }

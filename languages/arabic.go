@@ -127,5 +127,5 @@ var AR_KEYBOARDS = []Keyboard{
 }
 
 func init() {
-	KBRegister(AR_KEYBOARDS)
+	RegisterKeyboard(AR_KEYBOARDS)
 }
