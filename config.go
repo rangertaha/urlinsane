@@ -21,13 +21,12 @@
 package urlinsane
 
 import (
-	"net/url"
+	"fmt"
 	"strings"
 
-	"fmt"
 	"github.com/rangertaha/urlinsane/languages"
 	"github.com/spf13/cobra"
-	"golang.org/x/net/publicsuffix"
+	"github.com/bobesa/go-domain-util/domainutil"
 )
 
 type BasicConfig struct {
@@ -86,18 +85,10 @@ func (b *BasicConfig) Config() (c Config) {
 func (c *Config) GetDomains(args []string) {
 	dmns := []Domain{}
 	for _, str := range args {
-		if strings.HasPrefix(str, "http") {
-			u, err := url.Parse(str)
-			if err != nil {
-				panic(err)
-			}
-			str = u.Host
-		}
-		eTLDPlus, _ := publicsuffix.EffectiveTLDPlusOne(str)
-		suffix, _ := publicsuffix.PublicSuffix(str)
-		subdomain := strings.TrimSuffix(strings.Replace(str, eTLDPlus, "", -1), ".")
-		domain := strings.TrimSuffix(strings.Replace(eTLDPlus, suffix, "", -1), ".")
-		dmns = append(dmns, Domain{Subdomain: subdomain, Domain: domain, Suffix: suffix})
+		dmns = append(dmns, Domain{
+			Subdomain: domainutil.Subdomain(str),
+			Domain: domainutil.DomainPrefix(str),
+			Suffix: domainutil.DomainSuffix(str)})
 	}
 	c.domains = dmns
 }
