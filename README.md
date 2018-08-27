@@ -18,7 +18,7 @@ make
 ```
 
 ## Execution
-Generate variations for `google.com` using the character cmission **(CO)** algorithm.
+Generate variations for `google.com` using the character omission **(CO)** algorithm.
 ```
 urlinsane google.com -t co
 
