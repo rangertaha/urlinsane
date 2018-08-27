@@ -18,14 +18,55 @@ make
 ```
 
 ## Execution
+Generate variations for `google.com` using the character cmission **(CO)** algorithm.
+```bash
+urlinsane google.com -t co
 
-Generate variations for `google.com` using the character cmission **(CO)** algorithm and check for ip addresses. 
+ _   _  ____   _      ___
+| | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
+| | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
+| |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
+ \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
+
+ Version: 0.1.0
+
+  LIVE | TYPE |   TYPO    | SUFFIX |   IDNA     
++------+------+-----------+--------+-----------+
+       | CO   | oogle.com | com    | oogle.com  
+       | CO   | gogle.com | com    | gogle.com  
+       | CO   | gogle.com | com    | gogle.com  
+       | CO   | goole.com | com    | goole.com  
+       | CO   | googe.com | com    | googe.com  
+       | CO   | googl.com | com    | googl.com
+
+```
+
+
+
+Generate variations for `google.com` using the character cmission **(CO)** algorithm and check for **ip** addresses. 
 ```bash
 urlinsane google.com -t co -x ip
+
+ _   _  ____   _      ___
+| | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
+| | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
+| |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
+ \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
+
+ Version: 0.1.0
+
+   LIVE  | TYPE |   TYPO    | SUFFIX |      IPV4      |            IPV6              
++--------+------+-----------+--------+----------------+-----------------------------+
+  ONLINE | CO   | oogle.com | com    | <nil>          | 2400:cb00:2048:1::681c:1ca2  
+  ONLINE | CO   | gogle.com | com    | <nil>          | 2607:f8b0:4006:804::2004     
+  ONLINE | CO   | gogle.com | com    | <nil>          | 2607:f8b0:4006:804::2004     
+  ONLINE | CO   | goole.com | com    | 217.160.0.201  | 217.160.0.201                
+  ONLINE | CO   | googe.com | com    | 162.243.10.151 | 162.243.10.151               
+  ONLINE | CO   | googl.com | com    | <nil>          | 2607:f8b0:4006:81a::2004   
 ```
 
 Generate variations for `google.com` using the character cmission **(CO)** algorithm. 
- Also execute extra functions to get the ip addresses, idna format and check for ns records. 
+ Also execute extra functions to get the **ip** addresses, **idna** format and check for **ns** records. 
 ```bash
 urlinsane google.com -t co -x ip -x idna -x ns
 
