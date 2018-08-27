@@ -17,9 +17,40 @@ Create the binary executable with the make command or [download](https://github.
 make
 ```
 
-Execute tool showing help
+## Execution
+
+Generate variations for `google.com` using the character cmission **(CO)** algorithm and check for ip addresses. 
 ```bash
-./urlinsane -h
+urlinsane google.com -t co -x ip
+```
+
+Generate variations for `google.com` using the character cmission **(CO)** algorithm. 
+ Also execute extra functions to get the ip addresses, idna format and check for ns records. 
+```bash
+urlinsane google.com -t co -x ip -x idna -x ns
+
+ _   _  ____   _      ___
+| | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
+| | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
+| |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
+ \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
+
+ Version: 0.1.0
+
+   LIVE  | TYPE |   TYPO    | SUFFIX |      IPV4      |            IPV6             |   IDNA    |        NS         
++--------+------+-----------+--------+----------------+-----------------------------+-----------+------------------+
+  ONLINE | CO   | oogle.com | com    | <nil>          | 2400:cb00:2048:1::681c:1da2 | oogle.com | mx2.zoho.com      
+  ONLINE | CO   | gogle.com | com    | <nil>          | 2607:f8b0:4006:813::2004    | gogle.com |                   
+  ONLINE | CO   | gogle.com | com    | <nil>          | 2607:f8b0:4006:813::2004    | gogle.com |                   
+  ONLINE | CO   | goole.com | com    | 217.160.0.201  | 217.160.0.201               | goole.com | mx01.1and1.co.uk  
+  ONLINE | CO   | googe.com | com    | 162.243.10.151 | 162.243.10.151              | googe.com |                   
+  ONLINE | CO   | googl.com | com    | <nil>          | 2607:f8b0:4006:804::2004    | googl.com |  
+  
+```
+
+For more details look at the **-h --help** output.
+```bash
+urlinsane -h
 
     
 Generates domain typos and variations to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.
