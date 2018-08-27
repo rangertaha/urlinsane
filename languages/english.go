@@ -4771,7 +4771,7 @@ var EN_HOMOPHONES = [][]string{
 }
 
 var ENGLISH = Language{
-	Code: "en",
+	Code: "EN",
 	Name: "English",
 	Numerals: map[string][]string{
 		"0":  []string{"zero"},
@@ -4791,7 +4791,7 @@ var ENGLISH = Language{
 		"h", "i", "j", "k", "l", "m", "n",
 		"o", "p", "q", "r", "s", "t", "u",
 		"v", "w", "x", "y", "z"},
-	Vowels: []string{"a", "e", "i", "o", "u"},
+	Vowels:       []string{"a", "e", "i", "o", "u"},
 	Misspellings: EN_SPELLINGS,
 	Homophones:   EN_HOMOPHONES,
 	Homoglyphs: map[string][]string{
@@ -4826,9 +4826,10 @@ var ENGLISH = Language{
 
 var EN_KEYBOARDS = []Keyboard{
 	{
-		Code:     "en1",
-		Name:     "QWERTY",
-		Language: ENGLISH,
+		Code:        "en1",
+		Name:        "QWERTY",
+		Description: "English keyboard layout",
+		Language:    ENGLISH,
 		Layout: []string{
 			"1234567890-",
 			"qwertyuiop ",
@@ -4837,9 +4838,10 @@ var EN_KEYBOARDS = []Keyboard{
 		},
 	},
 	{
-		Code:     "en2",
-		Name:     "AZERTY",
-		Language: ENGLISH,
+		Code:        "en2",
+		Name:        "AZERTY",
+		Description: "English keyboard layout",
+		Language:    ENGLISH,
 		Layout: []string{
 			"1234567890",
 			"azertyuiop",
@@ -4848,9 +4850,10 @@ var EN_KEYBOARDS = []Keyboard{
 		},
 	},
 	{
-		Code:     "en3",
-		Name:     "QWERTZ",
-		Language: ENGLISH,
+		Code:        "en3",
+		Name:        "QWERTZ",
+		Description: "English keyboard layout",
+		Language:    ENGLISH,
 		Layout: []string{
 			"1234567890",
 			"qwertzuiop",
@@ -4859,9 +4862,10 @@ var EN_KEYBOARDS = []Keyboard{
 		},
 	},
 	{
-		Code:     "en4",
-		Name:     "DVORAK",
-		Language: ENGLISH,
+		Code:        "en4",
+		Name:        "DVORAK",
+		Description: "English keyboard layout",
+		Language:    ENGLISH,
 		Layout: []string{
 			"1234567890",
 			"   pyfgcrl",
@@ -4872,5 +4876,5 @@ var EN_KEYBOARDS = []Keyboard{
 }
 
 func init() {
-	RegisterKeyboard(EN_KEYBOARDS)
+	KRegister(EN_KEYBOARDS)
 }

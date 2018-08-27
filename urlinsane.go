@@ -21,38 +21,41 @@
 package urlinsane
 
 import (
-	"fmt"
-	"os"
 	"sync"
-	"strings"
-	"net/url"
-	"text/tabwriter"
-
 	"golang.org/x/net/idna"
-	"github.com/spf13/cobra"
-	"golang.org/x/net/publicsuffix"
-	"github.com/olekukonko/tablewriter"
 	"github.com/rangertaha/urlinsane/languages"
 )
 
 type (
 	URLInsane struct {
-		domains     []Domain
-		types       []Typo
-		keyboards   []languages.Keyboard
-		languages   []languages.Language
+		domains   []Domain
+		keyboards []languages.Keyboard
+		languages []languages.Language
 
-		concurrency int
+		types []Typo
+		funcs []Extra
+
+		file        string
+		count       int
 		format      string
-		out         string
 		verbose     bool
+		headers     []string
+		concurrency int
 
-		wg          sync.WaitGroup
+		typoWG sync.WaitGroup
+		// extraWG     sync.WaitGroup
 	}
 	Domain struct {
 		Subdomain string
 		Domain    string
 		Suffix    string
+	}
+	Extra struct {
+		Code        string
+		Name        string
+		Description string
+		Headers     []string
+		Exec        ExtraFunc
 	}
 	Typo struct {
 		Code        string
@@ -70,62 +73,155 @@ type (
 	TypoResult struct {
 		Domain Domain
 		Typo   Typo
-		Extra  map[string]string
+		Live   bool
+		Data   map[string]string
 	}
 
 	// TypoFunc defines a function to register typos.
 	TypoFunc func(TypoConfig) []TypoConfig
+
+	// ExtraFunc defines a function to register typos.
+	ExtraFunc func(TypoResult) []TypoResult
 )
 
-// typoRegistry = make(map[string][]Typo)
-var Typos = make(map[string][]Typo)
+const (
+	VERSION = "0.1.0"
+	DEBUG   = false
+	LOGO    = `
+ _   _  ____   _      ___
+| | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
+| | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
+| |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
+ \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
 
-// NewCLI
-func NewCLI(cmd *cobra.Command, args []string) (i URLInsane) {
-	// Basic options
-	keyboards, _ := cmd.PersistentFlags().GetStringArray("keyboards")
-	langs, _ := cmd.PersistentFlags().GetStringArray("languages")
-	types, _ := cmd.PersistentFlags().GetStringArray("typos")
+ Version: ` + VERSION + "\n"
+)
 
-	// Processing option
-	concurrency, _ := cmd.PersistentFlags().GetInt("concurrency")
-
-	// Output options
-	output, _ := cmd.PersistentFlags().GetString("out")
-	format, _ := cmd.PersistentFlags().GetString("format")
-	verbose, _ := cmd.PersistentFlags().GetBool("verbose")
-
+// New
+func New(c Config) (i URLInsane) {
 	i = URLInsane{
-		domains:     ExtractDomains(args),
-		keyboards:   languages.GetKeyboards(keyboards),
-		languages:   languages.GetLanguages(langs),
-		types:       GetTypos(types),
-		concurrency: concurrency,
-
-		format:  format,
-		out:     output,
-		verbose: verbose,
+		domains:     c.domains,
+		keyboards:   c.keyboards,
+		languages:   c.languages,
+		types:       c.typos,
+		funcs:       c.funcs,
+		concurrency: c.concurrency,
+		headers:     c.headers,
+		format:      c.format,
+		file:        c.file,
+		verbose:     c.verbose,
 	}
 	return
 }
 
-// Register
-func Register(name string, typo ...Typo) {
-	_, registered := Typos[strings.ToLower(name)]
-	if !registered {
-		Typos[strings.ToLower(name)] = typo
-	}
-}
-
-// GetTypos
-func GetTypos(codes []string) (typos []Typo) {
-	for _, tcode := range codes {
-		typo, ok := Typos[strings.ToLower(tcode)]
-		if ok {
-			typos = append(typos, typo...)
+// GenTypoConfig
+func (urli *URLInsane) GenTypoConfig() <-chan TypoConfig {
+	out := make(chan TypoConfig)
+	go func() {
+		for _, domain := range urli.domains {
+			for _, typo := range urli.types {
+				urli.count++
+				out <- TypoConfig{domain, urli.keyboards, urli.languages, typo}
+			}
 		}
+		close(out)
+	}()
+	return out
+}
+
+// Typos gives typo options to a pool of workers
+func (urli *URLInsane) Typos(in <-chan TypoConfig) <-chan TypoConfig {
+	out := make(chan TypoConfig)
+	for w := 1; w <= urli.concurrency; w++ {
+		urli.typoWG.Add(1)
+		go func(id int, in <-chan TypoConfig, out chan<- TypoConfig) {
+			defer urli.typoWG.Done()
+			for c := range in {
+				for _, t := range c.Typo.Exec(c) {
+					out <- t
+				}
+			}
+		}(w, in, out)
 	}
-	return
+	go func() {
+		urli.typoWG.Wait()
+		close(out)
+	}()
+	return out
+}
+
+// Results
+func (urli *URLInsane) Results(in <-chan TypoConfig) <-chan TypoResult {
+	out := make(chan TypoResult)
+	go func() {
+		for r := range in {
+			record := TypoResult{Domain: r.Domain, Typo: r.Typo}
+
+			// Initialize a place to store extra data for a record
+			record.Data = make(map[string]string)
+
+			// Add record placeholder for consistent records
+			for _, name := range urli.headers {
+				_, ok := record.Data[name]
+				if !ok {
+					record.Data[name] = " "
+				}
+			}
+
+			out <- record
+		}
+		close(out)
+	}()
+	return out
+}
+
+// Funcs
+func (urli *URLInsane) Funcs(funcs []Extra, in <-chan TypoResult) <-chan TypoResult {
+	var xfunc Extra
+	out := make(chan TypoResult)
+	xfunc, funcs = funcs[len(funcs)-1], funcs[:len(funcs)-1]
+	go func() {
+		for i := range in {
+			for _, result := range xfunc.Exec(i) {
+				out <- result
+			}
+		}
+		close(out)
+	}()
+
+	if len(funcs) > 0 {
+		return urli.Funcs(funcs, out)
+	} else {
+		return out
+	}
+}
+
+// Execute program returning a channel with typos
+func (urli *URLInsane) Execute() <-chan TypoResult {
+
+	// Generate typosquatting options
+	typoConfigs := urli.GenTypoConfig()
+
+	// Execute typosquatting algorithms
+	typos := urli.Typos(typoConfigs)
+
+	// Converting typos to results and remove duplicates
+	results := urli.Results(typos)
+
+	// Execute functions to retrieve additional info
+	output := urli.Funcs(urli.funcs, results)
+
+	return output
+}
+
+// Start executes the program and outputs results. Primarily used for CLI tools
+func (urli *URLInsane) Start() {
+
+	// Execute program returning a channel with results
+	output := urli.Execute()
+
+	// Output results based on config
+	urli.Output(output)
 }
 
 // Idna
@@ -135,7 +231,7 @@ func (d *Domain) Idna() (punycode string) {
 }
 
 // String
-func (d *Domain) String()  (domain string) {
+func (d *Domain) String() (domain string) {
 	if d.Subdomain != "" {
 		domain = d.Subdomain + "."
 	}
@@ -144,182 +240,6 @@ func (d *Domain) String()  (domain string) {
 	}
 	if d.Suffix != "" {
 		domain = domain + "." + d.Suffix
-	}
-	return
-}
-
-// GenTypoConfigs
-func (urli *URLInsane) GenTypoConfigs() <-chan TypoConfig {
-	out := make(chan TypoConfig)
-	go func() {
-		for _, domain := range urli.domains {
-			for _, typo := range urli.types {
-				out <- TypoConfig{domain, urli.keyboards, urli.languages, typo}
-			}
-		}
-
-		close(out)
-	}()
-	return out
-}
-
-// worker executes the typosquatting algorithms
-func (urli *URLInsane) worker(id int, in <-chan TypoConfig, out chan <- TypoConfig) {
-	defer urli.wg.Done()
-	for c := range in {
-		for _, t := range c.Typo.Exec(c) {
-			out <- t
-		}
-	}
-}
-
-// Process gives typo options to a pool of workers
-func (urli *URLInsane) Process(in <-chan TypoConfig) <-chan TypoConfig {
-	out := make(chan TypoConfig)
-	for w := 1; w <= urli.concurrency; w++ {
-		urli.wg.Add(1)
-		go urli.worker(w, in, out)
-	}
-
-	go func() {
-		urli.wg.Wait()
-		close(out)
-	}()
-
-	return out
-}
-
-// Results
-func (urli *URLInsane) Results(in <-chan TypoConfig) <-chan TypoResult {
-	out := make(chan TypoResult)
-	go func() {
-		for r := range in {
-			out <- TypoResult{Domain: r.Domain, Typo: r.Typo}
-		}
-		close(out)
-	}()
-	return out
-}
-
-// PostProcess
-func (urli *URLInsane) PostProcess(in <-chan TypoResult) <-chan TypoResult {
-	out := make(chan TypoResult)
-	go func() {
-		for r := range in {
-			out <- r
-		}
-		close(out)
-	}()
-	return out
-}
-
-func (urli *URLInsane) jsonOutput(in <-chan TypoResult) {
-}
-
-func (urli *URLInsane) csvOutput(in <-chan TypoResult) {
-}
-
-func (urli *URLInsane) stdOutput(in <-chan TypoResult) {
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Type", "Typo", "IDNA", "Ext"})
-
-	for v := range in {
-		table.Append([]string{strings.ToUpper(v.Typo.Code), v.Domain.Domain, v.Domain.Idna(), v.Domain.Suffix})
-	}
-	table.Render()
-
-	//w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
-	//fmt.Fprintln(w, "Type\tDomain")
-	//fmt.Fprintln(w, "-----------------------------------------------------")
-	//for c := range in {
-	//	//fmt.Println(c.Domain, c.Keyboard.Name, c.Typo)
-	//	if urli.verbose {
-	//		fmt.Fprintln(w, c.Typo.Name + "\t" + c.Domain + "\t")
-	//	} else {
-	//		fmt.Fprintln(w, strings.ToUpper(c.Typo.Code) + "\t" + c.Domain + "\t")
-	//	}
-	//
-	//}
-	//w.Flush()
-}
-
-func (urli *URLInsane) Output(in <-chan TypoResult) {
-	urli.stdOutput(in)
-}
-
-// Run is the main program
-func Run(cmd *cobra.Command, args []string) {
-
-	urli := NewCLI(cmd, args)
-
-	// Generate typosquatting options
-	typoConfigs := urli.GenTypoConfigs()
-
-	// Execute typosquatting generating results
-	typos := urli.Process(typoConfigs)
-
-	// Converting typos to results
-	results := urli.Results(typos)
-
-	// TODO: Add additional info to the results via post process functions
-	output := urli.PostProcess(results)
-
-	// Output results
-	urli.Output(output)
-
-}
-
-// ListKeyboards lists all supported keyboards
-func ListKeyboards(cmd *cobra.Command, args []string) {
-	urli := NewCLI(cmd, args)
-
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tName\tLetters")
-	for _, keyboard := range urli.keyboards {
-		fmt.Fprintln(w, keyboard.Code, keyboard.Name, keyboard.Language.Graphemes)
-	}
-	w.Flush()
-}
-
-// ListLanguages lists all supported languages
-func ListLanguages(cmd *cobra.Command, args []string) {
-	urli := NewCLI(cmd, args)
-
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tName")
-	for _, lang := range urli.languages {
-		fmt.Fprintln(w, lang.Code + "\t" + lang.Name)
-	}
-	w.Flush()
-}
-
-// ListTypos lists typosquatting techniques
-func ListTypos(cmd *cobra.Command, args []string) {
-	urli := NewCLI(cmd, args)
-
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tName\tDescription")
-	for _, typo := range urli.types {
-		fmt.Fprintln(w, typo.Code + "\t" + typo.Name + "\t" + typo.Description)
-	}
-	w.Flush()
-}
-
-func ExtractDomains(strs []string) (dmns []Domain) {
-	for _, str := range strs {
-		if strings.HasPrefix(str, "http") {
-			u, err := url.Parse(str)
-			if err != nil {
-				panic(err)
-			}
-			str = u.Host
-		}
-
-		eTLDPlus, _ := publicsuffix.EffectiveTLDPlusOne(str)
-		suffix, _ := publicsuffix.PublicSuffix(str)
-		subdomain := strings.TrimSuffix(strings.Replace(str, eTLDPlus, "", -1), ".")
-		domain := strings.TrimSuffix(strings.Replace(eTLDPlus, suffix, "", -1), ".")
-		dmns = append(dmns, Domain{Subdomain: subdomain, Domain: domain, Suffix: suffix})
 	}
 	return
 }

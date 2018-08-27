@@ -21,34 +21,96 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
+	"fmt"
+	"bytes"
+	"text/template"
 
-	"github.com/rangertaha/urlinsane"
 	"github.com/spf13/cobra"
+	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/languages"
 )
+
+const TEMPLATE_BASE = `USAGE:{{if .Runnable}}
+  {{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}
+  {{.CommandPath}} [command]{{end}}{{if gt (len .Aliases) 0}}
+ALIASES:
+  {{.NameAndAliases}}{{end}}{{if .HasExample}}
+
+EXAMPLES:
+{{.Example}}{{end}}{{if .HasAvailableSubCommands}}
+Available Commands:{{range .Commands}}{{if (or .IsAvailableCommand (eq .Name "help"))}}
+  {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableLocalFlags}}
+
+OPTIONS:
+{{.LocalFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasAvailableInheritedFlags}}
+
+GLOBAL OPTIONS:
+{{.InheritedFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasHelpSubCommands}}
+Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
+  {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableSubCommands}}
+
+Use "{{.CommandPath}} [command] --help" for more information about a command.{{end}}`
+
+const TEMPLATE = `
+{{if .Keyboards}}
+KEYBOARDS:
+  List of keyboard to select from. Defualts to 'EN1'.
+    {{range .Keyboards}}
+    {{.Code}}	{{.Description}}{{end}}
+    ALL	Use all keyboards
+{{end}}
+
+{{if .Typos}}
+TYPOS:
+  These are the types of typo/error algorithms that generate the domain variants
+    {{range .Typos}}
+    {{.Code}}	{{.Description}}{{end}}
+    ALL  Apply all typosquatting algorithms
+{{end}}
+
+{{if .Funcs}}
+FUNCTIONS:
+  Post processig functions that retieve aditional information on each domain variant.
+	{{range .Funcs}}
+    {{.Code}}  	{{.Description}}{{end}}
+    ALL  	Apply all post typosquating functions
+{{end}}
+
+EXAMPLES:
+
+    urlinsane google.com
+    urlinsane google.com -t CO
+    urlinsane google.com -t CO -k en2
+
+
+AUTHOR:
+  Written by Rangertaha <rangertaha@gmail.com>
+
+`
+type HelpOptions struct {
+	Keyboards []languages.Keyboard
+	Typos []urlinsane.Typo
+	Funcs []urlinsane.Extra
+}
+
+var cliOptions bytes.Buffer
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "urlinsane [domains]",
 	Short: "Generates domain typos and variations",
-	Long: `Generates domain typos and variations to detect and perform typo squatting, URL hijacking, phishing, and
-	corporate espionage.`,
+	Long: `Generates domain typos and variations to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		db, _ := cmd.PersistentFlags().GetBool("list-keyboards")
-		types, _ := cmd.PersistentFlags().GetBool("list-typos")
-		langs, _ := cmd.PersistentFlags().GetBool("list-languages")
 
-		if db {
-			urlinsane.ListKeyboards(cmd, args)
-		} else if langs {
-			urlinsane.ListLanguages(cmd, args)
-		} else if types {
-			urlinsane.ListTypos(cmd, args)
-		} else {
-			urlinsane.Run(cmd, args)
-		}
+		// Create config from cli options/arguments
+		config := urlinsane.CobraConfig(cmd, args)
 
+		// Create a new instance of urlinsane
+		urli := urlinsane.New(config)
+
+		// Start generating results
+		urli.Start()
 	},
 }
 
@@ -62,34 +124,42 @@ func Execute() {
 }
 
 func init() {
-	// Basic options
-	rootCmd.PersistentFlags().StringArrayP("keyboards", "k",
-		[]string{"en1"}, "Keyboards/layouts ID to use for typing errors. "+
-			"\n\tUse 'urlinsane --list-keyboards' for options.")
-	rootCmd.PersistentFlags().StringArrayP("languages", "l",
-		[]string{"all"}, "Language ID to use for linguistic typos."+
-			"\n\tUse 'urlinsane --list-languages' for options.")
+	helpOptions := HelpOptions{
+		languages.GetKeyboards([]string{"all"}),
+		urlinsane.TRetrieve(),
+		urlinsane.FRetrieve(),
+	}
 
-	// List keyboard and language options
-	rootCmd.PersistentFlags().Bool("list-keyboards", false, "List keyboard options.")
-	rootCmd.PersistentFlags().Bool("list-languages", false, "List language options")
-	rootCmd.PersistentFlags().Bool("list-typos", false, "List typosquatting techniques")
+	// Create a new template and parse the letter into it.
+	tmpl := template.Must(template.New("help").Parse(TEMPLATE))
+
+	// Run the template to verify the output.
+	err := tmpl.Execute(&cliOptions, helpOptions)
+	if err != nil {
+		fmt.Printf("Execution: %s", err)
+	}
+
+	rootCmd.SetUsageTemplate(TEMPLATE_BASE + cliOptions.String())
+
+	// Basic options
+	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"en1"},
+		"Keyboards/layouts ID to use")
+	//rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"all"},
+	//	"Language ID to use for linguistic typos")
 
 	// Processing
-	rootCmd.PersistentFlags().IntP("concurrency", "c", 50, "Number of workers generating results")
-	rootCmd.PersistentFlags().StringArrayP("typos", "t", []string{"all"}, "Types of typos to perform."+
-		"\n\tUse 'urlinsane --list-typos' for options.")
+	rootCmd.PersistentFlags().IntP("concurrency", "c", 50,
+		"Number of concurrent workers")
+	rootCmd.PersistentFlags().StringArrayP("typos", "t", []string{"all"},
+		"Types of typos to perform")
 
 	// Post Processing options for retrieving additional data
-	//rootCmd.PersistentFlags().BoolP("popularity", "p", false, "Check domain popularity with Google")
-	//rootCmd.PersistentFlags().Bool("geoip", false, "Perform GeoIp location lookup")
-	//rootCmd.PersistentFlags().Bool("ssdeep", false, "Get webpage and compare fuzzy hashes")
-	//rootCmd.PersistentFlags().Bool("whois", false, "Query WHOIS for records")
-	//rootCmd.PersistentFlags().Bool("dns", false, "Query DNS for records")
+	rootCmd.PersistentFlags().StringArrayP("funcs", "x", []string{"idna"},
+		"Extra functions for retrieving additional data")
 
 	// Output options
-	//rootCmd.PersistentFlags().StringP("format", "f", "stdout", "Output format." +
-	//	"Options: json, csv, and stdout")
-	//rootCmd.PersistentFlags().StringP("out", "o", "", "Output file")
+	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename")
+	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (json, csv, text)")
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Output additional details")
 }
+

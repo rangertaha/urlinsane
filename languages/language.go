@@ -35,17 +35,18 @@ type (
 	}
 
 	Keyboard struct {
-		Code     string
-		Name     string
-		Language Language
-		Layout   []string
+		Code        string
+		Name        string
+		Description string
+		Language    Language
+		Layout      []string
 	}
 )
 
 // Languages
 var LANGUAGES = map[string]Language{
-	"en": ENGLISH,
-	"ar": ARABIC,
+	"EN": ENGLISH,
+	"AR": ARABIC,
 }
 
 var KEYBOARDS = map[string]Keyboard{}
@@ -53,7 +54,7 @@ var KEYBOARDS = map[string]Keyboard{}
 // GetLanguages looks up and returns Languages.
 func GetLanguages(codes []string) (lgs []Language) {
 	for _, name := range codes {
-		lang, ok := LANGUAGES[strings.ToLower(name)]
+		lang, ok := LANGUAGES[strings.ToUpper(name)]
 		if ok {
 			lgs = append(lgs, lang)
 		}
@@ -65,12 +66,12 @@ func GetLanguages(codes []string) (lgs []Language) {
 // GetKeyboards looks up and returns Keyboards.
 func GetKeyboards(names []string) (kbs []Keyboard) {
 	for _, name := range names {
-		if strings.ToLower(name) == "all" {
+		if strings.ToUpper(name) == "ALL" {
 			for _, kb := range KEYBOARDS {
 				kbs = append(kbs, kb)
 			}
 		} else {
-			keyboard, ok := KEYBOARDS[strings.ToLower(name)]
+			keyboard, ok := KEYBOARDS[strings.ToUpper(name)]
 			if ok {
 				kbs = append(kbs, keyboard)
 			}
@@ -79,10 +80,10 @@ func GetKeyboards(names []string) (kbs []Keyboard) {
 	return
 }
 
-// RegisterKeyboard adds keyboards to a registry
-func RegisterKeyboard(keyboards []Keyboard) {
+// KRegister adds keyboards to a registry
+func KRegister(keyboards []Keyboard) {
 	for _, board := range keyboards {
-		KEYBOARDS[strings.ToLower(board.Code)] = board
+		KEYBOARDS[strings.ToUpper(board.Code)] = board
 	}
 }
 
@@ -147,6 +148,7 @@ func (lang *Language) SimilarSpellings(str string) (words []string) {
 	}
 	return
 }
+
 // SimilarSounds
 func (lang *Language) SimilarSounds(str string) (words []string) {
 	for _, wordset := range lang.Homophones {

@@ -1,57 +1,73 @@
-# urlinsane
-
-
-# Under Development
+# URLInsane
 
 Generates domain typos and variations used to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.
 Inpired by URLCrazy I wanted to create a better version that supported multiple languages and linguistic typos.
 I also wanted it to be a binary with fast execution time.
 
 
-
-
-Generate and test domain typos and variations to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.
-
 ## Introduction
 Generate and test domain typos and variations to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.
 
 ## Features
-Generates 18 types of domain variants
-Knows over 8000 common misspellings
-Supports cosmic ray induced bit flipping
-Multiple keyboard layouts (qwerty, azerty, qwertz, dvorak)
-Checks if a domain variant is valid
-Test if domain variants are in use
-Estimate popularity of a domain variant URLCrazy requires Linux and the Ruby interpreter.
+* Binary executable 
+* Multiple keyboard layouts
+* Multiple languages
 
 
 
 
-### TODO: 
-Generates 15 types of domain variants
-Knows over 8000 common misspellings
-Supports cosmic ray induced bit flipping
-Multiple keyboard layouts (qwerty, azerty, qwertz, dvorak)
-Checks if a domain variant is valid
-Test if domain variants are in use
-Estimate popularity of a domain variant
+## Algorithms
+
+URLInsane implements 19 typosquatting algorithms. 
+
+MD    Missing Dot is created by omitting a dot from the domain.
+MDS   Missing Dashes is created by omitting a dash from the domain.
+SD    Strip Dashes is created by omitting a dot from the domain
+CO    Character Omission Omitting a character from the domain
+CS    Character Swap Swapping two consecutive characters in a domain
+ACS   Adjacent Character Substitution replaces adjacent characters
+ACI   Adjacent Character Insertion inserts adjacent character
+HG    Homoglyphs replaces characters with characters that look similar
+SP    Singular Pluralise creates a singular domain plural and vice versa
+CR    Character Repeat Repeats a character of the domain name twice
+DCR   Double Character Replacement repeats a character twice
+CM    Common Misspellings are created from common misspellings
+HP    Homophones Typos are created from sets of words that sound the same
+VS    Vowel Swapping is created by swaps vowels
+BF    Bitsquatting relies on random bit-errors to redirect connections
+WTLD  Wrong Top Level Domain
+WSLD  Wrong Second Level Domain
+NS    Numeral Swap numbers, words and vice versa
+
+## Extra Functions
+
+MX      Checking for DNS's MX records
+TXT     Checking for DNS's TXT records
+IP      Checking for IP address
+NS      Checks DNS NS records
+CNAME   Checks DNS CNAME records
+IDNA    Show international domain name
 
 
-A wide range of efficient domain fuzzing algorithms
-Unicode domain names (IDN)
-Multithreaded job distribution
-Queries DNS for A, AAAA, NS and MX records
-Evaluates web page similarity with fuzzy hashes to find live phishing sites
-Tests if MX host (mail server) can be used to intercept misdirected e-mails
-Additional domain variants using dictionary files
-GeoIP location information
-Grabs HTTP and SMTP service banners
-WHOIS lookups for creation and modification date
-Output in CSV and JSON format
+### TODO 
 
-Perform GeoIp location lookup
-Get webpage and compare fuzzy hashes
-Query WHOIS for records
-Query DNS for records
+* GeoIp Lookup.
+* Estimate popularity of a domain variant via google search
+* Lookup whois record
+* Checks for webpage similarity
+* Distribute extra functions to workers
 
-Output in CSV and JSON format
+
+
+
+
+
+
+## Authors
+
+* [Rangertaha](https://github.com/rangertaha)
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details

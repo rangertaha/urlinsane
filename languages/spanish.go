@@ -20,40 +20,43 @@
 
 package languages
 
-// Common Misspelling
-var FI_SPELLINGS = [][]string{
-// []string{"misspelling", "correct1", "correct2"},
+// Common misspellings
+var ES_SPELLINGS = [][]string{
+// []string{"critising", "criticising", "criticizing"},
 }
 
-// Common Homophones
-var FI_HOMOPHONES = [][]string{
-// []string{"vary", "very"},
+// Homophones
+var ES_HOMOPHONES = [][]string{
+// []string{"dot", "."},
+
 }
-var FI_LANGUAGE = Language{
-	Code: "FI",
-	Name: "Finnish",
+
+var SPANISH = Language{
+	Code: "ES",
+	Name: "Spanish",
 	Numerals: map[string][]string{
-		"0":  []string{""},
-		"1":  []string{""},
-		"2":  []string{""},
-		"3":  []string{""},
-		"4":  []string{""},
-		"5":  []string{""},
-		"6":  []string{""},
-		"7":  []string{""},
-		"8":  []string{""},
-		"9":  []string{""},
-		"10": []string{""},
+		"0":  []string{"zero"},
+		"1":  []string{"one"},
+		"2":  []string{"two"},
+		"3":  []string{"three"},
+		"4":  []string{"four", "for"},
+		"5":  []string{"five"},
+		"6":  []string{"six"},
+		"7":  []string{"seven"},
+		"8":  []string{"eight"},
+		"9":  []string{"nine"},
+		"10": []string{"ten"},
 	},
 	Graphemes: []string{
 		"a", "b", "c", "d", "e", "f", "g",
 		"h", "i", "j", "k", "l", "m", "n",
 		"o", "p", "q", "r", "s", "t", "u",
-		"v", "w", "x", "y", "z", "å", "ä", "ö"},
-	Misspellings: FI_SPELLINGS,
-	Homophones:   FI_HOMOPHONES,
+		"v", "w", "x", "y", "z"},
+	Vowels:       []string{"a", "e", "i", "o", "u"},
+	Misspellings: ES_SPELLINGS,
+	Homophones:   ES_HOMOPHONES,
 	Homoglyphs: map[string][]string{
-		"a": []string{"à", "á", "â", "ã", "ä", "å", "ɑ", "а", "ạ", "ǎ", "ă", "ȧ", "ӓ"},
+		"a": []string{"à", "á", "â", "ã", "ä", "å", "ɑ", "а", "ạ", "ǎ", "ă", "ȧ", "ӓ", "٨"},
 		"b": []string{"d", "lb", "ib", "ʙ", "Ь", `b̔"`, "ɓ", "Б"},
 		"c": []string{"ϲ", "с", "ƈ", "ċ", "ć", "ç"},
 		"d": []string{"b", "cl", "dl", "di", "ԁ", "ժ", "ɗ", "đ"},
@@ -64,10 +67,10 @@ var FI_LANGUAGE = Language{
 		"i": []string{"1", "l", "Ꭵ", "í", "ï", "ı", "ɩ", "ι", "ꙇ", "ǐ", "ĭ"},
 		"j": []string{"ј", "ʝ", "ϳ", "ɉ"},
 		"k": []string{"lk", "ik", "lc", "κ", "ⲕ", "κ"},
-		"l": []string{"1", "i", "ɫ", "ł"},
+		"l": []string{"1", "i", "ɫ", "ł", "١", "ا", "", ""},
 		"m": []string{"n", "nn", "rn", "rr", "ṃ", "ᴍ", "м", "ɱ"},
-		"n": []string{"m", "r", "ń"},
-		"o": []string{"0", "Ο", "ο", "О", "о", "Օ", "ȯ", "ọ", "ỏ", "ơ", "ó", "ö", "ӧ"},
+		"n": []string{"m", "r", "ń", "ñ"},
+		"o": []string{"0", "Ο", "ο", "О", "о", "Օ", "ȯ", "ọ", "ỏ", "ơ", "ó", "ö", "ӧ", "ه", "ة"},
 		"p": []string{"ρ", "р", "ƿ", "Ϸ", "Þ"},
 		"q": []string{"g", "զ", "ԛ", "գ", "ʠ"},
 		"r": []string{"ʀ", "Г", "ᴦ", "ɼ", "ɽ"},
@@ -79,27 +82,37 @@ var FI_LANGUAGE = Language{
 		"x": []string{"х", "ҳ", "ẋ"},
 		"y": []string{"ʏ", "γ", "у", "Ү", "ý"},
 		"z": []string{"ʐ", "ż", "ź", "ʐ", "ᴢ"},
-		"å": []string{"à", "á", "â", "ã", "ä", "å", "ɑ", "а", "ạ", "ǎ", "ă", "ȧ", "ӓ"},
-		"ä": []string{"à", "á", "â", "ã", "ä", "å", "ɑ", "а", "ạ", "ǎ", "ă", "ȧ", "ӓ"},
-		"ö": []string{"0", "Ο", "ο", "О", "о", "Օ", "ȯ", "ọ", "ỏ", "ơ", "ó", "ö", "ӧ"},
+		"ñ": []string{"n", "ń", "r"},
 	},
 }
 
-var FI_KEYBOARDS = []Keyboard{
+var ES_KEYBOARDS = []Keyboard{
 	{
-		Code:        "fi1",
+		Code:        "es1",
 		Name:        "QWERTY",
-		Description: "Finnish keybaord layout",
-		Language:    FI_LANGUAGE,
+		Description: "Spanish keyboard layout",
+		Language:    SPANISH,
 		Layout: []string{
-			"1234567890 ",
-			"qwertyuiopå",
-			"asdfghjklöä",
-			"zxcvbnm  - ",
+			"1234567890-",
+			"qwertyuiop ",
+			"asdfghjklñ ",
+			"zxcvbnm  ç ",
+		},
+	},
+	{
+		Code:        "es2",
+		Name:        "QWERTY",
+		Description: "Spanish ISO keyboard layout",
+		Language:    SPANISH,
+		Layout: []string{
+			"1234567890 ¡",
+			"qwertyuiop  ",
+			"asdfghjklñ  ",
+			"zxcvbnm  -  ",
 		},
 	},
 }
 
 func init() {
-	KRegister(FI_KEYBOARDS)
+	KRegister(ES_KEYBOARDS)
 }

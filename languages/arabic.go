@@ -20,16 +20,16 @@
 
 package languages
 
-// Common misspellings and homophones
-// The first word is a misspelling of a word. All words that follows are correct spellings or homophones
+// Common misspellings
 var AR_SPELLINGS = [][]string{
 // []string{"misspelling", "correct1", "correct2"},
 }
 
+// Common homophones
 var AR_HOMOPHONES = [][]string{}
 
 var ARABIC = Language{
-	Code: "ar",
+	Code: "AR",
 	Name: "Arabic",
 	Numerals: map[string][]string{
 		"٠":  []string{""},
@@ -85,9 +85,10 @@ var ARABIC = Language{
 
 var AR_KEYBOARDS = []Keyboard{
 	{
-		Code:     "ar1",
-		Name:     "Arabic",
-		Language: ARABIC,
+		Code:        "AR1",
+		Name:        "غفقثصض",
+		Description: "Arabic keyboard layout",
+		Language:    ARABIC,
 		Layout: []string{
 			"١٢٣٤٥٦٧٨٩٠- ",
 			"ةجحخهعغفقثصض",
@@ -95,9 +96,10 @@ var AR_KEYBOARDS = []Keyboard{
 			"     ورزدذطظ"},
 	},
 	{
-		Code:     "ar2",
-		Name:     "AZERTY PC",
-		Language: ARABIC,
+		Code:        "AR2",
+		Name:        "AZERTY PC",
+		Description: "Arabic PC keyboard layout",
+		Language:    ARABIC,
 		Layout: []string{
 			` é   -è çà   `,
 			"ذدجحخهعغفقثصض",
@@ -105,9 +107,10 @@ var AR_KEYBOARDS = []Keyboard{
 			"   ظزوةىلارؤءئ"},
 	},
 	{
-		Code:     "ar3",
-		Name:     "North Africa",
-		Language: ARABIC,
+		Code:        "AR3",
+		Name:        "North Africa",
+		Description: "Arabic North african keyboard layout",
+		Language:    ARABIC,
 		Layout: []string{
 			"1234567890  ",
 			"ةجحخهعغفقثصض",
@@ -115,9 +118,10 @@ var AR_KEYBOARDS = []Keyboard{
 			"     ورزدذطظ"},
 	},
 	{
-		Code:     "ar4",
-		Name:     "QWERTY",
-		Language: ARABIC,
+		Code:        "AR4",
+		Name:        "QWERTY",
+		Description: "Arabic keyboard layout",
+		Language:    ARABIC,
 		Layout: []string{
 			"١٢٣٤٥٦٧٨٩٠  ",
 			"ظثةهيوطترعشق",
@@ -127,5 +131,5 @@ var AR_KEYBOARDS = []Keyboard{
 }
 
 func init() {
-	RegisterKeyboard(AR_KEYBOARDS)
+	KRegister(AR_KEYBOARDS)
 }

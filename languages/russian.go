@@ -20,16 +20,18 @@
 
 package languages
 
-// Common misspellings from https://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines
+// Common misspellings
 var RU_SPELLINGS = [][]string{
 // []string{"misspelling", "correct1", "correct2"},
 }
+
+// Common Homophones
 var RU_HOMOPHONES = [][]string{
 // []string{"vary", "very"},
 }
 
 var RUSSIAN = Language{
-	Code: "ru",
+	Code: "RU",
 	Name: "Russian",
 	Numerals: map[string][]string{
 		"0":  []string{""},
@@ -100,9 +102,10 @@ var RUSSIAN = Language{
 
 var RU_KEYBOARDS = []Keyboard{
 	{
-		Code:     "ru1",
-		Name:     "Russian",
-		Language: RUSSIAN,
+		Code:        "ru1",
+		Name:        "ЙЦУКЕН",
+		Description: "Russian keyboard layout",
+		Language:    RUSSIAN,
 		Layout: []string{
 			"1234567890   ",
 			"йцукенгшщзхъё",
@@ -110,9 +113,10 @@ var RU_KEYBOARDS = []Keyboard{
 			"ячсмитьбю    "},
 	},
 	{
-		Code:     "ru2",
-		Name:     "Russian - Phonetic",
-		Language: RUSSIAN,
+		Code:        "ru2",
+		Name:        "ЯШЕРТЫ",
+		Description: "Phonetic Russian keybaord layout",
+		Language:    RUSSIAN,
 		Layout: []string{
 			"1234567890ьъ ",
 			"яшертыуиопюжэ",
@@ -120,9 +124,10 @@ var RU_KEYBOARDS = []Keyboard{
 			"зхцвбнм      "},
 	},
 	{
-		Code:     "ru3",
-		Name:     "Russian - PC",
-		Language: RUSSIAN,
+		Code:        "ru3",
+		Name:        "ЙЦУКЕН",
+		Description: "PC Russian keyboard layout",
+		Language:    RUSSIAN,
 		Layout: []string{
 			"1234567890- ",
 			"йцукенгшщзхъ",
@@ -132,5 +137,5 @@ var RU_KEYBOARDS = []Keyboard{
 }
 
 func init() {
-	RegisterKeyboard(RU_KEYBOARDS)
+	KRegister(RU_KEYBOARDS)
 }
