@@ -119,10 +119,20 @@ OPTIONS:
 
 
 ## Features
-* Binary executable 
-* Multiple keyboard layouts
-* Multiple languages
 
+* Binary executable 
+* Contains 19 typosquatting algorithms.
+* Modular architecture for language, keyboard, typo algorithm, and functions extensibility.
+* Supports multiple keyboard layouts found in English, Spanish, Russian, Finish, and Arabic.
+* Supports multiple languages with the ability to add more languages with ease.
+* Concurrent typo squatting workers.
+
+English:
+
+* Over 8000 common misspellings
+* Over 500 common homophones
+* Registered graphemes, vowels, homoglyphs, and numerals
+* Common keyboard layouts (qwerty, azerty, qwertz, dvorak)
 
 
 
