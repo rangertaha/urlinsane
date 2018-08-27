@@ -1,24 +1,30 @@
 # URLInsane
 
-Generates domain typos and variations used to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.
-Inpired by URLCrazy I wanted to create a better version that supported multiple languages and linguistic typos.
+Generates domain typos and variations used to detect and perform typo squatting, 
+URL hijacking, phishing, and corporate espionage.  Inpired by URLCrazy I wanted 
+to create a better version that supported multiple languages and linguistic typos.
 I also wanted it to be a binary with fast execution time.
 
 
 ## Introduction
-Generate and test domain typos and variations to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.
+Generate and test domain typos and variations to detect and perform typo 
+squatting, URL hijacking, phishing, and corporate espionage. See 
+[URLInsane](https://rangertaha.github.io/urlinsane/) for more details
 
 
 ## Installation
 
-Create the binary executable with the make command or [download](https://github.com/rangertaha/urlinsane/releases) one of the pre-built release binaries. 
+Create the binary executable with the make command or 
+[download](https://github.com/rangertaha/urlinsane/releases) one of the 
+pre-built release binaries. 
 
 ```
 make
 ```
 
 ## Execution
-Generate variations for `google.com` using the character omission **(CO)** algorithm.
+Generate variations for `google.com` using the character omission **(CO)** 
+algorithm.
 ```
 urlinsane google.com -t co
 
@@ -43,7 +49,8 @@ urlinsane google.com -t co
 
 
 
-Generate variations for `google.com` using the character cmission **(CO)** algorithm and check for **ip** addresses. 
+Generate variations for `google.com` using the character cmission **(CO)** 
+algorithm and check for **ip** addresses. 
 ```
 urlinsane google.com -t co -x ip
 
@@ -65,8 +72,9 @@ urlinsane google.com -t co -x ip
   ONLINE | CO   | googl.com | com    | <nil>          | 2607:f8b0:4006:81a::2004   
 ```
 
-Generate variations for `google.com` using the character cmission **(CO)** algorithm. 
- Also execute extra functions to get the **ip** addresses, **idna** format and check for **ns** records. 
+Generate variations for `google.com` using the character cmission **(CO)** 
+algorithm. Also execute extra functions to get the **ip** addresses, **idna** 
+format and check for **ns** records. 
 ```
 urlinsane google.com -t co -x ip -x idna -x ns
 
