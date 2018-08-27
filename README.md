@@ -8,6 +8,43 @@ I also wanted it to be a binary with fast execution time.
 ## Introduction
 Generate and test domain typos and variations to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.
 
+
+## Install 
+
+Create the binary executable with the make command 
+```bash
+make
+```
+
+Execute tool showing help
+```bash
+./urlinsane -h
+
+    
+Generates domain typos and variations to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.
+
+USAGE:
+  urlinsane [domains] [flags]
+
+OPTIONS:
+  -c, --concurrency int         Number of concurrent workers (default 50)
+  -f, --file string             Output filename
+  -o, --format string           Output format (json, csv, text) (default "text")
+  -x, --funcs stringArray       Extra functions for retrieving additional data (default [idna])
+  -h, --help                    help for urlinsane
+  -k, --keyboards stringArray   Keyboards/layouts ID to use (default [en1])
+  -t, --typos stringArray       Types of typos to perform (default [all])
+  -v, --verbose                 Output additional details
+  
+  ...
+  
+  
+```
+
+
+
+
+
 ## Features
 * Binary executable 
 * Multiple keyboard layouts
