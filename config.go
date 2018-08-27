@@ -85,10 +85,17 @@ func (b *BasicConfig) Config() (c Config) {
 func (c *Config) GetDomains(args []string) {
 	dmns := []Domain{}
 	for _, str := range args {
+
+		subdomain := domainutil.Subdomain(str)
+		domain := domainutil.DomainPrefix(str)
+		suffix := domainutil.DomainSuffix(str)
+		if  domain == "" {
+			domain = str
+		}
 		dmns = append(dmns, Domain{
-			Subdomain: domainutil.Subdomain(str),
-			Domain: domainutil.DomainPrefix(str),
-			Suffix: domainutil.DomainSuffix(str)})
+			Subdomain: subdomain,
+			Domain: domain,
+			Suffix: suffix})
 	}
 	c.domains = dmns
 }
