@@ -13,7 +13,7 @@ Generate and test domain typos and variations to detect and perform typo squatti
 
 Create the binary executable with the make command or [download](https://github.com/rangertaha/urlinsane/releases) one of the pre-built release binaries. 
 
-```
+```bash
 make
 ```
 
