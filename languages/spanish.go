@@ -64,7 +64,7 @@ var SPANISH = Language{
 		"f": []string{"Ϝ", "ƒ", "Ғ"},
 		"g": []string{"q", "ɢ", "ɡ", "Ԍ", "Ԍ", "ġ", "ğ", "ց", "ǵ", "ģ"},
 		"h": []string{"lh", "ih", "һ", "հ", "Ꮒ", "н"},
-		"i": []string{"1", "l", "Ꭵ", "í", "ï", "ı", "ɩ", "ι", "ꙇ", "ǐ", "ĭ"},
+		"i": []string{"1", "l", "Ꭵ", "í", "ï", "ı", "ɩ", "ι", "ꙇ", "ǐ", "ĭ", "¡"},
 		"j": []string{"ј", "ʝ", "ϳ", "ɉ"},
 		"k": []string{"lk", "ik", "lc", "κ", "ⲕ", "κ"},
 		"l": []string{"1", "i", "ɫ", "ł", "١", "ا", "", ""},
@@ -88,7 +88,7 @@ var SPANISH = Language{
 
 var ES_KEYBOARDS = []Keyboard{
 	{
-		Code:        "es1",
+		Code:        "ES1",
 		Name:        "QWERTY",
 		Description: "Spanish keyboard layout",
 		Language:    SPANISH,
@@ -100,7 +100,7 @@ var ES_KEYBOARDS = []Keyboard{
 		},
 	},
 	{
-		Code:        "es2",
+		Code:        "ES2",
 		Name:        "QWERTY",
 		Description: "Spanish ISO keyboard layout",
 		Language:    SPANISH,

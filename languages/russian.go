@@ -102,7 +102,7 @@ var RUSSIAN = Language{
 
 var RU_KEYBOARDS = []Keyboard{
 	{
-		Code:        "ru1",
+		Code:        "RU1",
 		Name:        "ЙЦУКЕН",
 		Description: "Russian keyboard layout",
 		Language:    RUSSIAN,
@@ -113,7 +113,7 @@ var RU_KEYBOARDS = []Keyboard{
 			"ячсмитьбю    "},
 	},
 	{
-		Code:        "ru2",
+		Code:        "RU2",
 		Name:        "ЯШЕРТЫ",
 		Description: "Phonetic Russian keybaord layout",
 		Language:    RUSSIAN,
@@ -124,7 +124,7 @@ var RU_KEYBOARDS = []Keyboard{
 			"зхцвбнм      "},
 	},
 	{
-		Code:        "ru3",
+		Code:        "RU3",
 		Name:        "ЙЦУКЕН",
 		Description: "PC Russian keyboard layout",
 		Language:    RUSSIAN,

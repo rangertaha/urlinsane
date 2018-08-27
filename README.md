@@ -9,9 +9,10 @@ I also wanted it to be a binary with fast execution time.
 Generate and test domain typos and variations to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.
 
 
-## Install 
+## Installation
 
-Create the binary executable with the make command 
+Create the binary executable with the make command or [download](https://github.com/rangertaha/urlinsane/releases) one of the pre-built release binaries. 
+
 ```bash
 make
 ```

@@ -61,7 +61,7 @@ var FI_LANGUAGE = Language{
 		"f": []string{"Ϝ", "ƒ", "Ғ"},
 		"g": []string{"q", "ɢ", "ɡ", "Ԍ", "Ԍ", "ġ", "ğ", "ց", "ǵ", "ģ"},
 		"h": []string{"lh", "ih", "һ", "հ", "Ꮒ", "н"},
-		"i": []string{"1", "l", "Ꭵ", "í", "ï", "ı", "ɩ", "ι", "ꙇ", "ǐ", "ĭ"},
+		"i": []string{"1", "l", "Ꭵ", "í", "ï", "ı", "ɩ", "ι", "ꙇ", "ǐ", "ĭ", "¡"},
 		"j": []string{"ј", "ʝ", "ϳ", "ɉ"},
 		"k": []string{"lk", "ik", "lc", "κ", "ⲕ", "κ"},
 		"l": []string{"1", "i", "ɫ", "ł"},
@@ -87,7 +87,7 @@ var FI_LANGUAGE = Language{
 
 var FI_KEYBOARDS = []Keyboard{
 	{
-		Code:        "fi1",
+		Code:        "FI1",
 		Name:        "QWERTY",
 		Description: "Finnish keybaord layout",
 		Language:    FI_LANGUAGE,

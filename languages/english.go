@@ -4803,7 +4803,7 @@ var ENGLISH = Language{
 		"f": []string{"Ϝ", "ƒ", "Ғ"},
 		"g": []string{"q", "ɢ", "ɡ", "Ԍ", "Ԍ", "ġ", "ğ", "ց", "ǵ", "ģ"},
 		"h": []string{"lh", "ih", "һ", "հ", "Ꮒ", "н"},
-		"i": []string{"1", "l", "Ꭵ", "í", "ï", "ı", "ɩ", "ι", "ꙇ", "ǐ", "ĭ"},
+		"i": []string{"1", "l", "Ꭵ", "í", "ï", "ı", "ɩ", "ι", "ꙇ", "ǐ", "ĭ", "¡"},
 		"j": []string{"ј", "ʝ", "ϳ", "ɉ"},
 		"k": []string{"lk", "ik", "lc", "κ", "ⲕ", "κ"},
 		"l": []string{"1", "i", "ɫ", "ł", "١", "ا", "", ""},
@@ -4826,7 +4826,7 @@ var ENGLISH = Language{
 
 var EN_KEYBOARDS = []Keyboard{
 	{
-		Code:        "en1",
+		Code:        "EN1",
 		Name:        "QWERTY",
 		Description: "English keyboard layout",
 		Language:    ENGLISH,
@@ -4838,7 +4838,7 @@ var EN_KEYBOARDS = []Keyboard{
 		},
 	},
 	{
-		Code:        "en2",
+		Code:        "EN2",
 		Name:        "AZERTY",
 		Description: "English keyboard layout",
 		Language:    ENGLISH,
@@ -4850,7 +4850,7 @@ var EN_KEYBOARDS = []Keyboard{
 		},
 	},
 	{
-		Code:        "en3",
+		Code:        "EN3",
 		Name:        "QWERTZ",
 		Description: "English keyboard layout",
 		Language:    ENGLISH,
@@ -4862,7 +4862,7 @@ var EN_KEYBOARDS = []Keyboard{
 		},
 	},
 	{
-		Code:        "en4",
+		Code:        "EN4",
 		Name:        "DVORAK",
 		Description: "English keyboard layout",
 		Language:    ENGLISH,

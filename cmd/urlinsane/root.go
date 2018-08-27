@@ -54,30 +54,24 @@ Use "{{.CommandPath}} [command] --help" for more information about a command.{{e
 
 const TEMPLATE = `
 {{if .Keyboards}}
-KEYBOARDS:
-  List of keyboard to select from. Defualts to 'EN1'.
-    {{range .Keyboards}}
-    {{.Code}}	{{.Description}}{{end}}
-    ALL	Use all keyboards
+KEYBOARDS:{{range .Keyboards}}
+  {{.Code}}	{{.Description}}{{end}}
+  ALL	Use all keyboards
 {{end}}
 
 {{if .Typos}}
-TYPOS:
-  These are the types of typo/error algorithms that generate the domain variants
-    {{range .Typos}}
-    {{.Code}}	{{.Description}}{{end}}
-    ALL  Apply all typosquatting algorithms
+TYPOS: These are the types of typo/error algorithms that generate the domain variants{{range .Typos}}
+  {{.Code}}	{{.Description}}{{end}}
+  ALL  Apply all typosquatting algorithms
 {{end}}
 
 {{if .Funcs}}
-FUNCTIONS:
-  Post processig functions that retieve aditional information on each domain variant.
-	{{range .Funcs}}
-    {{.Code}}  	{{.Description}}{{end}}
-    ALL  	Apply all post typosquating functions
+FUNCTIONS: Post processig functions that retieve aditional information on each domain variant.{{range .Funcs}}
+  {{.Code}}  	{{.Description}}{{end}}
+  ALL  	Apply all post typosquating functions
 {{end}}
 
-EXAMPLES:
+EXAMPLE:
 
     urlinsane google.com
     urlinsane google.com -t CO
