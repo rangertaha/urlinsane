@@ -213,10 +213,10 @@ func missingDashFunc(tc TypoConfig) (results []TypoConfig) {
 // For example: www.exmple.com
 func characterOmissionFunc(tc TypoConfig) (results []TypoConfig) {
 	for i := range tc.Domain.Domain {
-		if i <= len(tc.Domain.Domain)-1 {
+		if i <= len(tc.Domain.Domain) - 1 {
 			domain := fmt.Sprint(
 				tc.Domain.Domain[:i],
-				tc.Domain.Domain[i+1:],
+				tc.Domain.Domain[i + 1:],
 			)
 			if tc.Domain.Domain != domain {
 				dm := Domain{tc.Domain.Subdomain, domain, tc.Domain.Suffix}
@@ -232,12 +232,12 @@ func characterOmissionFunc(tc TypoConfig) (results []TypoConfig) {
 // Example: www.examlpe.com
 func characterSwapFunc(tc TypoConfig) (results []TypoConfig) {
 	for i := range tc.Domain.Domain {
-		if i <= len(tc.Domain.Domain)-2 {
+		if i <= len(tc.Domain.Domain) - 2 {
 			domain := fmt.Sprint(
 				tc.Domain.Domain[:i],
-				string(tc.Domain.Domain[i+1]),
+				string(tc.Domain.Domain[i + 1]),
 				string(tc.Domain.Domain[i]),
-				tc.Domain.Domain[i+2:],
+				tc.Domain.Domain[i + 2:],
 			)
 			if tc.Domain.Domain != domain {
 				dm := Domain{tc.Domain.Subdomain, domain, tc.Domain.Suffix}
@@ -256,7 +256,7 @@ func adjacentCharacterSubstitutionFunc(tc TypoConfig) (results []TypoConfig) {
 	for _, keyboard := range tc.Keyboards {
 		for i, char := range tc.Domain.Domain {
 			for _, key := range keyboard.Adjacent(string(char)) {
-				domain := tc.Domain.Domain[:i] + string(key) + tc.Domain.Domain[i+1:]
+				domain := tc.Domain.Domain[:i] + string(key) + tc.Domain.Domain[i + 1:]
 				dm := Domain{tc.Domain.Subdomain, domain, tc.Domain.Suffix}
 				results = append(results,
 					TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
@@ -272,12 +272,12 @@ func adjacentCharacterInsertionFunc(tc TypoConfig) (results []TypoConfig) {
 	for _, keyboard := range tc.Keyboards {
 		for i, char := range tc.Domain.Domain {
 			for _, key := range keyboard.Adjacent(string(char)) {
-				d1 := tc.Domain.Domain[:i] + string(key) + string(char) + tc.Domain.Domain[i+1:]
+				d1 := tc.Domain.Domain[:i] + string(key) + string(char) + tc.Domain.Domain[i + 1:]
 				dm1 := Domain{tc.Domain.Subdomain, d1, tc.Domain.Suffix}
 				results = append(results,
 					TypoConfig{dm1, tc.Keyboards, tc.Languages, tc.Typo})
 
-				d2 := tc.Domain.Domain[:i] + string(char) + string(key) + tc.Domain.Domain[i+1:]
+				d2 := tc.Domain.Domain[:i] + string(char) + string(key) + tc.Domain.Domain[i + 1:]
 				dm2 := Domain{tc.Domain.Subdomain, d2, tc.Domain.Suffix}
 				results = append(results,
 					TypoConfig{dm2, tc.Keyboards, tc.Languages, tc.Typo})
@@ -296,7 +296,7 @@ func characterRepeatFunc(tc TypoConfig) (results []TypoConfig) {
 				tc.Domain.Domain[:i],
 				string(tc.Domain.Domain[i]),
 				string(tc.Domain.Domain[i]),
-				tc.Domain.Domain[i+1:],
+				tc.Domain.Domain[i + 1:],
 			)
 			if tc.Domain.Domain != domain {
 				dm := Domain{tc.Domain.Subdomain, domain, tc.Domain.Suffix}
@@ -314,10 +314,10 @@ func characterRepeatFunc(tc TypoConfig) (results []TypoConfig) {
 func doubleCharacterReplacementFunc(tc TypoConfig) (results []TypoConfig) {
 	for _, keyboard := range tc.Keyboards {
 		for i, char := range tc.Domain.Domain {
-			if i < len(tc.Domain.Domain)-1 {
-				if tc.Domain.Domain[i] == tc.Domain.Domain[i+1] {
+			if i < len(tc.Domain.Domain) - 1 {
+				if tc.Domain.Domain[i] == tc.Domain.Domain[i + 1] {
 					for _, key := range keyboard.Adjacent(string(char)) {
-						domain := tc.Domain.Domain[:i] + string(key) + string(key) + tc.Domain.Domain[i+2:]
+						domain := tc.Domain.Domain[:i] + string(key) + string(key) + tc.Domain.Domain[i + 2:]
 						dm := Domain{tc.Domain.Subdomain, domain, tc.Domain.Suffix}
 						results = append(results,
 							TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
@@ -414,7 +414,7 @@ func homoglyphFunc(tc TypoConfig) (results []TypoConfig) {
 		// homoglyphs
 		for _, keyboard := range tc.Keyboards {
 			for _, kchar := range keyboard.Language.SimilarChars(string(char)) {
-				domain := fmt.Sprint(tc.Domain.Domain[:i], kchar, tc.Domain.Domain[i+1:])
+				domain := fmt.Sprint(tc.Domain.Domain[:i], kchar, tc.Domain.Domain[i + 1:])
 				if tc.Domain.Domain != domain {
 					dm := Domain{tc.Domain.Subdomain, domain, tc.Domain.Suffix}
 					results = append(results,
@@ -425,7 +425,7 @@ func homoglyphFunc(tc TypoConfig) (results []TypoConfig) {
 		// Check languages given with the (-l --language) CLI options for homoglyphs.
 		for _, language := range tc.Languages {
 			for _, lchar := range language.SimilarChars(string(char)) {
-				domain := fmt.Sprint(tc.Domain.Domain[:i], lchar, tc.Domain.Domain[i+1:])
+				domain := fmt.Sprint(tc.Domain.Domain[:i], lchar, tc.Domain.Domain[i + 1:])
 				if tc.Domain.Domain != domain {
 					dm := Domain{tc.Domain.Subdomain, domain, tc.Domain.Suffix}
 					results = append(results,
@@ -479,9 +479,35 @@ func bitsquattingFunc(tc TypoConfig) (results []TypoConfig) {
 	for d, dchar := range tc.Domain.Domain {
 		for _, char := range charset[string(dchar)] {
 
-			dnew := tc.Domain.Domain[:d] + string(char) + tc.Domain.Domain[d+1:]
+			dnew := tc.Domain.Domain[:d] + string(char) + tc.Domain.Domain[d + 1:]
 			dm := Domain{tc.Domain.Subdomain, dnew, tc.Domain.Suffix}
 			results = append(results, TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+		}
+	}
+	return
+}
+
+// numeralSwapFunc are created by swapping numbers and corresponding words
+func numeralSwapFunc(tc TypoConfig) (results []TypoConfig) {
+	for _, keyboard := range tc.Keyboards {
+		for inum, words := range keyboard.Language.Numerals {
+			for _, snum := range words {
+				{
+					dnew := strings.Replace(tc.Domain.Domain, snum, inum, -1)
+					dm := Domain{tc.Domain.Subdomain, dnew, tc.Domain.Suffix}
+					if dnew != tc.Domain.Domain {
+						results = append(results, TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+					}
+				}
+				{
+					dnew := strings.Replace(tc.Domain.Domain, inum, snum, -1)
+					dm := Domain{tc.Domain.Subdomain, dnew, tc.Domain.Suffix}
+					if dnew != tc.Domain.Domain {
+						results = append(results, TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+					}
+				}
+			}
+
 		}
 	}
 	return
@@ -492,7 +518,7 @@ func bitsquattingFunc(tc TypoConfig) (results []TypoConfig) {
 func missingCharFunc(str, character string) (results []string) {
 	for i, char := range str {
 		if character == string(char) {
-			results = append(results, str[:i]+str[i+1:])
+			results = append(results, str[:i] + str[i + 1:])
 		}
 	}
 	return
@@ -505,10 +531,6 @@ func replaceCharFunc(str, old, new string) (results []string) {
 	return
 }
 
-// numeralSwapFunc are created by swapping numbers and corresponding words
-func numeralSwapFunc(tc TypoConfig) (results []TypoConfig) {
-	return
-}
 
 // TRegister
 func TRegister(name string, typo ...Typo) {

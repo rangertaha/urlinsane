@@ -24,8 +24,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/rangertaha/urlinsane/languages"
 	"github.com/spf13/cobra"
+	"github.com/rangertaha/urlinsane/languages"
 	"github.com/bobesa/go-domain-util/domainutil"
 )
 
@@ -85,7 +85,6 @@ func (b *BasicConfig) Config() (c Config) {
 func (c *Config) GetDomains(args []string) {
 	dmns := []Domain{}
 	for _, str := range args {
-
 		subdomain := domainutil.Subdomain(str)
 		domain := domainutil.DomainPrefix(str)
 		suffix := domainutil.DomainSuffix(str)
