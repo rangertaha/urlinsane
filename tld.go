@@ -8644,6 +8644,6 @@ var TLD = []string{
 	"சிங்கப்பூர்",
 }
 
-func TLDLookup(tld string, length int) []string {
-
+func TLDLookup(tld string, length int) (tlds []string) {
+	return
 }
