@@ -1,9 +1,9 @@
 # URLInsane
 
-Generates domain typos and variations used to detect and perform typo squatting, 
-URL hijacking, phishing, and corporate espionage.  Inpired by URLCrazy I wanted 
-to create a better version that supported multiple languages and linguistic typos.
-I also wanted it to be a binary with fast execution time.
+Generates domain typos and variations used to detect and perform typosquatting,
+URL hijacking, phishing, and corporate espionage. It has no file dependencies,
+supports multiple keyboards, languages, and has more typo algorithms than others tools.
+
 
 
 Table of contents

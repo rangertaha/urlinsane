@@ -442,18 +442,16 @@ func homoglyphFunc(tc TypoConfig) (results []TypoConfig) {
 // and www.google.com becomes www.google.org. uses the 19 most common top level
 // domains.
 func wrongTopLevelDomainFunc(tc TypoConfig) (results []TypoConfig) {
-	tc.Domain.Domain = tc.Domain.Domain + ":S"
-	results = append(results, tc)
-	return results
+	//TODO
+	return
 }
 
 // wrongSecondLevelDomain uses an alternate, valid second level domain for the
 // top level domain. For example, www.trademe.co.nz becomes www.trademe.ac.nz
 // and www.trademe.iwi.nz
 func wrongSecondLevelDomainFunc(tc TypoConfig) (results []TypoConfig) {
-	tc.Domain.Domain = tc.Domain.Domain + ":S"
-	results = append(results, tc)
-	return results
+	//Todo
+	return
 }
 
 // bitsquattingFunc relies on random bit- errors to redirect connections

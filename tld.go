@@ -20,6 +20,8 @@
 
 package urlinsane
 
+
+
 var TLD = []string{
 	"!city.kawasaki.jp",
 	"!city.kitakyushu.jp",
@@ -8642,8 +8644,4 @@ var TLD = []string{
 	"السعودیة",
 	"السعودیۃ",
 	"சிங்கப்பூர்",
-}
-
-func TLDLookup(tld string, length int) (tlds []string) {
-	return
 }
