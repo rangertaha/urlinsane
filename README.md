@@ -129,7 +129,7 @@ OPTIONS:
 ## Features
 
 * Binary executable 
-* Contains 19 typosquatting algorithms.
+* Contains 19 typosquatting algorithms and 6 extra functions to retrieve additional data
 * Modular architecture for language, keyboard, typo algorithm, and functions 
 extensibility.
 * Supports multiple keyboard layouts found in English, Spanish, Russian, Finish, 
