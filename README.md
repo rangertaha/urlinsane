@@ -149,7 +149,9 @@ languages.
 
 ## Algorithms
 
-URLInsane implements 19 typosquatting algorithms. 
+The modular architecture for code extensibility allows developers to add new 
+typosquatting algorithms with ease. Currently we have implements 19 
+typosquatting algorithms. 
 
 MD    Missing Dot is created by omitting a dot from the domain.
 

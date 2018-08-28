@@ -121,11 +121,23 @@ OPTIONS:
 ## Features
 
 * Binary executable 
-* Contains 19 typosquatting algorithms.
-* Modular architecture for language, keyboard, typo algorithm, and functions extensibility.
-* Supports multiple keyboard layouts found in English, Spanish, Russian, Finish, and Arabic.
+* Contains 19 typosquatting algorithms and 6 extra functions to retrieve additional data
+* Modular architecture for language, keyboard, typo algorithm, and functions 
+extensibility.
+* Supports multiple keyboard layouts found in English, Spanish, Russian, Finish, 
+and Arabic.
 * Supports multiple languages with the ability to add more languages with ease.
 * Concurrent typo squatting workers.
+
+English:
+
+* Over 8000 common misspellings
+* Over 500 common homophones
+* Registered graphemes, vowels, homoglyphs, and numerals
+* Common keyboard layouts (qwerty, azerty, qwertz, dvorak)
+
+See [Languages](https://rangertaha.github.io/urlinsane/) for details on other 
+languages.
 
 ## Keyboards
 
@@ -150,41 +162,57 @@ URLInsane supports multiple languages with the ability to add more languages wit
 ## Algorithms
 
 The modular architecture for code extensibility allows developers to add new 
-typosquatting algorithms with ease. 
-
-## Extra Functions
-
-The modular architecture for code extensibility allows developers to add new 
-functions that yields additional info. This additional info is added to the 
-results table as additional columns. Currently URLInsane supports 19 algorithms.
-The following is a list of the current extra functions. 
+typosquatting algorithms with ease. Currently we have implements 19 
+typosquatting algorithms. 
 
 MD    Missing Dot is created by omitting a dot from the domain.
+
 MDS   Missing Dashes is created by omitting a dash from the domain.
+
 SD    Strip Dashes is created by omitting a dot from the domain
+
 CO    Character Omission Omitting a character from the domain
+
 CS    Character Swap Swapping two consecutive characters in a domain
+
 ACS   Adjacent Character Substitution replaces adjacent characters
+
 ACI   Adjacent Character Insertion inserts adjacent character
+
 HG    Homoglyphs replaces characters with characters that look similar
+
 SP    Singular Pluralise creates a singular domain plural and vice versa
+
 CR    Character Repeat Repeats a character of the domain name twice
+
 DCR   Double Character Replacement repeats a character twice
+
 CM    Common Misspellings are created from common misspellings
+
 HP    Homophones Typos are created from sets of words that sound the same
+
 VS    Vowel Swapping is created by swaps vowels
+
 BF    Bitsquatting relies on random bit-errors to redirect connections
+
 WTLD  Wrong Top Level Domain
+
 WSLD  Wrong Second Level Domain
+
 NS    Numeral Swap numbers, words and vice versa
 
 ## Extra Functions
 
 MX      Checking for DNS's MX records
+
 TXT     Checking for DNS's TXT records
+
 IP      Checking for IP address
+
 NS      Checks DNS NS records
+
 CNAME   Checks DNS CNAME records
+
 IDNA    Show international domain name
 
 
