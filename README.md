@@ -16,9 +16,10 @@ Table of contents
    * [Usage](#usage)
    * [Features](#features)
    * [Languages](#languages)
+      * [English](#english)
    * [Algorithms](#algorithms)
    * [Extra Functions](#extra-functions)
-   * [TODO](#todo)
+      * [TODO](#todo)
    * [Authors](#authors)
    * [License](#license)
 <!--te-->
@@ -156,7 +157,7 @@ and Arabic.
 * Supports multiple languages with the ability to add more languages with ease.
 * Concurrent typo squatting workers.
 
-English:
+### English
 
 * Over 8000 common misspellings
 * Over 500 common homophones
