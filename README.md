@@ -41,7 +41,7 @@ pre-built release binaries.
 make
 ```
 
-## Execution
+## Usage
 Generate variations for `google.com` using the character omission **(CO)** 
 algorithm.
 ```
