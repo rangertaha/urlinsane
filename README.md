@@ -150,10 +150,8 @@ OPTIONS:
 
 * Binary executable 
 * Contains 19 typosquatting algorithms and 6 extra functions to retrieve additional data
-* Modular architecture for language, keyboard, typo algorithm, and functions 
-extensibility.
-* Supports multiple keyboard layouts found in English, Spanish, Russian, Finish, 
-and Arabic.
+* Modular architecture for language, keyboard, typo algorithm, and functions extensibility.
+* Supports multiple keyboard layouts found in English, Spanish, Russian, Finish, and Arabic.
 * Supports multiple languages with the ability to add more languages with ease.
 * Concurrent typo squatting workers.
 
@@ -170,7 +168,7 @@ languages.
 ## Algorithms
 
 The modular architecture for code extensibility allows developers to add new 
-typosquatting algorithms with ease. Currently we have implements 19 
+typosquatting algorithms with ease. Currently we have implements 18 
 typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/urlinsane/#algorithms) for details.
 
 

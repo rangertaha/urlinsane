@@ -157,16 +157,6 @@ and Arabic.
 * Supports multiple languages with the ability to add more languages with ease.
 * Concurrent typo squatting workers.
 
-English:
-
-* Over 8000 common misspellings
-* Over 500 common homophones
-* Registered graphemes, vowels, homoglyphs, and numerals
-* Common keyboard layouts (qwerty, azerty, qwertz, dvorak)
-
-See [Languages](https://rangertaha.github.io/urlinsane/) for details on other 
-languages.
-
 ## Keyboards
 
 ## Languages
@@ -193,41 +183,24 @@ The modular architecture for code extensibility allows developers to add new
 typosquatting algorithms with ease. Currently we have implements 19 
 typosquatting algorithms. 
 
-MD    Missing Dot is created by omitting a dot from the domain.
-
-MDS   Missing Dashes is created by omitting a dash from the domain.
-
-SD    Strip Dashes is created by omitting a dot from the domain
-
-CO    Character Omission Omitting a character from the domain
-
-CS    Character Swap Swapping two consecutive characters in a domain
-
-ACS   Adjacent Character Substitution replaces adjacent characters
-
-ACI   Adjacent Character Insertion inserts adjacent character
-
-HG    Homoglyphs replaces characters with characters that look similar
-
-SP    Singular Pluralise creates a singular domain plural and vice versa
-
-CR    Character Repeat Repeats a character of the domain name twice
-
-DCR   Double Character Replacement repeats a character twice
-
-CM    Common Misspellings are created from common misspellings
-
-HP    Homophones Typos are created from sets of words that sound the same
-
-VS    Vowel Swapping is created by swaps vowels
-
-BF    Bitsquatting relies on random bit-errors to redirect connections
-
-WTLD  Wrong Top Level Domain
-
-WSLD  Wrong Second Level Domain
-
-NS    Numeral Swap numbers, words and vice versa
+1. **Missing Dot(MD)** is created by omitting a dot from the domain.
+2. **Missing Dashes(MDS)** is created by omitting a dash from the domain.
+3. **Strip Dashes(SD)** is created by omitting a dot from the domain
+4. **Character Omission(CO)** Omitting a character from the domain
+5. **Character Swap(CS)** swaps two consecutive characters in a domain
+6. **Adjacent Character Substitution(ACS)** replaces adjacent characters
+7. **Adjacent Character Insertion(ACI)** inserts adjacent character
+8. **Homoglyphs(HG)** replaces characters with characters that look similar
+9. **Singular Pluralise(SP)** creates a singular domain plural and vice versa
+10. **Character Repeat(CR)** repeats a character of the domain name twice
+11. **Double Character Replacement(DCR)** repeats a character twice
+12. **Common Misspellings(CM)** are created from common misspellings
+13. **Homophones(HP)** Typos are created from sets of words that sound the same
+14. **Vowel Swapping(VS)** is created by swaps vowels
+15. **Bitsquatting(BF)** relies on random bit-errors to redirect connections
+16. **Wrong Top Level Domain(WTLD)**
+17. **Wrong Second Level Domain(WSLD)**
+18. **Numeral Swap(NS)** numbers, words and vice versa
 
 ## Extra Functions
 
