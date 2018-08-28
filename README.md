@@ -6,6 +6,25 @@ to create a better version that supported multiple languages and linguistic typo
 I also wanted it to be a binary with fast execution time.
 
 
+Table of contents
+=================
+
+<!--ts-->
+   * [Table of contents](#table-of-contents)
+   * [Introduction](#introduction)
+   * [Installation](#installation)
+   * [Usage](#usage)
+   * [Features](#features)
+   * [Languages](#languages)
+   * [Algorithms](#algorithms)
+   * [Extra Functions](#extra-functions)
+   * [TODO](#todo)
+   * [Authors](#authors)
+   * [License](#license)
+<!--te-->
+
+
+
 ## Introduction
 Generate and test domain typos and variations to detect and perform typo 
 squatting, URL hijacking, phishing, and corporate espionage. See 
