@@ -24,7 +24,7 @@ Table of contents
       * [Arabic](#arabic)
    * [Algorithms](#algorithms)
    * [Extra Functions](#extra-functions)
-   * [TODO](#todo)
+      * [TODO](#todo)
    * [Authors](#authors)
    * [License](#license)
 <!--te-->
