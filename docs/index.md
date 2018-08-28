@@ -43,7 +43,7 @@ urlinsane google.com -t co
 
 
 
-Generate variations for `google.com` using the character cmission **(CO)** algorithm and check for **ip** addresses. 
+Generate variations for `google.com` using the character omission **(CO)** algorithm and check for **ip** addresses. 
 ```
 urlinsane google.com -t co -x ip
 
@@ -65,7 +65,7 @@ urlinsane google.com -t co -x ip
   ONLINE | CO   | googl.com | com    | <nil>          | 2607:f8b0:4006:81a::2004   
 ```
 
-Generate variations for `google.com` using the character cmission **(CO)** algorithm. 
+Generate variations for `google.com` using the character omission **(CO)** algorithm. 
  Also execute extra functions to get the **ip** addresses, **idna** format and check for **ns** records. 
 ```
 urlinsane google.com -t co -x ip -x idna -x ns
