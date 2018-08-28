@@ -152,41 +152,68 @@ languages.
 URLInsane implements 19 typosquatting algorithms. 
 
 MD    Missing Dot is created by omitting a dot from the domain.
+
 MDS   Missing Dashes is created by omitting a dash from the domain.
+
 SD    Strip Dashes is created by omitting a dot from the domain
+
 CO    Character Omission Omitting a character from the domain
+
 CS    Character Swap Swapping two consecutive characters in a domain
+
 ACS   Adjacent Character Substitution replaces adjacent characters
+
 ACI   Adjacent Character Insertion inserts adjacent character
+
 HG    Homoglyphs replaces characters with characters that look similar
+
 SP    Singular Pluralise creates a singular domain plural and vice versa
+
 CR    Character Repeat Repeats a character of the domain name twice
+
 DCR   Double Character Replacement repeats a character twice
+
 CM    Common Misspellings are created from common misspellings
+
 HP    Homophones Typos are created from sets of words that sound the same
+
 VS    Vowel Swapping is created by swaps vowels
+
 BF    Bitsquatting relies on random bit-errors to redirect connections
+
 WTLD  Wrong Top Level Domain
+
 WSLD  Wrong Second Level Domain
+
 NS    Numeral Swap numbers, words and vice versa
 
 ## Extra Functions
 
 MX      Checking for DNS's MX records
+
 TXT     Checking for DNS's TXT records
+
 IP      Checking for IP address
+
 NS      Checks DNS NS records
+
 CNAME   Checks DNS CNAME records
+
 IDNA    Show international domain name
 
 
 ### TODO 
 
 * GeoIp Lookup.
+
 * Estimate popularity of a domain variant via google search
+
 * Lookup whois record
+
 * Checks for webpage similarity
+
 * Distribute extra functions to workers
+
 
 
 
