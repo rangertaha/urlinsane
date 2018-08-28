@@ -24,9 +24,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/spf13/cobra"
-	"github.com/rangertaha/urlinsane/languages"
 	"github.com/bobesa/go-domain-util/domainutil"
+	"github.com/rangertaha/urlinsane/languages"
+	"github.com/spf13/cobra"
 )
 
 type BasicConfig struct {
@@ -88,13 +88,13 @@ func (c *Config) GetDomains(args []string) {
 		subdomain := domainutil.Subdomain(str)
 		domain := domainutil.DomainPrefix(str)
 		suffix := domainutil.DomainSuffix(str)
-		if  domain == "" {
+		if domain == "" {
 			domain = str
 		}
 		dmns = append(dmns, Domain{
 			Subdomain: subdomain,
-			Domain: domain,
-			Suffix: suffix})
+			Domain:    domain,
+			Suffix:    suffix})
 	}
 	c.domains = dmns
 }
@@ -170,7 +170,7 @@ func (c *Config) GetVerbose(verbose bool) {
 
 // errHandler
 func errHandler(err error) {
-// TODO
+	// TODO
 }
 
 // CobraConfig creates a configuration from a cobra command and arguments

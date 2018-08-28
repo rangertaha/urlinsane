@@ -25,4 +25,3 @@ func main() {
 		fmt.Println(r.Live, r.Domain.Domain, r.Typo.Name, r.Data)
 	}
 }
-

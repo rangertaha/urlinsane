@@ -21,9 +21,9 @@
 package urlinsane
 
 import (
-	"sync"
-	"golang.org/x/net/idna"
 	"github.com/rangertaha/urlinsane/languages"
+	"golang.org/x/net/idna"
+	"sync"
 )
 
 type (
