@@ -5,6 +5,32 @@ Inpired by URLCrazy I wanted to create a better version that supported multiple 
 I also wanted it to be a binary with fast execution time.
 
 
+Table of contents
+=================
+
+<!--ts-->
+   * [Table of contents](#table-of-contents)
+   * [Introduction](#introduction)
+   * [Installation](#installation)
+   * [Usage](#usage)
+   * [Features](#features)
+   * [Languages](#languages)
+      * [English](#english)
+      * [Spanish](#spanish)
+      * [Russian](#russian)
+      * [Finish](#finish)
+      * [Arabic](#arabic)
+   * [Algorithms](#algorithms)
+   * [Extra Functions](#extra-functions)
+   * [TODO](#todo)
+   * [Authors](#authors)
+   * [License](#license)
+<!--te-->
+
+
+
+
+
 ## Introduction
 Generate and test domain typos and variations to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.
 
@@ -17,7 +43,7 @@ Create the binary executable with the make command or [download](https://github.
 make
 ```
 
-## Execution
+## Usage
 Generate variations for `google.com` using the character omission **(CO)** algorithm.
 ```
 urlinsane google.com -t co
@@ -216,7 +242,7 @@ CNAME   Checks DNS CNAME records
 IDNA    Show international domain name
 
 
-### TODO 
+## TODO 
 
 * GeoIp Lookup.
 * Estimate popularity of a domain variant via google search
