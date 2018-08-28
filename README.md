@@ -130,8 +130,10 @@ OPTIONS:
 
 * Binary executable 
 * Contains 19 typosquatting algorithms.
-* Modular architecture for language, keyboard, typo algorithm, and functions extensibility.
-* Supports multiple keyboard layouts found in English, Spanish, Russian, Finish, and Arabic.
+* Modular architecture for language, keyboard, typo algorithm, and functions 
+extensibility.
+* Supports multiple keyboard layouts found in English, Spanish, Russian, Finish, 
+and Arabic.
 * Supports multiple languages with the ability to add more languages with ease.
 * Concurrent typo squatting workers.
 
@@ -142,7 +144,8 @@ English:
 * Registered graphemes, vowels, homoglyphs, and numerals
 * Common keyboard layouts (qwerty, azerty, qwertz, dvorak)
 
-
+See [Languages](https://rangertaha.github.io/urlinsane/) for details on other 
+languages.
 
 ## Algorithms
 

@@ -127,18 +127,37 @@ OPTIONS:
 * Supports multiple languages with the ability to add more languages with ease.
 * Concurrent typo squatting workers.
 
-English:
+## Keyboards
+
+## Languages
+
+URLInsane supports multiple languages with the ability to add more languages with ease.
+
+
+### English
 
 * Over 8000 common misspellings
 * Over 500 common homophones
 * Registered graphemes, vowels, homoglyphs, and numerals
 * Common keyboard layouts (qwerty, azerty, qwertz, dvorak)
 
+### Spanish
+### Russian
+### Finish
+### Arabic
 
 
 ## Algorithms
 
-URLInsane implements 19 typosquatting algorithms. 
+The modular architecture for code extensibility allows developers to add new 
+typosquatting algorithms with ease. 
+
+## Extra Functions
+
+The modular architecture for code extensibility allows developers to add new 
+functions that yields additional info. This additional info is added to the 
+results table as additional columns. Currently URLInsane supports 19 algorithms.
+The following is a list of the current extra functions. 
 
 MD    Missing Dot is created by omitting a dot from the domain.
 MDS   Missing Dashes is created by omitting a dash from the domain.
