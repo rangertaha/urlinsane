@@ -144,50 +144,15 @@ English:
 * Registered graphemes, vowels, homoglyphs, and numerals
 * Common keyboard layouts (qwerty, azerty, qwertz, dvorak)
 
-See [Languages](https://rangertaha.github.io/urlinsane/) for details on other 
+See [Languages](https://rangertaha.github.io/urlinsane/#languages) for details on other 
 languages.
 
 ## Algorithms
 
 The modular architecture for code extensibility allows developers to add new 
 typosquatting algorithms with ease. Currently we have implements 19 
-typosquatting algorithms. 
+typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/urlinsane/#algorithms) for details.
 
-MD    Missing Dot is created by omitting a dot from the domain.
-
-MDS   Missing Dashes is created by omitting a dash from the domain.
-
-SD    Strip Dashes is created by omitting a dot from the domain
-
-CO    Character Omission Omitting a character from the domain
-
-CS    Character Swap Swapping two consecutive characters in a domain
-
-ACS   Adjacent Character Substitution replaces adjacent characters
-
-ACI   Adjacent Character Insertion inserts adjacent character
-
-HG    Homoglyphs replaces characters with characters that look similar
-
-SP    Singular Pluralise creates a singular domain plural and vice versa
-
-CR    Character Repeat Repeats a character of the domain name twice
-
-DCR   Double Character Replacement repeats a character twice
-
-CM    Common Misspellings are created from common misspellings
-
-HP    Homophones Typos are created from sets of words that sound the same
-
-VS    Vowel Swapping is created by swaps vowels
-
-BF    Bitsquatting relies on random bit-errors to redirect connections
-
-WTLD  Wrong Top Level Domain
-
-WSLD  Wrong Second Level Domain
-
-NS    Numeral Swap numbers, words and vice versa
 
 ## Extra Functions
 
