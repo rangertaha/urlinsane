@@ -32,24 +32,26 @@ var FI_HOMOPHONES = [][]string{
 var FI_LANGUAGE = Language{
 	Code: "FI",
 	Name: "Finnish",
+	// http://www.languagesandnumbers.com/how-to-count-in-finnish/en/fin/
 	Numerals: map[string][]string{
-		"0":  []string{""},
-		"1":  []string{""},
-		"2":  []string{""},
-		"3":  []string{""},
-		"4":  []string{""},
-		"5":  []string{""},
-		"6":  []string{""},
-		"7":  []string{""},
-		"8":  []string{""},
-		"9":  []string{""},
-		"10": []string{""},
+		"0":  []string{"nolla"},
+		"1":  []string{"yksi"},
+		"2":  []string{"kaksi"},
+		"3":  []string{"kolme"},
+		"4":  []string{"neljä"},
+		"5":  []string{"viisi"},
+		"6":  []string{"kuusi"},
+		"7":  []string{"seitsemän"},
+		"8":  []string{"kahdeksan"},
+		"9":  []string{"yhdeksän"},
+		"10": []string{"kymmenen"},
 	},
 	Graphemes: []string{
 		"a", "b", "c", "d", "e", "f", "g",
 		"h", "i", "j", "k", "l", "m", "n",
 		"o", "p", "q", "r", "s", "t", "u",
 		"v", "w", "x", "y", "z", "å", "ä", "ö"},
+	Vowels:       []string{"a", "e", "i", "o", "u", "y", "ä", "ö"},
 	Misspellings: FI_SPELLINGS,
 	Homophones:   FI_HOMOPHONES,
 	Homoglyphs: map[string][]string{
@@ -89,7 +91,7 @@ var FI_KEYBOARDS = []Keyboard{
 	{
 		Code:        "FI1",
 		Name:        "QWERTY",
-		Description: "Finnish keybaord layout",
+		Description: "Finnish QWERTY keybaord layout",
 		Language:    FI_LANGUAGE,
 		Layout: []string{
 			"1234567890 ",

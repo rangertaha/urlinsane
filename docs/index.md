@@ -181,8 +181,18 @@ rangertaha@gmail.com or add it your self and submit a pull request.
 
 ### Russian
 
+* Registered graphemes, vowels, homoglyphs, and numerals
+* Common 3 keyboard layouts
+
 ### Finish
+
+* Registered graphemes, vowels, homoglyphs, and numerals
+* Finnish QWERTY keyboard layout
+
 ### Arabic
+
+* Registered graphemes, homoglyphs, and numerals
+* 4 Common keyboard layouts
 
 
 ## Algorithms
