@@ -20,8 +20,6 @@
 
 package urlinsane
 
-
-
 var TLD = []string{
 	"!city.kawasaki.jp",
 	"!city.kitakyushu.jp",
