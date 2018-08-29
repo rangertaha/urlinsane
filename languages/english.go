@@ -4828,7 +4828,7 @@ var EN_KEYBOARDS = []Keyboard{
 	{
 		Code:        "EN1",
 		Name:        "QWERTY",
-		Description: "English keyboard layout",
+		Description: "English QWERTY keyboard layout",
 		Language:    ENGLISH,
 		Layout: []string{
 			"1234567890-",
@@ -4840,7 +4840,7 @@ var EN_KEYBOARDS = []Keyboard{
 	{
 		Code:        "EN2",
 		Name:        "AZERTY",
-		Description: "English keyboard layout",
+		Description: "English AZERTY keyboard layout",
 		Language:    ENGLISH,
 		Layout: []string{
 			"1234567890",
@@ -4852,7 +4852,7 @@ var EN_KEYBOARDS = []Keyboard{
 	{
 		Code:        "EN3",
 		Name:        "QWERTZ",
-		Description: "English keyboard layout",
+		Description: "English QWERTZ keyboard layout",
 		Language:    ENGLISH,
 		Layout: []string{
 			"1234567890",
@@ -4864,7 +4864,7 @@ var EN_KEYBOARDS = []Keyboard{
 	{
 		Code:        "EN4",
 		Name:        "DVORAK",
-		Description: "English keyboard layout",
+		Description: "English DVORAK keyboard layout",
 		Language:    ENGLISH,
 		Layout: []string{
 			"1234567890",

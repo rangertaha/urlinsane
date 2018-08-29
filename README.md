@@ -168,7 +168,7 @@ languages.
 ## Algorithms
 
 The modular architecture for code extensibility allows developers to add new 
-typosquatting algorithms with ease. Currently we have implements 18 
+typosquatting algorithms with ease. Currently we have implements 19 
 typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/urlinsane/#algorithms) for details.
 
 

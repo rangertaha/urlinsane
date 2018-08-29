@@ -160,7 +160,6 @@ func init() {
 	TRegister("ACI", adjacentCharacterInsertion)
 	TRegister("CR", characterRepeat)
 	TRegister("DCR", doubleCharacterReplacement)
-
 	TRegister("SD", stripDashes)
 	TRegister("SP", singularPluralise)
 	TRegister("CM", commonMisspellings)
@@ -182,7 +181,6 @@ func init() {
 		adjacentCharacterInsertion,
 		characterRepeat,
 		doubleCharacterReplacement,
-		missingDashes,
 		stripDashes,
 		singularPluralise,
 		commonMisspellings,

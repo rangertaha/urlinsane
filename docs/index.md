@@ -161,7 +161,10 @@ and Arabic.
 
 ## Languages
 
-URLInsane supports multiple languages with the ability to add more languages with ease.
+URLInsane supports multiple languages with the ability to add more languages 
+with ease. If you know where I can find a list of common misspelled words or 
+homophones for languages other then English please send the info to 
+rangertaha@gmail.com or add it your self and submit a pull request. 
 
 
 ### English
@@ -172,7 +175,12 @@ URLInsane supports multiple languages with the ability to add more languages wit
 * Common keyboard layouts (qwerty, azerty, qwertz, dvorak)
 
 ### Spanish
+
+* Registered graphemes, vowels, homoglyphs, and numerals
+* Basic and ISO keyboard layouts 
+
 ### Russian
+
 ### Finish
 ### Arabic
 
@@ -204,17 +212,12 @@ typosquatting algorithms.
 
 ## Extra Functions
 
-MX      Checking for DNS's MX records
-
-TXT     Checking for DNS's TXT records
-
-IP      Checking for IP address
-
-NS      Checks DNS NS records
-
-CNAME   Checks DNS CNAME records
-
-IDNA    Show international domain name
+- **IDNA**    Show international domain name (Default)
+- **MX**  Checking for DNS's MX records
+- **TXT**     Checking for DNS's TXT records
+- **IP**      Checking for IP address
+- **NS**      Checks DNS NS records
+- **CNAME**   Checks DNS CNAME records
 
 
 ## TODO 

@@ -21,9 +21,12 @@
 package urlinsane
 
 import (
-	"github.com/rangertaha/urlinsane/languages"
-	"golang.org/x/net/idna"
+	//"fmt"
 	"sync"
+
+	"golang.org/x/net/idna"
+
+	"github.com/rangertaha/urlinsane/languages"
 )
 
 type (
@@ -120,7 +123,6 @@ func (urli *URLInsane) GenTypoConfig() <-chan TypoConfig {
 	go func() {
 		for _, domain := range urli.domains {
 			for _, typo := range urli.types {
-				urli.count++
 				out <- TypoConfig{domain, urli.keyboards, urli.languages, typo}
 			}
 		}
@@ -219,6 +221,8 @@ func (urli *URLInsane) Start() {
 
 	// Execute program returning a channel with results
 	output := urli.Execute()
+
+
 
 	// Output results based on config
 	urli.Output(output)
