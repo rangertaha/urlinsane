@@ -217,8 +217,9 @@ typosquatting algorithms.
 14. **Vowel Swapping(VS)** is created by swaps vowels
 15. **Bitsquatting(BF)** relies on random bit-errors to redirect connections
 16. **Wrong Top Level Domain(WTLD)**
-17. **Wrong Second Level Domain(WSLD)**
+17. **Wrong Second Level Domain(W2TLD)**
 18. **Numeral Swap(NS)** numbers, words and vice versa
+19. **Wrong Third Level Domain(W3TLD)**
 
 ## Extra Functions
 

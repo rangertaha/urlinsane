@@ -162,8 +162,8 @@ OPTIONS:
 * Registered graphemes, vowels, homoglyphs, and numerals
 * Common keyboard layouts (qwerty, azerty, qwertz, dvorak)
 
-See [Languages](https://rangertaha.github.io/urlinsane/#languages) for details on other 
-languages.
+See [Languages](https://rangertaha.github.io/urlinsane/#languages) for details 
+on other languages.
 
 ## Algorithms
 
