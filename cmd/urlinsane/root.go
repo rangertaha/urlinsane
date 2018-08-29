@@ -62,7 +62,7 @@ KEYBOARDS:{{range .Keyboards}}
 {{if .Typos}}
 TYPOS: These are the types of typo/error algorithms that generate the domain variants{{range .Typos}}
   {{.Code}}	{{.Description}}{{end}}
-  ALL  Apply all typosquatting algorithms
+  ALL   Apply all typosquatting algorithms
 {{end}}
 
 {{if .Funcs}}
