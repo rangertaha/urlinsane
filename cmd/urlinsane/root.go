@@ -67,7 +67,7 @@ TYPOS: These are the types of typo/error algorithms that generate the domain var
 
 {{if .Funcs}}
 FUNCTIONS: Post processig functions that retieve aditional information on each domain variant.{{range .Funcs}}
-  {{.Code}}  	{{.Description}}{{end}}
+  {{.Code}}	{{.Description}}{{end}}
   ALL  	Apply all post typosquating functions
 {{end}}
 
