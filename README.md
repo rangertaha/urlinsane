@@ -174,36 +174,22 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 
 ## Extra Functions
 
-MX      Checking for DNS's MX records
+- **IDNA**    Show international domain name (Default)
+- **MX**  Checking for DNS's MX records
+- **TXT**     Checking for DNS's TXT records
+- **IP**      Checking for IP address
+- **NS**      Checks DNS NS records
+- **CNAME**   Checks DNS CNAME records
 
-TXT     Checking for DNS's TXT records
-
-IP      Checking for IP address
-
-NS      Checks DNS NS records
-
-CNAME   Checks DNS CNAME records
-
-IDNA    Show international domain name
 
 
 ### TODO 
 
 * GeoIp Lookup.
-
 * Estimate popularity of a domain variant via google search
-
 * Lookup whois record
-
 * Checks for webpage similarity
-
 * Distribute extra functions to workers
-
-
-
-
-
-
 
 
 ## Authors
