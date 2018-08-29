@@ -222,8 +222,6 @@ func (urli *URLInsane) Start() {
 	// Execute program returning a channel with results
 	output := urli.Execute()
 
-
-
 	// Output results based on config
 	urli.Output(output)
 }

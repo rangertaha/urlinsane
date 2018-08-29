@@ -10,7 +10,7 @@ import (
 func (urli *URLInsane) outFile() (file *os.File) {
 	if urli.file != "" {
 		var err error
-		file, err = os.OpenFile(urli.file, os.O_CREATE | os.O_WRONLY, 0644)
+		file, err = os.OpenFile(urli.file, os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			fmt.Println(err)
 		}
