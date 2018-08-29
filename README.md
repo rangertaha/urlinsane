@@ -175,11 +175,11 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 ## Extra Functions
 
 - **IDNA**    Show international domain name (Default)
-- **MX**  Checking for DNS's MX records
+- **MX**      Checking for DNS's MX records
 - **TXT**     Checking for DNS's TXT records
 - **IP**      Checking for IP address
-- **NS**      Checks DNS NS records
-- **CNAME**   Checks DNS CNAME records
+- **NS**     Checks DNS NS records
+- **CNAME**  Checks DNS CNAME records
 
 
 
@@ -190,6 +190,8 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 * Lookup whois record
 * Checks for webpage similarity
 * Distribute extra functions to workers
+* Emoji domains
+
 
 
 ## Authors

@@ -602,9 +602,7 @@ func TRetrieve(strs ...string) (results []Typo) {
 		}
 	}
 	if len(strs) == 0 {
-		for _, value := range TREGISTRY {
-			results = append(results, value...)
-		}
+		return TRetrieve("all")
 	}
 	return
 }

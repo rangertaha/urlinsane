@@ -10,7 +10,7 @@ import (
 func (urli *URLInsane) outFile() (file *os.File) {
 	if urli.file != "" {
 		var err error
-		file, err = os.OpenFile(urli.file, os.O_CREATE|os.O_WRONLY, 0644)
+		file, err = os.OpenFile(urli.file, os.O_CREATE | os.O_WRONLY, 0644)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -27,28 +27,35 @@ func (urli *URLInsane) jsonOutput(in <-chan TypoResult) {
 func (urli *URLInsane) csvOutput(in <-chan TypoResult) {
 	w := csv.NewWriter(urli.outFile())
 
+	live := func(l bool) string {
+		if l {
+			return "ONLINE"
+		} else {
+			return " "
+		}
+	}
+
 	// CSV column headers
 	w.Write(urli.headers)
 
 	for v := range in {
 		var data []string
 		if urli.verbose {
-			data = []string{v.Typo.Name, v.Domain.Domain, v.Domain.Suffix}
+			data = []string{live(v.Live), v.Typo.Name, v.Domain.String(), v.Domain.Suffix}
 		} else {
-			data = []string{v.Typo.Code, v.Domain.Domain, v.Domain.Suffix}
+			data = []string{live(v.Live), v.Typo.Code, v.Domain.String(), v.Domain.Suffix}
 		}
 
-		if err := w.Write(data); err != nil {
-			fmt.Println("Error writing record to csv:", err)
-		}
-
-		for _, head := range urli.headers {
+		// Add a column of data to the results
+		for _, head := range urli.headers[4:] {
 			value, ok := v.Data[head]
 			if ok {
 				data = append(data, value)
 			}
 		}
-
+		if err := w.Write(data); err != nil {
+			fmt.Println("Error writing record to csv:", err)
+		}
 	}
 	w.Flush()
 

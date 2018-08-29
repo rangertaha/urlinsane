@@ -120,8 +120,8 @@ func Execute() {
 func init() {
 	helpOptions := HelpOptions{
 		languages.GetKeyboards([]string{"all"}),
-		urlinsane.TRetrieve(),
-		urlinsane.FRetrieve(),
+		urlinsane.TRetrieve("all"),
+		urlinsane.FRetrieve("all"),
 	}
 
 	// Create a new template and parse the letter into it.

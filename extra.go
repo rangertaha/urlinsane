@@ -216,9 +216,7 @@ func FRetrieve(strs ...string) (results []Extra) {
 		}
 	}
 	if len(strs) == 0 {
-		for _, value := range FREGISTRY {
-			results = append(results, value...)
-		}
+		return FRetrieve("all")
 	}
 	return
 }
