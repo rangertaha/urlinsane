@@ -156,6 +156,7 @@ extensibility.
 and Arabic.
 * Supports multiple languages with the ability to add more languages with ease.
 * Concurrent typo squatting workers.
+* Concurrent function (**-x --funcs**) workers to retrieve additional info on each record.
 
 ## Keyboards
 

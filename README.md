@@ -1,8 +1,10 @@
 # URLInsane
 
-Generates domain typos and variations used to detect and perform typosquatting,
-URL hijacking, phishing, and corporate espionage. It has no file dependencies,
-supports multiple keyboards, languages, and has more typo algorithms than others tools.
+Multilingual domain typo permutation engine used to perform or detect typosquatting, 
+brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and 
+threat intelligence.
+
+
 
 
 
@@ -27,9 +29,12 @@ Table of contents
 
 
 ## Introduction
-Generate and test domain typos and variations to detect and perform typo 
-squatting, URL hijacking, phishing, and corporate espionage. See 
-[URLInsane](https://rangertaha.github.io/urlinsane/) for more details
+
+The engine is designed to execute concurrent typo algorithms then additional 
+concurrent functions for each domain variation. The additional functions can 
+check DNS records and much more. Its also designed for extensibility, allowing 
+developers to add functionality and support for additional languages. See 
+[URLInsane](https://rangertaha.github.io/urlinsane/) for more details.
 
 
 ## Installation
@@ -43,7 +48,7 @@ make
 ```
 
 ## Usage
-Generate variations for `google.com` using the character omission **(CO)** 
+Generates variations for `google.com` using the character omission **(CO)** 
 algorithm.
 ```
 urlinsane google.com -t co
@@ -69,7 +74,7 @@ urlinsane google.com -t co
 
 
 
-Generate variations for `google.com` using the character omission **(CO)** 
+Generates variations for `google.com` using the character omission **(CO)** 
 algorithm and check for **ip** addresses. 
 ```
 urlinsane google.com -t co -x ip
@@ -92,7 +97,7 @@ urlinsane google.com -t co -x ip
   ONLINE | CO   | googl.com | com    | <nil>          | 2607:f8b0:4006:81a::2004   
 ```
 
-Generate variations for `google.com` using the character omission **(CO)** 
+Generates variations for `google.com` using the character omission **(CO)** 
 algorithm. Also execute extra functions to get the **ip** addresses, **idna** 
 format and check for **ns** records. 
 ```
