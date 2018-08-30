@@ -84,21 +84,6 @@ var idnaLookup = Extra{
 	Headers:     []string{"IDNA"},
 }
 
-//var allFuncGroup = ExtraGroup{
-//	Code:        "ALL",
-//	Name:        "All Functions",
-//	Description: "Apply all post typosquating functions",
-//	Funcs:       []Extra{
-//		mxLookup,
-//		ipLookup,
-//		idnaLookup,
-//		txtLookup,
-//		nsLookup,
-//		cnameLookup,
-//		//geoIPLookup,
-//	},
-//}
-
 func init() {
 	FRegister("IDNA", idnaLookup)
 	FRegister("MX", mxLookup)
