@@ -21,9 +21,9 @@
 package urlinsane
 
 import (
-	"os"
-	"fmt"
 	"encoding/csv"
+	"fmt"
+	"os"
 
 	"github.com/olekukonko/tablewriter"
 )
