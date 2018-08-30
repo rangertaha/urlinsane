@@ -21,7 +21,6 @@
 package urlinsane
 
 import (
-	//"fmt"
 	"sync"
 
 	"golang.org/x/net/idna"
@@ -31,12 +30,12 @@ import (
 
 type (
 	URLInsane struct {
-		domains   []Domain
-		keyboards []languages.Keyboard
-		languages []languages.Language
+		domains     []Domain
+		keyboards   []languages.Keyboard
+		languages   []languages.Language
 
-		types []Typo
-		funcs []Extra
+		types       []Typo
+		funcs       []Extra
 
 		file        string
 		count       int
@@ -45,8 +44,8 @@ type (
 		headers     []string
 		concurrency int
 
-		typoWG sync.WaitGroup
-		// extraWG     sync.WaitGroup
+		typoWG      sync.WaitGroup
+		funcWG      sync.WaitGroup
 	}
 	Domain struct {
 		Subdomain string
@@ -89,8 +88,8 @@ type (
 
 const (
 	VERSION = "0.1.0"
-	DEBUG   = false
-	LOGO    = `
+	DEBUG = false
+	LOGO = `
  _   _  ____   _      ___
 | | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
 | | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
@@ -136,7 +135,7 @@ func (urli *URLInsane) Typos(in <-chan TypoConfig) <-chan TypoConfig {
 	out := make(chan TypoConfig)
 	for w := 1; w <= urli.concurrency; w++ {
 		urli.typoWG.Add(1)
-		go func(id int, in <-chan TypoConfig, out chan<- TypoConfig) {
+		go func(id int, in <-chan TypoConfig, out chan <- TypoConfig) {
 			defer urli.typoWG.Done()
 			for c := range in {
 				for _, t := range c.Typo.Exec(c) {
@@ -177,11 +176,11 @@ func (urli *URLInsane) Results(in <-chan TypoConfig) <-chan TypoResult {
 	return out
 }
 
-// Funcs
-func (urli *URLInsane) Funcs(funcs []Extra, in <-chan TypoResult) <-chan TypoResult {
+// FuncChain creates a chain of extra functions
+func (urli *URLInsane) FuncChain(funcs []Extra, in <-chan TypoResult) <-chan TypoResult {
 	var xfunc Extra
 	out := make(chan TypoResult)
-	xfunc, funcs = funcs[len(funcs)-1], funcs[:len(funcs)-1]
+	xfunc, funcs = funcs[len(funcs) - 1], funcs[:len(funcs) - 1]
 	go func() {
 		for i := range in {
 			for _, result := range xfunc.Exec(i) {
@@ -192,10 +191,29 @@ func (urli *URLInsane) Funcs(funcs []Extra, in <-chan TypoResult) <-chan TypoRes
 	}()
 
 	if len(funcs) > 0 {
-		return urli.Funcs(funcs, out)
+		return urli.FuncChain(funcs, out)
 	} else {
 		return out
 	}
+}
+// DistChain creates workers of chained functions
+func (urli *URLInsane) DistChain(in <-chan TypoResult) <-chan TypoResult {
+	out := make(chan TypoResult)
+	for w := 1; w <= urli.concurrency; w++ {
+		urli.funcWG.Add(1)
+		go func(in <-chan TypoResult, out chan <- TypoResult) {
+			defer urli.funcWG.Done()
+			output := urli.FuncChain(urli.funcs, in)
+			for c := range output {
+				out <- c
+			}
+		}(in, out)
+	}
+	go func() {
+		urli.funcWG.Wait()
+		close(out)
+	}()
+	return out
 }
 
 // Execute program returning a channel with typos
@@ -210,8 +228,8 @@ func (urli *URLInsane) Execute() <-chan TypoResult {
 	// Converting typos to results and remove duplicates
 	results := urli.Results(typos)
 
-	// Execute functions to retrieve additional info
-	output := urli.Funcs(urli.funcs, results)
+	// Execute extra functions
+	output := urli.DistChain(results)
 
 	return output
 }

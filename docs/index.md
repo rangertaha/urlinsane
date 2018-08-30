@@ -237,7 +237,6 @@ typosquatting algorithms.
 * Estimate popularity of a domain variant via google search
 * Lookup whois record
 * Checks for webpage similarity
-* Distribute extra functions to workers
 
 
 
