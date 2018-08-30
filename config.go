@@ -137,7 +137,11 @@ func (c *Config) GetTypos(typos []string) {
 
 // GetFuncs
 func (c *Config) GetFuncs(funcs []string) {
-	c.funcs = FRetrieve(funcs...)
+	if funcs := FRetrieve(funcs...); len(funcs) > 0 {
+		c.funcs = funcs
+	} else {
+		c.funcs = FRetrieve("idna")
+	}
 }
 
 // GetHeaders
