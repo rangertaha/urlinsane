@@ -169,9 +169,7 @@ func txtLookupFunc(tr TypoResult) (results []TypoResult) {
 
 // geoIPLookupFunc
 func geoIPLookupFunc(tr TypoResult) (results []TypoResult) {
-	tr.Data["GEO"] = "GEO GEO"
-
-	results = append(results, TypoResult{tr.Domain, tr.Typo, tr.Live, tr.Data})
+	// TODO
 	return
 }
 
@@ -196,8 +194,6 @@ func FRetrieve(strs ...string) (results []Extra) {
 		value, ok := FREGISTRY[strings.ToUpper(f)]
 		if ok {
 			results = append(results, value...)
-		} else {
-			panic("Invalid option! ")
 		}
 	}
 	if len(strs) == 0 {
