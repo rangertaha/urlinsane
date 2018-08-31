@@ -154,7 +154,7 @@ OPTIONS:
 ## Features
 
 * Binary executable 
-* Contains 19 typosquatting algorithms and 6 extra functions to retrieve additional data
+* Contains 19 typosquatting algorithms and 7 extra functions to retrieve additional data
 * Modular architecture for language, keyboard, typo algorithm, and functions extensibility.
 * Supports multiple keyboard layouts found in English, Spanish, Russian, Finish, and Arabic.
 * Supports multiple languages with the ability to add more languages with ease.
@@ -179,13 +179,13 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 
 ## Extra Functions
 
-- **IDNA**    Show international domain name (Default)
-- **MX**      Checking for DNS's MX records
-- **TXT**     Checking for DNS's TXT records
-- **IP**      Checking for IP address
-- **NS**     Checks DNS NS records
-- **CNAME**  Checks DNS CNAME records
-
+- **IDNA**  Show international domain name (Default)
+- **MX**    Checking for DNS's MX records
+- **TXT**   Checking for DNS's TXT records
+- **IP**    Checking for IP address
+- **NS**    Checks DNS NS records
+- **CNAME** Checks DNS CNAME records
+- **SIM**   Show domain similarity %
 
 
 ### TODO 
