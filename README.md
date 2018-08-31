@@ -40,7 +40,7 @@ developers to add functionality and support for additional languages. See
 ## Installation
 
 Create the binary executable with the make command or 
-[download](https://github.com/rangertaha/urlinsane/releases) one of the 
+[download](https://github.com/rangertaha/urlinsane/releases/tag/0.2.0) one of the 
 pre-built release binaries. 
 
 ```
