@@ -148,15 +148,16 @@ OPTIONS:
 
 ## Features
 
-* Binary executable 
-* Contains 19 typosquatting algorithms and 6 extra functions to retrieve additional data
-* Modular architecture for language, keyboard, typo algorithm, and functions 
-extensibility.
-* Supports multiple keyboard layouts found in English, Spanish, Russian, Finish, 
-and Arabic.
+* Open Source
+* Binary executable, written in Go with no dependencies. 
+* Will have all the functionally of URLCrazy and DNSTwist. 
+* Contains 19 typosquatting algorithms and 7 extra functions to retrieve additional data
+* Modular architecture for language, keyboard, typo algorithm, and functions extensibility.
+* Supports multiple keyboard layouts found in English, Spanish, Russian, Finish, and Arabic.
 * Supports multiple languages with the ability to add more languages with ease.
-* Concurrent typo squatting workers.
 * Concurrent function (**-x --funcs**) workers to retrieve additional info on each record.
+* Concurrent typo squatting workers.
+
 
 ## Keyboards
 
@@ -198,8 +199,8 @@ rangertaha@gmail.com or add it your self and submit a pull request.
 
 ## Algorithms
 
-The modular architecture for code extensibility allows developers to add new 
-typosquatting algorithms with ease. Currently we have implements 19 
+The modular architecture for code extensibility allows developers to add new typosquatting
+algorithms with ease. Currently, we have implements 19 
 typosquatting algorithms. 
 
 1. **Missing Dot(MD)** is created by omitting a dot from the domain.
@@ -225,12 +226,12 @@ typosquatting algorithms.
 ## Extra Functions
 
 - **IDNA**    Show international domain name (Default)
-- **MX**  Checking for DNS's MX records
+- **MX**      Checking for DNS's MX records
 - **TXT**     Checking for DNS's TXT records
 - **IP**      Checking for IP address
 - **NS**      Checks DNS NS records
 - **CNAME**   Checks DNS CNAME records
-- **SIM**   Show domain similarity %
+- **SIM**     Show domain similarity % using fuzzy hashing with ssdeep
 
 ## TODO 
 
