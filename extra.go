@@ -179,7 +179,7 @@ func geoIPLookupFunc(tr TypoResult) (results []TypoResult) {
 // idnaFunc
 func idnaFunc(tr TypoResult) (results []TypoResult) {
 
-	tr.Data["IDNA"] = tr.Original.Idna()
+	tr.Data["IDNA"] = tr.Variant.Idna()
 	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
 	return
 }
