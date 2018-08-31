@@ -57,26 +57,20 @@ const TEMPLATE = `
 KEYBOARDS:{{range .Keyboards}}
   {{.Code}}	{{.Description}}{{end}}
   ALL	Use all keyboards
-{{end}}
-
-{{if .Typos}}
+{{end}}{{if .Typos}}
 TYPOS: These are the types of typo/error algorithms that generate the domain variants{{range .Typos}}
   {{.Code}}	{{.Description}}{{end}}
   ALL   Apply all typosquatting algorithms
-{{end}}
-
-{{if .Funcs}}
+{{end}}{{if .Funcs}}
 FUNCTIONS: Post processig functions that retieve aditional information on each domain variant.{{range .Funcs}}
   {{.Code}}	{{.Description}}{{end}}
   ALL  	Apply all post typosquating functions
 {{end}}
-
 EXAMPLE:
 
     urlinsane google.com
-    urlinsane google.com -t CO
-    urlinsane google.com -t CO -k en2
-
+    urlinsane google.com -t co
+    urlinsane google.com -t co -x ip -x idna -x ns
 
 AUTHOR:
   Written by Rangertaha <rangertaha@gmail.com>
@@ -94,7 +88,7 @@ var cliOptions bytes.Buffer
 var rootCmd = &cobra.Command{
 	Use:   "urlinsane [domains]",
 	Short: "Generates domain typos and variations",
-	Long: `Generates domain typos and variations to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.`,
+	Long: `Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// Create config from cli options/arguments
