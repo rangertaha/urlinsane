@@ -12,3 +12,5 @@
 *.out
 
 .idea
+builds
+tst

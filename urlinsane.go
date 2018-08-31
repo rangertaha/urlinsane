@@ -89,7 +89,7 @@ type (
 )
 
 const (
-	VERSION = "0.1.0"
+	VERSION = "0.2.0"
 	DEBUG = false
 	LOGO = `
  _   _  ____   _      ___
