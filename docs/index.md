@@ -45,17 +45,6 @@ Create the binary executable with the make command or [download](https://github.
 make
 ```
 
-## Comparison 
-
-
-|       **FEATURES**      | XN-Twist  | URLCrazy  | URLInsane  | DomainFuzz  | URLInsane |
-|-------------------------|-----------|-----------|------------|-------------|-----------|
-|                         |           |           |            |             |           |
-| Missing Dot(MD)         |           |           |            |             |           |
-| Missing Dashes(MDS)     |           |           |            |             |           |
-| Strip Dashes(SD)        |           |           |            |             |           |
-| Character Omission(CO)  |           |           |            |             |           |
-
 
 
 ## Usage
@@ -252,6 +241,19 @@ typosquatting algorithms.
 * Emoji domains
 * Grabs HTTP and SMTP service banners
 
+
+
+
+## Comparison 
+
+
+|       **Algorithms**    | XN-Twist  | URLCrazy  | URLInsane  | DomainFuzz  | URLInsane |
+|-------------------------|-----------|-----------|------------|-------------|-----------|
+|                         |           |           |            |             |           |
+| Missing Dot(MD)         |           |           |            |             |           |
+| Missing Dashes(MDS)     |           |           |            |             |           |
+| Strip Dashes(SD)        |           |           |            |             |           |
+| Character Omission(CO)  |           |           |            |             |           |
 
 
 
