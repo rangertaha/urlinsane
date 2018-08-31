@@ -163,10 +163,7 @@ OPTIONS:
 
 ## Languages
 
-URLInsane supports multiple languages with the ability to add more languages 
-with ease. If you know where I can find a list of common misspelled words or 
-homophones for languages other then English please send the info to 
-rangertaha@gmail.com or add it your self and submit a pull request. 
+URLInsane supports multiple languages with the ability to add more languages with ease. If you know where I can find a list of commonly misspelled words or homophones for languages other then English please send the info to  rangertaha@gmail.com or add it your self and submit a pull request. 
 
 
 ### English
@@ -217,7 +214,7 @@ typosquatting algorithms.
 12. **Common Misspellings(CM)** are created from common misspellings
 13. **Homophones(HP)** Typos are created from sets of words that sound the same
 14. **Vowel Swapping(VS)** is created by swaps vowels
-15. **Bitsquatting(BF)** relies on random bit-errors to redirect connections
+15. **Bitsquatting(BF)** relies on random bit-errors
 16. **Wrong Top Level Domain(WTLD)**
 17. **Wrong Second Level Domain(W2TLD)**
 18. **Numeral Swap(NS)** numbers, words and vice versa
