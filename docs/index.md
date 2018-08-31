@@ -39,7 +39,7 @@ Generate and test domain typos and variations to detect and perform typo squatti
 
 ## Installation
 
-Create the binary executable with the make command or [download](https://github.com/rangertaha/urlinsane/releases) one of the pre-built release binaries. 
+Create the binary executable with the make command or [download](https://github.com/rangertaha/urlinsane/releases/tag/0.2.0) one of the pre-built release binaries. 
 
 ```bash
 make
