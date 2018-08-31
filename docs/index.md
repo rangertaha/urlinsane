@@ -230,7 +230,7 @@ typosquatting algorithms.
 - **IP**      Checking for IP address
 - **NS**      Checks DNS NS records
 - **CNAME**   Checks DNS CNAME records
-
+- **SIM**   Show domain similarity %
 
 ## TODO 
 
@@ -238,7 +238,8 @@ typosquatting algorithms.
 * Estimate popularity of a domain variant via google search
 * Lookup whois record
 * Check for redirects and get new domain
-
+* Emoji domains
+* Grabs HTTP and SMTP service banners
 
 
 
