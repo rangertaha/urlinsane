@@ -100,7 +100,7 @@ urlinsane google.com -t co -x ip
 ```
 
 Generates variations for **google.com** with the following parameters:
-* **-t hg** lets us use teh Homoglyphs(HG) algorithm only
+* **-t hg** lets us use the Homoglyphs(HG) algorithm only
 * **-v** Verbose mode shows us the full name 'Homoglyphs' of the algorithm not 
 just the short name 'HG'
 * **-x ip** Check or ip address
