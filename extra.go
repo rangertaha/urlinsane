@@ -98,6 +98,14 @@ var ssdeepLookup = Extra{
 	Headers:     []string{"IPv4", "IPv6", "SIM"},
 }
 
+var liveFilter = Extra{
+	Code:        "LIVE",
+	Name:        "Online domians",
+	Description: "Show domains with ip addresses only",
+	Exec:        liveFilterFunc,
+	Headers:     []string{"IPv4", "IPv6"},
+}
+
 func init() {
 	FRegister("IDNA", idnaLookup)
 	FRegister("MX", mxLookup)
@@ -106,6 +114,7 @@ func init() {
 	FRegister("NS", nsLookup)
 	FRegister("CNAME", cnameLookup)
 	FRegister("SIM", ssdeepLookup)
+	FRegister("LIVE", liveFilter)
 
 	//FRegister("GEO", geoIPLookup)
 
@@ -117,6 +126,7 @@ func init() {
 		nsLookup,
 		cnameLookup,
 		ssdeepLookup,
+		liveFilter,
 
 		//geoIPLookup,
 	)
@@ -221,6 +231,15 @@ func ssdeepFunc(tr TypoResult) (results []TypoResult) {
 	return
 }
 
+// liveFilterFunc
+func liveFilterFunc(tr TypoResult) (results []TypoResult) {
+	tr = checkIP(tr)
+	if tr.Live {
+		results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
+	}
+	return
+}
+
 func checkIP(tr TypoResult) TypoResult {
 	ip4, _ := tr.Data["IPv4"]
 	ip6, _ := tr.Data["IPv6"]
@@ -246,7 +265,6 @@ func checkIP(tr TypoResult) TypoResult {
 
 	return TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data}
 }
-
 
 
 
