@@ -66,14 +66,16 @@ type (
 		Exec        TypoFunc
 	}
 	TypoConfig struct {
-		Domain    Domain
+		Original  Domain
+		Variant    Domain
 		Keyboards []languages.Keyboard
 		Languages []languages.Language
 		Typo      Typo
 	}
 
 	TypoResult struct {
-		Domain Domain
+		Original  Domain
+		Variant    Domain
 		Typo   Typo
 		Live   bool
 		Data   map[string]string
@@ -122,7 +124,7 @@ func (urli *URLInsane) GenTypoConfig() <-chan TypoConfig {
 	go func() {
 		for _, domain := range urli.domains {
 			for _, typo := range urli.types {
-				out <- TypoConfig{domain, urli.keyboards, urli.languages, typo}
+				out <- TypoConfig{domain, Domain{}, urli.keyboards, urli.languages, typo}
 			}
 		}
 		close(out)
@@ -156,7 +158,7 @@ func (urli *URLInsane) Results(in <-chan TypoConfig) <-chan TypoResult {
 	out := make(chan TypoResult)
 	go func() {
 		for r := range in {
-			record := TypoResult{Domain: r.Domain, Typo: r.Typo}
+			record := TypoResult{Variant: r.Variant, Original: r.Original, Typo: r.Typo}
 
 			// Initialize a place to store extra data for a record
 			record.Data = make(map[string]string)
@@ -233,6 +235,14 @@ func (urli *URLInsane) Execute() <-chan TypoResult {
 
 	return output
 }
+
+// Dedup filters the results for unique variations of domains
+func (urli *URLInsane) Dedup(in <-chan TypoResult) <-chan TypoResult {
+	out := make(chan TypoResult)
+
+	return out
+}
+
 
 // Start executes the program and outputs results. Primarily used for CLI tools
 func (urli *URLInsane) Start() {

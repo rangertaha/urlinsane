@@ -148,8 +148,19 @@ func (c *Config) GetFuncs(funcs []string) {
 func (c *Config) GetHeaders(funcs []Extra) {
 	c.headers = []string{"Live", "Type", "Typo", "Suffix"}
 	for _, fnc := range funcs {
-		c.headers = append(c.headers, fnc.Headers...)
+		for _, h := range fnc.Headers {
+			c.headers = appendIfMissing(c.headers, h)
+		}
 	}
+}
+
+func appendIfMissing(slice []string, i string) []string {
+    for _, ele := range slice {
+        if ele == i {
+            return slice
+        }
+    }
+    return append(slice, i)
 }
 
 // GetConcurrency

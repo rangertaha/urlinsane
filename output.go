@@ -62,9 +62,9 @@ func (urli *URLInsane) csvOutput(in <-chan TypoResult) {
 	for v := range in {
 		var data []string
 		if urli.verbose {
-			data = []string{live(v.Live), v.Typo.Name, v.Domain.String(), v.Domain.Suffix}
+			data = []string{live(v.Live), v.Typo.Name, v.Variant.String(), v.Variant.Suffix}
 		} else {
-			data = []string{live(v.Live), v.Typo.Code, v.Domain.String(), v.Domain.Suffix}
+			data = []string{live(v.Live), v.Typo.Code, v.Variant.String(), v.Variant.Suffix}
 		}
 
 		// Add a column of data to the results
@@ -90,6 +90,7 @@ func (urli *URLInsane) stdOutput(in <-chan TypoResult) {
 	table.SetHeader(urli.headers)
 	table.SetBorder(false)
 
+
 	live := func(l bool) string {
 		if l {
 			return "ONLINE"
@@ -100,9 +101,9 @@ func (urli *URLInsane) stdOutput(in <-chan TypoResult) {
 	for v := range in {
 		var data []string
 		if urli.verbose {
-			data = []string{live(v.Live), v.Typo.Name, v.Domain.String(), v.Domain.Suffix}
+			data = []string{live(v.Live), v.Typo.Name, v.Variant.String(), v.Variant.Suffix}
 		} else {
-			data = []string{live(v.Live), v.Typo.Code, v.Domain.String(), v.Domain.Suffix}
+			data = []string{live(v.Live), v.Typo.Code, v.Variant.String(), v.Variant.Suffix}
 		}
 
 		// Add a column of data to the results

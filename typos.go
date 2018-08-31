@@ -198,19 +198,19 @@ func init() {
 
 // missingDotFunc typos are created by omitting a dot from the domain. For example, wwwgoogle.com and www.googlecom
 func missingDotFunc(tc TypoConfig) (results []TypoConfig) {
-	for _, str := range missingCharFunc(tc.Domain.Domain, ".") {
-		dm := Domain{tc.Domain.Subdomain, str, tc.Domain.Suffix}
-		results = append(results, TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+	for _, str := range missingCharFunc(tc.Original.Domain, ".") {
+		dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix}
+		results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 	}
 	return results
 }
 
 // missingDashFunc typos are created by omitting a dash from the domain. For example, www.a-bc.com and www.ab-c.com
 func missingDashFunc(tc TypoConfig) (results []TypoConfig) {
-	for _, str := range missingCharFunc(tc.Domain.Domain, "-") {
-		if tc.Domain.Domain != str {
-			dm := Domain{tc.Domain.Subdomain, str, tc.Domain.Suffix}
-			results = append(results, TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+	for _, str := range missingCharFunc(tc.Original.Domain, "-") {
+		if tc.Original.Domain != str {
+			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix}
+			results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 		}
 	}
 	return results
@@ -219,16 +219,16 @@ func missingDashFunc(tc TypoConfig) (results []TypoConfig) {
 // characterOmissionFunc typos are when one character in the original domain name is omitted.
 // For example: www.exmple.com
 func characterOmissionFunc(tc TypoConfig) (results []TypoConfig) {
-	for i := range tc.Domain.Domain {
-		if i <= len(tc.Domain.Domain)-1 {
+	for i := range tc.Original.Domain {
+		if i <= len(tc.Original.Domain)-1 {
 			domain := fmt.Sprint(
-				tc.Domain.Domain[:i],
-				tc.Domain.Domain[i+1:],
+				tc.Original.Domain[:i],
+				tc.Original.Domain[i+1:],
 			)
-			if tc.Domain.Domain != domain {
-				dm := Domain{tc.Domain.Subdomain, domain, tc.Domain.Suffix}
+			if tc.Original.Domain != domain {
+				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
 				results = append(results,
-					TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+					TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 			}
 		}
 	}
@@ -238,18 +238,18 @@ func characterOmissionFunc(tc TypoConfig) (results []TypoConfig) {
 // characterSwapFunc typos are when two consecutive characters are swapped in the original domain name.
 // Example: www.examlpe.com
 func characterSwapFunc(tc TypoConfig) (results []TypoConfig) {
-	for i := range tc.Domain.Domain {
-		if i <= len(tc.Domain.Domain)-2 {
+	for i := range tc.Original.Domain {
+		if i <= len(tc.Original.Domain)-2 {
 			domain := fmt.Sprint(
-				tc.Domain.Domain[:i],
-				string(tc.Domain.Domain[i+1]),
-				string(tc.Domain.Domain[i]),
-				tc.Domain.Domain[i+2:],
+				tc.Original.Domain[:i],
+				string(tc.Original.Domain[i+1]),
+				string(tc.Original.Domain[i]),
+				tc.Original.Domain[i+2:],
 			)
-			if tc.Domain.Domain != domain {
-				dm := Domain{tc.Domain.Subdomain, domain, tc.Domain.Suffix}
+			if tc.Original.Domain != domain {
+				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
 				results = append(results,
-					TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+					TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 			}
 		}
 	}
@@ -261,12 +261,12 @@ func characterSwapFunc(tc TypoConfig) (results []TypoConfig) {
 // character “z” in a the QWERTY keyboard layout.
 func adjacentCharacterSubstitutionFunc(tc TypoConfig) (results []TypoConfig) {
 	for _, keyboard := range tc.Keyboards {
-		for i, char := range tc.Domain.Domain {
+		for i, char := range tc.Original.Domain {
 			for _, key := range keyboard.Adjacent(string(char)) {
-				domain := tc.Domain.Domain[:i] + string(key) + tc.Domain.Domain[i+1:]
-				dm := Domain{tc.Domain.Subdomain, domain, tc.Domain.Suffix}
+				domain := tc.Original.Domain[:i] + string(key) + tc.Original.Domain[i+1:]
+				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
 				results = append(results,
-					TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+					TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 			}
 		}
 	}
@@ -277,17 +277,17 @@ func adjacentCharacterSubstitutionFunc(tc TypoConfig) (results []TypoConfig) {
 // and www.goopgle.com
 func adjacentCharacterInsertionFunc(tc TypoConfig) (results []TypoConfig) {
 	for _, keyboard := range tc.Keyboards {
-		for i, char := range tc.Domain.Domain {
+		for i, char := range tc.Original.Domain {
 			for _, key := range keyboard.Adjacent(string(char)) {
-				d1 := tc.Domain.Domain[:i] + string(key) + string(char) + tc.Domain.Domain[i+1:]
-				dm1 := Domain{tc.Domain.Subdomain, d1, tc.Domain.Suffix}
+				d1 := tc.Original.Domain[:i] + string(key) + string(char) + tc.Original.Domain[i+1:]
+				dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
 				results = append(results,
-					TypoConfig{dm1, tc.Keyboards, tc.Languages, tc.Typo})
+					TypoConfig{tc.Original, dm1, tc.Keyboards, tc.Languages, tc.Typo})
 
-				d2 := tc.Domain.Domain[:i] + string(char) + string(key) + tc.Domain.Domain[i+1:]
-				dm2 := Domain{tc.Domain.Subdomain, d2, tc.Domain.Suffix}
+				d2 := tc.Original.Domain[:i] + string(char) + string(key) + tc.Original.Domain[i+1:]
+				dm2 := Domain{tc.Original.Subdomain, d2, tc.Original.Suffix}
 				results = append(results,
-					TypoConfig{dm2, tc.Keyboards, tc.Languages, tc.Typo})
+					TypoConfig{tc.Original, dm2, tc.Keyboards, tc.Languages, tc.Typo})
 			}
 		}
 	}
@@ -297,18 +297,18 @@ func adjacentCharacterInsertionFunc(tc TypoConfig) (results []TypoConfig) {
 // characterRepeatFunc are created by repeating a letter of the domain name.
 // Example, www.ggoogle.com and www.gooogle.com
 func characterRepeatFunc(tc TypoConfig) (results []TypoConfig) {
-	for i := range tc.Domain.Domain {
-		if i <= len(tc.Domain.Domain) {
+	for i := range tc.Original.Domain {
+		if i <= len(tc.Original.Domain) {
 			domain := fmt.Sprint(
-				tc.Domain.Domain[:i],
-				string(tc.Domain.Domain[i]),
-				string(tc.Domain.Domain[i]),
-				tc.Domain.Domain[i+1:],
+				tc.Original.Domain[:i],
+				string(tc.Original.Domain[i]),
+				string(tc.Original.Domain[i]),
+				tc.Original.Domain[i+1:],
 			)
-			if tc.Domain.Domain != domain {
-				dm := Domain{tc.Domain.Subdomain, domain, tc.Domain.Suffix}
+			if tc.Original.Domain != domain {
+				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
 				results = append(results,
-					TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+					TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 			}
 		}
 	}
@@ -320,14 +320,14 @@ func characterRepeatFunc(tc TypoConfig) (results []TypoConfig) {
 // For example, www.gppgle.com and www.giigle.com
 func doubleCharacterReplacementFunc(tc TypoConfig) (results []TypoConfig) {
 	for _, keyboard := range tc.Keyboards {
-		for i, char := range tc.Domain.Domain {
-			if i < len(tc.Domain.Domain)-1 {
-				if tc.Domain.Domain[i] == tc.Domain.Domain[i+1] {
+		for i, char := range tc.Original.Domain {
+			if i < len(tc.Original.Domain)-1 {
+				if tc.Original.Domain[i] == tc.Original.Domain[i+1] {
 					for _, key := range keyboard.Adjacent(string(char)) {
-						domain := tc.Domain.Domain[:i] + string(key) + string(key) + tc.Domain.Domain[i+2:]
-						dm := Domain{tc.Domain.Subdomain, domain, tc.Domain.Suffix}
+						domain := tc.Original.Domain[:i] + string(key) + string(key) + tc.Original.Domain[i+2:]
+						dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
 						results = append(results,
-							TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+							TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 					}
 				}
 			}
@@ -339,10 +339,10 @@ func doubleCharacterReplacementFunc(tc TypoConfig) (results []TypoConfig) {
 // stripDashesFunc typos are created by omitting a dot from the domain.
 // For example, www.a-b-c.com becomes www.abc.com
 func stripDashesFunc(tc TypoConfig) (results []TypoConfig) {
-	for _, str := range replaceCharFunc(tc.Domain.Domain, "-", "") {
-		if tc.Domain.Domain != str {
-			dm := Domain{tc.Domain.Subdomain, str, tc.Domain.Suffix}
-			results = append(results, TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+	for _, str := range replaceCharFunc(tc.Original.Domain, "-", "") {
+		if tc.Original.Domain != str {
+			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix}
+			results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 		}
 	}
 	return
@@ -353,13 +353,13 @@ func stripDashesFunc(tc TypoConfig) (results []TypoConfig) {
 // www.games.co.nz becomes www.game.co.nz
 func singularPluraliseFunc(tc TypoConfig) (results []TypoConfig) {
 	var domain string
-	if strings.HasSuffix(tc.Domain.Domain, "s") {
-		domain = strings.TrimSuffix(tc.Domain.Domain, "s")
+	if strings.HasSuffix(tc.Original.Domain, "s") {
+		domain = strings.TrimSuffix(tc.Original.Domain, "s")
 	} else {
-		domain = tc.Domain.Domain + "s"
+		domain = tc.Original.Domain + "s"
 	}
-	dm := Domain{tc.Domain.Subdomain, domain, tc.Domain.Suffix}
-	results = append(results, TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+	dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
+	results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 	return
 }
 
@@ -368,9 +368,9 @@ func singularPluraliseFunc(tc TypoConfig) (results []TypoConfig) {
 // www.abseil.com becomes www.absail.com
 func commonMisspellingsFunc(tc TypoConfig) (results []TypoConfig) {
 	for _, keyboard := range tc.Keyboards {
-		for _, word := range keyboard.Language.SimilarSpellings(tc.Domain.Domain) {
-			dm := Domain{tc.Domain.Subdomain, word, tc.Domain.Suffix}
-			results = append(results, TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+		for _, word := range keyboard.Language.SimilarSpellings(tc.Original.Domain) {
+			dm := Domain{tc.Original.Subdomain, word, tc.Original.Suffix}
+			results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 
 		}
 	}
@@ -382,12 +382,12 @@ func commonMisspellingsFunc(tc TypoConfig) (results []TypoConfig) {
 func vowelSwappingFunc(tc TypoConfig) (results []TypoConfig) {
 	for _, keyboard := range tc.Keyboards {
 		for _, vchar := range keyboard.Language.Vowels {
-			if strings.Contains(tc.Domain.Domain, vchar) {
+			if strings.Contains(tc.Original.Domain, vchar) {
 				for _, vvchar := range keyboard.Language.Vowels {
-					new := strings.Replace(tc.Domain.Domain, vchar, vvchar, -1)
-					if new != tc.Domain.Domain {
-						dm := Domain{tc.Domain.Subdomain, new, tc.Domain.Suffix}
-						results = append(results, TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+					new := strings.Replace(tc.Original.Domain, vchar, vvchar, -1)
+					if new != tc.Original.Domain {
+						dm := Domain{tc.Original.Subdomain, new, tc.Original.Suffix}
+						results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 					}
 
 				}
@@ -402,9 +402,9 @@ func vowelSwappingFunc(tc TypoConfig) (results []TypoConfig) {
 // For example, www.base.com becomes www .bass.com.
 func homophonesFunc(tc TypoConfig) (results []TypoConfig) {
 	for _, keyboard := range tc.Keyboards {
-		for _, word := range keyboard.Language.SimilarSounds(tc.Domain.Domain) {
-			dm := Domain{tc.Domain.Subdomain, word, tc.Domain.Suffix}
-			results = append(results, TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+		for _, word := range keyboard.Language.SimilarSounds(tc.Original.Domain) {
+			dm := Domain{tc.Original.Subdomain, word, tc.Original.Suffix}
+			results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 
 		}
 	}
@@ -416,27 +416,27 @@ func homophonesFunc(tc TypoConfig) (results []TypoConfig) {
 // lower case l looks similar to the numeral one, e.g. l vs 1. For example,
 // google.com becomes goog1e.com.
 func homoglyphFunc(tc TypoConfig) (results []TypoConfig) {
-	for i, char := range tc.Domain.Domain {
+	for i, char := range tc.Original.Domain {
 		// Check the alphabet of the language associated with the keyboard for
 		// homoglyphs
 		for _, keyboard := range tc.Keyboards {
 			for _, kchar := range keyboard.Language.SimilarChars(string(char)) {
-				domain := fmt.Sprint(tc.Domain.Domain[:i], kchar, tc.Domain.Domain[i+1:])
-				if tc.Domain.Domain != domain {
-					dm := Domain{tc.Domain.Subdomain, domain, tc.Domain.Suffix}
+				domain := fmt.Sprint(tc.Original.Domain[:i], kchar, tc.Original.Domain[i+1:])
+				if tc.Original.Domain != domain {
+					dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
 					results = append(results,
-						TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+						TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 				}
 			}
 		}
 		// Check languages given with the (-l --language) CLI options for homoglyphs.
 		for _, language := range tc.Languages {
 			for _, lchar := range language.SimilarChars(string(char)) {
-				domain := fmt.Sprint(tc.Domain.Domain[:i], lchar, tc.Domain.Domain[i+1:])
-				if tc.Domain.Domain != domain {
-					dm := Domain{tc.Domain.Subdomain, domain, tc.Domain.Suffix}
+				domain := fmt.Sprint(tc.Original.Domain[:i], lchar, tc.Original.Domain[i+1:])
+				if tc.Original.Domain != domain {
+					dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
 					results = append(results,
-						TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+						TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 				}
 			}
 		}
@@ -449,15 +449,15 @@ func homoglyphFunc(tc TypoConfig) (results []TypoConfig) {
 // and www.google.com becomes www.google.org. uses the 19 most common top level
 // domains.
 func wrongTopLevelDomainFunc(tc TypoConfig) (results []TypoConfig) {
-	labels := strings.Split(tc.Domain.Suffix, ".")
+	labels := strings.Split(tc.Original.Suffix, ".")
 	length := len(labels)
 	for _, suffix := range TLD {
 		suffixLen := len(strings.Split(suffix, "."))
 		if length == suffixLen && length == 1 {
-			if suffix != tc.Domain.Suffix {
-				dm := Domain{tc.Domain.Subdomain, tc.Domain.Domain, suffix}
+			if suffix != tc.Original.Suffix {
+				dm := Domain{tc.Original.Subdomain, tc.Original.Domain, suffix}
 				results = append(results,
-					TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+					TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 			}
 
 		}
@@ -469,7 +469,7 @@ func wrongTopLevelDomainFunc(tc TypoConfig) (results []TypoConfig) {
 // top level domain. For example, www.trademe.co.nz becomes www.trademe.ac.nz
 // and www.trademe.iwi.nz
 func wrongSecondLevelDomainFunc(tc TypoConfig) (results []TypoConfig) {
-	labels := strings.Split(tc.Domain.Suffix, ".")
+	labels := strings.Split(tc.Original.Suffix, ".")
 	length := len(labels)
 	//fmt.Println(length, labels)
 	for _, suffix := range TLD {
@@ -477,10 +477,10 @@ func wrongSecondLevelDomainFunc(tc TypoConfig) (results []TypoConfig) {
 		suffixLen := len(suffixLbl)
 		if length == suffixLen && length == 2 {
 			if suffixLbl[1] == labels[1] {
-				if suffix != tc.Domain.Suffix {
-					dm := Domain{tc.Domain.Subdomain, tc.Domain.Domain, suffix}
+				if suffix != tc.Original.Suffix {
+					dm := Domain{tc.Original.Subdomain, tc.Original.Domain, suffix}
 					results = append(results,
-						TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+						TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 				}
 
 			}
@@ -491,17 +491,17 @@ func wrongSecondLevelDomainFunc(tc TypoConfig) (results []TypoConfig) {
 
 // wrongThirdLevelDomainFunc uses an alternate, valid third level domain.
 func wrongThirdLevelDomainFunc(tc TypoConfig) (results []TypoConfig) {
-	labels := strings.Split(tc.Domain.Suffix, ".")
+	labels := strings.Split(tc.Original.Suffix, ".")
 	length := len(labels)
 	for _, suffix := range TLD {
 		suffixLbl := strings.Split(suffix, ".")
 		suffixLen := len(suffixLbl)
 		if length == suffixLen && length == 3 {
 			if suffixLbl[1] == labels[1] && suffixLbl[2] == labels[2] {
-				if suffix != tc.Domain.Suffix {
-					dm := Domain{tc.Domain.Subdomain, tc.Domain.Domain, suffix}
+				if suffix != tc.Original.Suffix {
+					dm := Domain{tc.Original.Subdomain, tc.Original.Domain, suffix}
 					results = append(results,
-						TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+						TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 				}
 
 			}
@@ -530,12 +530,12 @@ func bitsquattingFunc(tc TypoConfig) (results []TypoConfig) {
 		}
 	}
 
-	for d, dchar := range tc.Domain.Domain {
+	for d, dchar := range tc.Original.Domain {
 		for _, char := range charset[string(dchar)] {
 
-			dnew := tc.Domain.Domain[:d] + string(char) + tc.Domain.Domain[d+1:]
-			dm := Domain{tc.Domain.Subdomain, dnew, tc.Domain.Suffix}
-			results = append(results, TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+			dnew := tc.Original.Domain[:d] + string(char) + tc.Original.Domain[d+1:]
+			dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix}
+			results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 		}
 	}
 	return
@@ -547,17 +547,17 @@ func numeralSwapFunc(tc TypoConfig) (results []TypoConfig) {
 		for inum, words := range keyboard.Language.Numerals {
 			for _, snum := range words {
 				{
-					dnew := strings.Replace(tc.Domain.Domain, snum, inum, -1)
-					dm := Domain{tc.Domain.Subdomain, dnew, tc.Domain.Suffix}
-					if dnew != tc.Domain.Domain {
-						results = append(results, TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+					dnew := strings.Replace(tc.Original.Domain, snum, inum, -1)
+					dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix}
+					if dnew != tc.Original.Domain {
+						results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 					}
 				}
 				{
-					dnew := strings.Replace(tc.Domain.Domain, inum, snum, -1)
-					dm := Domain{tc.Domain.Subdomain, dnew, tc.Domain.Suffix}
-					if dnew != tc.Domain.Domain {
-						results = append(results, TypoConfig{dm, tc.Keyboards, tc.Languages, tc.Typo})
+					dnew := strings.Replace(tc.Original.Domain, inum, snum, -1)
+					dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix}
+					if dnew != tc.Original.Domain {
+						results = append(results, TypoConfig{tc.Original ,dm, tc.Keyboards, tc.Languages, tc.Typo})
 					}
 				}
 			}

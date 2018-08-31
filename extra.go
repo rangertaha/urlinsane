@@ -23,6 +23,12 @@ package urlinsane
 import (
 	"net"
 	"strings"
+
+	"net/http"
+	"github.com/glaslos/ssdeep"
+
+	"fmt"
+	"io/ioutil"
 )
 
 // The registry for extra functions
@@ -84,6 +90,14 @@ var idnaLookup = Extra{
 	Headers:     []string{"IDNA"},
 }
 
+var ssdeepLookup = Extra{
+	Code:        "SIM %",
+	Name:        "Domain Similarity",
+	Description: "Show domain similarity",
+	Exec:        ssdeepFunc,
+	Headers:     []string{"IPv4", "IPv6", "SIM"},
+}
+
 func init() {
 	FRegister("IDNA", idnaLookup)
 	FRegister("MX", mxLookup)
@@ -91,6 +105,7 @@ func init() {
 	FRegister("TXT", txtLookup)
 	FRegister("NS", nsLookup)
 	FRegister("CNAME", cnameLookup)
+	FRegister("SIM", ssdeepLookup)
 
 	//FRegister("GEO", geoIPLookup)
 
@@ -101,6 +116,7 @@ func init() {
 		txtLookup,
 		nsLookup,
 		cnameLookup,
+		ssdeepLookup,
 
 		//geoIPLookup,
 	)
@@ -108,62 +124,49 @@ func init() {
 
 // mxLookupFunc
 func mxLookupFunc(tr TypoResult) (results []TypoResult) {
-	records, _ := net.LookupMX(tr.Domain.String())
+	records, _ := net.LookupMX(tr.Original.String())
 	for _, record := range records {
 		tr.Data["MX"] = strings.TrimSuffix(record.Host, ".")
 	}
-	results = append(results, TypoResult{tr.Domain, tr.Typo, tr.Live, tr.Data})
+	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
 	return
 }
 
 // nsLookupFunc
 func nsLookupFunc(tr TypoResult) (results []TypoResult) {
-	records, _ := net.LookupMX(tr.Domain.String())
+	records, _ := net.LookupMX(tr.Original.String())
 	//fmt.Println(records)
 	for _, record := range records {
 		tr.Data["NS"] = strings.TrimSuffix(record.Host, ".")
 	}
-	results = append(results, TypoResult{tr.Domain, tr.Typo, tr.Live, tr.Data})
+	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
 	return
 }
 
 // cnameLookupFunc
 func cnameLookupFunc(tr TypoResult) (results []TypoResult) {
-	records, _ := net.LookupCNAME(tr.Domain.String())
+	records, _ := net.LookupCNAME(tr.Original.String())
 	//fmt.Println(records)
 	for _, record := range records {
 		tr.Data["CNAME"] = strings.TrimSuffix(string(record), ".")
 	}
-	results = append(results, TypoResult{tr.Domain, tr.Typo, tr.Live, tr.Data})
+	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
 	return
 }
 
 // ipLookupFunc
 func ipLookupFunc(tr TypoResult) (results []TypoResult) {
-	records, _ := net.LookupIP(tr.Domain.String())
-	for _, record := range records {
-		IPv4 := record.To4().String()
-		if IPv4 != "" {
-			tr.Data["IPv4"] = IPv4
-			tr.Live = true
-		}
-		IPv6 := record.To16().String()
-		if IPv6 != "" {
-			tr.Data["IPv6"] = IPv6
-			tr.Live = true
-		}
-	}
-	results = append(results, TypoResult{tr.Domain, tr.Typo, tr.Live, tr.Data})
+	results = append(results, checkIP(tr))
 	return
 }
 
 // txtLookupFunc
 func txtLookupFunc(tr TypoResult) (results []TypoResult) {
-	records, _ := net.LookupTXT(tr.Domain.String())
+	records, _ := net.LookupTXT(tr.Original.String())
 	for _, record := range records {
 		tr.Data["TXT"] = record
 	}
-	results = append(results, TypoResult{tr.Domain, tr.Typo, tr.Live, tr.Data})
+	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
 	return
 }
 
@@ -175,10 +178,74 @@ func geoIPLookupFunc(tr TypoResult) (results []TypoResult) {
 
 // idnaFunc
 func idnaFunc(tr TypoResult) (results []TypoResult) {
-	tr.Data["IDNA"] = tr.Domain.Idna()
-	results = append(results, TypoResult{tr.Domain, tr.Typo, tr.Live, tr.Data})
+
+	tr.Data["IDNA"] = tr.Original.Idna()
+	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
 	return
 }
+
+func ssdeepFunc(tr TypoResult) (results []TypoResult) {
+	tr = checkIP(tr)
+	if tr.Live {
+		var h1, h2 string
+		{
+			original, gerr := http.Get("http://" + tr.Original.String())
+			if gerr == nil {
+				if o, err := ioutil.ReadAll(original.Body); err == nil {
+					h1, _ = ssdeep.FuzzyBytes(o)
+					//fmt.Println(h1, err)
+				}
+			}
+		}
+		{
+			variation, gerr := http.Get("http://" + tr.Variant.String())
+			if gerr == nil {
+				if v, err := ioutil.ReadAll(variation.Body); err == nil {
+					h2, _ = ssdeep.FuzzyBytes(v)
+					//fmt.Println(h2, err)
+				}
+			}
+		}
+		if h1 != "" && h2 != "" {
+			if compare, err := ssdeep.Distance(h1, h2); err == nil {
+				//fmt.Println(compare, h2, err)
+				tr.Data["SIM"] = fmt.Sprintf("%d%s", compare, "%")
+			}
+		}
+	}
+	results = append(results, tr)
+	return
+}
+
+func checkIP(tr TypoResult) TypoResult {
+	ip4, _ := tr.Data["IPv4"]
+	ip6, _ := tr.Data["IPv6"]
+	if ip4 == " " || ip6 == " " {
+		records, _ := net.LookupIP(tr.Variant.String())
+		for _, record := range records {
+			dotlen := strings.Count(record.String(), ".")
+			if dotlen == 3 {
+				if !strings.Contains(tr.Data["IPv4"], record.String()) {
+					tr.Data["IPv4"] = strings.TrimSpace(tr.Data["IPv4"] + "\n" + record.String())
+				}
+				tr.Live = true
+			}
+			clen := strings.Count(record.String(), ":")
+			if clen == 5 {
+				if !strings.Contains(tr.Data["IPv6"], record.String()) {
+					tr.Data["IPv6"] = strings.TrimSpace(tr.Data["IPv6"] + "\n" + record.String())
+				}
+			}
+			tr.Live = true
+		}
+	}
+
+	return TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data}
+}
+
+
+
+
 
 // FRegister
 func FRegister(name string, efunc ...Extra) {
