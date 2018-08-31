@@ -91,7 +91,7 @@ var idnaLookup = Extra{
 }
 
 var ssdeepLookup = Extra{
-	Code:        "SIM %",
+	Code:        "SIM",
 	Name:        "Domain Similarity",
 	Description: "Show domain similarity",
 	Exec:        ssdeepFunc,
@@ -124,9 +124,12 @@ func init() {
 
 // mxLookupFunc
 func mxLookupFunc(tr TypoResult) (results []TypoResult) {
-	records, _ := net.LookupMX(tr.Original.String())
+	records, _ := net.LookupMX(tr.Variant.String())
 	for _, record := range records {
-		tr.Data["MX"] = strings.TrimSuffix(record.Host, ".")
+		record := strings.TrimSuffix(record.Host, ".")
+		if !strings.Contains(tr.Data["MX"], record) {
+			tr.Data["MX"] = strings.TrimSpace(tr.Data["MX"] + "\n" + record)
+		}
 	}
 	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
 	return
@@ -134,10 +137,12 @@ func mxLookupFunc(tr TypoResult) (results []TypoResult) {
 
 // nsLookupFunc
 func nsLookupFunc(tr TypoResult) (results []TypoResult) {
-	records, _ := net.LookupMX(tr.Original.String())
-	//fmt.Println(records)
+	records, _ := net.LookupMX(tr.Variant.String())
 	for _, record := range records {
-		tr.Data["NS"] = strings.TrimSuffix(record.Host, ".")
+		record := strings.TrimSuffix(record.Host, ".")
+		if !strings.Contains(tr.Data["NS"], record) {
+			tr.Data["NS"] = strings.TrimSpace(tr.Data["NS"] + "\n" + record)
+		}
 	}
 	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
 	return
@@ -145,8 +150,7 @@ func nsLookupFunc(tr TypoResult) (results []TypoResult) {
 
 // cnameLookupFunc
 func cnameLookupFunc(tr TypoResult) (results []TypoResult) {
-	records, _ := net.LookupCNAME(tr.Original.String())
-	//fmt.Println(records)
+	records, _ := net.LookupCNAME(tr.Variant.String())
 	for _, record := range records {
 		tr.Data["CNAME"] = strings.TrimSuffix(string(record), ".")
 	}
@@ -162,7 +166,7 @@ func ipLookupFunc(tr TypoResult) (results []TypoResult) {
 
 // txtLookupFunc
 func txtLookupFunc(tr TypoResult) (results []TypoResult) {
-	records, _ := net.LookupTXT(tr.Original.String())
+	records, _ := net.LookupTXT(tr.Variant.String())
 	for _, record := range records {
 		tr.Data["TXT"] = record
 	}
