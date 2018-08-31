@@ -153,7 +153,7 @@ func init() {
 
 	// Output options
 	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename")
-	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (json, csv, text)")
+	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv, text)")
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Output additional details")
 }
 
