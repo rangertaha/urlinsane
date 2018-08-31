@@ -237,7 +237,7 @@ typosquatting algorithms.
 * GeoIp Lookup.
 * Estimate popularity of a domain variant via google search
 * Lookup whois record
-* Checks for webpage similarity
+* Check for redirects and get new domain
 
 
 
