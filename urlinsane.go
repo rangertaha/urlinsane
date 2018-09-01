@@ -26,6 +26,7 @@ import (
 	"golang.org/x/net/idna"
 
 	"github.com/rangertaha/urlinsane/languages"
+	"strings"
 )
 
 type (
@@ -43,6 +44,8 @@ type (
 		verbose     bool
 		headers     []string
 		concurrency int
+
+		data 	    map[string]map[string]string
 
 		typoWG      sync.WaitGroup
 		funcWG      sync.WaitGroup
@@ -167,7 +170,7 @@ func (urli *URLInsane) Results(in <-chan TypoConfig) <-chan TypoResult {
 			for _, name := range urli.headers {
 				_, ok := record.Data[name]
 				if !ok {
-					record.Data[name] = " "
+					record.Data[name] = ""
 				}
 			}
 
@@ -271,5 +274,6 @@ func (d *Domain) String() (domain string) {
 	if d.Suffix != "" {
 		domain = domain + "." + d.Suffix
 	}
+	domain = strings.TrimSpace(domain)
 	return
 }

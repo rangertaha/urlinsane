@@ -29,6 +29,7 @@ import (
 
 	"fmt"
 	"io/ioutil"
+	"github.com/bobesa/go-domain-util/domainutil"
 )
 
 // The registry for extra functions
@@ -106,6 +107,17 @@ var liveFilter = Extra{
 	Headers:     []string{"IPv4", "IPv6"},
 }
 
+var redirectLookup = Extra{
+	Code:        "301",
+	Name:        "Redirected Domain",
+	Description: "Show domains redirected to another",
+	Exec:        redirectLookupFunc,
+	Headers:     []string{"IPv4", "IPv6", "Redirect"},
+}
+
+
+
+
 func init() {
 	FRegister("IDNA", idnaLookup)
 	FRegister("MX", mxLookup)
@@ -115,6 +127,7 @@ func init() {
 	FRegister("CNAME", cnameLookup)
 	FRegister("SIM", ssdeepLookup)
 	FRegister("LIVE", liveFilter)
+	FRegister("301", redirectLookup)
 
 	//FRegister("GEO", geoIPLookup)
 
@@ -127,6 +140,7 @@ func init() {
 		cnameLookup,
 		ssdeepLookup,
 		liveFilter,
+		redirectLookup,
 
 		//geoIPLookup,
 	)
@@ -240,10 +254,33 @@ func liveFilterFunc(tr TypoResult) (results []TypoResult) {
 	return
 }
 
+// redirectLookupFunc
+func redirectLookupFunc(tr TypoResult) (results []TypoResult) {
+	tr = checkIP(tr)
+	if tr.Live {
+		variation, err := http.Get("http://" + tr.Variant.String())
+		if err == nil {
+			str := variation.Request.URL.String()
+			subdomain := domainutil.Subdomain(str)
+			domain := domainutil.DomainPrefix(str)
+			suffix := domainutil.DomainSuffix(str)
+			if domain == "" {
+				domain = str
+			}
+			dm := Domain{subdomain, domain, suffix}
+			if tr.Original.String() != dm.String() {
+				tr.Data["Redirect"] = dm.String()
+			}
+		}
+	}
+	results = append(results, tr)
+	return
+}
+
 func checkIP(tr TypoResult) TypoResult {
 	ip4, _ := tr.Data["IPv4"]
 	ip6, _ := tr.Data["IPv6"]
-	if ip4 == " " || ip6 == " " {
+	if ip4 == "" || ip6 == "" {
 		records, _ := net.LookupIP(tr.Variant.String())
 		for _, record := range records {
 			dotlen := strings.Count(record.String(), ".")
@@ -265,7 +302,6 @@ func checkIP(tr TypoResult) TypoResult {
 
 	return TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data}
 }
-
 
 
 

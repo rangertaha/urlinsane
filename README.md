@@ -264,6 +264,7 @@ FUNCTIONS: Post processig functions that retieve aditional information on each d
   NS	Checks DNS NS records
   CNAME	Checks DNS CNAME records
   SIM	Show domain similarity
+  LIVE	Show domains with ip addresses only
   ALL  	Apply all post typosquating functions
 
 EXAMPLE:

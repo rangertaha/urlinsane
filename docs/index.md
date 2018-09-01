@@ -163,6 +163,22 @@ OPTIONS:
 
 ## Keyboards
 
+  AR3	Arabic North african keyboard layout
+  EN1	English QWERTY keyboard layout
+  EN4	English DVORAK keyboard layout
+  AR1	Arabic keyboard layout
+  EN2	English AZERTY keyboard layout
+  EN3	English QWERTZ keyboard layout
+  FI1	Finnish QWERTY keybaord layout
+  RU2	Phonetic Russian keybaord layout
+  RU3	PC Russian keyboard layout
+  ES1	Spanish keyboard layout
+  ES2	Spanish ISO keyboard layout
+  AR2	Arabic PC keyboard layout
+  AR4	Arabic keyboard layout
+  RU1	Russian keyboard layout
+  ALL	Use all keyboards
+  
 ## Languages
 
 URLInsane supports multiple languages with the ability to add more languages with ease. If you know where I can find a list of commonly misspelled words or homophones for languages other then English please send the info to  rangertaha@gmail.com or add it your self and submit a pull request. 
@@ -242,12 +258,14 @@ typosquatting algorithms.
 * Grabs HTTP and SMTP service banners
 
 
+* Checks if a domain variant is valid
+* Test if domain variants are in use
 
 
 ## Comparison 
 
 
-|       **Algorithms**    | XN-Twist  | URLCrazy  | URLInsane  | DomainFuzz  | URLInsane |
+|      **Algorithms**     | XN-Twist  | URLCrazy  | DNSTwist   | DomainFuzz  | URLInsane |
 |-------------------------|-----------|-----------|------------|-------------|-----------|
 |                         |           |           |            |             |           |
 | Missing Dot(MD)         |           |           |            |             |           |
