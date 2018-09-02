@@ -115,6 +115,13 @@ var redirectLookup = Extra{
 	Headers:     []string{"IPv4", "IPv6", "Redirect"},
 }
 
+var whoisLookup = Extra{
+	Code:        "WHOIS",
+	Name:        "Show whois info",
+	Description: "Query whois for additional information",
+	Exec:        whoisLookupFunc,
+	Headers:     []string{"WHOIS?"},
+}
 
 
 
@@ -129,6 +136,7 @@ func init() {
 	FRegister("LIVE", liveFilter)
 	FRegister("301", redirectLookup)
 
+	//FRegister("WHOIS", whoisLookup)
 	//FRegister("GEO", geoIPLookup)
 
 	FRegister("ALL",
@@ -142,6 +150,7 @@ func init() {
 		liveFilter,
 		redirectLookup,
 
+		//whoisLookup,
 		//geoIPLookup,
 	)
 }
@@ -276,6 +285,19 @@ func redirectLookupFunc(tr TypoResult) (results []TypoResult) {
 	results = append(results, tr)
 	return
 }
+
+func whoisLookupFunc(tr TypoResult) (results []TypoResult) {
+	return
+}
+
+
+
+
+
+
+
+
+
 
 func checkIP(tr TypoResult) TypoResult {
 	ip4, _ := tr.Data["IPv4"]
