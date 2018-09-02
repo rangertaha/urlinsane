@@ -37,9 +37,12 @@ developers to add functionality and support for additional languages. See
 [URLInsane](https://rangertaha.github.io/urlinsane/) for more details.
 
 
+**Documentation:** [URLInsane Docs](https://rangertaha.github.io/urlinsane/)
+**Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.2.0)
+
 ## Installation
 
-Create the binary executable with the make command or 
+To get the latest updates, create the binary executable with the make command or 
 [download](https://github.com/rangertaha/urlinsane/releases/tag/0.2.0) one of the 
 pre-built release binaries. 
 
@@ -320,7 +323,8 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 - **NS**    Checks DNS NS records
 - **CNAME** Checks DNS CNAME records
 - **SIM**   Show domain similarity % using fuzzy hashing with ssdeep
-
+- **LIVE**	Show domains with ip addresses only
+- **301**	Show domains redirects
 
 ### TODO 
 

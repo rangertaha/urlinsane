@@ -110,7 +110,7 @@ var liveFilter = Extra{
 var redirectLookup = Extra{
 	Code:        "301",
 	Name:        "Redirected Domain",
-	Description: "Show domains redirected to another",
+	Description: "Show domains redirects",
 	Exec:        redirectLookupFunc,
 	Headers:     []string{"IPv4", "IPv6", "Redirect"},
 }
