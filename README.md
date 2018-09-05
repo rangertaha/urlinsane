@@ -46,8 +46,16 @@ To get the latest updates, create the binary executable with the make command or
 [download](https://github.com/rangertaha/urlinsane/releases/tag/0.2.0) one of the 
 pre-built release binaries. 
 
-```
+```bash
+cd ~/go/src/github.com/rangertaha/urlinsane/
 make
+```
+
+After building the binary you can execute it within the **builds** directory 
+that was created by the **make** command. 
+```bash
+cd builds/
+./urlinsane -h
 ```
 
 ## Usage
