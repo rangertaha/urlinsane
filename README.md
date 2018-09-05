@@ -345,7 +345,6 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 * GeoIp Lookup.
 * Estimate popularity of a domain variant via google search
 * Lookup whois record
-* Check for redirects and get new domain
 * Emoji domains
 * Grabs HTTP and SMTP service banners
 
