@@ -42,10 +42,16 @@ developers to add functionality and support for additional languages. See
 
 ## Installation
 
-To get the latest updates, create the binary executable with the make command or 
+To get the latest updates, create the binary executable with the **make** command or 
 [download](https://github.com/rangertaha/urlinsane/releases/tag/0.2.0) one of the 
 pre-built release binaries. 
 
+Get the project
+```bash
+go get github.com/rangertaha/urlinsane
+```
+
+Go to the project folder and run the **make** command.
 ```bash
 cd ~/go/src/github.com/rangertaha/urlinsane/
 make
