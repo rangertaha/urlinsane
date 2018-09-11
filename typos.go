@@ -43,7 +43,7 @@ var missingDashes = Typo{
 var stripDashes = Typo{
 	Code:        "SD",
 	Name:        "Strip Dashes",
-	Description: "Strip Dashes is created by omitting a dot from the domain",
+	Description: "Strip Dashes is created by omitting a dash from the domain",
 	Exec:        stripDashesFunc,
 }
 var characterOmission = Typo{
@@ -99,7 +99,7 @@ var doubleCharacterReplacement = Typo{
 var commonMisspellings = Typo{
 	Code:        "CM",
 	Name:        "Common Misspellings",
-	Description: "Common Misspellings are created from common misspellings",
+	Description: "Common Misspellings are created from a dictionary of commonly misspelled words",
 	Exec:        commonMisspellingsFunc,
 }
 var homophones = Typo{
@@ -205,7 +205,8 @@ func missingDotFunc(tc TypoConfig) (results []TypoConfig) {
 	return results
 }
 
-// missingDashFunc typos are created by omitting a dash from the domain. For example, www.a-bc.com and www.ab-c.com
+// missingDashFunc typos are created by omitting a dash from the domain.
+// For example, www.a-b-c.com becomes www.ab-c.com, www.a-bc.com, and ww.abc.com
 func missingDashFunc(tc TypoConfig) (results []TypoConfig) {
 	for _, str := range missingCharFunc(tc.Original.Domain, "-") {
 		if tc.Original.Domain != str {
@@ -213,6 +214,8 @@ func missingDashFunc(tc TypoConfig) (results []TypoConfig) {
 			results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 		}
 	}
+	dm := Domain{tc.Original.Subdomain, strings.Replace(tc.Original.Domain, "-", "", -1), tc.Original.Suffix}
+	results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 	return results
 }
 

@@ -220,7 +220,7 @@ typosquatting algorithms.
 
 1. **Missing Dot(MD)** is created by omitting a dot from the domain.
 2. **Missing Dashes(MDS)** is created by omitting a dash from the domain.
-3. **Strip Dashes(SD)** is created by omitting a dot from the domain
+3. **Strip Dashes(SD)** is created by omitting a dash from the domain
 4. **Character Omission(CO)** Omitting a character from the domain
 5. **Character Swap(CS)** swaps two consecutive characters in a domain
 6. **Adjacent Character Substitution(ACS)** replaces adjacent characters

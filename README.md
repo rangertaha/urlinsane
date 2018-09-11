@@ -260,9 +260,9 @@ TYPOS: These are the types of typo/error algorithms that generate the domain var
   ACI	Adjacent Character Insertion inserts adjacent character 
   CR	Character Repeat Repeats a character of the domain name twice
   DCR	Double Character Replacement repeats a character twice.
-  SD	Strip Dashes is created by omitting a dot from the domain
+  SD	Strip Dashes is created by omitting a dash from the domain
   SP	Singular Pluralise creates a singular domain plural and vice versa
-  CM	Common Misspellings are created from common misspellings
+  CM	Common Misspellings are created from a dictionary of commonly misspelled words
   VS	Vowel Swapping is created by swaps vowels
   HG	Homoglyphs replaces characters with characters that look similar
   WTLD	Wrong Top Level Domain
