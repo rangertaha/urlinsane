@@ -95,7 +95,7 @@ These functions can add columns to the output. For example the following generat
 variations for **google.com** using the character omission **(CO)** algorithm 
 then checks for **ip** addresses. 
 ```
-urlinsane google.com -t co -x ip
+urlinsane google.com -t co  -x geo
 
  _   _  ____   _      ___
 | | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
@@ -105,15 +105,15 @@ urlinsane google.com -t co -x ip
 
  Version: 0.2.0
 
-   LIVE  | TYPE |   TYPO    | SUFFIX |      IPV4      |           IPV6            
-+--------+------+-----------+--------+----------------+--------------------------+
-  ONLINE | CO   | oogle.com | com    | 104.28.28.162  |                           
-         |      |           |        | 104.28.29.162  |                           
-  ONLINE | CO   | gogle.com | com    | 172.217.15.68  | 2800:3f0:4004:800::2004   
-  ONLINE | CO   | gogle.com | com    | 172.217.15.68  | 2800:3f0:4004:800::2004   
-  ONLINE | CO   | googl.com | com    | 172.217.6.196  | 2607:f8b0:4006:804::2004  
-  ONLINE | CO   | goole.com | com    | 217.160.0.201  |                           
-  ONLINE | CO   | googe.com | com    | 162.243.10.151 |    
+   LIVE  | TYPE |   TYPO    | SUFFIX |      IPV4      |           IPV6           |      GEO       
++--------+------+-----------+--------+----------------+--------------------------+---------------+
+  ONLINE | CO   | googe.com | com    | 162.243.10.151 |                          | United States  
+  ONLINE | CO   | gogle.com | com    | 216.58.219.228 | 2607:f8b0:4006:80f::2004 | United States  
+  ONLINE | CO   | googl.com | com    | 216.58.219.228 | 2607:f8b0:4006:80f::2004 | United States  
+  ONLINE | CO   | oogle.com | com    | 104.28.28.162  |                          | United States  
+         |      |           |        | 104.28.29.162  |                          |                
+  ONLINE | CO   | goole.com | com    | 217.160.0.201  |                          | Germany        
+  ONLINE | CO   | gogle.com | com    | 216.58.219.228 | 2607:f8b0:4006:80f::2004 | United States   
 ```
 
 Generates variations for **google.com** with the following parameters:
@@ -302,7 +302,7 @@ AUTHOR:
 
 * Binary executable, written in Go with no dependencies. 
 * Will have all the functionally of URLCrazy and DNSTwist. 
-* Contains 19 typosquatting algorithms and 7 extra functions to retrieve additional data
+* Contains 19 typosquatting algorithms and 10 extra functions to retrieve additional data such as ip to geographic location, dns lookups and more 
 * Modular architecture for language, keyboard, typo algorithm, and functions extensibility.
 * Supports multiple keyboard layouts found in English, Spanish, Russian, Finish, and Arabic.
 * Supports multiple languages with the ability to add more languages with ease.
@@ -339,10 +339,10 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 - **SIM**   Show domain similarity % using fuzzy hashing with ssdeep
 - **LIVE**	Show domains with ip addresses only
 - **301**	Show domains redirects
+- **GEO**	Show domains redirects
 
 ### TODO 
 
-* GeoIp Lookup.
 * Estimate popularity of a domain variant via google search
 * Lookup whois record
 * Emoji domains

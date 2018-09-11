@@ -247,19 +247,16 @@ typosquatting algorithms.
 - **NS**      Checks DNS NS records
 - **CNAME**   Checks DNS CNAME records
 - **SIM**     Show domain similarity % using fuzzy hashing with ssdeep
+- **301**	Show domains redirects
+- **GEO**	Show domains redirects
 
 ## TODO 
 
-* GeoIp Lookup.
 * Estimate popularity of a domain variant via google search
 * Lookup whois record
-* Check for redirects and get new domain
 * Emoji domains
 * Grabs HTTP and SMTP service banners
 
-
-* Checks if a domain variant is valid
-* Test if domain variants are in use
 
 
 ## Comparison 

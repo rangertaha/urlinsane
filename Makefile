@@ -6,7 +6,7 @@ GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 BINARY_NAME=urlinsane
 
-VERSION=0.2.0
+VERSION=0.3.0
 
 all: build hash
 hash:
