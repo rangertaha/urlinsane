@@ -81,7 +81,7 @@ var geoIPLookup = Extra{
 	Name:        "GeoIP Lookup",
 	Description: "Looks up geopgraphic information via IP address",
 	Exec:        geoIPLookupFunc,
-	Headers:     []string{"GEO"},
+	Headers:     []string{"IPv4", "IPv6", "GEO"},
 }
 
 var idnaLookup = Extra{
@@ -138,7 +138,7 @@ func init() {
 	FRegister("301", redirectLookup)
 
 	//FRegister("WHOIS", whoisLookup)
-	//FRegister("GEO", geoIPLookup)
+	FRegister("GEO", geoIPLookup)
 
 	FRegister("ALL",
 		mxLookup,
@@ -152,7 +152,7 @@ func init() {
 		redirectLookup,
 
 		//whoisLookup,
-		//geoIPLookup,
+		geoIPLookup,
 	)
 }
 
