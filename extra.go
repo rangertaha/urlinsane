@@ -30,6 +30,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"github.com/bobesa/go-domain-util/domainutil"
+	"github.com/oschwald/geoip2-golang"
 )
 
 // The registry for extra functions
@@ -209,7 +210,42 @@ func txtLookupFunc(tr TypoResult) (results []TypoResult) {
 
 // geoIPLookupFunc
 func geoIPLookupFunc(tr TypoResult) (results []TypoResult) {
-	// TODO
+	tr = checkIP(tr)
+	if tr.Live {
+		geolite2CityMmdb, err := Asset("GeoLite2-Country.mmdb")
+		if err != nil {
+			// Asset was not found.
+		}
+
+		db, err := geoip2.FromBytes(geolite2CityMmdb)
+		if err != nil {
+			fmt.Print(err)
+		}
+		defer db.Close()
+
+		ipv4s, ok := tr.Data["IPv4"]
+		if ok {
+			ips := strings.Split(ipv4s, "\n")
+			for _, ip4 := range ips {
+				ip := net.ParseIP(ip4)
+				if ip != nil {
+					record, err := db.Country(ip)
+					if err != nil {
+						fmt.Print(err)
+					}
+					tr.Data["GEO"] = fmt.Sprint(record.Country.Names["en"])
+
+				}
+
+			}
+		}
+	}
+
+
+
+	// If you are using strings that may be invalid, check that ip is not nil
+
+	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
 	return
 }
 
