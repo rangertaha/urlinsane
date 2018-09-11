@@ -282,6 +282,8 @@ FUNCTIONS: Post processig functions that retieve aditional information on each d
   CNAME	Checks DNS CNAME records
   SIM	Show domain similarity
   LIVE	Show domains with ip addresses only
+  301	Show domains redirects
+  GEO	Looks up geopgraphic information via IP address
   ALL  	Apply all post typosquating functions
 
 EXAMPLE:
