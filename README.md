@@ -341,7 +341,7 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 - **SIM**   Show domain similarity % using fuzzy hashing with ssdeep
 - **LIVE**	Show domains with ip addresses only
 - **301**	Show domains redirects
-- **GEO**	Show domains redirects
+- **GEO**	Show country location of ip address
 
 ### TODO 
 

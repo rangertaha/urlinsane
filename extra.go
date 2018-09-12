@@ -79,7 +79,7 @@ var cnameLookup = Extra{
 var geoIPLookup = Extra{
 	Code:        "GEO",
 	Name:        "GeoIP Lookup",
-	Description: "Looks up geopgraphic information via IP address",
+	Description: "Show country location of ip address",
 	Exec:        geoIPLookupFunc,
 	Headers:     []string{"IPv4", "IPv6", "GEO"},
 }
