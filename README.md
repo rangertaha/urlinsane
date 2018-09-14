@@ -30,7 +30,7 @@ Table of contents
 
 ## Introduction
 
-```bash
+```
 urlinsane google.com  -t co -x all
 
  _   _  ____   _      ___
