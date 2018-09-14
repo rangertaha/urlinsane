@@ -61,12 +61,12 @@ developers to add functionality and support for additional languages. See
 
 
 **Documentation:** [URLInsane Docs](https://rangertaha.github.io/urlinsane/)
-**Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.2.0)
+**Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0)
 
 ## Installation
 
 To get the latest updates, create the binary executable with the **make** command or 
-[download](https://github.com/rangertaha/urlinsane/releases/tag/0.2.0) one of the 
+[download](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0) one of the 
 pre-built release binaries. 
 
 Get the project
