@@ -30,6 +30,29 @@ Table of contents
 
 ## Introduction
 
+```bash
+urlinsane google.com  -t co -x all
+
+ _   _  ____   _      ___
+| | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
+| | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
+| |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
+ \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
+
+ Version: 0.3.0
+
+   LIVE  | TYPE |   TYPO    | SUFFIX |        MX        |      IPV4      |           IPV6           |   IDNA    |              TXT               |        NS        | CNAME | SIM |    REDIRECT     |      GEO       
++--------+------+-----------+--------+------------------+----------------+--------------------------+-----------+--------------------------------+------------------+-------+-----+-----------------+---------------+
+  ONLINE | CO   | oogle.com | com    | mx.zoho.com      | 104.28.28.162  |                          | oogle.com | v=spf1 +a +mx +ip4:204.9.184.9 | mx.zoho.com      |       |     | oogle.com       | United States  
+         |      |           |        | mx2.zoho.com     | 104.28.29.162  |                          |           | +include:zoho.com ~all         | mx2.zoho.com     |       |     |                 |                
+  ONLINE | CO   | googl.com | com    |                  | 172.217.11.4   | 2607:f8b0:4006:814::2004 | googl.com | v=spf1 -all                    |                  |       | 63% | www.google.com  | United States  
+  ONLINE | CO   | gogle.com | com    |                  | 172.217.11.4   | 2607:f8b0:4006:814::2004 | gogle.com | v=spf1 -all                    |                  |       | 74% | www.google.com  | United States  
+  ONLINE | CO   | googe.com | com    |                  | 162.243.10.151 |                          | googe.com | v=spf1 -all                    |                  |       |     | luj.sdsjweb.com | United States  
+  ONLINE | CO   | goole.com | com    | mx00.1and1.co.uk | 217.160.0.201  |                          | goole.com |                                | mx00.1and1.co.uk |       | 0%  | www.goole.com   | Germany        
+         |      |           |        | mx01.1and1.co.uk |                |                          |           |                                | mx01.1and1.co.uk |       |     |                 |                
+  ONLINE | CO   | gogle.com | com    |                  | 172.217.11.4   | 2607:f8b0:4006:814::2004 | gogle.com | v=spf1 -all                    |                  |       | 69% | www.google.com  | United States  
+```
+
 The engine is designed to execute concurrent typo algorithms then additional 
 concurrent functions for each domain variation. The additional functions can 
 check DNS records and much more. Its also designed for extensibility, allowing 
@@ -88,7 +111,6 @@ urlinsane google.com -t co
        | CO   | googl.com | com    | googl.com  
 
 ```
-
 
 Additional e**x**tra functions can be selected with the **-x, --funcs** options. 
 These functions can add columns to the output. For example the following generates 
