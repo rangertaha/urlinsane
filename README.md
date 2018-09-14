@@ -63,6 +63,7 @@ developers to add functionality and support for additional languages. See
 
 
 **Documentation:** [URLInsane Docs](https://rangertaha.github.io/urlinsane/)
+
 **Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0)
 
 ## Installation
