@@ -302,7 +302,7 @@ FUNCTIONS: Post processig functions that retieve aditional information on each d
   TXT	Checking for DNS's TXT records
   NS	Checks DNS NS records
   CNAME	Checks DNS CNAME records
-  SIM	Show domain similarity
+  SIM	Show domain content similarity
   LIVE	Show domains with ip addresses only
   301	Show domains redirects
   GEO	Looks up geopgraphic information via IP address

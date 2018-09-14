@@ -95,7 +95,7 @@ var idnaLookup = Extra{
 var ssdeepLookup = Extra{
 	Code:        "SIM",
 	Name:        "Domain Similarity",
-	Description: "Show domain similarity",
+	Description: "Show domain content similarity",
 	Exec:        ssdeepFunc,
 	Headers:     []string{"IPv4", "IPv6", "SIM"},
 }
