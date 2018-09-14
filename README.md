@@ -59,6 +59,8 @@ check DNS records and much more. Its also designed for extensibility, allowing
 developers to add functionality and support for additional languages. See 
 [URLInsane](https://rangertaha.github.io/urlinsane/) for more details.
 
+![URLInsane](https://github.com/rangertaha/urlinsane/docs/urlinsane.png "URLInsane")
+
 
 **Documentation:** [URLInsane Docs](https://rangertaha.github.io/urlinsane/)
 **Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0)
