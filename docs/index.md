@@ -51,24 +51,22 @@ make
 Generate variations for `google.com` using the character omission **(CO)** algorithm.
 ```
 urlinsane google.com -t co
-
  _   _  ____   _      ___
 | | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
 | | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
 | |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
  \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
 
- Version: 0.1.0
+ Version: 0.3.0
 
   LIVE | TYPE |   TYPO    | SUFFIX |   IDNA     
 +------+------+-----------+--------+-----------+
        | CO   | oogle.com | com    | oogle.com  
        | CO   | gogle.com | com    | gogle.com  
-       | CO   | gogle.com | com    | gogle.com  
        | CO   | goole.com | com    | goole.com  
-       | CO   | googe.com | com    | googe.com  
-       | CO   | googl.com | com    | googl.com
-
+       | CO   | googl.com | com    | googl.com  
+       | CO   | gogle.com | com    | gogle.com  
+       | CO   | googe.com | com    | googe.com 
 ```
 
 
@@ -83,16 +81,17 @@ urlinsane google.com -t co -x ip
 | |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
  \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
 
- Version: 0.1.0
+ Version: 0.3.0
 
-   LIVE  | TYPE |   TYPO    | SUFFIX |      IPV4      |            IPV6              
-+--------+------+-----------+--------+----------------+-----------------------------+
-  ONLINE | CO   | oogle.com | com    | <nil>          | 2400:cb00:2048:1::681c:1ca2  
-  ONLINE | CO   | gogle.com | com    | <nil>          | 2607:f8b0:4006:804::2004     
-  ONLINE | CO   | gogle.com | com    | <nil>          | 2607:f8b0:4006:804::2004     
-  ONLINE | CO   | goole.com | com    | 217.160.0.201  | 217.160.0.201                
-  ONLINE | CO   | googe.com | com    | 162.243.10.151 | 162.243.10.151               
-  ONLINE | CO   | googl.com | com    | <nil>          | 2607:f8b0:4006:81a::2004   
+   LIVE  | TYPE |   TYPO    | SUFFIX |      IPV4      |           IPV6            
++--------+------+-----------+--------+----------------+--------------------------+
+  ONLINE | CO   | oogle.com | com    | 104.28.28.162  | 2606:4700:30::681c:1ca2   
+         |      |           |        | 104.28.29.162  | 2606:4700:30::681c:1da2   
+  ONLINE | CO   | gogle.com | com    | 172.217.10.68  | 2607:f8b0:4004:80a::2004  
+  ONLINE | CO   | gogle.com | com    | 172.217.10.68  | 2607:f8b0:4004:80a::2004  
+  ONLINE | CO   | googl.com | com    | 172.217.10.132 | 2607:f8b0:4004:800::2004  
+  ONLINE | CO   | goole.com | com    | 217.160.0.201  |                           
+  ONLINE | CO   | googe.com | com    | 162.243.10.151 |   
 ```
 
 Generate variations for `google.com` using the character omission **(CO)** algorithm. 
@@ -106,17 +105,19 @@ urlinsane google.com -t co -x ip -x idna -x ns
 | |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
  \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
 
- Version: 0.1.0
+ Version: 0.3.0
 
-   LIVE  | TYPE |   TYPO    | SUFFIX |      IPV4      |            IPV6             |   IDNA    |        NS         
-+--------+------+-----------+--------+----------------+-----------------------------+-----------+------------------+
-  ONLINE | CO   | oogle.com | com    | <nil>          | 2400:cb00:2048:1::681c:1da2 | oogle.com | mx2.zoho.com      
-  ONLINE | CO   | gogle.com | com    | <nil>          | 2607:f8b0:4006:813::2004    | gogle.com |                   
-  ONLINE | CO   | gogle.com | com    | <nil>          | 2607:f8b0:4006:813::2004    | gogle.com |                   
-  ONLINE | CO   | goole.com | com    | 217.160.0.201  | 217.160.0.201               | goole.com | mx01.1and1.co.uk  
-  ONLINE | CO   | googe.com | com    | 162.243.10.151 | 162.243.10.151              | googe.com |                   
-  ONLINE | CO   | googl.com | com    | <nil>          | 2607:f8b0:4006:804::2004    | googl.com |  
-  
+   LIVE  | TYPE |   TYPO    | SUFFIX |      IPV4      |           IPV6           |   IDNA    |        NS         
++--------+------+-----------+--------+----------------+--------------------------+-----------+------------------+
+  ONLINE | CO   | gogle.com | com    | 172.217.10.68  | 2607:f8b0:4004:80a::2004 | gogle.com |                   
+  ONLINE | CO   | oogle.com | com    | 104.28.29.162  | 2606:4700:30::681c:1da2  | oogle.com | mx.zoho.com       
+         |      |           |        | 104.28.28.162  | 2606:4700:30::681c:1ca2  |           | mx2.zoho.com      
+  ONLINE | CO   | gogle.com | com    | 172.217.10.68  | 2607:f8b0:4004:80a::2004 | gogle.com |                   
+  ONLINE | CO   | googl.com | com    | 172.217.10.132 | 2607:f8b0:4004:800::2004 | googl.com |                   
+  ONLINE | CO   | goole.com | com    | 217.160.0.201  |                          | goole.com | mx01.1and1.co.uk  
+         |      |           |        |                |                          |           | mx00.1and1.co.uk  
+  ONLINE | CO   | googe.com | com    | 162.243.10.151 |                          | googe.com |                   
+
 ```
 
 For more details look at the **-h --help** output.
@@ -262,13 +263,31 @@ typosquatting algorithms.
 ## Comparison 
 
 
-|      **Algorithms**     | XN-Twist  | URLCrazy  | DNSTwist   | DomainFuzz  | URLInsane |
-|-------------------------|-----------|-----------|------------|-------------|-----------|
-|                         |           |           |            |             |           |
-| Missing Dot(MD)         |           |           |            |             |           |
-| Missing Dashes(MDS)     |           |           |            |             |           |
-| Strip Dashes(SD)        |           |           |            |             |           |
-| Character Omission(CO)  |           |           |            |             |           |
+|      **Algorithms**                 | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz  | XN-Twist |
+|-------------------------------------|-----------|-----------|------------|-------------|-----------|
+|                                     |           |           |            |             |           |
+| Missing Dot(MD)                     |           |           |            |             |           |
+| Missing Dashes(MDS)                 |           |           |            |             |           |
+| Strip Dashes(SD)                    |           |           |            |             |           |
+| Character Omission(CO)              |           |           |            |             |           |
+| Character Swap(CS)                  |           |           |            |             |           |
+| Adjacent Character Substitution(ACS)|           |           |            |             |           |
+| Adjacent Character Insertion(ACI)   |           |           |            |             |           |
+| Homoglyphs(HG)                      |           |           |            |             |           |
+| Singular Pluralise(SP)              |           |           |            |             |           |
+| Character Repeat(CR)                |           |           |            |             |           |
+| Double Character Replacement(DCR)   |           |           |            |             |           |
+| Common Misspellings(CM)             |           |           |            |             |           |
+| Homophones(HP)                      |           |           |            |             |           |
+| Vowel Swapping(VS)*                 |           |           |            |             |           |
+| Bitsquatting(BF)                    |           |           |            |             |           |
+| Wrong Top Level Domain(WTLD)        |           |           |            |             |           |
+| Wrong Second Level Domain(W2TLD)    |           |           |            |             |           |
+| Wrong Third Level Domain(W3TLD)     |           |           |            |             |           |
+| Numeral Swap(NS)                    |           |           |            |             |           |
+|                                     |           |           |            |             |           |
+|                                     |           |           |            |             |           |
+|                                     |           |           |            |             |           |
 
 
 
