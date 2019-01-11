@@ -10,7 +10,7 @@ VERSION=0.3.0
 
 all: build hash
 hash:
-	md5 $(BINARY_NAME)
+	md5 builds/$(BINARY_NAME) | md5sum builds/$(BINARY_NAME)
 build:
 	mkdir -p builds
 	cd cmd; $(GOBUILD) -o ../builds/$(BINARY_NAME) -v
