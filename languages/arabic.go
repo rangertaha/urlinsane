@@ -20,14 +20,15 @@
 
 package languages
 
-// Common misspellings
+// Common Arabic misspellings
 var AR_SPELLINGS = [][]string{
-// []string{"misspelling", "correct1", "correct2"},
+	// []string{"misspelling", "correct1", "correct2"},
 }
 
-// Common homophones
+// Common Arabic homophones
 var AR_HOMOPHONES = [][]string{}
 
+// Arabic language
 var ARABIC = Language{
 	Code: "AR",
 	Name: "Arabic",
