@@ -20,17 +20,18 @@
 
 package languages
 
-// Common misspellings
+// Common Spanish misspellings
 var ES_SPELLINGS = [][]string{
-// []string{"critising", "criticising", "criticizing"},
+	// []string{"critising", "criticising", "criticizing"},
 }
 
-// Homophones
+// ES_HOMOPHONES are Spanish Homophones
 var ES_HOMOPHONES = [][]string{
-// []string{"dot", "."},
+	// []string{"dot", "."},
 
 }
 
+// SPANISH Language
 var SPANISH = Language{
 	Code: "ES",
 	Name: "Spanish",
