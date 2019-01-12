@@ -23,6 +23,7 @@ package languages
 import "strings"
 
 type (
+	// Language type
 	Language struct {
 		Code         string
 		Name         string
@@ -34,6 +35,7 @@ type (
 		Homoglyphs   map[string][]string
 	}
 
+	// Keyboard type
 	Keyboard struct {
 		Code        string
 		Name        string
@@ -43,12 +45,13 @@ type (
 	}
 )
 
-// Languages
+// LANGUAGES map
 var LANGUAGES = map[string]Language{
 	"EN": ENGLISH,
 	"AR": ARABIC,
 }
 
+// KEYBOARDS map
 var KEYBOARDS = map[string]Keyboard{}
 
 // GetLanguages looks up and returns Languages.
