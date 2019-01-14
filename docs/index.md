@@ -212,6 +212,17 @@ URLInsane supports multiple languages with the ability to add more languages wit
 * Registered graphemes, homoglyphs, and numerals
 * 4 Common keyboard layouts
 
+### Persian
+
+* Registered graphemes, numerals
+* One Common keyboard layouts
+
+
+### Hebrew
+
+* Registered graphemes
+* One Common keyboard layouts
+
 
 ## Algorithms
 
