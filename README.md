@@ -336,7 +336,7 @@ AUTHOR:
 * Concurrent function (**-x --funcs**) workers to retrieve additional info on each record.
 * Concurrent typo squatting workers.
 
-
+## Languages
 
 ### English
 
@@ -344,6 +344,8 @@ AUTHOR:
 * Over 500 common homophones
 * Registered graphemes, vowels, homoglyphs, and numerals
 * Common keyboard layouts (qwerty, azerty, qwertz, dvorak)
+
+### Finnish, Russian, Persian, Hebrew, Arabic, Spanish
 
 See [Languages](https://rangertaha.github.io/urlinsane/#languages) for details 
 on other languages.
