@@ -372,6 +372,9 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 
 ### TODO 
 
+* Complete tool comparison
+* Update persian and hebrew languages with more details
+* Extract keywords from domains. Keywords will be used for additional algorithms
 * Estimate popularity of a domain variant via google search
 * Lookup whois record
 * Emoji domains
