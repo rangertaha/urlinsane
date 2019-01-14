@@ -22,6 +22,8 @@ Table of contents
       * [Russian](#russian)
       * [Finish](#finish)
       * [Arabic](#arabic)
+      * [Persian](#persian)
+      * [Hebrew](#hebrew)
    * [Algorithms](#algorithms)
    * [Extra Functions](#extra-functions)
       * [TODO](#todo)
