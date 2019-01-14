@@ -19,9 +19,9 @@ Table of contents
    * [Features](#features)
    * [Languages](#languages)
       * [English](#english)
+      * [Finnish, Russian, Persian, Hebrew, Arabic, Spanish](#finnish-russian-persian-hebrew-arabic-spanish)
    * [Algorithms](#algorithms)
    * [Extra Functions](#extra-functions)
-      * [TODO](#todo)
    * [Authors](#authors)
    * [License](#license)
 <!--te-->
@@ -373,7 +373,6 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 ### TODO 
 
 * Complete tool comparison
-* Update persian and hebrew languages with more details
 * Extract keywords from domains. Keywords will be used for additional algorithms
 * Estimate popularity of a domain variant via google search
 * Lookup whois record
