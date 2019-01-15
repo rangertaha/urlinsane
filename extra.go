@@ -171,7 +171,7 @@ func mxLookupFunc(tr TypoResult) (results []TypoResult) {
 
 // nsLookupFunc
 func nsLookupFunc(tr TypoResult) (results []TypoResult) {
-	records, _ := net.LookupMX(tr.Variant.String())
+	records, _ := net.LookupNS(tr.Variant.String())
 	for _, record := range records {
 		record := strings.TrimSuffix(record.Host, ".")
 		if !strings.Contains(tr.Data["NS"], record) {
