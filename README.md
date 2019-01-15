@@ -66,6 +66,16 @@ developers to add functionality and support for additional languages. See
 
 **Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0)
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/_IU1ADTBKVU/0.jpg)](https://www.youtube.com/watch?v=_IU1ADTBKVU)
+
+
+<div align="center">
+    <iframe width="620" height="315"
+        src="https://www.youtube.com/watch?v=_IU1ADTBKVU">
+    </iframe>
+</div>
+
+
 ## Installation
 
 To get the latest updates, create the binary executable with the **make** command or 
@@ -342,7 +352,7 @@ AUTHOR:
 
 * Over 8000 common misspellings
 * Over 500 common homophones
-* Registered graphemes, vowels, homoglyphs, and numerals
+* English alphabet, vowels, homoglyphs, and numerals
 * Common keyboard layouts (qwerty, azerty, qwertz, dvorak)
 
 ### Finnish, Russian, Persian, Hebrew, Arabic, Spanish
