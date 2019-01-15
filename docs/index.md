@@ -301,16 +301,16 @@ typosquatting algorithms.
 | Character Repeat                |     X     |     X     |     X      |             |           |
 | Double Character Replacement    |     X     |     X     |            |             |           |
 | Common Misspellings             |     X     |     X     |            |             |           |
-| Homophones                      |     X     |     X     |            |             |           |
+| Homophones                      |     X     |     X     |     P      |             |           |
 | Vowel Swapping                  |     X     |     X     |            |             |           |
-| Bitsquatting                    |     X     |     X     |            |             |           |
+| Bitsquatting                    |     X     |     X     |     X      |             |           |
 | Wrong Top Level Domain          |     X     |     X     |            |             |           |
 | Wrong Second Level Domain       |     X     |     X     |            |             |           |
 | Wrong Third Level Domain        |     X     |           |            |             |           |
 | Ordinal Number Swap             |     X     |           |            |             |           |
 | Cardinal Number Swap            |           |           |            |             |           |
-| Keywords Combosquatting         |           |           |            |             |           |
 | Hyphenation                     |           |           |      X     |             |           |
+| Combosquatting(Keywords)        |           |           |            |             |           |
 |                                 |           |           |            |             |           |
 |                                 |           |           |            |             |           |
 | Multithreaded Algorithms        |     X     |           |      X     |             |           |
@@ -343,16 +343,16 @@ typosquatting algorithms.
 
 
 | **Language (Keyboards)** | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz  | XN-Twist |
-|------------------------|-----------|-----------|------------|-------------|-----------|
-|                        |           |           |            |             |           |
-| Arabic (4)             |     X     |           |            |             |           |
-| Armenian (3)           |     X     |           |            |             |           |
-| English (4)            |     X     |     X     |      X     |             |           |
-| Finnish (1)            |     X     |           |            |             |           |
-| Russian (3)            |     X     |           |            |             |           |
-| Spanish (2)            |     X     |           |            |             |           |
-| Hebrew (1)             |     X     |           |            |             |           |
-| Persian (1)            |     X     |           |            |             |           |
+|--------------------------|-----------|-----------|------------|-------------|-----------|
+|                          |           |           |            |             |           |
+| Arabic (4)               |     X     |           |            |             |           |
+| Armenian (3)             |     X     |           |            |             |           |
+| English (4)              |     X     |     X     |      X     |             |           |
+| Finnish (1)              |     X     |           |            |             |           |
+| Russian (3)              |     X     |           |            |             |           |
+| Spanish (2)              |     X     |           |            |             |           |
+| Hebrew (1)               |     X     |           |            |             |           |
+| Persian (1)              |     X     |           |            |             |           |
 
 
 ## Authors
