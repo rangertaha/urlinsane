@@ -37,7 +37,7 @@ var missingDot = Typo{
 var missingDashes = Typo{
 	Code:        "MDS",
 	Name:        "Missing Dashes",
-	Description: "Missing Dashes is created by omitting a dash from the domain.",
+	Description: "Missing Dashes is created by stripping all dashes from the domain.",
 	Exec:        missingDashFunc,
 }
 var stripDashes = Typo{
