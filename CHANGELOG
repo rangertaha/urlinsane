@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added live filter for domains with ip addresses.
 - Added the Armenian language.
 - Added the Persian language.
+- Added the Hebrew language.
 
 ## [0.2.0] - 2018-08-30
 ### Added
