@@ -66,22 +66,6 @@ developers to add functionality and support for additional languages. See
 
 **Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0)
 
-[![Video Demo](https://img.youtube.com/vi/_IU1ADTBKVU/0.jpg)](https://www.youtube.com/watch?v=_IU1ADTBKVU)
-
-<div align="center">
-  <a href="https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE"><img src="https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg" alt="IMAGE ALT TEXT"></a>
-</div>
- Run code snippet
- 
-<iframe width="620" height="315" src="https://www.youtube.com/embed/_IU1ADTBKVU/" ></iframe>
-
-<div align="center">
-<iframe width="620" height="315" src="https://youtu.be/_IU1ADTBKVU" ></iframe>
-</div>
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/_IU1ADTBKVU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-
 <div align="center">
   <a href="https://www.youtube.com/watch?v=_IU1ADTBKVU"><img src="https://img.youtube.com/vi/_IU1ADTBKVU/0.jpg" alt="URLInsane Demo"></a>
 </div>
