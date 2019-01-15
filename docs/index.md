@@ -184,46 +184,54 @@ OPTIONS:
   
 ## Languages
 
-URLInsane supports multiple languages with the ability to add more languages with ease. If you know where I can find a list of commonly misspelled words or homophones for languages other then English please send the info to  rangertaha@gmail.com or add it your self and submit a pull request. 
+URLInsane supports multiple languages with the ability to add more languages 
+with ease. If you know where I can find a list of commonly misspelled words or 
+homophones for languages other then English please send the info to 
+rangertaha@gmail.com or add it your self and submit a pull request. 
 
 
 ### English
 
 * Over 8000 common misspellings
 * Over 500 common homophones
-* Registered graphemes, vowels, homoglyphs, and numerals
+* English alphabet, vowels, homoglyphs, and numerals
 * Common keyboard layouts (qwerty, azerty, qwertz, dvorak)
 
 ### Spanish
 
-* Registered graphemes, vowels, homoglyphs, and numerals
+* Spanish alphabet, vowels, homoglyphs, and numerals
 * Basic and ISO keyboard layouts 
 
 ### Russian
 
-* Registered graphemes, vowels, homoglyphs, and numerals
+* Russian alphabet, vowels, homoglyphs, and numerals
 * Common 3 keyboard layouts
 
 ### Finish
 
-* Registered graphemes, vowels, homoglyphs, and numerals
+* Finish alphabet, vowels, homoglyphs, and numerals
 * Finnish QWERTY keyboard layout
 
 ### Arabic
 
-* Registered graphemes, homoglyphs, and numerals
+* Arabic alphabet, homoglyphs, and numerals
 * 4 Common keyboard layouts
 
 ### Persian
 
-* Registered graphemes, numerals
+* Persian alphabet and numerals
 * One Common keyboard layouts
 
 
 ### Hebrew
 
-* Registered graphemes
+* Hebrew alphabet
 * One Common keyboard layouts
+
+### Armenian
+
+* Armenian alphabet and numerals
+* 2 Common keyboard layouts
 
 
 ## Algorithms
@@ -234,7 +242,7 @@ typosquatting algorithms.
 
 1. **Missing Dot(MD)** is created by omitting a dot from the domain.
 2. **Missing Dashes(MDS)** is created by omitting a dash from the domain.
-3. **Strip Dashes(SD)** is created by omitting a dash from the domain
+3. **Strip Dashes(SD)** is created by stripping all dashes from the domain
 4. **Character Omission(CO)** Omitting a character from the domain
 5. **Character Swap(CS)** swaps two consecutive characters in a domain
 6. **Adjacent Character Substitution(ACS)** replaces adjacent characters
@@ -266,6 +274,8 @@ typosquatting algorithms.
 
 ## TODO 
 
+* Complete tool comparison
+* Extract keywords from domains. Keywords will be used for additional algorithms
 * Estimate popularity of a domain variant via google search
 * Lookup whois record
 * Emoji domains
@@ -273,37 +283,68 @@ typosquatting algorithms.
 
 
 
-## Comparison 
+## Tool Comparisons
 
 
-|      **Algorithms**                 | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz  | XN-Twist |
+|      **Algorithms**             | URLInsane | URLCrazy  | DNSTwist   | DomainFuzz  | XN-Twist  |
+|                                 |           |           |            |             |           |
+|---------------------------------|-----------|-----------|------------|-------------|-----------|
+| Missing Dot                     |     X     |     X     |            |             |           |
+| Missing Dashes                  |     X     |           |            |             |           |
+| Strip Dashes                    |     X     |     X     |            |             |           |
+| Character Omission              |     X     |     X     |            |             |           |
+| Character Swap                  |     X     |     X     |            |             |           |
+| Adjacent Character Substitution |     X     |     X     |            |             |           |
+| Adjacent Character Insertion    |     X     |     X     |            |             |           |
+| Homoglyphs                      |     X     |     X     |            |             |           |
+| Singular Pluralise              |     X     |     X     |            |             |           |
+| Character Repeat                |     X     |     X     |            |             |           |
+| Double Character Replacement    |     X     |     X     |            |             |           |
+| Common Misspellings             |     X     |     X     |            |             |           |
+| Homophones                      |     X     |     X     |            |             |           |
+| Vowel Swapping                  |     X     |     X     |            |             |           |
+| Bitsquatting                    |     X     |     X     |            |             |           |
+| Wrong Top Level Domain          |     X     |     X     |            |             |           |
+| Wrong Second Level Domain       |     X     |     X     |            |             |           |
+| Wrong Third Level Domain        |     X     |           |            |             |           |
+| Ordinal Number Swap             |     X     |           |            |             |           |
+| Cardinal Number Swap            |           |           |            |             |           |
+| Keywords Combosquatting         |           |           |            |             |           |
+|                                 |           |           |            |             |           |
+
+
+|      **Extra Functions**            | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz  | XN-Twist |
 |-------------------------------------|-----------|-----------|------------|-------------|-----------|
 |                                     |           |           |            |             |           |
-| Missing Dot(MD)                     |           |           |            |             |           |
-| Missing Dashes(MDS)                 |           |           |            |             |           |
-| Strip Dashes(SD)                    |           |           |            |             |           |
-| Character Omission(CO)              |           |           |            |             |           |
-| Character Swap(CS)                  |           |           |            |             |           |
-| Adjacent Character Substitution(ACS)|           |           |            |             |           |
-| Adjacent Character Insertion(ACI)   |           |           |            |             |           |
-| Homoglyphs(HG)                      |           |           |            |             |           |
-| Singular Pluralise(SP)              |           |           |            |             |           |
-| Character Repeat(CR)                |           |           |            |             |           |
-| Double Character Replacement(DCR)   |           |           |            |             |           |
-| Common Misspellings(CM)             |           |           |            |             |           |
-| Homophones(HP)                      |           |           |            |             |           |
-| Vowel Swapping(VS)*                 |           |           |            |             |           |
-| Bitsquatting(BF)                    |           |           |            |             |           |
-| Wrong Top Level Domain(WTLD)        |           |           |            |             |           |
-| Wrong Second Level Domain(W2TLD)    |           |           |            |             |           |
-| Wrong Third Level Domain(W3TLD)     |           |           |            |             |           |
-| Numeral Swap(NS)                    |           |           |            |             |           |
-|                                     |           |           |            |             |           |
-|                                     |           |           |            |             |           |
-|                                     |           |           |            |             |           |
+| Live/Online Check                   |     X     |     X     |            |             |           |
+| Google Popularity Estimate          |           |     X     |            |             |           |
+| DNS A Records                       |     X     |     X     |            |             |           |
+| IPv4 & IPv6 Records                 |     X     |           |            |             |           |
+| DNS MX Records                      |     X     |     X     |            |             |           |
+| DNS txt Records                     |     X     |     X     |            |             |           |
+| DNS CName Records                   |     X     |           |            |             |           |
+| DNS NS Records                      |     X     |           |            |             |           |
+| IP's Country Code                   |     X     |     X     |            |             |           |
+| Domain Similarity                   |     X     |           |            |             |           |
+| Domain Redirects                    |     X     |           |            |             |           |
+| IDNA Format                         |     X     |           |            |             |           |
+| CSV output                          |     X     |     X     |            |             |           |
+| JSON output                         |     X     |           |            |             |           |
+| Human Readable output               |     X     |     X     |            |             |           |
 
 
 
+| **Language (Keyboards)** | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz  | XN-Twist |
+|------------------------|-----------|-----------|------------|-------------|-----------|
+|                        |           |           |            |             |           |
+| Arabic (4)             |     X     |           |            |             |           |
+| Armenian (3)           |     X     |           |            |             |           |
+| English (4)            |     X     |     X     |            |             |           |
+| Finnish (1)            |     X     |           |            |             |           |
+| Russian (3)            |     X     |           |            |             |           |
+| Spanish (2)            |     X     |           |            |             |           |
+| Hebrew (1)             |     X     |           |            |             |           |
+| Persian (1)            |     X     |           |            |             |           |
 
 
 ## Authors
