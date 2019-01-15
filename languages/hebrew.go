@@ -1,4 +1,4 @@
-// Copyright © 2018 rangertaha rangertaha@gmail.com
+// Copyright © 2019 rangertaha rangertaha@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ var IW_SPELLINGS = [][]string{
 var IW_HOMOPHONES = [][]string{}
 
 // Hebrew language
-var Hebrew = Language{
+var IW_LANGUAGE = Language{
 	Code: "IW",
 	Name: "Hebrew",
 	Numerals: map[string][]string{
@@ -58,7 +58,7 @@ var IW_KEYBOARDS = []Keyboard{
 		Code:        "IW1",
 		Name:        "Hebrew",
 		Description: "Hebrew standard layout",
-		Language:    Hebrew,
+		Language:    IW_LANGUAGE,
 		Layout: []string{
 			"1234567890 ",
 			" פםןוטארק  ",
