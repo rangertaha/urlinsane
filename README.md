@@ -70,7 +70,7 @@ developers to add functionality and support for additional languages. See
 
 
 <div align="center">
-    <iframe width="620" height="315"
+    <iframe width="620" height="315">
         src="https://www.youtube.com/watch?v=_IU1ADTBKVU">
     </iframe>
 </div>
