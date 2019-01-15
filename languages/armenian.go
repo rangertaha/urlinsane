@@ -1,0 +1,189 @@
+// Copyright © 2019 rangertaha rangertaha@gmail.com
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+package languages
+
+// https://en.wikipedia.org/wiki/Armenian_alphabet
+
+// Common misspellings
+var HY_SPELLINGS = [][]string{
+	//[]string{"", ""},
+}
+
+// Homophones
+var HY_HOMOPHONES = [][]string{
+	//[]string{"dot", "."},
+}
+
+var HY_LANGUAGE = Language{
+	// https://www.loc.gov/standards/iso639-2/php/code_list.php
+	Code: "HY",
+	Name: "Armenian",
+	// http://mylanguages.org/armenian_numbers.php
+	Numerals: map[string][]string{
+		"0":  []string{""},
+		"1":  []string{"մեկ"},
+		"2":  []string{"երկու"},
+		"3":  []string{"երեք"},
+		"4":  []string{"չորս"},
+		"5":  []string{"հինգ"},
+		"6":  []string{"վեց"},
+		"7":  []string{"յոթ"},
+		"8":  []string{"ութ"},
+		"9":  []string{"ինը"},
+		"10": []string{"տաս"},
+		"11": []string{"տասնմեկ"},
+		"12": []string{"տասներկու"},
+		"13": []string{"տասներեք"},
+		"14": []string{"տասնչորս"},
+		"15": []string{"տասնհինգ"},
+		"16": []string{"տասնվեց"},
+		"17": []string{"տասնյոթ"},
+		"18": []string{"տասնութ"},
+		"19": []string{"տասնիննը"},
+		"20": []string{"քսան"},
+		"100": []string{"հարյուր"},
+		"1000": []string{"հազար"},
+		"1000000": []string{"միլիոն"},
+	},
+	// http://mylanguages.org/armenian_alphabet.php
+	Graphemes: []string{
+		"ա", "բ", "գ", "դ", "ե", "զ", "է", "ը",
+		"թ", "ժ", "ի", "լ", "խ", "ծ", "կ", "հ",
+		"ձ", "ղ", "ճ", "մ", "յ", "ն", "շ", "ո",
+		"չ", "պ", "ջ", "ռ", "ս", "վ", "տ", "ր",
+		"ց", "փ", "ք", "և", "օ", "ֆ",
+	},
+	Vowels:       []string{},
+	Misspellings: HY_SPELLINGS,
+	Homophones:   HY_HOMOPHONES,
+	Homoglyphs: map[string][]string{
+		//"a": []string{"à", "á", "â", "ã", "ä", "å", "ɑ", "а", "ạ", "ǎ", "ă", "ȧ", "ӓ", "٨"},
+		//"b": []string{"d", "lb", "ib", "ʙ", "Ь", `b̔"`, "ɓ", "Б"},
+		//"c": []string{"ϲ", "с", "ƈ", "ċ", "ć", "ç"},
+		//"d": []string{"b", "cl", "dl", "di", "ԁ", "ժ", "ɗ", "đ"},
+		//"e": []string{"é", "ê", "ë", "ē", "ĕ", "ě", "ė", "е", "ẹ", "ę", "є", "ϵ", "ҽ"},
+		//"f": []string{"Ϝ", "ƒ", "Ғ"},
+		//"g": []string{"q", "ɢ", "ɡ", "Ԍ", "Ԍ", "ġ", "ğ", "ց", "ǵ", "ģ"},
+		//"h": []string{"lh", "ih", "һ", "հ", "Ꮒ", "н"},
+		//"i": []string{"1", "l", "Ꭵ", "í", "ï", "ı", "ɩ", "ι", "ꙇ", "ǐ", "ĭ", "¡"},
+		//"j": []string{"ј", "ʝ", "ϳ", "ɉ"},
+		//"k": []string{"lk", "ik", "lc", "κ", "ⲕ", "κ"},
+		//"l": []string{"1", "i", "ɫ", "ł", "١", "ا", "", ""},
+		//"m": []string{"n", "nn", "rn", "rr", "ṃ", "ᴍ", "м", "ɱ"},
+		//"n": []string{"m", "r", "ń"},
+		//"o": []string{"0", "Ο", "ο", "О", "о", "Օ", "ȯ", "ọ", "ỏ", "ơ", "ó", "ö", "ӧ", "ه", "ة"},
+		//"p": []string{"ρ", "р", "ƿ", "Ϸ", "Þ"},
+		//"q": []string{"g", "զ", "ԛ", "գ", "ʠ"},
+		//"r": []string{"ʀ", "Г", "ᴦ", "ɼ", "ɽ"},
+		//"s": []string{"Ⴝ", "Ꮪ", "ʂ", "ś", "ѕ"},
+		//"t": []string{"τ", "т", "ţ"},
+		//"u": []string{"μ", "υ", "Ս", "ս", "ц", "ᴜ", "ǔ", "ŭ"},
+		//"v": []string{"ѵ", "ν", "v̇"},
+		//"w": []string{"vv", "ѡ", "ա", "ԝ"},
+		//"x": []string{"х", "ҳ", "ẋ"},
+		//"y": []string{"ʏ", "γ", "у", "Ү", "ý"},
+		//"z": []string{"ʐ", "ż", "ź", "ʐ", "ᴢ"},
+
+		"ա": []string{"vv", "ѡ", "ա", "ԝ"},
+		"բ": []string{"ρ", "р", "ƿ", "Ϸ", "Þ"},
+		"գ": []string{},
+		"դ": []string{},
+		"ե": []string{"d", "lb", "ib", "ʙ", "Ь", `b̔"`, "ɓ", "Б"},
+		"զ": []string{},
+		"է": []string{},
+		"ը": []string{},
+		"թ": []string{},
+		"ժ": []string{},
+		"ի": []string{},
+		"լ": []string{},
+		"խ": []string{},
+		"ծ": []string{},
+		"կ": []string{},
+		"հ": []string{},
+		"ձ": []string{},
+		"ղ": []string{},
+		"ճ": []string{},
+		"մ": []string{},
+		"յ": []string{},
+		"ն": []string{},
+		"շ": []string{"2", "չ", "ջ"},
+		"ո": []string{},
+		"չ": []string{"2", "շ", "ջ"},
+		"պ": []string{},
+		"ջ": []string{"2", "չ", "շ"},
+		"ռ": []string{},
+		"ս": []string{"μ", "υ", "Ս", "ц", "ᴜ", "ǔ", "ŭ", "u"},
+		"վ": []string{},
+		"տ": []string{"un"},
+		"ր": []string{},
+		"ց": []string{"q", "ɢ", "ɡ", "Ԍ", "Ԍ", "ġ", "ğ", "g", "ǵ", "ģ"},
+		"փ": []string{},
+		"ք": []string{},
+		"և": []string{},
+		"օ": []string{},
+		"ֆ": []string{},
+
+	},
+}
+
+var HY_KEYBOARDS = []Keyboard{
+	{
+		Code:        "HY1",
+		Name:        "HM QWERTY",
+		Description: "Armenian QWERTY keyboard layout",
+		Language:    HY_LANGUAGE,
+		Layout: []string{
+			"1234567890-",
+			"ճւերտյւիոպ ",
+			"ասդֆգհձկլ  ",
+			" զխծվբնմ   ",
+		},
+	},
+	{
+		Code:        "HY2",
+		Name:        "Armenian, Western QWERTY",
+		Description: "Armenian, Western QWERTY keyboard layout",
+		Language:    HY_LANGUAGE,
+		Layout: []string{
+			" ձյ՛ -   օռժ",
+			"խվէրդեըիոբչջ",
+			"աստֆկհճքլթփ ",
+			" զցգւպնմշղծ ",
+		},
+	},
+	//{
+	//	Code:        "HY3",
+	//	Name:        "Easter QWERTY",
+	//	Description: "Easter QWERTY keyboard layout",
+	//	Language:    ENGLISH,
+	//	Layout: []string{
+	//		"",
+	//		"",
+	//		"",
+	//		"",
+	//	},
+	//},
+
+}
+
+func init() {
+	KRegister(HY_KEYBOARDS)
+}
