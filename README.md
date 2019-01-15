@@ -81,6 +81,13 @@ developers to add functionality and support for additional languages. See
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/_IU1ADTBKVU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=_IU1ADTBKVU"><img src="https://img.youtube.com/vi/_IU1ADTBKVU/0.jpg" alt="URLInsane Demo"></a>
+</div>
+
+
+
 ## Installation
 
 To get the latest updates, create the binary executable with the **make** command or 
