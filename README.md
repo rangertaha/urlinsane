@@ -5,6 +5,10 @@ brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and
 threat intelligence.
 
 
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=_IU1ADTBKVU"><img src="https://img.youtube.com/vi/_IU1ADTBKVU/0.jpg" alt="URLInsane Demo"></a>
+</div>
+
 
 
 
@@ -65,10 +69,6 @@ developers to add functionality and support for additional languages. See
 **Documentation:** [URLInsane Docs](https://rangertaha.github.io/urlinsane/)
 
 **Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0)
-
-<div align="center">
-  <a href="https://www.youtube.com/watch?v=_IU1ADTBKVU"><img src="https://img.youtube.com/vi/_IU1ADTBKVU/0.jpg" alt="URLInsane Demo"></a>
-</div>
 
 
 
