@@ -66,12 +66,11 @@ developers to add functionality and support for additional languages. See
 
 **Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0)
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/_IU1ADTBKVU/0.jpg)](https://www.youtube.com/watch?v=_IU1ADTBKVU)
+
 
 
 <div align="center">
-    <iframe width="620" height="315" src="https://www.youtube.com/watch?v=_IU1ADTBKVU">
-    </iframe>
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/_IU1ADTBKVU/0.jpg)](https://www.youtube.com/watch?v=_IU1ADTBKVU)
 </div>
 
 
