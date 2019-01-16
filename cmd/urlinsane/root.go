@@ -143,7 +143,7 @@ func init() {
 
 	// Post Processing options for retrieving additional data
 	rootCmd.PersistentFlags().StringArrayP("funcs", "x", []string{"idna"},
-		"Extra functions for data or filtering")
+		"Extra functions or filters")
 
 	// Output options
 	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename")
