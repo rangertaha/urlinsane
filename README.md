@@ -4,6 +4,10 @@ Multilingual domain typo permutation engine used to perform or detect typosquatt
 brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and 
 threat intelligence.
 
+**Documentation:** [URLInsane Docs](https://rangertaha.github.io/urlinsane/)
+
+**Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0)
+
 
 <div align="center">
   <a href="https://www.youtube.com/watch?v=_IU1ADTBKVU" style="float:left"><img width="350" src="https://img.youtube.com/vi/_IU1ADTBKVU/0.jpg" alt="URLInsane Demo1"></a>
@@ -13,9 +17,7 @@ threat intelligence.
 
 
 
-**Documentation:** [URLInsane Docs](https://rangertaha.github.io/urlinsane/)
 
-**Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0)
 
 ## Features
 
