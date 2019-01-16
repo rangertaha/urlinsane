@@ -310,38 +310,36 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 ## Tools Comparisons
 
 
-|      **Algorithms**             | URLInsane | URLCrazy  | DNSTwist   |   |
-|                                 |           |           |            |             |          
-|---------------------------------|-----------|-----------|------------|-------------|
-| Missing Dot                     |     X     |     X     |     X      |             |           
-| Missing Dashes                  |     X     |           |            |             |          
-| Strip Dashes                    |     X     |     X     |            |             |           
-| Character Omission              |     X     |     X     |     X      |             |           
-| Character Swap                  |     X     |     X     |            |             |           
-| Adjacent Character Substitution |     X     |     X     |            |             |           
-| Adjacent Character Insertion    |     X     |     X     |     X      |             |          
-| Homoglyphs                      |     X     |     X     |     P      |             |           
-| Singular Pluralise              |     X     |     X     |            |             |           
-| Character Repeat                |     X     |     X     |     X      |             |           
-| Double Character Replacement    |     X     |     X     |            |             |           
-| Common Misspellings             |     X     |     X     |            |             |           
-| Homophones                      |     X     |     X     |     P      |             |           
-| Vowel Swapping                  |     X     |     X     |            |             |           
-| Bitsquatting                    |     X     |     X     |     X      |             |           
-| Wrong Top Level Domain          |     X     |     X     |            |             |           
-| Wrong Second Level Domain       |     X     |     X     |            |             |           
-| Wrong Third Level Domain        |     X     |           |            |             |           
-| Ordinal Number Swap             |     X     |           |            |             |           
-| Cardinal Number Swap            |           |           |            |             |           
-| Hyphenation                     |           |           |      X     |             |         
-| Combosquatting(Keywords)        |           |           |            |             |           
-| Multithreaded Algorithms        |     X     |     ?     |      X     |             |         
+|      **Algorithms**             | URLInsane | URLCrazy  | DNSTwist   |              
+|---------------------------------|-----------|-----------|------------|
+| Missing Dot                     |     X     |     X     |     X      |                       
+| Missing Dashes                  |     X     |           |            |                       
+| Strip Dashes                    |     X     |     X     |            |                       
+| Character Omission              |     X     |     X     |     X      |                        
+| Character Swap                  |     X     |     X     |            |                        
+| Adjacent Character Substitution |     X     |     X     |            |                        
+| Adjacent Character Insertion    |     X     |     X     |     X      |                       
+| Homoglyphs                      |     X     |     X     |     P      |                        
+| Singular Pluralise              |     X     |     X     |            |                        
+| Character Repeat                |     X     |     X     |     X      |                        
+| Double Character Replacement    |     X     |     X     |            |                        
+| Common Misspellings             |     X     |     X     |            |                        
+| Homophones                      |     X     |     X     |     P      |                        
+| Vowel Swapping                  |     X     |     X     |            |                        
+| Bitsquatting                    |     X     |     X     |     X      |                        
+| Wrong Top Level Domain          |     X     |     X     |            |                        
+| Wrong Second Level Domain       |     X     |     X     |            |                       
+| Wrong Third Level Domain        |     X     |           |            |                        
+| Ordinal Number Swap             |     X     |           |            |                        
+| Cardinal Number Swap            |           |           |            |                      
+| Hyphenation                     |           |           |      X     |                      
+| Combosquatting(Keywords)        |           |           |            |                        
+| Multithreaded Algorithms        |     X     |     ?     |      X     |                      
 
 
 
 |      **Extra Functions**            | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz | 
-|-------------------------------------|-----------|-----------|------------|-------------|
-|                                     |           |           |            |             |           
+|-------------------------------------|-----------|-----------|------------|-------------|         
 | Live/Online Check                   |     X     |     X     |      X     |             |           
 | Google Popularity Estimate          |           |     X     |            |             |           
 | DNS A Records                       |     X     |     X     |      X     |      X      |          
@@ -365,8 +363,7 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 
 
 | **Language (Keyboards)** | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz | 
-|--------------------------|-----------|-----------|------------|-------------|
-|                          |           |           |            |             |           
+|--------------------------|-----------|-----------|------------|-------------|        
 | Arabic (4)               |     X     |           |            |             |           
 | Armenian (3)             |     X     |           |            |             |          
 | English (4)              |     X     |     X     |      X     |      X      |      
