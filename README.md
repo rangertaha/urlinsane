@@ -31,31 +31,13 @@ Table of contents
 <!--te-->
 
 
+**Documentation:** [URLInsane Docs](https://rangertaha.github.io/urlinsane/)
+
+**Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0)
+
+
 
 ## Introduction
-
-```
-urlinsane google.com  -t co -x all
-
- _   _  ____   _      ___
-| | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
-| | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
-| |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
- \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
-
- Version: 0.3.0
-
-   LIVE  | TYPE |   TYPO    | SUFFIX |        MX        |      IPV4      |           IPV6           |   IDNA    |              TXT               |        NS        | CNAME | SIM |    REDIRECT     |      GEO       
-+--------+------+-----------+--------+------------------+----------------+--------------------------+-----------+--------------------------------+------------------+-------+-----+-----------------+---------------+
-  ONLINE | CO   | oogle.com | com    | mx.zoho.com      | 104.28.28.162  |                          | oogle.com | v=spf1 +a +mx +ip4:204.9.184.9 | mx.zoho.com      |       |     | oogle.com       | United States  
-         |      |           |        | mx2.zoho.com     | 104.28.29.162  |                          |           | +include:zoho.com ~all         | mx2.zoho.com     |       |     |                 |                
-  ONLINE | CO   | googl.com | com    |                  | 172.217.11.4   | 2607:f8b0:4006:814::2004 | googl.com | v=spf1 -all                    |                  |       | 63% | www.google.com  | United States  
-  ONLINE | CO   | gogle.com | com    |                  | 172.217.11.4   | 2607:f8b0:4006:814::2004 | gogle.com | v=spf1 -all                    |                  |       | 74% | www.google.com  | United States  
-  ONLINE | CO   | googe.com | com    |                  | 162.243.10.151 |                          | googe.com | v=spf1 -all                    |                  |       |     | luj.sdsjweb.com | United States  
-  ONLINE | CO   | goole.com | com    | mx00.1and1.co.uk | 217.160.0.201  |                          | goole.com |                                | mx00.1and1.co.uk |       | 0%  | www.goole.com   | Germany        
-         |      |           |        | mx01.1and1.co.uk |                |                          |           |                                | mx01.1and1.co.uk |       |     |                 |                
-  ONLINE | CO   | gogle.com | com    |                  | 172.217.11.4   | 2607:f8b0:4006:814::2004 | gogle.com | v=spf1 -all                    |                  |       | 69% | www.google.com  | United States  
-```
 
 The engine is designed to execute concurrent typo algorithms then additional 
 concurrent functions for each domain variation. The additional functions can 
@@ -63,38 +45,94 @@ check DNS records and much more. Its also designed for extensibility, allowing
 developers to add functionality and support for additional languages. See 
 [URLInsane](https://rangertaha.github.io/urlinsane/) for more details.
 
-![URLInsane](docs/urlinsane.png "URLInsane")
+
+## Options
+
+```
+urlinsane -h
 
 
-**Documentation:** [URLInsane Docs](https://rangertaha.github.io/urlinsane/)
+Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.
 
-**Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0)
+USAGE:
+  urlinsane [domains] [flags]
 
+OPTIONS:
+  -c, --concurrency int         Number of concurrent workers (default 50)
+  -f, --file string             Output filename
+  -o, --format string           Output format (csv, text) (default "text")
+  -x, --funcs stringArray       Extra functions for data or filtering (default [idna])
+  -h, --help                    help for urlinsane
+  -k, --keyboards stringArray   Keyboards/layouts ID to use (default [en1])
+  -t, --typos stringArray       Types of typos to perform (default [all])
+  -v, --verbose                 Output additional details
 
+KEYBOARDS:
+  AR2	Arabic PC keyboard layout
+  RU2	Phonetic Russian keybaord layout
+  RU3	PC Russian keyboard layout
+  ES1	Spanish keyboard layout
+  AR1	Arabic keyboard layout
+  EN2	English AZERTY keyboard layout
+  ES2	Spanish ISO keyboard layout
+  AR3	Arabic North african keyboard layout
+  HY2	Armenian, Western QWERTY keyboard layout
+  EN3	English QWERTZ keyboard layout
+  EN4	English DVORAK keyboard layout
+  FI1	Finnish QWERTY keybaord layout
+  HY1	Armenian QWERTY keyboard layout
+  EN1	English QWERTY keyboard layout
+  IW1	Hebrew standard layout
+  FA1	Persian standard layout
+  RU1	Russian keyboard layout
+  AR4	Arabic keyboard layout
+  ALL	Use all keyboards
 
-## Installation
+TYPOS: These are the types of typo/error algorithms that generate the domain variants
+  MD	Missing Dot is created by omitting a dot from the domain.
+  MDS	Missing Dashes is created by stripping all dashes from the domain.
+  CO	Character Omission Omitting a character from the domain.
+  CS	Character Swap Swapping two consecutive characters in a domain
+  ACS	Adjacent Character Substitution replaces adjacent characters
+  ACI	Adjacent Character Insertion inserts adjacent character 
+  CR	Character Repeat Repeats a character of the domain name twice
+  DCR	Double Character Replacement repeats a character twice.
+  SD	Strip Dashes is created by omitting a dash from the domain
+  SP	Singular Pluralise creates a singular domain plural and vice versa
+  CM	Common Misspellings are created from a dictionary of commonly misspelled words
+  VS	Vowel Swapping is created by swaps vowels
+  HG	Homoglyphs replaces characters with characters that look similar
+  WTLD	Wrong Top Level Domain
+  W2TLD	Wrong Second Level Domain
+  W3TLD	Wrong Third Level Domain
+  HP	Homophones Typos are created from sets of words that sound the same
+  BF	Bitsquatting relies on random bit-errors to redirect connections
+  NS	Numeral Swap numbers, words and vice versa
+  ALL   Apply all typosquatting algorithms
 
-To get the latest updates, create the binary executable with the **make** command or 
-[download](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0) one of the 
-pre-built release binaries. 
+FUNCTIONS: Post processig functions that retieve aditional information on each domain variant.
+  MX	Checking for DNS's MX records
+  IP	Checking for IP address
+  IDNA	Show international domain name
+  TXT	Checking for DNS's TXT records
+  NS	Checks DNS NS records
+  CNAME	Checks DNS CNAME records
+  SIM	Show domain content similarity
+  LIVE	Show domains with ip addresses only
+  301	Show domains redirects
+  GEO	Show country location of ip address
+  ALL  	Apply all post typosquating functions
 
-Get the project
-```bash
-go get github.com/rangertaha/urlinsane
+EXAMPLE:
+
+    urlinsane google.com
+    urlinsane google.com -t co
+    urlinsane google.com -t co -x ip -x idna -x ns
+
+AUTHOR:
+  Written by Rangertaha <rangertaha@gmail.com>
 ```
 
-Go to the project folder and run the **make** command.
-```bash
-cd ~/go/src/github.com/rangertaha/urlinsane/
-make
-```
-
-After building the binary you can execute it within the **builds** directory 
-that was created by the **make** command. 
-```bash
-cd builds/
-./urlinsane -h
-```
 
 ## Usage
 Generates variations for **google.com** using the character omission **(CO)** 
@@ -246,90 +284,6 @@ urlinsane google.com -t hg -v -x ip -x idna -x ns
 
 ```
 
-For more details look at the **-h --help** output.
-```
-urlinsane -h
-
-Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.
-
-USAGE:
-  urlinsane [domains] [flags]
-
-OPTIONS:
-  -c, --concurrency int         Number of concurrent workers (default 50)
-  -f, --file string             Output filename
-  -o, --format string           Output format (csv, text) (default "text")
-  -x, --funcs stringArray       Extra functions for retrieving additional data (default [idna])
-  -h, --help                    help for urlinsane
-  -k, --keyboards stringArray   Keyboards/layouts ID to use (default [en1])
-  -t, --typos stringArray       Types of typos to perform (default [all])
-  -v, --verbose                 Output additional details
-
-KEYBOARDS:
-  EN4	English DVORAK keyboard layout
-  ES1	Spanish keyboard layout
-  EN2	English AZERTY keyboard layout
-  RU3	PC Russian keyboard layout
-  ES2	Spanish ISO keyboard layout
-  FI1	Finnish QWERTY keybaord layout
-  AR2	Arabic PC keyboard layout
-  AR4	Arabic keyboard layout
-  EN3	English QWERTZ keyboard layout
-  RU2	Phonetic Russian keybaord layout
-  AR1	Arabic keyboard layout
-  EN1	English QWERTY keyboard layout
-  RU1	Russian keyboard layout
-  AR3	Arabic North african keyboard layout
-  ALL	Use all keyboards
-
-TYPOS: These are the types of typo/error algorithms that generate the domain variants
-  MD	Missing Dot is created by omitting a dot from the domain.
-  MDS	Missing Dashes is created by omitting a dash from the domain.
-  CO	Character Omission Omitting a character from the domain.
-  CS	Character Swap Swapping two consecutive characters in a domain
-  ACS	Adjacent Character Substitution replaces adjacent characters
-  ACI	Adjacent Character Insertion inserts adjacent character 
-  CR	Character Repeat Repeats a character of the domain name twice
-  DCR	Double Character Replacement repeats a character twice.
-  SD	Strip Dashes is created by omitting a dash from the domain
-  SP	Singular Pluralise creates a singular domain plural and vice versa
-  CM	Common Misspellings are created from a dictionary of commonly misspelled words
-  VS	Vowel Swapping is created by swaps vowels
-  HG	Homoglyphs replaces characters with characters that look similar
-  WTLD	Wrong Top Level Domain
-  W2TLD	Wrong Second Level Domain
-  W3TLD	Wrong Third Level Domain
-  HP	Homophones Typos are created from sets of words that sound the same
-  BF	Bitsquatting relies on random bit-errors to redirect connections
-  NS	Numeral Swap numbers, words and vice versa
-  ALL   Apply all typosquatting algorithms
-
-FUNCTIONS: Post processig functions that retieve aditional information on each domain variant.
-  MX	Checking for DNS's MX records
-  IP	Checking for IP address
-  IDNA	Show international domain name
-  TXT	Checking for DNS's TXT records
-  NS	Checks DNS NS records
-  CNAME	Checks DNS CNAME records
-  SIM	Show domain content similarity
-  LIVE	Show domains with ip addresses only
-  301	Show domains redirects
-  GEO	Looks up geopgraphic information via IP address
-  ALL  	Apply all post typosquating functions
-
-EXAMPLE:
-
-    urlinsane google.com
-    urlinsane google.com -t co
-    urlinsane google.com -t co -x ip -x idna -x ns
-
-AUTHOR:
-  Written by Rangertaha <rangertaha@gmail.com>
-```
-
-
-
-
 
 ## Features
 
@@ -376,9 +330,81 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 - **301**	Show domains redirects
 - **GEO**	Show country location of ip address
 
+
+
+## Tools Comparisons
+
+
+|      **Algorithms**             | URLInsane | URLCrazy  | DNSTwist   |   |
+|                                 |           |           |            |             |          
+|---------------------------------|-----------|-----------|------------|-------------|
+| Missing Dot                     |     X     |     X     |     X      |             |           
+| Missing Dashes                  |     X     |           |            |             |          
+| Strip Dashes                    |     X     |     X     |            |             |           
+| Character Omission              |     X     |     X     |     X      |             |           
+| Character Swap                  |     X     |     X     |            |             |           
+| Adjacent Character Substitution |     X     |     X     |            |             |           
+| Adjacent Character Insertion    |     X     |     X     |     X      |             |          
+| Homoglyphs                      |     X     |     X     |     P      |             |           
+| Singular Pluralise              |     X     |     X     |            |             |           
+| Character Repeat                |     X     |     X     |     X      |             |           
+| Double Character Replacement    |     X     |     X     |            |             |           
+| Common Misspellings             |     X     |     X     |            |             |           
+| Homophones                      |     X     |     X     |     P      |             |           
+| Vowel Swapping                  |     X     |     X     |            |             |           
+| Bitsquatting                    |     X     |     X     |     X      |             |           
+| Wrong Top Level Domain          |     X     |     X     |            |             |           
+| Wrong Second Level Domain       |     X     |     X     |            |             |           
+| Wrong Third Level Domain        |     X     |           |            |             |           
+| Ordinal Number Swap             |     X     |           |            |             |           
+| Cardinal Number Swap            |           |           |            |             |           
+| Hyphenation                     |           |           |      X     |             |         
+| Combosquatting(Keywords)        |           |           |            |             |           
+| Multithreaded Algorithms        |     X     |     ?     |      X     |             |         
+
+
+
+|      **Extra Functions**            | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz | 
+|-------------------------------------|-----------|-----------|------------|-------------|
+|                                     |           |           |            |             |           
+| Live/Online Check                   |     X     |     X     |      X     |             |           
+| Google Popularity Estimate          |           |     X     |            |             |           
+| DNS A Records                       |     X     |     X     |      X     |      X      |          
+| DNS MX Records                      |     X     |     X     |      X     |             |           
+| DNS txt Records                     |     X     |     X     |            |             |           
+| DNS AAAA Records                    |     X     |           |      X     |      X      |           
+| DNS CName Records                   |     X     |           |            |             |           
+| DNS NS Records                      |     X     |           |      X     |      X      |           
+| GeoIP Info                          |     X     |     X     |      X     |             |           
+| Domain Similarity                   |     X     |           |      X     |      X      |           
+| Domain Redirects                    |     X     |           |            |             |           
+| IDNA Format                         |     X     |           |      X     |             |           
+| CSV output                          |     X     |     X     |      X     |      X      |           
+| JSON output                         |     X     |           |      X     |      X      |           
+| Human Readable output               |     X     |     X     |      X     |      X      |           
+| HTTP/SMTP Banner                    |           |           |      X     |             |           
+| WHOIS Info                          |           |           |      X     |             |           
+| Test MX email intercepts            |           |           |      X     |             |           
+| Multithreaded Extra Functions       |     X     |           |      X     |      X      |           
+
+
+
+| **Language (Keyboards)** | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz | 
+|--------------------------|-----------|-----------|------------|-------------|
+|                          |           |           |            |             |           
+| Arabic (4)               |     X     |           |            |             |           
+| Armenian (3)             |     X     |           |            |             |          
+| English (4)              |     X     |     X     |      X     |      X      |      
+| Finnish (1)              |     X     |           |            |             |           
+| Russian (3)              |     X     |           |            |             |           
+| Spanish (2)              |     X     |           |            |             |           
+| Hebrew (1)               |     X     |           |            |             |           
+| Persian (1)              |     X     |           |            |             |  
+
+
+
 ### TODO 
 
-* Complete tool comparison
 * Extract keywords from domains. Keywords will be used for additional algorithms
 * Estimate popularity of a domain variant via google search
 * Lookup whois record

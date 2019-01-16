@@ -38,14 +38,38 @@ Table of contents
 ## Introduction
 Generate and test domain typos and variations to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.
 
+The engine is designed to execute concurrent typo algorithms then additional 
+concurrent functions for each domain variation. The additional functions can 
+check DNS records and much more. Its also designed for extensibility, allowing 
+developers to add functionality and support for additional languages. See 
+[URLInsane](https://rangertaha.github.io/urlinsane/) for more details.
+
+
 
 ## Installation
 
-Create the binary executable with the make command or [download](https://github.com/rangertaha/urlinsane/releases/tag/0.2.0) one of the pre-built release binaries. 
+To get the latest updates, create the binary executable with the **make** command or 
+[download](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0) one of the 
+pre-built release binaries. 
 
+Get the project
 ```bash
+go get github.com/rangertaha/urlinsane
+```
+
+Go to the project folder and run the **make** command.
+```bash
+cd ~/go/src/github.com/rangertaha/urlinsane/
 make
 ```
+
+After building the binary you can execute it within the **builds** directory 
+that was created by the **make** command. 
+```bash
+cd builds/
+./urlinsane -h
+```
+
 
 
 
