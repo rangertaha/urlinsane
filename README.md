@@ -309,6 +309,17 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 
 ## Tools Comparisons
 
+| **Lang (# Keyboards)**   | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz | 
+|--------------------------|-----------|-----------|------------|-------------|        
+| Arabic (4)               |     X     |           |            |             |           
+| Armenian (3)             |     X     |           |            |             |          
+| English (4)              |     X     |     X     |      X     |      X      |      
+| Finnish (1)              |     X     |           |            |             |           
+| Russian (3)              |     X     |           |            |             |           
+| Spanish (2)              |     X     |           |            |             |           
+| Hebrew (1)               |     X     |           |            |             |           
+| Persian (1)              |     X     |           |            |             |  
+
 
 |      **Algorithms**             | URLInsane | URLCrazy  | DNSTwist   |              
 |---------------------------------|-----------|-----------|------------|
@@ -362,16 +373,7 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 
 
 
-| **Language (Keyboards)** | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz | 
-|--------------------------|-----------|-----------|------------|-------------|        
-| Arabic (4)               |     X     |           |            |             |           
-| Armenian (3)             |     X     |           |            |             |          
-| English (4)              |     X     |     X     |      X     |      X      |      
-| Finnish (1)              |     X     |           |            |             |           
-| Russian (3)              |     X     |           |            |             |           
-| Spanish (2)              |     X     |           |            |             |           
-| Hebrew (1)               |     X     |           |            |             |           
-| Persian (1)              |     X     |           |            |             |  
+
 
 
 
