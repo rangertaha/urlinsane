@@ -286,60 +286,57 @@ typosquatting algorithms.
 ## Tool Comparisons
 
 
-|      **Algorithms**             | URLInsane | URLCrazy  | DNSTwist   | DomainFuzz  | XN-Twist  |
-|                                 |           |           |            |             |           |
-|---------------------------------|-----------|-----------|------------|-------------|-----------|
-| Missing Dot                     |     X     |     X     |            |             |           |
-| Missing Dashes                  |     X     |           |            |             |           |
-| Strip Dashes                    |     X     |     X     |            |             |           |
-| Character Omission              |     X     |     X     |     X      |             |           |
-| Character Swap                  |     X     |     X     |            |             |           |
-| Adjacent Character Substitution |     X     |     X     |            |             |           |
-| Adjacent Character Insertion    |     X     |     X     |            |             |           |
-| Homoglyphs                      |     X     |     X     |     P      |             |           |
-| Singular Pluralise              |     X     |     X     |            |             |           |
-| Character Repeat                |     X     |     X     |     X      |             |           |
-| Double Character Replacement    |     X     |     X     |            |             |           |
-| Common Misspellings             |     X     |     X     |            |             |           |
-| Homophones                      |     X     |     X     |     P      |             |           |
-| Vowel Swapping                  |     X     |     X     |            |             |           |
-| Bitsquatting                    |     X     |     X     |     X      |             |           |
-| Wrong Top Level Domain          |     X     |     X     |            |             |           |
-| Wrong Second Level Domain       |     X     |     X     |            |             |           |
-| Wrong Third Level Domain        |     X     |           |            |             |           |
-| Ordinal Number Swap             |     X     |           |            |             |           |
-| Cardinal Number Swap            |           |           |            |             |           |
-| Hyphenation                     |           |           |      X     |             |           |
-| Combosquatting(Keywords)        |           |           |            |             |           |
-|                                 |           |           |            |             |           |
-|                                 |           |           |            |             |           |
-| Multithreaded Algorithms        |     X     |           |      X     |             |           |
+|      **Algorithms**             | URLInsane | URLCrazy  | DNSTwist   | DomainFuzz  |
+|                                 |           |           |            |             |          
+|---------------------------------|-----------|-----------|------------|-------------|
+| Missing Dot                     |     X     |     X     |     X      |             |           
+| Missing Dashes                  |     X     |           |            |             |          
+| Strip Dashes                    |     X     |     X     |            |             |           
+| Character Omission              |     X     |     X     |     X      |             |           
+| Character Swap                  |     X     |     X     |            |             |           
+| Adjacent Character Substitution |     X     |     X     |            |             |           
+| Adjacent Character Insertion    |     X     |     X     |     X      |             |          
+| Homoglyphs                      |     X     |     X     |     P      |             |           
+| Singular Pluralise              |     X     |     X     |            |             |           
+| Character Repeat                |     X     |     X     |     X      |             |           
+| Double Character Replacement    |     X     |     X     |            |             |           
+| Common Misspellings             |     X     |     X     |            |             |           
+| Homophones                      |     X     |     X     |     P      |             |           
+| Vowel Swapping                  |     X     |     X     |            |             |           
+| Bitsquatting                    |     X     |     X     |     X      |             |           
+| Wrong Top Level Domain          |     X     |     X     |            |             |           
+| Wrong Second Level Domain       |     X     |     X     |            |             |           
+| Wrong Third Level Domain        |     X     |           |            |             |           
+| Ordinal Number Swap             |     X     |           |            |             |           
+| Cardinal Number Swap            |           |           |            |             |           
+| Hyphenation                     |           |           |      X     |             |         
+| Combosquatting(Keywords)        |           |           |            |             |           
+| Multithreaded Algorithms        |     X     |     ?     |      X     |      X      |         
 
 
 
-
-|      **Extra Functions**            | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz  | XN-Twist |
-|-------------------------------------|-----------|-----------|------------|-------------|-----------|
-|                                     |           |           |            |             |           |
-| Live/Online Check                   |     X     |     X     |      X     |             |           |
-| Google Popularity Estimate          |           |     X     |            |             |           |
-| DNS A Records                       |     X     |     X     |      X     |             |           |
-| DNS MX Records                      |     X     |     X     |      X     |             |           |
-| DNS txt Records                     |     X     |     X     |            |             |           |
-| DNS AAAA Records                    |     X     |           |      X     |             |           |
-| DNS CName Records                   |     X     |           |            |             |           |
-| DNS NS Records                      |     X     |           |      X     |             |           |
-| GeoIP Info                          |     X     |     X     |      X     |             |           |
-| Domain Similarity                   |     X     |           |      X     |             |           |
-| Domain Redirects                    |     X     |           |            |             |           |
-| IDNA Format                         |     X     |           |      X     |             |           |
-| CSV output                          |     X     |     X     |      X     |             |           |
-| JSON output                         |     X     |           |      X     |             |           |
-| Human Readable output               |     X     |     X     |      X     |             |           |
-| HTTP/SMTP Banner                    |           |           |      X     |             |           |
-| WHOIS Info                          |           |           |      X     |             |           |
-| Test MX email intercepts            |           |           |      X     |             |           |
-| Multithreaded Extra Functions       |     X     |           |      X     |             |           |
+|      **Extra Functions**            | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz | 
+|-------------------------------------|-----------|-----------|------------|-------------|
+|                                     |           |           |            |             |           
+| Live/Online Check                   |     X     |     X     |      X     |             |           
+| Google Popularity Estimate          |           |     X     |            |             |           
+| DNS A Records                       |     X     |     X     |      X     |      X      |          
+| DNS MX Records                      |     X     |     X     |      X     |             |           
+| DNS txt Records                     |     X     |     X     |            |             |           
+| DNS AAAA Records                    |     X     |           |      X     |      X      |           
+| DNS CName Records                   |     X     |           |            |             |           
+| DNS NS Records                      |     X     |           |      X     |      X      |           
+| GeoIP Info                          |     X     |     X     |      X     |             |           
+| Domain Similarity                   |     X     |           |      X     |      X      |           
+| Domain Redirects                    |     X     |           |            |             |           
+| IDNA Format                         |     X     |           |      X     |             |           
+| CSV output                          |     X     |     X     |      X     |      X      |           
+| JSON output                         |     X     |           |      X     |      X      |           
+| Human Readable output               |     X     |     X     |      X     |      X      |           
+| HTTP/SMTP Banner                    |           |           |      X     |             |           
+| WHOIS Info                          |           |           |      X     |             |           
+| Test MX email intercepts            |           |           |      X     |             |           
+| Multithreaded Extra Functions       |     X     |           |      X     |      X      |           
 
 
 | **Language (Keyboards)** | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz  | XN-Twist |
@@ -347,7 +344,7 @@ typosquatting algorithms.
 |                          |           |           |            |             |           |
 | Arabic (4)               |     X     |           |            |             |           |
 | Armenian (3)             |     X     |           |            |             |           |
-| English (4)              |     X     |     X     |      X     |             |           |
+| English (4)              |     X     |     X     |      X     |      X      |     X     |
 | Finnish (1)              |     X     |           |            |             |           |
 | Russian (3)              |     X     |           |            |             |           |
 | Spanish (2)              |     X     |           |            |             |           |
