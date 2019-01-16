@@ -309,6 +309,12 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 
 ## Tools Comparisons
 
+### Language & Keyboard Comparison
+
+This table shows which tools have support for common **misspellings**, 
+**homophones**, **numerals**, **vowels**, **homoglyphs**, and the number of 
+**keyboards** that support each language's character set. 
+
 | **Lang (# Keyboards)**   | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz | 
 |--------------------------|-----------|-----------|------------|-------------|        
 | Arabic (4)               |     X     |           |            |             |           
@@ -320,6 +326,10 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 | Hebrew (1)               |     X     |           |            |             |           
 | Persian (1)              |     X     |           |            |             |  
 
+
+### Algorithms
+
+This table shows the list of algorithms supported for each tool. 
 
 |      **Algorithms**             | URLInsane | URLCrazy  | DNSTwist   | DomainFuzz **(TODO)**  |               
 |---------------------------------|-----------|-----------|------------|-------------|
@@ -347,12 +357,11 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 | Combosquatting(Keywords)        |           |           |            |             |           
 | Multithreaded Algorithms        |     X     |     ?     |      X     |             |         
 
-
+## Post Typo Functions
 
 |      **Extra Functions**            | URLInsane  | URLCrazy  | DNSTwist  | DomainFuzz  | 
 |-------------------------------------|-----------|-----------|------------|-------------|         
-| Live/Online Check                   |     X     |     X     |      X     |             |           
-| Google Popularity Estimate          |           |     X     |            |             |           
+| Live/Online Check                   |     X     |     X     |      X     |             |                     
 | DNS A Records                       |     X     |     X     |      X     |      X      |          
 | DNS MX Records                      |     X     |     X     |      X     |             |           
 | DNS txt Records                     |     X     |     X     |            |             |           
@@ -365,7 +374,8 @@ typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/url
 | IDNA Format                         |     X     |           |      X     |             |           
 | CSV output                          |     X     |     X     |      X     |      X      |           
 | JSON output                         |     X     |           |      X     |      X      |           
-| Human Readable output               |     X     |     X     |      X     |      X      |           
+| Human Readable output               |     X     |     X     |      X     |      X      | 
+| Google Popularity Estimate          |           |     X     |            |             |           
 | HTTP/SMTP Banner                    |           |           |      X     |             |           
 | WHOIS Info                          |           |           |      X     |             |           
 | Test MX email intercepts            |           |           |      X     |             |           
