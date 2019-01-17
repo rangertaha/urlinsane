@@ -185,5 +185,7 @@ var HY_KEYBOARDS = []Keyboard{
 }
 
 func init() {
-	KRegister(HY_KEYBOARDS)
+	KEYBOARDS.Add(HY_KEYBOARDS)
+	KEYBOARDS.Append("FI", HY_KEYBOARDS)
+	KEYBOARDS.Append("ALL", HY_KEYBOARDS)
 }
