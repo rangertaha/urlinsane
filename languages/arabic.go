@@ -133,7 +133,6 @@ var AR_KEYBOARDS = []Keyboard{
 }
 
 func init() {
-	// KRegister(AR_KEYBOARDS)
 	KEYBOARDS.Add(AR_KEYBOARDS)
 	KEYBOARDS.Append("AR", AR_KEYBOARDS)
 	KEYBOARDS.Append("ALL", AR_KEYBOARDS)

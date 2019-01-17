@@ -102,36 +102,7 @@ func (c *Config) GetDomains(args []string) {
 // GetKeyboards retrieves a list of keyboards
 func (c *Config) GetKeyboards(keyboards []string) {
 	c.keyboards = languages.KEYBOARDS.Keyboards(keyboards...)
-	// kbs := []languages.Keyboard{}
-	// for _, name := range keyboards {
-	// 	fmt.Println(name)
-	// 	if strings.ToUpper(name) == "ALL" {
-	// 		for _, kb := range languages.KEYBOARDS {
-	// 			kbs = append(kbs, kb)
-	// 		}
-	// 	} else {
-	// 		keyboard, ok := languages.KEYBOARDS[strings.ToUpper(name)]
-
-	// 		if ok {
-	// 			kbs = append(kbs, keyboard)
-	// 		}
-	// 	}
-	// }
-	// c.keyboards = kbs
 }
-
-// GetLanguages
-// func (c *Config) GetLanguages(langs []string) {
-// 	lgs := []languages.Language{}
-// 	for _, name := range langs {
-// 		lang, ok := languages.LANGUAGES[strings.ToUpper(name)]
-// 		if ok {
-// 			lgs = append(lgs, lang)
-// 		}
-
-// 	}
-// 	c.languages = lgs
-// }
 
 // GetTypos
 func (c *Config) GetTypos(typos []string) {
@@ -203,10 +174,6 @@ func CobraConfig(cmd *cobra.Command, args []string) (c Config) {
 	keyboards, err := cmd.PersistentFlags().GetStringArray("keyboards")
 	errHandler(err)
 	c.GetKeyboards(keyboards)
-
-	// langs, err := cmd.PersistentFlags().GetStringArray("languages")
-	// errHandler(err)
-	// c.GetLanguages(langs)
 
 	// Registered functions
 	var algorithms []string

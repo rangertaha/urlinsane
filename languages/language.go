@@ -58,12 +58,6 @@ type (
 	}
 )
 
-// LANGUAGES stores all the registered languages
-// var LANGUAGES = map[string]Language{}
-
-// KEYBOARDS stores all the registered keyboards
-//var KEYBOARDS = map[string]Keyboard{}
-
 // BOARDS stores all the registered keyboards
 var KEYBOARDS = NewKeyboardRegistry()
 
@@ -73,42 +67,6 @@ func NewKeyboardRegistry() KeyboardRegistry {
 		registry: make(map[string][]Keyboard),
 	}
 }
-
-// // GetLanguages looks up and returns Languages.
-// func GetLanguages(codes []string) (lgs []Language) {
-// 	for _, name := range codes {
-// 		lang, ok := LANGUAGES[strings.ToUpper(name)]
-// 		if ok {
-// 			lgs = append(lgs, lang)
-// 		}
-
-// 	}
-// 	return
-// }
-
-// GetKeyboards looks up and returns Keyboards.
-// func GetKeyboards(names []string) (kbs []Keyboard) {
-// 	for _, name := range names {
-// 		if strings.ToUpper(name) == "ALL" {
-// 			for _, kb := range KEYBOARDS {
-// 				kbs = append(kbs, kb)
-// 			}
-// 		} else {
-// 			keyboard, ok := KEYBOARDS[strings.ToUpper(name)]
-// 			if ok {
-// 				kbs = append(kbs, keyboard)
-// 			}
-// 		}
-// 	}
-// 	return
-// }
-
-// KRegister adds keyboards to a registry
-// func KRegister(keyboards []Keyboard) {
-// 	for _, board := range keyboards {
-// 		KEYBOARDS[strings.ToUpper(board.Code)] = board
-// 	}
-// }
 
 // Add allows you to add keyboards to the registry
 func (kb *KeyboardRegistry) Add(keyboards []Keyboard) {
@@ -141,22 +99,6 @@ func (kb *KeyboardRegistry) Keyboards(names ...string) (kbs []Keyboard) {
 			}
 		}
 	}
-	return
-}
-
-// Groups looks up and returns groups of keyboards.
-func (kb *KeyboardRegistry) Groups(names []string) (kbs map[string][]Keyboard) {
-	// for _, name := range names {
-	// 	keyboards, ok := kb.registry[strings.ToUpper(name)]
-	// 	if ok {
-	// 		if len(keyboards) == 1 {
-	// 			for _, keyboard := range keyboards {
-	// 				kbs = append(kbs, keyboard)
-	// 			}
-	// 		}
-
-	// 	}
-	// }
 	return
 }
 
