@@ -184,6 +184,9 @@ func CobraConfig(cmd *cobra.Command, args []string) (c Config) {
 	errHandler(err)
 	c.GetTypos(algorithms)
 
+	// Print CLI option values
+	fmt.Printf(" Domains: %s, Keyboards: %s, Typos: %s \n\n\n", args, keyboards, typos)
+
 	var funcs []string
 	functions, err := cmd.PersistentFlags().GetStringArray("funcs")
 	for _, function := range functions {

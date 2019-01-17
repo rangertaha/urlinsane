@@ -108,9 +108,8 @@ const (
 // New
 func New(c Config) (i URLInsane) {
 	i = URLInsane{
-		domains:   c.domains,
-		keyboards: c.keyboards,
-		// languages:   c.languages,
+		domains:     c.domains,
+		keyboards:   c.keyboards,
 		types:       c.typos,
 		funcs:       c.funcs,
 		concurrency: c.concurrency,
