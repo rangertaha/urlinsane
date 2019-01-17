@@ -43,9 +43,9 @@ var IW_LANGUAGE = Language{
 		"7":  []string{""},
 		"8":  []string{""},
 		"9":  []string{""},
-		"10":  []string{""},
+		"10": []string{""},
 	},
-	Graphemes: []string{""},
+	Graphemes:    []string{""},
 	Misspellings: IW_SPELLINGS,
 	Homophones:   IW_HOMOPHONES,
 	Homoglyphs: map[string][]string{
@@ -68,5 +68,7 @@ var IW_KEYBOARDS = []Keyboard{
 }
 
 func init() {
-	KRegister(IW_KEYBOARDS)
+	KEYBOARDS.Add(IW_KEYBOARDS)
+	KEYBOARDS.Append("IW", IW_KEYBOARDS)
+	KEYBOARDS.Append("ALL", IW_KEYBOARDS)
 }

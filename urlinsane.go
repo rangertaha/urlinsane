@@ -25,18 +25,19 @@ import (
 
 	"golang.org/x/net/idna"
 
-	"github.com/rangertaha/urlinsane/languages"
 	"strings"
+
+	"github.com/rangertaha/urlinsane/languages"
 )
 
 type (
 	URLInsane struct {
-		domains     []Domain
-		keyboards   []languages.Keyboard
-		languages   []languages.Language
+		domains   []Domain
+		keyboards []languages.Keyboard
+		languages []languages.Language
 
-		types       []Typo
-		funcs       []Extra
+		types []Typo
+		funcs []Extra
 
 		file        string
 		count       int
@@ -45,10 +46,10 @@ type (
 		headers     []string
 		concurrency int
 
-		data 	    map[string]map[string]string
+		data map[string]map[string]string
 
-		typoWG      sync.WaitGroup
-		funcWG      sync.WaitGroup
+		typoWG sync.WaitGroup
+		funcWG sync.WaitGroup
 	}
 	Domain struct {
 		Subdomain string
@@ -70,18 +71,18 @@ type (
 	}
 	TypoConfig struct {
 		Original  Domain
-		Variant    Domain
+		Variant   Domain
 		Keyboards []languages.Keyboard
 		Languages []languages.Language
 		Typo      Typo
 	}
 
 	TypoResult struct {
-		Original  Domain
-		Variant    Domain
-		Typo   Typo
-		Live   bool
-		Data   map[string]string
+		Original Domain
+		Variant  Domain
+		Typo     Typo
+		Live     bool
+		Data     map[string]string
 	}
 
 	// TypoFunc defines a function to register typos.
@@ -93,8 +94,8 @@ type (
 
 const (
 	VERSION = "0.3.0"
-	DEBUG = false
-	LOGO = `
+	DEBUG   = false
+	LOGO    = `
  _   _  ____   _      ___
 | | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
 | | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
@@ -107,9 +108,9 @@ const (
 // New
 func New(c Config) (i URLInsane) {
 	i = URLInsane{
-		domains:     c.domains,
-		keyboards:   c.keyboards,
-		languages:   c.languages,
+		domains:   c.domains,
+		keyboards: c.keyboards,
+		// languages:   c.languages,
 		types:       c.typos,
 		funcs:       c.funcs,
 		concurrency: c.concurrency,
@@ -140,7 +141,7 @@ func (urli *URLInsane) Typos(in <-chan TypoConfig) <-chan TypoConfig {
 	out := make(chan TypoConfig)
 	for w := 1; w <= urli.concurrency; w++ {
 		urli.typoWG.Add(1)
-		go func(id int, in <-chan TypoConfig, out chan <- TypoConfig) {
+		go func(id int, in <-chan TypoConfig, out chan<- TypoConfig) {
 			defer urli.typoWG.Done()
 			for c := range in {
 				for _, t := range c.Typo.Exec(c) {
@@ -185,7 +186,7 @@ func (urli *URLInsane) Results(in <-chan TypoConfig) <-chan TypoResult {
 func (urli *URLInsane) FuncChain(funcs []Extra, in <-chan TypoResult) <-chan TypoResult {
 	var xfunc Extra
 	out := make(chan TypoResult)
-	xfunc, funcs = funcs[len(funcs) - 1], funcs[:len(funcs) - 1]
+	xfunc, funcs = funcs[len(funcs)-1], funcs[:len(funcs)-1]
 	go func() {
 		for i := range in {
 			for _, result := range xfunc.Exec(i) {
@@ -201,12 +202,13 @@ func (urli *URLInsane) FuncChain(funcs []Extra, in <-chan TypoResult) <-chan Typ
 		return out
 	}
 }
+
 // DistChain creates workers of chained functions
 func (urli *URLInsane) DistChain(in <-chan TypoResult) <-chan TypoResult {
 	out := make(chan TypoResult)
 	for w := 1; w <= urli.concurrency; w++ {
 		urli.funcWG.Add(1)
-		go func(in <-chan TypoResult, out chan <- TypoResult) {
+		go func(in <-chan TypoResult, out chan<- TypoResult) {
 			defer urli.funcWG.Done()
 			output := urli.FuncChain(urli.funcs, in)
 			for c := range output {
@@ -245,7 +247,6 @@ func (urli *URLInsane) Dedup(in <-chan TypoResult) <-chan TypoResult {
 
 	return out
 }
-
 
 // Start executes the program and outputs results. Primarily used for CLI tools
 func (urli *URLInsane) Start() {

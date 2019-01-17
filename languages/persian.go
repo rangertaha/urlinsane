@@ -45,7 +45,7 @@ var FA_LANGUAGE = Language{
 		"۹":  []string{"نه"},
 		"۱۰": []string{"ده"},
 	},
-	Graphemes: []string{""},
+	Graphemes:    []string{""},
 	Misspellings: FA_SPELLINGS,
 	Homophones:   FA_HOMOPHONES,
 	Homoglyphs: map[string][]string{
@@ -68,5 +68,7 @@ var FA_KEYBOARDS = []Keyboard{
 }
 
 func init() {
-	KRegister(FA_KEYBOARDS)
+	KEYBOARDS.Add(FA_KEYBOARDS)
+	KEYBOARDS.Append("FA", FA_KEYBOARDS)
+	KEYBOARDS.Append("ALL", FA_KEYBOARDS)
 }

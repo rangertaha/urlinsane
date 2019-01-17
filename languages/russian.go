@@ -22,12 +22,12 @@ package languages
 
 // Common misspellings
 var RU_SPELLINGS = [][]string{
-// []string{"misspelling", "correct1", "correct2"},
+	// []string{"misspelling", "correct1", "correct2"},
 }
 
 // Common Homophones
 var RU_HOMOPHONES = [][]string{
-// []string{"vary", "very"},
+	// []string{"vary", "very"},
 }
 
 var RUSSIAN = Language{
@@ -172,5 +172,7 @@ var RU_KEYBOARDS = []Keyboard{
 }
 
 func init() {
-	KRegister(RU_KEYBOARDS)
+	KEYBOARDS.Add(RU_KEYBOARDS)
+	KEYBOARDS.Append("RU", RU_KEYBOARDS)
+	KEYBOARDS.Append("ALL", RU_KEYBOARDS)
 }
