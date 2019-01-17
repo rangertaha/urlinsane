@@ -137,5 +137,7 @@ var ES_KEYBOARDS = []Keyboard{
 }
 
 func init() {
-	KRegister(ES_KEYBOARDS)
+	KEYBOARDS.Add(ES_KEYBOARDS)
+	KEYBOARDS.Append("ES", ES_KEYBOARDS)
+	KEYBOARDS.Append("ALL", ES_KEYBOARDS)
 }

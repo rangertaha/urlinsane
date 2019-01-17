@@ -22,12 +22,12 @@ package languages
 
 // Common Misspelling
 var FI_SPELLINGS = [][]string{
-// []string{"misspelling", "correct1", "correct2"},
+	// []string{"misspelling", "correct1", "correct2"},
 }
 
 // Common Homophones
 var FI_HOMOPHONES = [][]string{
-// []string{"vary", "very"},
+	// []string{"vary", "very"},
 }
 var FI_LANGUAGE = Language{
 	Code: "FI",
@@ -103,5 +103,7 @@ var FI_KEYBOARDS = []Keyboard{
 }
 
 func init() {
-	KRegister(FI_KEYBOARDS)
+	KEYBOARDS.Add(FI_KEYBOARDS)
+	KEYBOARDS.Append("FI", FI_KEYBOARDS)
+	KEYBOARDS.Append("ALL", FI_KEYBOARDS)
 }

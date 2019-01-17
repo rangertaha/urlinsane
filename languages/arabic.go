@@ -62,7 +62,7 @@ var ARABIC = Language{
 		"غ": []string{},
 		"ع": []string{},
 		"ه": []string{"0", "Ο", "ο", "О", "о", "Օ", "ȯ", "ọ", "ỏ", "ơ", "ó", "ö", "ӧ"},
-		"خ": []string{"ج" ,"ح"},
+		"خ": []string{"ج", "ح"},
 		"ح": []string{"خ", "ج"},
 		"ج": []string{"خ", "ح"},
 		"ة": []string{},
@@ -133,5 +133,8 @@ var AR_KEYBOARDS = []Keyboard{
 }
 
 func init() {
-	KRegister(AR_KEYBOARDS)
+	// KRegister(AR_KEYBOARDS)
+	KEYBOARDS.Add(AR_KEYBOARDS)
+	KEYBOARDS.Append("AR", AR_KEYBOARDS)
+	KEYBOARDS.Append("ALL", AR_KEYBOARDS)
 }

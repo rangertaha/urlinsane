@@ -21,14 +21,14 @@
 package cmd
 
 import (
-	"os"
-	"fmt"
 	"bytes"
+	"fmt"
+	"os"
 	"text/template"
 
-	"github.com/spf13/cobra"
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/languages"
+	"github.com/spf13/cobra"
 )
 
 const TEMPLATE_BASE = `USAGE:{{if .Runnable}}
@@ -76,10 +76,11 @@ AUTHOR:
   Written by Rangertaha <rangertaha@gmail.com>
 
 `
+
 type HelpOptions struct {
 	Keyboards []languages.Keyboard
-	Typos []urlinsane.Typo
-	Funcs []urlinsane.Extra
+	Typos     []urlinsane.Typo
+	Funcs     []urlinsane.Extra
 }
 
 var cliOptions bytes.Buffer
@@ -88,7 +89,7 @@ var cliOptions bytes.Buffer
 var rootCmd = &cobra.Command{
 	Use:   "urlinsane [domains]",
 	Short: "Generates domain typos and variations",
-	Long: `Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.`,
+	Long:  `Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// Create config from cli options/arguments
@@ -113,7 +114,8 @@ func Execute() {
 
 func init() {
 	helpOptions := HelpOptions{
-		languages.GetKeyboards([]string{"all"}),
+		languages.KEYBOARDS.Keyboards("all"),
+		// languages.GetKeyboards([]string{"all"}),
 		urlinsane.TRetrieve("all"),
 		urlinsane.FRetrieve("all"),
 	}
@@ -130,7 +132,7 @@ func init() {
 	rootCmd.SetUsageTemplate(TEMPLATE_BASE + cliOptions.String())
 
 	// Basic options
-	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"en1"},
+	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"en"},
 		"Keyboards/layouts ID to use")
 	//rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"all"},
 	//	"Language ID to use for linguistic typos")
@@ -150,4 +152,3 @@ func init() {
 	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv, text)")
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Output additional details")
 }
-

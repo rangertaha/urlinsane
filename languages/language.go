@@ -20,7 +20,9 @@
 
 package languages
 
-import "strings"
+import (
+	"strings"
+)
 
 type (
 	// Language type
@@ -43,39 +45,98 @@ type (
 		Language    Language
 		Layout      []string
 	}
+	// KeyboardGroup type
+	KeyboardGroup struct {
+		Code        string
+		Keyboards   []string
+		Description string
+	}
+
+	// KeyboardRegistry stores registered keyboards and groups
+	KeyboardRegistry struct {
+		registry map[string][]Keyboard
+	}
 )
 
-// LANGUAGES map
-var LANGUAGES = map[string]Language{
-	"EN": ENGLISH,
-	"AR": ARABIC,
-}
+// LANGUAGES stores all the registered languages
+// var LANGUAGES = map[string]Language{}
 
-// KEYBOARDS map
-var KEYBOARDS = map[string]Keyboard{}
+// KEYBOARDS stores all the registered keyboards
+//var KEYBOARDS = map[string]Keyboard{}
 
-// GetLanguages looks up and returns Languages.
-func GetLanguages(codes []string) (lgs []Language) {
-	for _, name := range codes {
-		lang, ok := LANGUAGES[strings.ToUpper(name)]
-		if ok {
-			lgs = append(lgs, lang)
-		}
+// BOARDS stores all the registered keyboards
+var KEYBOARDS = NewKeyboardRegistry()
 
+// NewKeyboardRegistry returns a new KeyboardRegistry
+func NewKeyboardRegistry() KeyboardRegistry {
+	return KeyboardRegistry{
+		registry: make(map[string][]Keyboard),
 	}
-	return
 }
+
+// // GetLanguages looks up and returns Languages.
+// func GetLanguages(codes []string) (lgs []Language) {
+// 	for _, name := range codes {
+// 		lang, ok := LANGUAGES[strings.ToUpper(name)]
+// 		if ok {
+// 			lgs = append(lgs, lang)
+// 		}
+
+// 	}
+// 	return
+// }
 
 // GetKeyboards looks up and returns Keyboards.
-func GetKeyboards(names []string) (kbs []Keyboard) {
+// func GetKeyboards(names []string) (kbs []Keyboard) {
+// 	for _, name := range names {
+// 		if strings.ToUpper(name) == "ALL" {
+// 			for _, kb := range KEYBOARDS {
+// 				kbs = append(kbs, kb)
+// 			}
+// 		} else {
+// 			keyboard, ok := KEYBOARDS[strings.ToUpper(name)]
+// 			if ok {
+// 				kbs = append(kbs, keyboard)
+// 			}
+// 		}
+// 	}
+// 	return
+// }
+
+// KRegister adds keyboards to a registry
+// func KRegister(keyboards []Keyboard) {
+// 	for _, board := range keyboards {
+// 		KEYBOARDS[strings.ToUpper(board.Code)] = board
+// 	}
+// }
+
+// Add allows you to add keyboards to the registry
+func (kb *KeyboardRegistry) Add(keyboards []Keyboard) {
+	for _, board := range keyboards {
+		kb.registry[strings.ToUpper(board.Code)] = []Keyboard{board}
+	}
+}
+
+// Append allows you to append keyboards to a group name
+func (kb *KeyboardRegistry) Append(name string, keyboards []Keyboard) {
+	key := strings.ToUpper(name)
+	kbs, ok := kb.registry[key]
+	if ok {
+		for _, board := range keyboards {
+			kbs = append(kbs, board)
+		}
+		kb.registry[key] = kbs
+	} else {
+		kb.registry[key] = keyboards
+	}
+}
+
+// Keyboards looks up and returns Keyboards.
+func (kb *KeyboardRegistry) Keyboards(names ...string) (kbs []Keyboard) {
 	for _, name := range names {
-		if strings.ToUpper(name) == "ALL" {
-			for _, kb := range KEYBOARDS {
-				kbs = append(kbs, kb)
-			}
-		} else {
-			keyboard, ok := KEYBOARDS[strings.ToUpper(name)]
-			if ok {
+		keyboards, ok := kb.registry[strings.ToUpper(name)]
+		if ok {
+			for _, keyboard := range keyboards {
 				kbs = append(kbs, keyboard)
 			}
 		}
@@ -83,17 +144,26 @@ func GetKeyboards(names []string) (kbs []Keyboard) {
 	return
 }
 
-// KRegister adds keyboards to a registry
-func KRegister(keyboards []Keyboard) {
-	for _, board := range keyboards {
-		KEYBOARDS[strings.ToUpper(board.Code)] = board
-	}
+// Groups looks up and returns groups of keyboards.
+func (kb *KeyboardRegistry) Groups(names []string) (kbs map[string][]Keyboard) {
+	// for _, name := range names {
+	// 	keyboards, ok := kb.registry[strings.ToUpper(name)]
+	// 	if ok {
+	// 		if len(keyboards) == 1 {
+	// 			for _, keyboard := range keyboards {
+	// 				kbs = append(kbs, keyboard)
+	// 			}
+	// 		}
+
+	// 	}
+	// }
+	return
 }
 
-// Adjacent
+// Adjacent returns adjacent characters on the given keyboard
 func (urli *Keyboard) Adjacent(char string) (chars []string) {
 	for r, row := range urli.Layout {
-		for c, _ := range row {
+		for c := range row {
 			var top, bottom, left, right string
 			if char == string(urli.Layout[r][c]) {
 				if r > 0 {

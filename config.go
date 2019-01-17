@@ -30,11 +30,12 @@ import (
 )
 
 type BasicConfig struct {
-	Domains     []string
-	Keyboards   []string
-	Languages   []string
-	Typos       []string
-	Funcs       []string
+	Domains   []string
+	Keyboards []string
+	// Languages []string
+	Typos []string
+	Funcs []string
+	//Filters       []string
 	Concurrency int
 
 	Format  string
@@ -43,9 +44,9 @@ type BasicConfig struct {
 }
 
 type Config struct {
-	domains     []Domain
-	keyboards   []languages.Keyboard
-	languages   []languages.Language
+	domains   []Domain
+	keyboards []languages.Keyboard
+	// languages   []languages.Language
 	typos       []Typo
 	funcs       []Extra
 	headers     []string
@@ -61,7 +62,6 @@ func (b *BasicConfig) Config() (c Config) {
 	// Basic options
 	c.GetDomains(b.Domains)
 	c.GetKeyboards(b.Keyboards)
-	c.GetLanguages(b.Languages)
 
 	// Registered functions
 	c.GetTypos(b.Typos)
@@ -99,36 +99,39 @@ func (c *Config) GetDomains(args []string) {
 	c.domains = dmns
 }
 
-// GetKeyboards
+// GetKeyboards retrieves a list of keyboards
 func (c *Config) GetKeyboards(keyboards []string) {
-	kbs := []languages.Keyboard{}
-	for _, name := range keyboards {
-		if strings.ToUpper(name) == "ALL" {
-			for _, kb := range languages.KEYBOARDS {
-				kbs = append(kbs, kb)
-			}
-		} else {
-			keyboard, ok := languages.KEYBOARDS[strings.ToUpper(name)]
-			if ok {
-				kbs = append(kbs, keyboard)
-			}
-		}
-	}
-	c.keyboards = kbs
+	c.keyboards = languages.KEYBOARDS.Keyboards(keyboards...)
+	// kbs := []languages.Keyboard{}
+	// for _, name := range keyboards {
+	// 	fmt.Println(name)
+	// 	if strings.ToUpper(name) == "ALL" {
+	// 		for _, kb := range languages.KEYBOARDS {
+	// 			kbs = append(kbs, kb)
+	// 		}
+	// 	} else {
+	// 		keyboard, ok := languages.KEYBOARDS[strings.ToUpper(name)]
+
+	// 		if ok {
+	// 			kbs = append(kbs, keyboard)
+	// 		}
+	// 	}
+	// }
+	// c.keyboards = kbs
 }
 
 // GetLanguages
-func (c *Config) GetLanguages(langs []string) {
-	lgs := []languages.Language{}
-	for _, name := range langs {
-		lang, ok := languages.LANGUAGES[strings.ToUpper(name)]
-		if ok {
-			lgs = append(lgs, lang)
-		}
+// func (c *Config) GetLanguages(langs []string) {
+// 	lgs := []languages.Language{}
+// 	for _, name := range langs {
+// 		lang, ok := languages.LANGUAGES[strings.ToUpper(name)]
+// 		if ok {
+// 			lgs = append(lgs, lang)
+// 		}
 
-	}
-	c.languages = lgs
-}
+// 	}
+// 	c.languages = lgs
+// }
 
 // GetTypos
 func (c *Config) GetTypos(typos []string) {
@@ -155,12 +158,12 @@ func (c *Config) GetHeaders(funcs []Extra) {
 }
 
 func appendIfMissing(slice []string, i string) []string {
-    for _, ele := range slice {
-        if ele == i {
-            return slice
-        }
-    }
-    return append(slice, i)
+	for _, ele := range slice {
+		if ele == i {
+			return slice
+		}
+	}
+	return append(slice, i)
 }
 
 // GetConcurrency
@@ -201,9 +204,9 @@ func CobraConfig(cmd *cobra.Command, args []string) (c Config) {
 	errHandler(err)
 	c.GetKeyboards(keyboards)
 
-	langs, err := cmd.PersistentFlags().GetStringArray("languages")
-	errHandler(err)
-	c.GetLanguages(langs)
+	// langs, err := cmd.PersistentFlags().GetStringArray("languages")
+	// errHandler(err)
+	// c.GetLanguages(langs)
 
 	// Registered functions
 	var algorithms []string
