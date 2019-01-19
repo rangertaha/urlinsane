@@ -97,6 +97,7 @@ var (
 		Vowels:       []string{"a", "о", "у", "э", "ы", "я", "ё", "ю", "е", "и"},
 		Misspellings: ruMisspellings,
 		Homophones:   ruHomophones,
+		Antonyms:     ruAntonyms,
 		Homoglyphs: map[string][]string{
 			"а": []string{"à", "á", "â", "ã", "ä", "å", "ɑ", "а", "ạ", "ǎ", "ă", "ȧ", "ӓ"},
 			"б": []string{"6", "b", "Ь", `b̔"`, "ɓ", "Б"},

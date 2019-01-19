@@ -34,6 +34,7 @@ type (
 		Vowels       []string
 		Misspellings [][]string
 		Homophones   [][]string
+		Antonyms     map[string][]string
 		Homoglyphs   map[string][]string
 	}
 
