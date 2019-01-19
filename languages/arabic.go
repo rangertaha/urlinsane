@@ -21,17 +21,17 @@
 package languages
 
 var (
-	// hyMisspellings are common misspellings
+	// arMisspellings are common misspellings
 	arMisspellings = [][]string{
 		// []string{"", ""},
 	}
 
-	// hyHomophones are words that sound alike
+	// arHomophones are words that sound alike
 	arHomophones = [][]string{
 		[]string{"نقطة", "."},
 	}
 
-	// hyAntonyms are words opposite in meaning to another (e.g. bad and good ).
+	// arAntonyms are words opposite in meaning to another (e.g. bad and good ).
 	arAntonyms = map[string][]string{
 		"حسن": []string{"سيئة"},
 	}

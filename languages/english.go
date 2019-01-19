@@ -4773,7 +4773,7 @@ var (
 
 	// faAntonyms are words opposite in meaning to another (e.g. bad and good ).
 	enAntonyms = map[string][]string{
-		"": []string{""},
+		"good": []string{"bad"},
 	}
 
 	enLanguage = Language{

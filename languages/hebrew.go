@@ -41,6 +41,7 @@ var (
 		Code: "IW",
 		Name: "Hebrew",
 		Numerals: map[string][]string{
+			// Number: cardinal..,  ordinal.., other...
 			"0":  []string{""},
 			"1":  []string{""},
 			"2":  []string{""},
@@ -56,8 +57,9 @@ var (
 		Graphemes:    []string{""},
 		Misspellings: iwMisspellings,
 		Homophones:   iwHomophones,
-		Homoglyphs: map[string][]string{
-			"": []string{},
+		Antonyms:     iwAntonyms,
+		Homoglyphs:   map[string][]string{
+			//"": []string{},
 		},
 	}
 
