@@ -34,6 +34,7 @@ type (
 		Vowels       []string
 		Misspellings [][]string
 		Homophones   [][]string
+		Antonyms     map[string][]string
 		Homoglyphs   map[string][]string
 	}
 
@@ -45,12 +46,6 @@ type (
 		Language    Language
 		Layout      []string
 	}
-	// KeyboardGroup type
-	KeyboardGroup struct {
-		Code        string
-		Keyboards   []string
-		Description string
-	}
 
 	// KeyboardRegistry stores registered keyboards and groups
 	KeyboardRegistry struct {
@@ -58,7 +53,7 @@ type (
 	}
 )
 
-// BOARDS stores all the registered keyboards
+// KEYBOARDS stores all the registered keyboards
 var KEYBOARDS = NewKeyboardRegistry()
 
 // NewKeyboardRegistry returns a new KeyboardRegistry
