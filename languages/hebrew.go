@@ -20,55 +20,64 @@
 
 package languages
 
-// Common Hebrew misspellings
-var IW_SPELLINGS = [][]string{
-	// []string{"misspelling", "correct1", "correct2"},
-}
+var (
+	// iwMisspellings are common misspellings
+	iwMisspellings = [][]string{
+		// []string{"", ""},
+	}
 
-// Common Hebrew homophones
-var IW_HOMOPHONES = [][]string{}
+	// iwHomophones are words that sound alike
+	iwHomophones = [][]string{
+		[]string{"נקודה", "."},
+	}
 
-// Hebrew language
-var IW_LANGUAGE = Language{
-	Code: "IW",
-	Name: "Hebrew",
-	Numerals: map[string][]string{
-		"0":  []string{""},
-		"1":  []string{""},
-		"2":  []string{""},
-		"3":  []string{""},
-		"4":  []string{""},
-		"5":  []string{""},
-		"6":  []string{""},
-		"7":  []string{""},
-		"8":  []string{""},
-		"9":  []string{""},
-		"10": []string{""},
-	},
-	Graphemes:    []string{""},
-	Misspellings: IW_SPELLINGS,
-	Homophones:   IW_HOMOPHONES,
-	Homoglyphs: map[string][]string{
-		"": []string{},
-	},
-}
+	// iwAntonyms are words opposite in meaning to another (e.g. bad and good ).
+	iwAntonyms = map[string][]string{
+		"טוב": []string{"רע"},
+	}
 
-var IW_KEYBOARDS = []Keyboard{
-	{
-		Code:        "IW1",
-		Name:        "Hebrew",
-		Description: "Hebrew standard layout",
-		Language:    IW_LANGUAGE,
-		Layout: []string{
-			"1234567890 ",
-			" פםןוטארק  ",
-			" ףךלחיעכגדש",
-			" ץתצמנהבסז "},
-	},
-}
+	// Hebrew language
+	iwLanguage = Language{
+		Code: "IW",
+		Name: "Hebrew",
+		Numerals: map[string][]string{
+			"0":  []string{""},
+			"1":  []string{""},
+			"2":  []string{""},
+			"3":  []string{""},
+			"4":  []string{""},
+			"5":  []string{""},
+			"6":  []string{""},
+			"7":  []string{""},
+			"8":  []string{""},
+			"9":  []string{""},
+			"10": []string{""},
+		},
+		Graphemes:    []string{""},
+		Misspellings: iwMisspellings,
+		Homophones:   iwHomophones,
+		Homoglyphs: map[string][]string{
+			"": []string{},
+		},
+	}
+
+	iwKeyboards = []Keyboard{
+		{
+			Code:        "IW1",
+			Name:        "Hebrew",
+			Description: "Hebrew standard layout",
+			Language:    iwLanguage,
+			Layout: []string{
+				"1234567890 ",
+				` פםןוטארק  `,
+				` ףךלחיעכגדש `,
+				` ץתצמנהבסז  `},
+		},
+	}
+)
 
 func init() {
-	KEYBOARDS.Add(IW_KEYBOARDS)
-	KEYBOARDS.Append("IW", IW_KEYBOARDS)
-	KEYBOARDS.Append("ALL", IW_KEYBOARDS)
+	KEYBOARDS.Add(iwKeyboards)
+	KEYBOARDS.Append("IW", iwKeyboards)
+	KEYBOARDS.Append("ALL", iwKeyboards)
 }
