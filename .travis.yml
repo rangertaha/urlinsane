@@ -1,10 +1,8 @@
 language: go
-
 sudo: false
-
-ignore:
-  - Makefile
-
+branches:
+  only:
+  - master
 matrix:
   include:
     - go: "1.8.x"
@@ -15,5 +13,4 @@ matrix:
     - go: "1.11.x"
       env: GO111MODULE=on
     - go: tip
-  script:
-    - go test -v -race $(go list ./... | grep -v vendor)
+script: go test -v -race $(go list ./... | grep -v vendor)
