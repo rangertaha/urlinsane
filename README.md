@@ -1,6 +1,6 @@
 # URLInsane
 
-[![Build Status](https://travis-ci.org/rangertaha/urlinsane.svg?branch=master)](https://travis-ci.org/rangertaha/urlinsane)
+[![Build Status](https://travis-ci.org/rangertaha/urlinsane.svg?branch=master)](https://travis-ci.org/rangertaha/urlinsane) [![codecov](https://codecov.io/gh/rangertaha/urlinsane/branch/master/graph/badge.svg)](https://codecov.io/gh/rangertaha/urlinsane) 
  
 
 Multilingual domain typo permutation engine used to perform or detect typosquatting, 
