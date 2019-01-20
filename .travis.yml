@@ -2,6 +2,9 @@ language: go
 
 sudo: false
 
+ignore:
+  - Makefile
+
 matrix:
   include:
     - go: "1.8.x"
