@@ -34,15 +34,23 @@ type testpair struct {
 
 var languages = []string{"en", "iw", "es", "fa", "fi", "ar", "ru", "hy"}
 var characterOmissionCases = []testpair{
-	{
-		[]string{"google.com"},
+	{[]string{"google.com"},
 		map[string]bool{
-			"oogle.com":  true,
-			"gogle.com":  true,
-			"goole.com":  true,
-			"googl.com":  true,
-			"gogle.comk": true,
-			"googe.com":  true,
+			"oogle.com": true,
+			"gogle.com": true,
+			"goole.com": true,
+			"googl.com": true,
+			"googe.com": true,
+		}, 5},
+	{[]string{"example.com"},
+		map[string]bool{
+			"xample.com": true,
+			"exmple.com": true,
+			"eample.com": true,
+			"examle.com": true,
+			"exaple.com": true,
+			"exampl.com": true,
+			"exampe.com": true,
 		}, 5},
 }
 
