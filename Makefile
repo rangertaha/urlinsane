@@ -8,6 +8,10 @@ BINARY_NAME=urlinsane
 
 VERSION=0.3.0
 
+.DEFAULT_GOAL := test
+.PHONY: default
+default: test ;
+
 all: build hash
 hash:
 	md5 builds/$(BINARY_NAME) | md5sum builds/$(BINARY_NAME)
