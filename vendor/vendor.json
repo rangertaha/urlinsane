@@ -1,0 +1,97 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "RxxgyQpg4wQwj7pBs+iV++YJdaw=",
+			"path": "github.com/bobesa/go-domain-util/domainutil",
+			"revision": "1d708c097a6a59a3e6432affc53cf41808b35c8b",
+			"revisionTime": "2018-08-15T12:24:59Z"
+		},
+		{
+			"checksumSHA1": "WOV56GGU8vaukW096YvrVQKXUCI=",
+			"path": "github.com/glaslos/ssdeep",
+			"revision": "c17959d65837b88a8c5ceb4b3a0e949df59f161b",
+			"revisionTime": "2018-07-02T09:14:21Z"
+		},
+		{
+			"checksumSHA1": "qR7D38Zmn9TPUvGn64k+r0+Kq1c=",
+			"path": "github.com/mattn/go-runewidth",
+			"revision": "703b5e6b11ae25aeb2af9ebb5d5fdf8fa2575211",
+			"revisionTime": "2018-12-18T00:06:49Z"
+		},
+		{
+			"checksumSHA1": "iAaX0GtKtIRjvqvIhogId+2Vfo8=",
+			"path": "github.com/olekukonko/tablewriter",
+			"revision": "e6d60cf7ba1f42d86d54cdf5508611c4aafb3970",
+			"revisionTime": "2018-10-26T07:14:10Z"
+		},
+		{
+			"checksumSHA1": "GSadhwjiMi8zISYoyC1arYREbKE=",
+			"path": "github.com/oschwald/geoip2-golang",
+			"revision": "96f33b8f2d6434e8fc2f3cf751084acb5153cc80",
+			"revisionTime": "2018-10-14T22:14:48Z"
+		},
+		{
+			"checksumSHA1": "nPndiHmb7ECBrLiH+EvlLmMOsQM=",
+			"path": "github.com/oschwald/maxminddb-golang",
+			"revision": "31672ba7a68affbd201a4c909a72a0484fb1a2f0",
+			"revisionTime": "2018-12-20T04:16:48Z"
+		},
+		{
+			"checksumSHA1": "WYd7aI5YkeiRSv5pqr12emezBIg=",
+			"path": "github.com/spf13/cobra",
+			"revision": "7547e83b2d85fd1893c7d76916f67689d761fecb",
+			"revisionTime": "2019-01-09T00:34:09Z"
+		},
+		{
+			"checksumSHA1": "VK+UsykzUMkaKl2ankiyutolraE=",
+			"path": "github.com/spf13/pflag",
+			"revision": "24fa6976df40757dce6aea913e7b81ade90530e1",
+			"revisionTime": "2018-12-23T18:29:23Z"
+		},
+		{
+			"checksumSHA1": "RcrB7tgYS/GMW4QrwVdMOTNqIU8=",
+			"path": "golang.org/x/net/idna",
+			"revision": "915654e7eabcea33ae277abbecf52f0d8b7a9fdc",
+			"revisionTime": "2019-01-10T19:11:31Z"
+		},
+		{
+			"checksumSHA1": "Ls+gFAmwGpsa3vQGqG92U66qgp0=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "48ac38b7c8cbedd50b1613c0fccacfc7d88dfcdf",
+			"revisionTime": "2019-01-09T08:27:30Z"
+		},
+		{
+			"checksumSHA1": "Y7nctMxT58lRM78VtElPerhcnEs=",
+			"path": "golang.org/x/sys/windows",
+			"revision": "48ac38b7c8cbedd50b1613c0fccacfc7d88dfcdf",
+			"revisionTime": "2019-01-09T08:27:30Z"
+		},
+		{
+			"checksumSHA1": "CbpjEkkOeh0fdM/V8xKDdI0AA88=",
+			"path": "golang.org/x/text/secure/bidirule",
+			"revision": "e6919f6577db79269a6443b9dc46d18f2238fb5d",
+			"revisionTime": "2018-12-15T12:10:58Z"
+		},
+		{
+			"checksumSHA1": "o3YChxWLvyCmkAn/ZNBj9HC9zKw=",
+			"path": "golang.org/x/text/transform",
+			"revision": "e6919f6577db79269a6443b9dc46d18f2238fb5d",
+			"revisionTime": "2018-12-15T12:10:58Z"
+		},
+		{
+			"checksumSHA1": "kRHVIuePi38RXAJmksH3MfQzTJI=",
+			"path": "golang.org/x/text/unicode/bidi",
+			"revision": "e6919f6577db79269a6443b9dc46d18f2238fb5d",
+			"revisionTime": "2018-12-15T12:10:58Z"
+		},
+		{
+			"checksumSHA1": "lBB8oUHgIK0RUuDchkQVfMXJQh0=",
+			"path": "golang.org/x/text/unicode/norm",
+			"revision": "e6919f6577db79269a6443b9dc46d18f2238fb5d",
+			"revisionTime": "2018-12-15T12:10:58Z"
+		}
+	],
+	"rootPath": "github.com/rangertaha/urlinsane"
+}
