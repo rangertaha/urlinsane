@@ -5,16 +5,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io"
 	"os"
-)
-
-var (
-	// ErrFileTooSmall is returned when a file contains too few bytes.
-	ErrFileTooSmall = errors.New("did not process files large enough to produce meaningful results")
-
-	// ErrBlockSizeTooSmall is returned when a file can't produce a large enough block size.
-	ErrBlockSizeTooSmall = errors.New("unable to establish a sufficient block size")
 )
 
 const (
@@ -27,11 +18,7 @@ const (
 	b64String            = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 )
 
-var (
-	b64 = []byte(b64String)
-	// Force calculates the hash on invalid input
-	Force = false
-)
+var b64 = []byte(b64String)
 
 type rollingState struct {
 	window []byte
@@ -41,11 +28,27 @@ type rollingState struct {
 	n      uint32
 }
 
-func (rs *rollingState) rollSum() uint32 {
+func (rs rollingState) rollSum() uint32 {
 	return rs.h1 + rs.h2 + rs.h3
 }
 
-type ssdeepState struct {
+// FuzzyHash struct for comparison
+type FuzzyHash struct {
+	blockSize    int
+	hashString1  string
+	hashString2  string
+	fileLocation string
+}
+
+func (h FuzzyHash) String() string {
+	if h.fileLocation == "" {
+		return fmt.Sprintf("%d:%s:%s", h.blockSize, h.hashString1, h.hashString2)
+	}
+	return fmt.Sprintf("%d:%s:%s,\"%s\"", h.blockSize, h.hashString1, h.hashString2, h.fileLocation)
+}
+
+// SSDEEP state struct
+type SSDEEP struct {
 	rollingState rollingState
 	blockSize    int
 	hashString1  string
@@ -54,8 +57,9 @@ type ssdeepState struct {
 	blockHash2   uint32
 }
 
-func newSsdeepState() ssdeepState {
-	return ssdeepState{
+// NewSSDEEP creates a new SSDEEP hash
+func NewSSDEEP() SSDEEP {
+	return SSDEEP{
 		blockHash1: hashInit,
 		blockHash2: hashInit,
 		rollingState: rollingState{
@@ -64,9 +68,9 @@ func newSsdeepState() ssdeepState {
 	}
 }
 
-func (state *ssdeepState) newRollingState() {
-	state.rollingState = rollingState{}
-	state.rollingState.window = make([]byte, rollingWindow)
+func (sdeep *SSDEEP) newRollingState() {
+	sdeep.rollingState = rollingState{}
+	sdeep.rollingState.window = make([]byte, rollingWindow)
 }
 
 // sumHash based on FNV hash
@@ -75,8 +79,8 @@ func sumHash(c byte, h uint32) uint32 {
 }
 
 // rollHash based on Adler checksum
-func (state *ssdeepState) rollHash(c byte) {
-	rs := &state.rollingState
+func (sdeep *SSDEEP) rollHash(c byte) {
+	rs := &sdeep.rollingState
 	rs.h2 -= rs.h1
 	rs.h2 += rollingWindow * uint32(c)
 	rs.h1 += uint32(c)
@@ -90,144 +94,157 @@ func (state *ssdeepState) rollHash(c byte) {
 	rs.h3 ^= uint32(c)
 }
 
-// getBlockSize calculates the block size based on file size
-func (state *ssdeepState) setBlockSize(n int) {
+// GetBlockSize calculates the block size based on file size
+func (sdeep *SSDEEP) GetBlockSize(n int) {
 	blockSize := blockMin
 	for blockSize*spamSumLength < n {
 		blockSize = blockSize * 2
 	}
-	state.blockSize = blockSize
+	sdeep.blockSize = blockSize
 }
 
-func (state *ssdeepState) processByte(b byte) {
-	state.blockHash1 = sumHash(b, state.blockHash1)
-	state.blockHash2 = sumHash(b, state.blockHash2)
-	state.rollHash(b)
-	rh := int(state.rollingState.rollSum())
-	if rh%state.blockSize == (state.blockSize - 1) {
-		if len(state.hashString1) < spamSumLength-1 {
-			state.hashString1 += string(b64[state.blockHash1%64])
-			state.blockHash1 = hashInit
+// GetFileSize returns the files size
+func GetFileSize(f *os.File) (int, error) {
+	fi, err := f.Stat()
+	if err != nil {
+		return 0, err
+	}
+	return int(fi.Size()), nil
+}
+
+func (sdeep *SSDEEP) processByte(b byte) {
+	sdeep.blockHash1 = sumHash(b, sdeep.blockHash1)
+	sdeep.blockHash2 = sumHash(b, sdeep.blockHash2)
+	sdeep.rollHash(b)
+	rh := int(sdeep.rollingState.h1 + sdeep.rollingState.h2 + sdeep.rollingState.h3)
+	if rh%sdeep.blockSize == (sdeep.blockSize - 1) {
+		if len(sdeep.hashString1) < spamSumLength-1 {
+			sdeep.hashString1 += string(b64[sdeep.blockHash1%64])
+			sdeep.blockHash1 = hashInit
 		}
-		if rh%(state.blockSize*2) == ((state.blockSize * 2) - 1) {
-			if len(state.hashString2) < spamSumLength/2-1 {
-				state.hashString2 += string(b64[state.blockHash2%64])
-				state.blockHash2 = hashInit
+		if rh%(sdeep.blockSize*2) == ((sdeep.blockSize * 2) - 1) {
+			if len(sdeep.hashString2) < spamSumLength/2-1 {
+				sdeep.hashString2 += string(b64[sdeep.blockHash2%64])
+				sdeep.blockHash2 = hashInit
 			}
 		}
 	}
 }
 
-// Reader is the minimum interface that ssdeep needs in order to calculate the fuzzy hash.
-// Reader groups io.Seeker and io.Reader.
-type Reader interface {
-	io.Seeker
-	io.Reader
+type fuzzyReader interface {
+	ReadByte() (byte, error)
+	Read([]byte) (int, error)
+	Seek(offset int64, whence int) (int64, error)
 }
 
-func (state *ssdeepState) process(r *bufio.Reader) {
-	state.newRollingState()
+func (sdeep *SSDEEP) process(r *bufio.Reader) {
+	sdeep.newRollingState()
 	b, err := r.ReadByte()
 	for err == nil {
-		state.processByte(b)
+		sdeep.processByte(b)
 		b, err = r.ReadByte()
+	}
+	rh := sdeep.rollingState.rollSum()
+	if rh != 0 {
+		// Finalize the hash string with the remaining data
+		sdeep.hashString1 += string(b64[sdeep.blockHash1%64])
+		sdeep.hashString2 += string(b64[sdeep.blockHash2%64])
 	}
 }
 
-// FuzzyReader computes the fuzzy hash of a Reader interface with a given input size.
-// It is the caller's responsibility to append the filename, if any, to result after computation.
-// Returns an error when ssdeep could not be computed on the Reader.
-func FuzzyReader(f Reader, fileSize int) (out string, err error) {
-	if fileSize < minFileSize {
-		err = ErrFileTooSmall
-		if !Force {
-			return
-		}
+// FuzzyReader hash of a provided reader
+func (sdeep *SSDEEP) FuzzyReader(f fuzzyReader, fileLocation string) (*FuzzyHash, error) {
+	if sdeep.blockSize == 0 {
+		return nil, errors.New("Invalid Block Size, run GetBlockSize()")
 	}
-	state := newSsdeepState()
-	state.setBlockSize(fileSize)
 	for {
-		if _, seekErr := f.Seek(0, 0); seekErr != nil {
-			return "", seekErr
-		}
+		f.Seek(0, 0)
 		r := bufio.NewReader(f)
-		state.process(r)
-		if state.blockSize < blockMin {
-			err = ErrBlockSizeTooSmall
-			if !Force {
-				return
-			}
+		sdeep.process(r)
+		if sdeep.blockSize < blockMin {
+			return nil, errors.New("Unable to establish a sufficient block size")
 		}
-		if len(state.hashString1) < spamSumLength/2 {
-			state.blockSize = state.blockSize / 2
-			state.blockHash1 = hashInit
-			state.blockHash2 = hashInit
-			state.hashString1 = ""
-			state.hashString2 = ""
+		if len(sdeep.hashString1) < spamSumLength/2 {
+			sdeep.blockSize = sdeep.blockSize / 2
+			sdeep.blockHash1 = hashInit
+			sdeep.blockHash2 = hashInit
+			sdeep.hashString1 = ""
+			sdeep.hashString2 = ""
 		} else {
-			rh := state.rollingState.rollSum()
-			if rh != 0 {
-				// Finalize the hash string with the remaining data
-				state.hashString1 += string(b64[state.blockHash1%64])
-				state.hashString2 += string(b64[state.blockHash2%64])
-			}
 			break
 		}
 	}
-	return fmt.Sprintf("%d:%s:%s", state.blockSize, state.hashString1, state.hashString2), err
+	return &FuzzyHash{
+		blockSize:    sdeep.blockSize,
+		hashString1:  sdeep.hashString1,
+		hashString2:  sdeep.hashString2,
+		fileLocation: fileLocation,
+	}, nil
 }
 
-// FuzzyFilename computes the fuzzy hash of a file.
-// FuzzyFilename will opens, reads, and hashes the contents of the file 'filename'.
-// It is the caller's responsibility to append the filename to the result after computation.
-// Returns an error when the file doesn't exist or ssdeep could not be computed on the file.
-func FuzzyFilename(filename string) (string, error) {
-	f, err := os.Open(filename)
-	if err != nil {
-		return "", err
+// FuzzyFile hash of a provided reader
+func (sdeep *SSDEEP) FuzzyFile(f *os.File, fileLocation string) (*FuzzyHash, error) {
+	// This is not optimal as you have to read the whole file into memory
+	if sdeep.blockSize == 0 {
+		n, err := GetFileSize(f)
+		if err != nil {
+			return nil, err
+		}
+		if n < minFileSize {
+			return nil, errors.New("Did not process files large enough to produce meaningful results")
+		}
+		sdeep.GetBlockSize(int(n))
 	}
-	defer f.Close()
-
-	return FuzzyFile(f)
+	for {
+		f.Seek(0, 0)
+		r := bufio.NewReader(f)
+		sdeep.process(r)
+		if sdeep.blockSize < blockMin {
+			return nil, errors.New("Unable to establish a sufficient block size")
+		}
+		if len(sdeep.hashString1) < spamSumLength/2 {
+			sdeep.blockSize = sdeep.blockSize / 2
+			sdeep.blockHash1 = hashInit
+			sdeep.blockHash2 = hashInit
+			sdeep.hashString1 = ""
+			sdeep.hashString2 = ""
+		} else {
+			break
+		}
+	}
+	return &FuzzyHash{
+		blockSize:    sdeep.blockSize,
+		hashString1:  sdeep.hashString1,
+		hashString2:  sdeep.hashString2,
+		fileLocation: fileLocation,
+	}, nil
 }
 
-// FuzzyFile computes the fuzzy hash of a file using os.File pointer.
-// FuzzyFile will computes the fuzzy hash of the contents of the open file, starting at the beginning of the file.
-// When finished, the file pointer is returned to its original position.
-// If an error occurs, the file pointer's value is undefined.
-// It is the callers's responsibility to append the filename to the result after computation.
-// Returns an error when ssdeep could not be computed on the file.
-func FuzzyFile(f *os.File) (out string, err error) {
-	currentPosition, err := f.Seek(0, io.SeekCurrent)
-	if err != nil {
-		return
+// FuzzyByte hash of a provided byte array
+func (sdeep *SSDEEP) FuzzyByte(blob []byte) (*FuzzyHash, error) {
+	n := len(blob)
+	if n < minFileSize {
+		return nil, errors.New("Did not process files large enough to produce meaningful results")
 	}
-	if _, err = f.Seek(0, io.SeekStart); err != nil {
-		return
+	sdeep.GetBlockSize(n)
+	for {
+		br := bytes.NewReader(blob)
+		br.Seek(0, 0)
+		r := bufio.NewReader(br)
+		sdeep.process(r)
+		if sdeep.blockSize < blockMin {
+			return nil, errors.New("Unable to establish a sufficient block size")
+		}
+		if len(sdeep.hashString1) < spamSumLength/2 {
+			sdeep.blockSize = sdeep.blockSize / 2
+		} else {
+			break
+		}
 	}
-	stat, err := f.Stat()
-	if err != nil {
-		return
-	}
-	out, err = FuzzyReader(f, int(stat.Size()))
-	if err != nil {
-		return
-	}
-	_, err = f.Seek(currentPosition, io.SeekStart)
-	return
-}
-
-// FuzzyBytes computes the fuzzy hash of a slice of byte.
-// It is the caller's responsibility to append the filename, if any, to result after computation.
-// Returns an error when ssdeep could not be computed on the buffer.
-func FuzzyBytes(buffer []byte) (string, error) {
-	n := len(buffer)
-	br := bytes.NewReader(buffer)
-
-	result, err := FuzzyReader(br, n)
-	if err != nil {
-		return "", err
-	}
-
-	return result, nil
+	return &FuzzyHash{
+		blockSize:    sdeep.blockSize,
+		hashString1:  sdeep.hashString1,
+		hashString2:  sdeep.hashString2,
+		fileLocation: "",
+	}, nil
 }
