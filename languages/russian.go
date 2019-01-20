@@ -20,159 +20,168 @@
 
 package languages
 
-// Common misspellings
-var RU_SPELLINGS = [][]string{
-	// []string{"misspelling", "correct1", "correct2"},
-}
+var (
+	// ruMisspellings are common misspellings
+	ruMisspellings = [][]string{
+		[]string{"", ""},
+	}
 
-// Common Homophones
-var RU_HOMOPHONES = [][]string{
-	// []string{"vary", "very"},
-}
+	// ruHomophones are words that sound alike
+	ruHomophones = [][]string{
+		[]string{"точка", "."},
+	}
 
-var RUSSIAN = Language{
-	Code: "RU",
-	Name: "Russian",
-	// http://www.russianlessons.net/lessons/lesson2_main.php
-	Numerals: map[string][]string{
-		"0":          []string{"ноль"},
-		"1":          []string{"один"},
-		"2":          []string{"два"},
-		"3":          []string{"три"},
-		"4":          []string{"четыре"},
-		"5":          []string{"пять"},
-		"6":          []string{"шесть"},
-		"7":          []string{"семь"},
-		"8":          []string{"восемь"},
-		"9":          []string{"девять"},
-		"10":         []string{"десять"},
-		"11":         []string{"одиннадцать"},
-		"12":         []string{"двенадцать"},
-		"13":         []string{"тринадцать"},
-		"14":         []string{"четырнадцать"},
-		"15":         []string{"пятнадцать"},
-		"16":         []string{"шестнадцать"},
-		"17":         []string{"семнадцать"},
-		"18":         []string{"восемнадцать"},
-		"19":         []string{"девятнадцать"},
-		"20":         []string{"двадцать"},
-		"21":         []string{"двадцатьодин"},
-		"22":         []string{"двадцатьдва"},
-		"23":         []string{"двадцатьтри"},
-		"24":         []string{"двадцатьчетыре"},
-		"30":         []string{"тридцать"},
-		"40":         []string{"сорок"},
-		"50":         []string{"пятьдесят"},
-		"60":         []string{"шестьдесят"},
-		"70":         []string{"семьдесят"},
-		"80":         []string{"восемьдесят"},
-		"90":         []string{"девяносто"},
-		"100":        []string{"сто"},
-		"200":        []string{"двести"},
-		"300":        []string{"триста"},
-		"400":        []string{"четыреста"},
-		"500":        []string{"пятьсот"},
-		"600":        []string{"шестьсот"},
-		"700":        []string{"семьсот"},
-		"800":        []string{"восемьсот"},
-		"900":        []string{"девятьсот"},
-		"1000":       []string{"тысяча"},
-		"1000000":    []string{"миллион"},
-		"1000000000": []string{"миллиард"},
-	},
-	Graphemes: []string{
-		"а", "б", "в", "г", "д", "е", "ё",
-		"ж", "з", "и", "й", "к", "л", "м",
-		"н", "о", "п", "р", "с", "т", "у",
-		"ф", "х", "ц", "ч", "ш", "щ", "ъ",
-		"ы", "ь", "э", "ю", "я", "ѕ", "ѯ",
-		"ѱ", "ѡ", "ѫ", "ѧ", "ѭ", "ѩ"},
-	Vowels:       []string{"a", "о", "у", "э", "ы", "я", "ё", "ю", "е", "и"},
-	Misspellings: RU_SPELLINGS,
-	Homophones:   RU_HOMOPHONES,
-	Homoglyphs: map[string][]string{
-		"а": []string{"à", "á", "â", "ã", "ä", "å", "ɑ", "а", "ạ", "ǎ", "ă", "ȧ", "ӓ"},
-		"б": []string{"6", "b", "Ь", `b̔"`, "ɓ", "Б"},
-		"в": []string{"B"},
-		"г": []string{"ʀ", "Г", "ᴦ", "ɼ", "ɽ"},
-		"д": []string{""},
-		"е": []string{""},
-		"ё": []string{""},
-		"ж": []string{""},
-		"з": []string{""},
-		"и": []string{""},
-		"й": []string{""},
-		"к": []string{""},
-		"л": []string{""},
-		"м": []string{""},
-		"н": []string{""},
-		"о": []string{""},
-		"п": []string{""},
-		"р": []string{""},
-		"с": []string{""},
-		"т": []string{""},
-		"у": []string{""},
-		"ф": []string{""},
-		"х": []string{""},
-		"ц": []string{""},
-		"ч": []string{""},
-		"ш": []string{""},
-		"щ": []string{""},
-		"ъ": []string{""},
-		"ы": []string{""},
-		"ь": []string{""},
-		"э": []string{""},
-		"ю": []string{""},
-		"я": []string{""},
-		"ѕ": []string{""},
-		"ѯ": []string{""},
-		"ѱ": []string{""},
-		"ѡ": []string{""},
-		"ѫ": []string{""},
-		"ѧ": []string{""},
-		"ѭ": []string{""},
-		"ѩ": []string{""},
-	},
-}
+	// ruAntonyms are words opposite in meaning to another (e.g. bad and good ).
+	ruAntonyms = map[string][]string{
+		"хорошо": []string{"плохой"},
+	}
 
-var RU_KEYBOARDS = []Keyboard{
-	{
-		Code:        "RU1",
-		Name:        "ЙЦУКЕН",
-		Description: "Russian keyboard layout",
-		Language:    RUSSIAN,
-		Layout: []string{
-			"1234567890   ",
-			"йцукенгшщзхъё",
-			"фывапролджэ  ",
-			"ячсмитьбю    "},
-	},
-	{
-		Code:        "RU2",
-		Name:        "ЯШЕРТЫ",
-		Description: "Phonetic Russian keybaord layout",
-		Language:    RUSSIAN,
-		Layout: []string{
-			"1234567890ьъ ",
-			"яшертыуиопюжэ",
-			"асдфгчйкл    ",
-			"зхцвбнм      "},
-	},
-	{
-		Code:        "RU3",
-		Name:        "ЙЦУКЕН",
-		Description: "PC Russian keyboard layout",
-		Language:    RUSSIAN,
-		Layout: []string{
-			"1234567890- ",
-			"йцукенгшщзхъ",
-			"фывапролджэ ",
-			"ячсмитьбю   "},
-	},
-}
+	ruLanguage = Language{
+		Code: "RU",
+		Name: "Russian",
+		// http://www.russianlessons.net/lessons/lesson2_main.php
+		Numerals: map[string][]string{
+			// Number: cardinal..,  ordinal.., other...
+			"0":          []string{"ноль"},
+			"1":          []string{"один"},
+			"2":          []string{"два"},
+			"3":          []string{"три"},
+			"4":          []string{"четыре"},
+			"5":          []string{"пять"},
+			"6":          []string{"шесть"},
+			"7":          []string{"семь"},
+			"8":          []string{"восемь"},
+			"9":          []string{"девять"},
+			"10":         []string{"десять"},
+			"11":         []string{"одиннадцать"},
+			"12":         []string{"двенадцать"},
+			"13":         []string{"тринадцать"},
+			"14":         []string{"четырнадцать"},
+			"15":         []string{"пятнадцать"},
+			"16":         []string{"шестнадцать"},
+			"17":         []string{"семнадцать"},
+			"18":         []string{"восемнадцать"},
+			"19":         []string{"девятнадцать"},
+			"20":         []string{"двадцать"},
+			"21":         []string{"двадцатьодин"},
+			"22":         []string{"двадцатьдва"},
+			"23":         []string{"двадцатьтри"},
+			"24":         []string{"двадцатьчетыре"},
+			"30":         []string{"тридцать"},
+			"40":         []string{"сорок"},
+			"50":         []string{"пятьдесят"},
+			"60":         []string{"шестьдесят"},
+			"70":         []string{"семьдесят"},
+			"80":         []string{"восемьдесят"},
+			"90":         []string{"девяносто"},
+			"100":        []string{"сто"},
+			"200":        []string{"двести"},
+			"300":        []string{"триста"},
+			"400":        []string{"четыреста"},
+			"500":        []string{"пятьсот"},
+			"600":        []string{"шестьсот"},
+			"700":        []string{"семьсот"},
+			"800":        []string{"восемьсот"},
+			"900":        []string{"девятьсот"},
+			"1000":       []string{"тысяча"},
+			"1000000":    []string{"миллион"},
+			"1000000000": []string{"миллиард"},
+		},
+		Graphemes: []string{
+			"а", "б", "в", "г", "д", "е", "ё",
+			"ж", "з", "и", "й", "к", "л", "м",
+			"н", "о", "п", "р", "с", "т", "у",
+			"ф", "х", "ц", "ч", "ш", "щ", "ъ",
+			"ы", "ь", "э", "ю", "я", "ѕ", "ѯ",
+			"ѱ", "ѡ", "ѫ", "ѧ", "ѭ", "ѩ"},
+		Vowels:       []string{"a", "о", "у", "э", "ы", "я", "ё", "ю", "е", "и"},
+		Misspellings: ruMisspellings,
+		Homophones:   ruHomophones,
+		Antonyms:     ruAntonyms,
+		Homoglyphs: map[string][]string{
+			"а": []string{"à", "á", "â", "ã", "ä", "å", "ɑ", "а", "ạ", "ǎ", "ă", "ȧ", "ӓ"},
+			"б": []string{"6", "b", "Ь", `b̔"`, "ɓ", "Б"},
+			"в": []string{"B"},
+			"г": []string{"ʀ", "Г", "ᴦ", "ɼ", "ɽ"},
+			"д": []string{""},
+			"е": []string{""},
+			"ё": []string{""},
+			"ж": []string{""},
+			"з": []string{""},
+			"и": []string{""},
+			"й": []string{""},
+			"к": []string{""},
+			"л": []string{""},
+			"м": []string{""},
+			"н": []string{""},
+			"о": []string{""},
+			"п": []string{""},
+			"р": []string{""},
+			"с": []string{""},
+			"т": []string{""},
+			"у": []string{""},
+			"ф": []string{""},
+			"х": []string{""},
+			"ц": []string{""},
+			"ч": []string{""},
+			"ш": []string{""},
+			"щ": []string{""},
+			"ъ": []string{""},
+			"ы": []string{""},
+			"ь": []string{""},
+			"э": []string{""},
+			"ю": []string{""},
+			"я": []string{""},
+			"ѕ": []string{""},
+			"ѯ": []string{""},
+			"ѱ": []string{""},
+			"ѡ": []string{""},
+			"ѫ": []string{""},
+			"ѧ": []string{""},
+			"ѭ": []string{""},
+			"ѩ": []string{""},
+		},
+	}
+
+	ruKeyboards = []Keyboard{
+		{
+			Code:        "RU1",
+			Name:        "ЙЦУКЕН",
+			Description: "Russian keyboard layout",
+			Language:    ruLanguage,
+			Layout: []string{
+				"1234567890   ",
+				"йцукенгшщзхъё",
+				"фывапролджэ  ",
+				"ячсмитьбю    "},
+		},
+		{
+			Code:        "RU2",
+			Name:        "ЯШЕРТЫ",
+			Description: "Phonetic Russian keybaord layout",
+			Language:    ruLanguage,
+			Layout: []string{
+				"1234567890ьъ ",
+				"яшертыуиопюжэ",
+				"асдфгчйкл    ",
+				"зхцвбнм      "},
+		},
+		{
+			Code:        "RU3",
+			Name:        "ЙЦУКЕН",
+			Description: "PC Russian keyboard layout",
+			Language:    ruLanguage,
+			Layout: []string{
+				"1234567890- ",
+				"йцукенгшщзхъ",
+				"фывапролджэ ",
+				"ячсмитьбю   "},
+		},
+	}
+)
 
 func init() {
-	KEYBOARDS.Add(RU_KEYBOARDS)
-	KEYBOARDS.Append("RU", RU_KEYBOARDS)
-	KEYBOARDS.Append("ALL", RU_KEYBOARDS)
+	KEYBOARDS.Add(ruKeyboards)
+	KEYBOARDS.Append("RU", ruKeyboards)
+	KEYBOARDS.Append("ALL", ruKeyboards)
 }

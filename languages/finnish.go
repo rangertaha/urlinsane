@@ -21,16 +21,17 @@
 package languages
 
 var (
-	// fiMisspelling are commonly misspelled words
+	// hyMisspellings are common misspellings
 	fiMisspellings = [][]string{
-		// []string{"misspelling", "correct1", "correct2"},
+		// []string{"", ""},
 	}
 
-	// fiHomophones are words that sound alike
+	// hyHomophones are words that sound alike
 	fiHomophones = [][]string{
-		// []string{"vary", "very"},
+		[]string{"", "."},
 	}
-	// fiAntonyms are words opposite in meaning to another (e.g. bad and good ).
+
+	// hyAntonyms are words opposite in meaning to another (e.g. bad and good ).
 	fiAntonyms = map[string][]string{
 		"": []string{""},
 	}
@@ -94,7 +95,6 @@ var (
 			"ö": []string{"0", "Ο", "ο", "О", "о", "Օ", "ȯ", "ọ", "ỏ", "ơ", "ó", "ö", "ӧ"},
 		},
 	}
-
 	fiKeyboards = []Keyboard{
 		{
 			Code:        "FI1",

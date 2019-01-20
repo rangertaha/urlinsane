@@ -1,4 +1,4 @@
-// Copyright © 2018 rangertaha rangertaha@gmail.com
+// Copyright © 2019 rangertaha rangertaha@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -93,7 +93,7 @@ type (
 )
 
 const (
-	VERSION = "0.4.0"
+	VERSION = "0.3.0"
 	DEBUG   = false
 	LOGO    = `
  _   _  ____   _      ___
@@ -108,8 +108,8 @@ const (
 // New
 func New(c Config) (i URLInsane) {
 	i = URLInsane{
-		domains:     c.domains,
-		keyboards:   c.keyboards,
+		domains:   c.domains,
+		keyboards: c.keyboards,
 		types:       c.typos,
 		funcs:       c.funcs,
 		concurrency: c.concurrency,

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/rangertaha/urlinsane"
 )
 
@@ -22,6 +23,6 @@ func main() {
 	out := urli.Execute()
 
 	for r := range out {
-		fmt.Println(r.Live, r.Domain.Domain, r.Typo.Name, r.Data)
+		fmt.Println(r.Live, r.Variant.Domain, r.Typo.Name, r.Data)
 	}
 }

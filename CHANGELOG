@@ -4,19 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.4.0] - 2019-01-17
-### Added
-- Code cleanup
-- Fixed bug with NS record
-- Fixed bug with keyboard selection
-- Added the Armenian language
-- Added French Canadian language
 
 ## [0.3.0] - 2018-09-10
 ### Added
 - Added geoip function
 - Updated help string
 - Added live filter for domains with ip addresses.
+- Added the Armenian language.
 - Added the Persian language.
 - Added the Hebrew language.
 

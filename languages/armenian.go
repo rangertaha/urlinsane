@@ -25,7 +25,7 @@ package languages
 var (
 	// hyMisspellings are common misspellings
 	hyMisspellings = [][]string{
-		//[]string{"", ""},
+		// []string{"", ""},
 	}
 
 	// hyHomophones are words that sound alike
@@ -33,9 +33,9 @@ var (
 		[]string{"կետը", "."},
 	}
 
-	// enAntonyms are words opposite in meaning to another (e.g. bad and good ).
+	// hyAntonyms are words opposite in meaning to another (e.g. bad and good ).
 	hyAntonyms = map[string][]string{
-		"լավ": []string{"վատ"},
+		"լավ": []string{"վատը"},
 	}
 
 	hyLanguage = Language{
@@ -45,7 +45,7 @@ var (
 		// http://mylanguages.org/armenian_numbers.php
 		Numerals: map[string][]string{
 			// Number: cardinal..,  ordinal.., other...
-			"0":       []string{"զրո"},
+			"0":       []string{""},
 			"1":       []string{"մեկ"},
 			"2":       []string{"երկու"},
 			"3":       []string{"երեք"},
