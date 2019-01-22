@@ -24,13 +24,13 @@ import (
 	"net"
 	"strings"
 
-	"net/http"
 	"github.com/glaslos/ssdeep"
+	"net/http"
 
 	"fmt"
-	"io/ioutil"
 	"github.com/bobesa/go-domain-util/domainutil"
 	"github.com/oschwald/geoip2-golang"
+	"io/ioutil"
 )
 
 // The registry for extra functions
@@ -123,8 +123,6 @@ var whoisLookup = Extra{
 	Exec:        whoisLookupFunc,
 	Headers:     []string{"WHOIS?"},
 }
-
-
 
 func init() {
 	FRegister("IDNA", idnaLookup)
@@ -241,8 +239,6 @@ func geoIPLookupFunc(tr TypoResult) (results []TypoResult) {
 		}
 	}
 
-
-
 	// If you are using strings that may be invalid, check that ip is not nil
 
 	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
@@ -326,15 +322,6 @@ func whoisLookupFunc(tr TypoResult) (results []TypoResult) {
 	return
 }
 
-
-
-
-
-
-
-
-
-
 func checkIP(tr TypoResult) TypoResult {
 	ip4, _ := tr.Data["IPv4"]
 	ip6, _ := tr.Data["IPv6"]
@@ -360,8 +347,6 @@ func checkIP(tr TypoResult) TypoResult {
 
 	return TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data}
 }
-
-
 
 // FRegister
 func FRegister(name string, efunc ...Extra) {

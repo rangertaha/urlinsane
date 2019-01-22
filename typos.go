@@ -560,7 +560,7 @@ func numeralSwapFunc(tc TypoConfig) (results []TypoConfig) {
 					dnew := strings.Replace(tc.Original.Domain, inum, snum, -1)
 					dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix}
 					if dnew != tc.Original.Domain {
-						results = append(results, TypoConfig{tc.Original ,dm, tc.Keyboards, tc.Languages, tc.Typo})
+						results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 					}
 				}
 			}

@@ -90,7 +90,6 @@ func (urli *URLInsane) stdOutput(in <-chan TypoResult) {
 	table.SetHeader(urli.headers)
 	table.SetBorder(false)
 
-
 	live := func(l bool) string {
 		if l {
 			return "ONLINE"
