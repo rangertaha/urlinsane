@@ -1,4 +1,4 @@
-// Copyright © 2018 rangertaha rangertaha@gmail.com
+// Copyright © 2019 rangertaha rangertaha@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -89,7 +89,6 @@ func (urli *URLInsane) stdOutput(in <-chan TypoResult) {
 	table := tablewriter.NewWriter(urli.outFile())
 	table.SetHeader(urli.headers)
 	table.SetBorder(false)
-
 
 	live := func(l bool) string {
 		if l {

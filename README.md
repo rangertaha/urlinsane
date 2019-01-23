@@ -1,5 +1,7 @@
 # URLInsane
 
+[![Build Status](https://travis-ci.org/rangertaha/urlinsane.svg?branch=master)](https://travis-ci.org/rangertaha/urlinsane) 
+
 Multilingual domain typo permutation engine used to perform or detect typosquatting, 
 brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and 
 threat intelligence.

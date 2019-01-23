@@ -1,0 +1,23 @@
+language: go
+
+sudo: false
+
+branches:
+  only:
+  - master
+
+matrix:
+  include:
+    - go: "1.10.x"
+    - go: "1.11.x"
+      env: GO111MODULE=off
+    - go: tip
+
+before_install:
+  - go get -t -v ./...
+
+script:
+  - go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

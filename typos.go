@@ -1,4 +1,4 @@
-// Copyright © 2018 rangertaha rangertaha@gmail.com
+// Copyright © 2019 rangertaha rangertaha@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -560,7 +560,7 @@ func numeralSwapFunc(tc TypoConfig) (results []TypoConfig) {
 					dnew := strings.Replace(tc.Original.Domain, inum, snum, -1)
 					dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix}
 					if dnew != tc.Original.Domain {
-						results = append(results, TypoConfig{tc.Original ,dm, tc.Keyboards, tc.Languages, tc.Typo})
+						results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 					}
 				}
 			}
