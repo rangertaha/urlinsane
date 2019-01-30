@@ -42,11 +42,11 @@ var (
 		Name: "Hebrew",
 		Numerals: map[string][]string{
 			// Number: cardinal..,  ordinal.., other...
-			"0":  []string{""},
-			"1":  []string{""},
-			"2":  []string{""},
-			"3":  []string{""},
-			"4":  []string{""},
+			"0":  []string{"zeo"},
+			"1":  []string{"אחד"},
+			"2":  []string{"שתיים"},
+			"3":  []string{"שלוש"},
+			"4":  []string{"ארבעה"},
 			"5":  []string{""},
 			"6":  []string{""},
 			"7":  []string{""},

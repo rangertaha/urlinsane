@@ -42,7 +42,7 @@ var (
 		Name: "Arabic",
 		// https://www2.rocketlanguages.com/arabic/lessons/numbers-in-arabic/
 		Numerals: map[string][]string{
-			"٠":  []string{"", "sifr"},
+			"٠":  []string{"sifr"},
 			"١":  []string{"واحد", "wa7ed"},
 			"٢":  []string{"اتنين", "etneyn"},
 			"٣":  []string{"تلاتة", "talata"},
