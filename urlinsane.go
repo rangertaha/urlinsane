@@ -52,9 +52,9 @@ type (
 		funcWG sync.WaitGroup
 	}
 	Domain struct {
-		Subdomain string
-		Domain    string
-		Suffix    string
+		Subdomain string `json:"subdomain"`
+		Domain    string `json:"domain"`
+		Suffix    string `json:"suffix"`
 	}
 	Extra struct {
 		Code        string
@@ -64,9 +64,9 @@ type (
 		Exec        ExtraFunc
 	}
 	Typo struct {
-		Code        string
-		Name        string
-		Description string
+		Code        string `json:"code"`
+		Name        string `json:"name"`
+		Description string `json:"description"`
 		Exec        TypoFunc
 	}
 	TypoConfig struct {
@@ -78,11 +78,11 @@ type (
 	}
 
 	TypoResult struct {
-		Original Domain
-		Variant  Domain
-		Typo     Typo
-		Live     bool
-		Data     map[string]string
+		Original Domain            `json:"original"`
+		Variant  Domain            `json:"variant"`
+		Typo     Typo              `json:"typo"`
+		Live     bool              `json:"live"`
+		Data     map[string]string `json:"data"`
 	}
 
 	// TypoFunc defines a function to register typos.
