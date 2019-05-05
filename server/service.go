@@ -22,28 +22,67 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/languages"
 	"github.com/spf13/cobra"
 )
 
 // Property ...
 type Property struct {
-	Type        string     `json:"type,omitempty"`
-	Description string     `json:"description,omitempty"`
-	Optional    bool       `json:"optional,omitempty"`
-	Values      []Property `json:"values,omitempty"`
+	Type        string          `json:"type"`
+	Description string          `json:"description"`
+	Optional    bool            `json:"optional"`
+	Values      []PropertyValue `json:"values,omitempty"`
 }
 
+// PropertyValue ...
+type PropertyValue struct {
+	Value       string `json:"value"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+// Properties ...
+type Properties map[string]Property
+
 var concurrency int
+
+var properties = &Properties{
+	"domain": Property{
+		Type:        "input",
+		Optional:    false,
+		Description: "The domain",
+	},
+	"funcs": Property{
+		Type:        "multi-select",
+		Optional:    true,
+		Description: "Extra functions for data or filtering (default [idna])",
+		Values:      getFuncOptions(),
+	},
+	"typos": Property{
+		Type:        "multi-select",
+		Optional:    true,
+		Description: "The domain",
+		Values:      getTypoOptions(),
+	},
+	"keyboards": Property{
+		Type:        "multi-select",
+		Optional:    true,
+		Description: "Keyboards/layouts ID to use (default [en1])",
+		Values:      getKeyboardOptions(),
+	},
+}
 
 // NewServer ...
 func NewServer(cmd *cobra.Command, args []string) {
 	// Echo instance
 	e := echo.New()
+	e.HideBanner = true
 
 	address, err := cmd.Flags().GetString("addr.host")
 	port, err := cmd.Flags().GetString("addr.port")
@@ -91,8 +130,9 @@ func postHandler(c echo.Context) (err error) {
 }
 
 func optionsHandler(c echo.Context) (err error) {
+	fmt.Println(languages.KEYBOARDS.Keyboards())
 
-	return c.JSON(http.StatusOK, "")
+	return c.JSON(http.StatusOK, properties)
 }
 
 // postStreamHandler ...
@@ -120,4 +160,25 @@ func postStreamHandler(c echo.Context) (err error) {
 		c.Response().Flush()
 	}
 	return nil
+}
+
+func getTypoOptions() (p []PropertyValue) {
+	for _, t := range urlinsane.TRetrieve() {
+		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
+	}
+	return
+}
+
+func getFuncOptions() (p []PropertyValue) {
+	for _, t := range urlinsane.FRetrieve() {
+		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
+	}
+	return
+}
+
+func getKeyboardOptions() (p []PropertyValue) {
+	for _, t := range languages.KEYBOARDS.Keyboards() {
+		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
+	}
+	return
 }
