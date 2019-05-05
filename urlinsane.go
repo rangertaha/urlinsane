@@ -21,6 +21,7 @@
 package urlinsane
 
 import (
+	"fmt"
 	"sync"
 
 	"golang.org/x/net/idna"
@@ -84,6 +85,8 @@ type (
 		Live     bool              `json:"live"`
 		Data     map[string]string `json:"data"`
 	}
+
+	OutputResult map[string]interface{}
 
 	// TypoFunc defines a function to register typos.
 	TypoFunc func(TypoConfig) []TypoConfig
@@ -223,7 +226,17 @@ func (urli *URLInsane) DistChain(in <-chan TypoResult) <-chan TypoResult {
 }
 
 // Execute program returning a channel with typos
-func (urli *URLInsane) Execute() <-chan TypoResult {
+func (urli *URLInsane) Execute() (res OutputResult) {
+
+	for r := range urli.Stream() {
+		fmt.Println(r)
+	}
+	return res
+
+}
+
+// Stream results via channels
+func (urli *URLInsane) Stream() <-chan TypoResult {
 
 	// Generate typosquatting options
 	typoConfigs := urli.GenTypoConfig()
@@ -251,7 +264,7 @@ func (urli *URLInsane) Dedup(in <-chan TypoResult) <-chan TypoResult {
 func (urli *URLInsane) Start() {
 
 	// Execute program returning a channel with results
-	output := urli.Execute()
+	output := urli.Stream()
 
 	// Output results based on config
 	urli.Output(output)
@@ -275,5 +288,14 @@ func (d *Domain) String() (domain string) {
 		domain = domain + "." + d.Suffix
 	}
 	domain = strings.TrimSpace(domain)
+	return
+}
+
+// Simple returns a simple map of strings
+func (d *TypoResult) Simple() (result OutputResult) {
+	result = d.Data
+	result["live"] = fmt.Sprint(d.Live)
+	result["domain"] = d.Variant.String()
+	result["typo"] = d.Typo.Name
 	return
 }

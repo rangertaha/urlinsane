@@ -25,22 +25,20 @@ import (
 	"strings"
 
 	"github.com/bobesa/go-domain-util/domainutil"
+	"github.com/labstack/echo"
 	"github.com/rangertaha/urlinsane/languages"
 	"github.com/spf13/cobra"
 )
 
 type BasicConfig struct {
-	Domains   []string
-	Keyboards []string
-	// Languages []string
-	Typos []string
-	Funcs []string
-	//Filters       []string
-	Concurrency int
-
-	Format  string
-	File    string
-	Verbose bool
+	Domains     []string `json:"domains" validate:"required"`
+	Keyboards   []string `json:"keyboards"`
+	Typos       []string `json:"typos"`
+	Funcs       []string `json:"funcs"`
+	Concurrency int      `json:"concurrency"`
+	Format      string   `json:"cormat"`
+	File        string   `json:"file"`
+	Verbose     bool     `json:"verbose"`
 }
 
 type Config struct {
@@ -212,6 +210,59 @@ func CobraConfig(cmd *cobra.Command, args []string) (c Config) {
 
 	// Requires c.funcs
 	c.GetHeaders(c.funcs)
+
+	return
+}
+
+// APIConfig creates a configuration from an echo.Context
+func APIConfig(t echo.Context) (c Config) {
+
+	// // Get domain
+	// c.GetDomains(args)
+
+	// // Get keyboards
+	// keyboard := t.FormValue("keyboards")
+	// keyboards = t.
+	// errHandler(err)
+	// c.GetKeyboards(keyboards)
+
+	// // Registered functions
+	// var algorithms []string
+	// typos, err := cmd.PersistentFlags().GetStringArray("typos")
+	// for _, typo := range typos {
+	// 	algorithms = append(algorithms, strings.ToUpper(typo))
+	// }
+	// errHandler(err)
+	// c.GetTypos(algorithms)
+
+	// var funcs []string
+	// functions, err := cmd.PersistentFlags().GetStringArray("funcs")
+	// for _, function := range functions {
+	// 	funcs = append(funcs, strings.ToUpper(function))
+	// }
+	// errHandler(err)
+	// c.GetFuncs(funcs)
+
+	// // Processing option
+	// concurrency, err := cmd.PersistentFlags().GetInt("concurrency")
+	// errHandler(err)
+	// c.GetConcurrency(concurrency)
+
+	// // Output options
+	// file, err := cmd.PersistentFlags().GetString("file")
+	// errHandler(err)
+	// c.GetFile(file)
+
+	// format, err := cmd.PersistentFlags().GetString("format")
+	// errHandler(err)
+	// c.GetFormat(format)
+
+	// verbose, err := cmd.PersistentFlags().GetBool("verbose")
+	// errHandler(err)
+	// c.GetVerbose(verbose)
+
+	// // Requires c.funcs
+	// c.GetHeaders(c.funcs)
 
 	return
 }
