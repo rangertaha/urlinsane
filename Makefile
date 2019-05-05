@@ -5,7 +5,7 @@ GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 BINARY_NAME=urlinsane
-VERSION=0.3.0
+VERSION=0.5.0
 
 .PHONY: help
 
