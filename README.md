@@ -189,7 +189,7 @@ variations for **google.com** using the character omission **(CO)** algorithm
 then checks for **ip** addresses. 
 
 ```
-urlinsane google.com -t co  -x geo
+urlinsane typo google.com -t co  -x geo
 
 ```
 
@@ -202,7 +202,7 @@ just the short name 'HG'
 * **-x ns** Checks for DNS NS records
 
 ```
-urlinsane google.com -t hg -v -x ip -x idna -x ns
+urlinsane typo google.com -t hg -v -x ip -x idna -x ns
 
 
 ```
