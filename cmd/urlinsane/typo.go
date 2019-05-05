@@ -95,10 +95,8 @@ var typoCmd = &cobra.Command{
 }
 
 func init() {
-
 	helpOptions := HelpOptions{
 		languages.KEYBOARDS.Keyboards("all"),
-		// languages.GetKeyboards([]string{"all"}),
 		urlinsane.TRetrieve("all"),
 		urlinsane.FRetrieve("all"),
 	}

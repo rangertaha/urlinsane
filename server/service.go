@@ -47,35 +47,90 @@ type PropertyValue struct {
 	Description string `json:"description"`
 }
 
+// Response ...
+type Response struct {
+	Headers []string                 `json:"headers"`
+	Rows    []map[string]interface{} `json:"rows"`
+}
+
 // Properties ...
 type Properties map[string]Property
 
 var concurrency int
+var properties *Properties
 
-var properties = &Properties{
-	"domain": Property{
-		Type:        "input",
-		Optional:    false,
-		Description: "The domain",
-	},
-	"funcs": Property{
-		Type:        "multi-select",
-		Optional:    true,
-		Description: "Extra functions for data or filtering (default [idna])",
-		Values:      getFuncOptions(),
-	},
-	"typos": Property{
-		Type:        "multi-select",
-		Optional:    true,
-		Description: "The domain",
-		Values:      getTypoOptions(),
-	},
-	"keyboards": Property{
-		Type:        "multi-select",
-		Optional:    true,
-		Description: "Keyboards/layouts ID to use (default [en1])",
-		Values:      getKeyboardOptions(),
-	},
+func init() {
+	properties = &Properties{
+		"domain": Property{
+			Type:        "input",
+			Optional:    false,
+			Description: "The domain",
+		},
+		"funcs": Property{
+			Type:        "multi-select",
+			Optional:    true,
+			Description: "Extra functions for data or filtering (default [idna])",
+			Values:      getFuncOptions(),
+		},
+		"typos": Property{
+			Type:        "multi-select",
+			Optional:    true,
+			Description: "The domain",
+			Values:      getTypoOptions(),
+		},
+		"keyboards": Property{
+			Type:        "multi-select",
+			Optional:    true,
+			Description: "Keyboards/layouts ID to use (default [en1])",
+			Values:      getKeyboardOptions(),
+		},
+	}
+
+}
+
+func getTypoOptions() (p []PropertyValue) {
+	for _, t := range urlinsane.TRetrieve("all") {
+		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
+	}
+	return
+}
+
+func getFuncOptions() (p []PropertyValue) {
+	for _, t := range urlinsane.FRetrieve("all") {
+		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
+	}
+	return
+}
+
+func getKeyboardOptions() (p []PropertyValue) {
+	for _, t := range languages.KEYBOARDS.Keyboards("all") {
+		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
+	}
+	return
+}
+
+// NewResponse ...
+func NewResponse(results []urlinsane.TypoResult) (resp Response) {
+	for _, record := range results {
+		m := make(map[string]interface{})
+
+		for key, value := range record.Data {
+			strKey := fmt.Sprintf("%v", key)
+			strValue := fmt.Sprintf("%v", value)
+			m[strKey] = strValue
+		}
+
+		m["Live"] = record.Live
+		m["Variant"] = record.Variant.String()
+		m["Typo"] = record.Typo
+		resp.Rows = append(resp.Rows, m)
+	}
+
+	for k := range resp.Rows[0] {
+		resp.Headers = append(resp.Headers, k)
+	}
+
+	return resp
 }
 
 // NewServer ...
@@ -103,7 +158,9 @@ func NewServer(cmd *cobra.Command, args []string) {
 	} else {
 		e.POST("/", postHandler)
 	}
-	e.OPTIONS("/", optionsHandler)
+	e.OPTIONS("/", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, properties)
+	})
 
 	// Start server
 	e.Logger.Fatal(e.Start(address + ":" + port))
@@ -123,16 +180,10 @@ func postHandler(c echo.Context) (err error) {
 	urli := urlinsane.New(config.Config())
 
 	// Execute returning results
-	results := urli.Execute()
+	results := NewResponse(urli.Execute())
 
 	// Return JSON results
 	return c.JSON(http.StatusOK, results)
-}
-
-func optionsHandler(c echo.Context) (err error) {
-	fmt.Println(languages.KEYBOARDS.Keyboards())
-
-	return c.JSON(http.StatusOK, properties)
 }
 
 // postStreamHandler ...
@@ -160,25 +211,4 @@ func postStreamHandler(c echo.Context) (err error) {
 		c.Response().Flush()
 	}
 	return nil
-}
-
-func getTypoOptions() (p []PropertyValue) {
-	for _, t := range urlinsane.TRetrieve() {
-		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
-	}
-	return
-}
-
-func getFuncOptions() (p []PropertyValue) {
-	for _, t := range urlinsane.FRetrieve() {
-		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
-	}
-	return
-}
-
-func getKeyboardOptions() (p []PropertyValue) {
-	for _, t := range languages.KEYBOARDS.Keyboards() {
-		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
-	}
-	return
 }
