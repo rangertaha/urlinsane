@@ -21,7 +21,6 @@
 package urlinsane
 
 import (
-	"fmt"
 	"sync"
 
 	"golang.org/x/net/idna"
@@ -53,37 +52,37 @@ type (
 		funcWG sync.WaitGroup
 	}
 	Domain struct {
-		Subdomain string `json:"subdomain"`
-		Domain    string `json:"domain"`
-		Suffix    string `json:"suffix"`
+		Subdomain string `json:"subdomain,omitempty"`
+		Domain    string `json:"domain,omitempty"`
+		Suffix    string `json:"suffix,omitempty"`
 	}
 	Extra struct {
-		Code        string
-		Name        string
-		Description string
-		Headers     []string
-		Exec        ExtraFunc
+		Code        string    `json:"code,omitempty"`
+		Name        string    `json:"name,omitempty"`
+		Description string    `json:"description,omitempty"`
+		Headers     []string  `json:"code,omitempty"`
+		Exec        ExtraFunc `json:"-"`
 	}
 	Typo struct {
-		Code        string `json:"code"`
-		Name        string `json:"name"`
-		Description string `json:"description"`
-		Exec        TypoFunc
+		Code        string   `json:"code,omitempty"`
+		Name        string   `json:"name,omitempty"`
+		Description string   `json:"description,omitempty"`
+		Exec        TypoFunc `json:"-"`
 	}
 	TypoConfig struct {
-		Original  Domain
-		Variant   Domain
-		Keyboards []languages.Keyboard
-		Languages []languages.Language
-		Typo      Typo
+		Original  Domain               `json:"original,omitempty"`
+		Variant   Domain               `json:"variant,omitempty"`
+		Keyboards []languages.Keyboard `json:"keyboards,omitempty"`
+		Languages []languages.Language `json:"languages,omitempty"`
+		Typo      Typo                 `json:"typo,omitempty"`
 	}
 
 	TypoResult struct {
-		Original Domain            `json:"original"`
-		Variant  Domain            `json:"variant"`
-		Typo     Typo              `json:"typo"`
-		Live     bool              `json:"live"`
-		Data     map[string]string `json:"data"`
+		Original Domain            `json:"original,omitempty"`
+		Variant  Domain            `json:"variant,omitempty"`
+		Typo     Typo              `json:"typo,omitempty"`
+		Live     bool              `json:"live,omitempty"`
+		Data     map[string]string `json:"data,omitempty"`
 	}
 
 	OutputResult map[string]interface{}
@@ -226,13 +225,12 @@ func (urli *URLInsane) DistChain(in <-chan TypoResult) <-chan TypoResult {
 }
 
 // Execute program returning a channel with typos
-func (urli *URLInsane) Execute() (res OutputResult) {
+func (urli *URLInsane) Execute() (res []TypoResult) {
 
 	for r := range urli.Stream() {
-		fmt.Println(r)
+		res = append(res, r)
 	}
 	return res
-
 }
 
 // Stream results via channels
@@ -291,11 +289,11 @@ func (d *Domain) String() (domain string) {
 	return
 }
 
-// Simple returns a simple map of strings
-func (d *TypoResult) Simple() (result OutputResult) {
-	result = d.Data
-	result["live"] = fmt.Sprint(d.Live)
-	result["domain"] = d.Variant.String()
-	result["typo"] = d.Typo.Name
-	return
-}
+// // Simple returns a simple map of strings
+// func (d *TypoResult) Simple() (result OutputResult) {
+// 	result = d.Data
+// 	result["live"] = fmt.Sprint(d.Live)
+// 	result["domain"] = d.Variant.String()
+// 	result["typo"] = d.Typo.Name
+// 	return
+// }

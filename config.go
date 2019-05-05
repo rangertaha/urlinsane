@@ -31,14 +31,14 @@ import (
 )
 
 type BasicConfig struct {
-	Domains     []string `json:"domains" validate:"required"`
-	Keyboards   []string `json:"keyboards"`
-	Typos       []string `json:"typos"`
-	Funcs       []string `json:"funcs"`
-	Concurrency int      `json:"concurrency"`
-	Format      string   `json:"cormat"`
-	File        string   `json:"file"`
-	Verbose     bool     `json:"verbose"`
+	Domains     []string `json:"domains,omitempty"`
+	Keyboards   []string `json:"keyboards,omitempty"`
+	Typos       []string `json:"typos,omitempty"`
+	Funcs       []string `json:"funcs,omitempty"`
+	Concurrency int      `json:"concurrency,omitempty"`
+	Format      string   `json:"format,omitempty"`
+	File        string   `json:"file,omitempty"`
+	Verbose     bool     `json:"verbose,omitempty"`
 }
 
 type Config struct {
