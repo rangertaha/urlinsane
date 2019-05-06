@@ -42,7 +42,4 @@ func init() {
 	serverCmd.Flags().StringP("addr.port", "p", "8888", "Port to use")
 	serverCmd.Flags().IntP("concurrency", "c", 50, "Number of concurrent workers")
 	serverCmd.Flags().BoolP("stream", "s", false, "Stream results via http2")
-
-	serverCmd.PersistentFlags().String("log.level", "DEBUG", "Logging level")
-	serverCmd.PersistentFlags().String("log.file", "urlinsane.log", "Filename to send logs to")
 }
