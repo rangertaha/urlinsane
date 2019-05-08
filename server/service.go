@@ -158,7 +158,7 @@ func NewServer(cmd *cobra.Command, args []string) {
 	} else {
 		e.POST("/", postHandler)
 	}
-	e.OPTIONS("/", func(c echo.Context) error {
+	e.GET("/options", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, properties)
 	})
 
