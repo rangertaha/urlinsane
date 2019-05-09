@@ -34,6 +34,7 @@ run: ## Build and run the urlinsane tool
 	./$(BINARY_NAME)
 
 deps: ## Install dependencies
+	$(GOGET) ./...
 	$(GOGET) github.com/rangertaha/urlinsane
 
 versions: ## Build the binaries for Windows, OSX, and Linux
