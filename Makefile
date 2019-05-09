@@ -18,27 +18,30 @@ all: build hash ## Build a binary and output the md5 hash
 hash: ## Output the md5 hash
 	md5 builds/$(BINARY_NAME) | md5sum builds/$(BINARY_NAME)
 
+run: ## Build and run the urlinsane tool
+run: deps build
+	./builds/$(BINARY_NAME)
+
 build: ## Build the binary in /builds
+build: deps
 	mkdir -p builds
 	cd cmd; $(GOBUILD) -o ../builds/$(BINARY_NAME) -v
 
 test: ## Run unit test
+test: deps
 	$(GOTEST) -v ./...
 
 clean: ## Remove files created by the build
 	$(GOCLEAN)
 	rm -f $(BINARY_NAME)
 
-run: ## Build and run the urlinsane tool
-	cd cmd; $(GOBUILD) -o ../$(BINARY_NAME) -v
-	./$(BINARY_NAME)
-
-deps: ## Install dependencies
-	$(GOGET) ./...
-	$(GOGET) github.com/rangertaha/urlinsane
-
 versions: ## Build the binaries for Windows, OSX, and Linux
+versions: deps
 	mkdir -p builds
 	cd cmd; env GOOS=darwin GOARCH=amd64 $(GOBUILD) -o ../builds/$(BINARY_NAME)-$(VERSION)-darwin-amd64 -v
 	cd cmd; env GOOS=linux GOARCH=amd64 $(GOBUILD) -o ../builds/$(BINARY_NAME)-$(VERSION)-linux-amd64 -v
 	cd cmd; env GOOS=windows GOARCH=amd64 $(GOBUILD) -o ../builds/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe -v
+
+deps: ## Install dependencies
+	$(GOGET) ./...
+	$(GOGET) github.com/rangertaha/urlinsane
