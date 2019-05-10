@@ -21,7 +21,6 @@
 package urlinsane
 
 import (
-	"fmt"
 	"sync"
 
 	"golang.org/x/net/idna"
@@ -148,13 +147,7 @@ func (urli *URLInsane) Typos(in <-chan TypoConfig) <-chan TypoConfig {
 			for c := range in {
 				// Execute typo function returning typo results
 				for _, t := range c.Typo.Exec(c) {
-
 					if t.Variant.Domain != t.Original.Domain {
-						fmt.Println("")
-						fmt.Println("")
-						fmt.Println(t.Variant.Domain)
-						fmt.Println("")
-						fmt.Println("")
 						out <- t
 					}
 				}
