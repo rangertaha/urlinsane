@@ -147,7 +147,7 @@ func (urli *URLInsane) Typos(in <-chan TypoConfig) <-chan TypoConfig {
 			for c := range in {
 				// Execute typo function returning typo results
 				for _, t := range c.Typo.Exec(c) {
-					if t.Variant.Domain != t.Original.Domain {
+					if t.Variant.String() != t.Original.String() {
 						out <- t
 					}
 				}
