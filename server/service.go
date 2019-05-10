@@ -125,9 +125,10 @@ func NewResponse(results []urlinsane.TypoResult) (resp Response) {
 		m["Typo"] = record.Typo
 		resp.Rows = append(resp.Rows, m)
 	}
-
-	for k := range resp.Rows[0] {
-		resp.Headers = append(resp.Headers, k)
+	if len(resp.Rows) > 0 {
+		for k := range resp.Rows[0] {
+			resp.Headers = append(resp.Headers, k)
+		}
 	}
 
 	return resp
@@ -180,10 +181,10 @@ func postHandler(c echo.Context) (err error) {
 	urli := urlinsane.New(config.Config())
 
 	// Execute returning results
-	results := NewResponse(urli.Execute())
+	reponse := NewResponse(urli.Execute())
 
 	// Return JSON results
-	return c.JSON(http.StatusOK, results)
+	return c.JSON(http.StatusOK, reponse)
 }
 
 // postStreamHandler ...

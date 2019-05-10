@@ -21,6 +21,7 @@
 package urlinsane
 
 import (
+	"fmt"
 	"sync"
 
 	"golang.org/x/net/idna"
@@ -145,11 +146,17 @@ func (urli *URLInsane) Typos(in <-chan TypoConfig) <-chan TypoConfig {
 		go func(id int, in <-chan TypoConfig, out chan<- TypoConfig) {
 			defer urli.typoWG.Done()
 			for c := range in {
+				// Execute typo function returning typo results
 				for _, t := range c.Typo.Exec(c) {
-					// if t.Variant.Domain != "" {
-					// 	out <- t
-					// }
-					out <- t
+
+					if t.Variant.Domain != t.Original.Domain {
+						fmt.Println("")
+						fmt.Println("")
+						fmt.Println(t.Variant.Domain)
+						fmt.Println("")
+						fmt.Println("")
+						out <- t
+					}
 				}
 			}
 		}(w, in, out)
@@ -256,15 +263,24 @@ func (urli *URLInsane) Stream() <-chan TypoResult {
 
 // Dedup filters the results for unique variations of domains
 func (urli *URLInsane) Dedup(in <-chan TypoResult) <-chan TypoResult {
+	duplicates := make(map[string]int)
 	out := make(chan TypoResult)
 	go func(in <-chan TypoResult, out chan<- TypoResult) {
-
 		for c := range in {
-			out <- c
+
+			// Count and remove deplicates
+			dup, ok := duplicates[c.Variant.String()]
+			if ok {
+				duplicates[c.Variant.String()] = dup + 1
+
+			} else {
+				duplicates[c.Variant.String()] = 1
+				out <- c
+			}
+
 		}
 		close(out)
 	}(in, out)
-
 	return out
 }
 
