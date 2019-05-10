@@ -25,7 +25,7 @@ package languages
 var (
 	// hyMisspellings are common misspellings
 	hyMisspellings = [][]string{
-		// []string{"", ""},
+		[]string{"", ""},
 	}
 
 	// hyHomophones are words that sound alike

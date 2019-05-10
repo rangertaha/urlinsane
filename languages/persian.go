@@ -23,7 +23,7 @@ package languages
 var (
 	// faMisspellings are common misspellings
 	faMisspellings = [][]string{
-		//[]string{"", ""},
+		[]string{"", ""},
 	}
 
 	// faHomophones are words that sound alike

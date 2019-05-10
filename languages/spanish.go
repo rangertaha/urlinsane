@@ -23,7 +23,7 @@ package languages
 var (
 	// esMisspellings are common misspellings
 	esMisspellings = [][]string{
-		// []string{"", ""},
+		[]string{"", ""},
 	}
 
 	// esHomophones are words that sound alike

@@ -146,6 +146,9 @@ func (urli *URLInsane) Typos(in <-chan TypoConfig) <-chan TypoConfig {
 			defer urli.typoWG.Done()
 			for c := range in {
 				for _, t := range c.Typo.Exec(c) {
+					// if t.Variant.Domain != "" {
+					// 	out <- t
+					// }
 					out <- t
 				}
 			}
@@ -224,7 +227,7 @@ func (urli *URLInsane) DistChain(in <-chan TypoResult) <-chan TypoResult {
 	return out
 }
 
-// Execute program returning a channel with typos
+// Execute program returning results
 func (urli *URLInsane) Execute() (res []TypoResult) {
 
 	for r := range urli.Stream() {
@@ -248,12 +251,19 @@ func (urli *URLInsane) Stream() <-chan TypoResult {
 	// Execute extra functions
 	output := urli.DistChain(results)
 
-	return output
+	return urli.Dedup(output)
 }
 
 // Dedup filters the results for unique variations of domains
 func (urli *URLInsane) Dedup(in <-chan TypoResult) <-chan TypoResult {
 	out := make(chan TypoResult)
+	go func(in <-chan TypoResult, out chan<- TypoResult) {
+
+		for c := range in {
+			out <- c
+		}
+		close(out)
+	}(in, out)
 
 	return out
 }
@@ -288,12 +298,3 @@ func (d *Domain) String() (domain string) {
 	domain = strings.TrimSpace(domain)
 	return
 }
-
-// // Simple returns a simple map of strings
-// func (d *TypoResult) Simple() (result OutputResult) {
-// 	result = d.Data
-// 	result["live"] = fmt.Sprint(d.Live)
-// 	result["domain"] = d.Variant.String()
-// 	result["typo"] = d.Typo.Name
-// 	return
-// }

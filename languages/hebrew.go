@@ -23,12 +23,17 @@ package languages
 var (
 	// iwMisspellings are common misspellings
 	iwMisspellings = [][]string{
-		// []string{"", ""},
+		[]string{"כשהגעתי", "שהגעתי"},
+		[]string{"אני יבוא", "אני אבוא"},
+		[]string{"נחרט", "נחרת"},
+		[]string{"לתבוע", "לטבוע"},
+		[]string{"הנידון", "הנדון"},
 	}
 
 	// iwHomophones are words that sound alike
 	iwHomophones = [][]string{
 		[]string{"נקודה", "."},
+		[]string{"לזנק", "-"},
 	}
 
 	// iwAntonyms are words opposite in meaning to another (e.g. bad and good ).
@@ -42,24 +47,49 @@ var (
 		Name: "Hebrew",
 		Numerals: map[string][]string{
 			// Number: cardinal..,  ordinal.., other...
-			"0":  []string{"zeo"},
+			"0":  []string{"אפס"},
 			"1":  []string{"אחד"},
 			"2":  []string{"שתיים"},
 			"3":  []string{"שלוש"},
 			"4":  []string{"ארבעה"},
-			"5":  []string{""},
-			"6":  []string{""},
-			"7":  []string{""},
-			"8":  []string{""},
-			"9":  []string{""},
-			"10": []string{""},
+			"5":  []string{"חמישה"},
+			"6":  []string{"שישה"},
+			"7":  []string{"שבע"},
+			"8":  []string{"שמונה"},
+			"9":  []string{"תשע"},
+			"10": []string{"עשר"},
 		},
-		Graphemes:    []string{""},
+		Graphemes: []string{
+			"א", "ב", "ג", "ד", "ה", "ו",
+			"ז", "ח", "ט", " י", "כ", "ל",
+			"מ", "נ", "ס", "ע", "פ", "צ",
+			"ק", "ר", "ש", "ת"},
 		Misspellings: iwMisspellings,
 		Homophones:   iwHomophones,
 		Antonyms:     iwAntonyms,
-		Homoglyphs:   map[string][]string{
-			//"": []string{},
+		Homoglyphs: map[string][]string{
+			"א":  []string{"x", "X"},
+			"ב":  []string{"1", "l"},
+			"ג":  []string{"i"},
+			"ד":  []string{"T", "t"},
+			"ה":  []string{"n"},
+			"ו":  []string{"i"},
+			"ז":  []string{"t", "T"},
+			"ח":  []string{"n"},
+			"ט":  []string{"u", "U"},
+			" י": []string{"-"},
+			"כ":  []string{"J", "j"},
+			"ל":  []string{"7"},
+			"מ":  []string{"D"},
+			"נ":  []string{"l"},
+			"ס":  []string{"o", "0", "Ο", "ο", "О", "о", "Օ", "ȯ", "ọ", "ỏ", "ơ", "ó", "ö", "ӧ", "ه", "ة"},
+			"ע":  []string{"v", "y"},
+			"פ":  []string{"g"},
+			"צ":  []string{"y"},
+			"ק":  []string{"p", "P"},
+			"ר":  []string{"l"},
+			"ש":  []string{"w"},
+			"ת":  []string{"n"},
 		},
 	}
 
