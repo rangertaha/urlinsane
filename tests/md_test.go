@@ -26,32 +26,23 @@ import (
 	"github.com/rangertaha/urlinsane"
 )
 
+
 //var languages = []string{"en", "iw", "es", "fa", "fi", "ar", "ru", "hy"}
-var characterOmissionCases = []testpair{
+var missingDotCases = []testpair{
 	{[]string{"google.com"},
 		map[string]bool{
-			"oogle.com": true,
-			"gogle.com": true,
-			"goole.com": true,
-			"googl.com": true,
-			"googe.com": true,
-		}, 5},
+			"googlecom.com": true,
+		}, 1},
 	{[]string{"example.com"},
 		map[string]bool{
-			"xample.com": true,
-			"exmple.com": true,
-			"eample.com": true,
-			"examle.com": true,
-			"exaple.com": true,
-			"exampl.com": true,
-			"exampe.com": true,
-		}, 5},
+			"examplecom.com": true,
+		}, 1},
 }
 
-func TestCharacterOmission(t *testing.T) {
+func TestMissingDot(t *testing.T) {
 	for _, lang := range languages {
 		count := 0
-		for _, tcase := range characterOmissionCases {
+		for _, tcase := range missingDotCases {
 			conf := urlinsane.BasicConfig{
 				Domains:     tcase.domains,
 				Keyboards:   []string{lang},

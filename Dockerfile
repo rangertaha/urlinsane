@@ -17,9 +17,10 @@ RUN go get -d -v ./...
 # Install the package
 RUN go install -v ./...
 
+RUN mv $GOPATH/bin/cmd $GOPATH/bin/urlinsane
+
 # Exposes port 8888 to the outside world
 EXPOSE 8888
 
 # Run the executable
-CMD ["urlinsane", "server"]
-
+CMD ["urlinsane", "server", "-a", "0.0.0.0", "-p", "8888"]

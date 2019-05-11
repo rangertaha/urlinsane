@@ -40,3 +40,6 @@ build: deps
 deps: ## Install dependencies
 	$(GOGET) ./...
 	$(GOGET) github.com/rangertaha/urlinsane
+
+docker: ## Build docker image
+	docker build -t urlinsane .
