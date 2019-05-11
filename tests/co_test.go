@@ -26,7 +26,14 @@ import (
 	"github.com/rangertaha/urlinsane"
 )
 
-//var languages = []string{"en", "iw", "es", "fa", "fi", "ar", "ru", "hy"}
+type testpair struct {
+	domains []string
+	values  map[string]bool
+	total   int
+}
+
+var languages = []string{"en", "iw", "es", "fa", "fi", "ar", "ru", "hy"}
+
 var characterOmissionCases = []testpair{
 	{[]string{"google.com"},
 		map[string]bool{
@@ -67,6 +74,7 @@ func TestCharacterOmission(t *testing.T) {
 			out := urli.Stream()
 
 			for r := range out {
+				// fmt.Println(r)
 				_, ok := tcase.values[r.Variant.String()]
 				if !ok {
 					t.Errorf("Failed variant: %v for domains: %v, language: %v, algorithm %v", r.Variant.String(), tcase.domains, lang, r.Typo.Name)
