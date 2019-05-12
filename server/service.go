@@ -155,11 +155,11 @@ func NewServer(cmd *cobra.Command, args []string) {
 	// Handlers
 	if stream {
 		// https://echo.labstack.com/cookbook/streaming-response
-		e.POST("/", postStreamHandler)
+		e.POST("/api/urlinsane", postStreamHandler)
 	} else {
-		e.POST("/", postHandler)
+		e.POST("/api/urlinsane", postHandler)
 	}
-	e.GET("/options", func(c echo.Context) error {
+	e.GET("/api/urlinsane/options", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, properties)
 	})
 
