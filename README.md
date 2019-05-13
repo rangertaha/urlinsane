@@ -34,7 +34,7 @@ threat intelligence.
 
 ## Cli Tool
 
-```bash
+```
 Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.
 
 Usage:
@@ -53,7 +53,7 @@ Use "urlinsane [command] --help" for more information about a command.
 
 ### Squatting Options
 
-```bash
+```
 urlinsane typo -h
 
 
@@ -139,7 +139,7 @@ AUTHOR:
 ```
 
 ## Server Options
-```bash
+```
 urlinsane server -h
 
 This command starts up a REST API server to use this tool programmatically.
@@ -161,7 +161,7 @@ Flags:
 Generates variations for **google.com** using the character omission **(CO)** 
 algorithm.
 
-```bash
+```
 urlinsane typo google.com -t co
 
  _   _  ____   _      ___
