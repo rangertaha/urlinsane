@@ -20,7 +20,7 @@ func main() {
 
 	urli := urlinsane.New(conf.Config())
 
-	out := urli.Execute()
+	out := urli.Stream()
 
 	for r := range out {
 		fmt.Println(r.Live, r.Variant.Domain, r.Typo.Name, r.Data)

@@ -52,38 +52,40 @@ type (
 		funcWG sync.WaitGroup
 	}
 	Domain struct {
-		Subdomain string
-		Domain    string
-		Suffix    string
+		Subdomain string `json:"subdomain,omitempty"`
+		Domain    string `json:"domain,omitempty"`
+		Suffix    string `json:"suffix,omitempty"`
 	}
 	Extra struct {
-		Code        string
-		Name        string
-		Description string
-		Headers     []string
-		Exec        ExtraFunc
+		Code        string    `json:"code,omitempty"`
+		Name        string    `json:"name,omitempty"`
+		Description string    `json:"description,omitempty"`
+		Headers     []string  `json:"code,omitempty"`
+		Exec        ExtraFunc `json:"-"`
 	}
 	Typo struct {
-		Code        string
-		Name        string
-		Description string
-		Exec        TypoFunc
+		Code        string   `json:"code,omitempty"`
+		Name        string   `json:"name,omitempty"`
+		Description string   `json:"description,omitempty"`
+		Exec        TypoFunc `json:"-"`
 	}
 	TypoConfig struct {
-		Original  Domain
-		Variant   Domain
-		Keyboards []languages.Keyboard
-		Languages []languages.Language
-		Typo      Typo
+		Original  Domain               `json:"original,omitempty"`
+		Variant   Domain               `json:"variant,omitempty"`
+		Keyboards []languages.Keyboard `json:"keyboards,omitempty"`
+		Languages []languages.Language `json:"languages,omitempty"`
+		Typo      Typo                 `json:"typo,omitempty"`
 	}
 
 	TypoResult struct {
-		Original Domain
-		Variant  Domain
-		Typo     Typo
-		Live     bool
-		Data     map[string]string
+		Original Domain            `json:"original,omitempty"`
+		Variant  Domain            `json:"variant,omitempty"`
+		Typo     Typo              `json:"typo,omitempty"`
+		Live     bool              `json:"live,omitempty"`
+		Data     map[string]string `json:"data,omitempty"`
 	}
+
+	OutputResult map[string]interface{}
 
 	// TypoFunc defines a function to register typos.
 	TypoFunc func(TypoConfig) []TypoConfig
@@ -93,7 +95,7 @@ type (
 )
 
 const (
-	VERSION = "0.3.0"
+	VERSION = "0.5.1"
 	DEBUG   = false
 	LOGO    = `
  _   _  ____   _      ___
@@ -143,8 +145,11 @@ func (urli *URLInsane) Typos(in <-chan TypoConfig) <-chan TypoConfig {
 		go func(id int, in <-chan TypoConfig, out chan<- TypoConfig) {
 			defer urli.typoWG.Done()
 			for c := range in {
+				// Execute typo function returning typo results
 				for _, t := range c.Typo.Exec(c) {
-					out <- t
+					if t.Variant.String() != t.Original.String() {
+						out <- t
+					}
 				}
 			}
 		}(w, in, out)
@@ -222,8 +227,17 @@ func (urli *URLInsane) DistChain(in <-chan TypoResult) <-chan TypoResult {
 	return out
 }
 
-// Execute program returning a channel with typos
-func (urli *URLInsane) Execute() <-chan TypoResult {
+// Execute program returning results
+func (urli *URLInsane) Execute() (res []TypoResult) {
+
+	for r := range urli.Stream() {
+		res = append(res, r)
+	}
+	return res
+}
+
+// Stream results via channels
+func (urli *URLInsane) Stream() <-chan TypoResult {
 
 	// Generate typosquatting options
 	typoConfigs := urli.GenTypoConfig()
@@ -237,13 +251,29 @@ func (urli *URLInsane) Execute() <-chan TypoResult {
 	// Execute extra functions
 	output := urli.DistChain(results)
 
-	return output
+	return urli.Dedup(output)
 }
 
 // Dedup filters the results for unique variations of domains
 func (urli *URLInsane) Dedup(in <-chan TypoResult) <-chan TypoResult {
+	duplicates := make(map[string]int)
 	out := make(chan TypoResult)
+	go func(in <-chan TypoResult, out chan<- TypoResult) {
+		for c := range in {
 
+			// Count and remove deplicates
+			dup, ok := duplicates[c.Variant.String()]
+			if ok {
+				duplicates[c.Variant.String()] = dup + 1
+
+			} else {
+				duplicates[c.Variant.String()] = 1
+				out <- c
+			}
+
+		}
+		close(out)
+	}(in, out)
 	return out
 }
 
@@ -251,7 +281,7 @@ func (urli *URLInsane) Dedup(in <-chan TypoResult) <-chan TypoResult {
 func (urli *URLInsane) Start() {
 
 	// Execute program returning a channel with results
-	output := urli.Execute()
+	output := urli.Stream()
 
 	// Output results based on config
 	urli.Output(output)

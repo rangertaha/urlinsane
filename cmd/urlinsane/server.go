@@ -21,30 +21,25 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
+
+	"github.com/rangertaha/urlinsane/server"
 )
 
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:   "urlinsane",
-	Short: "Generates domain typos and variations",
-	Long:  `Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.`,
-	// Run: func(cmd *cobra.Command, args []string) {
-	// },
-}
-
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+// serverCmd represents the server command
+var serverCmd = &cobra.Command{
+	Use:   "server",
+	Short: "Start an API server to use this tool programmatically",
+	Long:  `This command starts up a REST API server to use this tool programmatically.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		server.NewServer(cmd, args)
+	},
 }
 
 func init() {
-
+	rootCmd.AddCommand(serverCmd)
+	serverCmd.Flags().StringP("addr.host", "a", "127.0.0.1", "IP address for API server")
+	serverCmd.Flags().StringP("addr.port", "p", "8888", "Port to use")
+	serverCmd.Flags().IntP("concurrency", "c", 50, "Number of concurrent workers")
+	serverCmd.Flags().BoolP("stream", "s", false, "Stream results via http2")
 }

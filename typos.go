@@ -198,10 +198,14 @@ func init() {
 
 // missingDotFunc typos are created by omitting a dot from the domain. For example, wwwgoogle.com and www.googlecom
 func missingDotFunc(tc TypoConfig) (results []TypoConfig) {
-	for _, str := range missingCharFunc(tc.Original.Domain, ".") {
-		dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix}
-		results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
+	for _, str := range missingCharFunc(tc.Original.String(), ".") {
+		if tc.Original.Domain != str {
+			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix}
+			results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
+		}
 	}
+	dm := Domain{tc.Original.Subdomain, strings.Replace(tc.Original.Domain, ".", "", -1), tc.Original.Suffix}
+	results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 	return results
 }
 

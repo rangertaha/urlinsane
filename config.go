@@ -30,17 +30,14 @@ import (
 )
 
 type BasicConfig struct {
-	Domains   []string
-	Keyboards []string
-	// Languages []string
-	Typos []string
-	Funcs []string
-	//Filters       []string
-	Concurrency int
-
-	Format  string
-	File    string
-	Verbose bool
+	Domains     []string `json:"domains,omitempty"`
+	Keyboards   []string `json:"keyboards,omitempty"`
+	Typos       []string `json:"typos,omitempty"`
+	Funcs       []string `json:"funcs,omitempty"`
+	Concurrency int      `json:"concurrency,omitempty"`
+	Format      string   `json:"format,omitempty"`
+	File        string   `json:"file,omitempty"`
+	Verbose     bool     `json:"verbose,omitempty"`
 }
 
 type Config struct {

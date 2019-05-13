@@ -33,6 +33,7 @@ type testpair struct {
 }
 
 var languages = []string{"en", "iw", "es", "fa", "fi", "ar", "ru", "hy"}
+
 var characterOmissionCases = []testpair{
 	{[]string{"google.com"},
 		map[string]bool{
@@ -70,9 +71,10 @@ func TestCharacterOmission(t *testing.T) {
 
 			urli := urlinsane.New(conf.Config())
 
-			out := urli.Execute()
+			out := urli.Stream()
 
 			for r := range out {
+				// fmt.Println(r)
 				_, ok := tcase.values[r.Variant.String()]
 				if !ok {
 					t.Errorf("Failed variant: %v for domains: %v, language: %v, algorithm %v", r.Variant.String(), tcase.domains, lang, r.Typo.Name)

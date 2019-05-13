@@ -76,7 +76,7 @@ cd builds/
 ## Usage
 Generate variations for `google.com` using the character omission **(CO)** algorithm.
 ```
-urlinsane google.com -t co
+urlinsane typo google.com -t co
  _   _  ____   _      ___
 | | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
 | | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
@@ -99,7 +99,7 @@ urlinsane google.com -t co
 
 Generate variations for `google.com` using the character omission **(CO)** algorithm and check for **ip** addresses. 
 ```
-urlinsane google.com -t co -x ip
+urlinsane typo google.com -t co -x ip
 
  _   _  ____   _      ___
 | | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
@@ -123,7 +123,7 @@ urlinsane google.com -t co -x ip
 Generate variations for `google.com` using the character omission **(CO)** algorithm. 
  Also execute extra functions to get the **ip** addresses, **idna** format and check for **ns** records. 
 ```
-urlinsane google.com -t co -x ip -x idna -x ns
+urlinsane typo google.com -t co -x ip -x idna -x ns
 
  _   _  ____   _      ___
 | | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
@@ -148,7 +148,7 @@ urlinsane google.com -t co -x ip -x idna -x ns
 
 For more details look at the **-h --help** output.
 ```
-urlinsane -h
+urlinsane typo -h
 
     
 Generates domain typos and variations to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.

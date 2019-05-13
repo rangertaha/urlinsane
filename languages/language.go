@@ -27,30 +27,30 @@ import (
 type (
 	// Language type
 	Language struct {
-		Code         string
-		Name         string
-		Numerals     map[string][]string
-		Graphemes    []string
-		Vowels       []string
-		Misspellings [][]string
-		Homophones   [][]string
-		Antonyms     map[string][]string
-		Homoglyphs   map[string][]string
+		Code         string              `json:"code,omitempty"`
+		Name         string              `json:"name,omitempty"`
+		Numerals     map[string][]string `json:"numerals,omitempty"`
+		Graphemes    []string            `json:"graphemes,omitempty"`
+		Vowels       []string            `json:"vowels,omitempty"`
+		Misspellings [][]string          `json:"misspellings,omitempty"`
+		Homophones   [][]string          `json:"homophones,omitempty"`
+		Antonyms     map[string][]string `json:"antonyms,omitempty"`
+		Homoglyphs   map[string][]string `json:"homoglyphs,omitempty"`
 	}
 
 	// Keyboard type
 	Keyboard struct {
-		Code        string
-		Name        string
-		Description string
-		Language    Language
-		Layout      []string
+		Code        string   `json:"code,omitempty"`
+		Name        string   `json:"name,omitempty"`
+		Description string   `json:"description,omitempty"`
+		Language    Language `json:"language,omitempty"`
+		Layout      []string `json:"layout,omitempty"`
 	}
 	// KeyboardGroup type
 	KeyboardGroup struct {
-		Code        string
-		Keyboards   []string
-		Description string
+		Code        string   `json:"code,omitempty"`
+		Keyboards   []string `json:"keyboards,omitempty"`
+		Description string   `json:"description,omitempty"`
 	}
 
 	// KeyboardRegistry stores registered keyboards and groups
@@ -59,7 +59,7 @@ type (
 	}
 )
 
-// BOARDS stores all the registered keyboards
+// KEYBOARDS stores all the registered keyboards
 var KEYBOARDS = NewKeyboardRegistry()
 
 // NewKeyboardRegistry returns a new KeyboardRegistry
@@ -139,7 +139,7 @@ func (urli *Keyboard) Adjacent(char string) (chars []string) {
 	return chars
 }
 
-// SimilarChars
+// SimilarChars ...
 func (lang *Language) SimilarChars(key string) (chars []string) {
 	char, ok := lang.Homoglyphs[key]
 	if ok {
@@ -148,7 +148,7 @@ func (lang *Language) SimilarChars(key string) (chars []string) {
 	return chars
 }
 
-// SimilarSpellings
+// SimilarSpellings ...
 func (lang *Language) SimilarSpellings(str string) (words []string) {
 	for _, wordset := range lang.Misspellings {
 		for _, word := range wordset {
@@ -165,7 +165,7 @@ func (lang *Language) SimilarSpellings(str string) (words []string) {
 	return
 }
 
-// SimilarSounds
+// SimilarSounds ...
 func (lang *Language) SimilarSounds(str string) (words []string) {
 	for _, wordset := range lang.Homophones {
 		for _, word := range wordset {
