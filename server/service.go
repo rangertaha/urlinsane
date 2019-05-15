@@ -122,7 +122,7 @@ func NewResponse(results []urlinsane.TypoResult) (resp Response) {
 
 		m["Live"] = record.Live
 		m["Variant"] = record.Variant.String()
-		m["Typo"] = record.Typo
+		m["Typo"] = record.Typo.Name
 		resp.Rows = append(resp.Rows, m)
 	}
 	if len(resp.Rows) > 0 {
