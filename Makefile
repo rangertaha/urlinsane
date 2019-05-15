@@ -7,6 +7,11 @@ GOGET=$(GOCMD) get
 BINARY_NAME=urlinsane
 VERSION=$(shell grep -e 'VERSION = ".*"' urlinsane.go | cut -d= -f2 | sed  s/[[:space:]]*\"//g)
 
+PROJECT_ID=cyberse
+SERVICE_REGION=us-central1
+SERVICE_ID=BINARY_NAME
+BUILD_CMD=docker build
+
 .PHONY: help
 
 help:
@@ -47,3 +52,10 @@ docker: image
 
 image: ## Build docker image
 	docker build -t urlinsane .
+
+release: publish ## deploys the service
+	gcloud beta run deploy --region=$(SERVICE_REGION) $(SERVICE_ID) --image gcr.io/$(PROJECT_ID)/$(BINARY_NAME)
+
+publish: ## builds docker container in gcr
+	@echo 'publish $(BINARY_NAME) to GCP Project ID: $(PROJECT_ID)'
+	gcloud builds submit --tag gcr.io/$(PROJECT_ID)/$(BINARY_NAME)

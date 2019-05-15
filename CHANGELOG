@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+
+## [0.5.2] - 2019-05-07
+### API server
+- Changed typo value
+
 ## [0.5.1] - 2019-05-07
 ### API server
 - Changed endpoint method
@@ -12,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.0] - 2019-05-04
 ### Added API server
 - Added api server
-- Added 'typo' and 'server' commands. 
+- Added 'typo' and 'server' commands.
 - Improved structs for json output.
 
 
