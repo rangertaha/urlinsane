@@ -10,6 +10,7 @@ WORKDIR $GOPATH/src/github.com/rangertaha/urlinsane
 
 # Copy everything from the current directory
 COPY . .
+RUN rm -rf $GOPATH/src/github.com/rangertaha/urlinsane/build
 
 # Download all the dependencies
 RUN go get -d -v ./...
