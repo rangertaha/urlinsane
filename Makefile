@@ -22,20 +22,17 @@ all: build hash ## Build the binaries and output the md5 hash
 hash: ## Output the md5 hash
 	md5 builds/$(BINARY_NAME) | md5sum builds/$(BINARY_NAME)
 
-run: ## Build and run the urlinsane tool with not options
-run: deps build
+run: deps build ## Build and run the urlinsane tool with not options
 	./builds/$(BINARY_NAME)
 
-test: ## Run unit test
-test: deps
+test: deps ## Run unit test
 	$(GOTEST) -v ./...
 
 clean: ## Remove files created by the build
 	$(GOCLEAN)
 	rm -fr builds
 
-build: ## Build the binaries for Windows, OSX, and Linux
-build: deps
+build: deps ## Build the binaries for Windows, OSX, and Linux
 	mkdir -p builds
 	cd cmd; $(GOBUILD) -o ../builds/$(BINARY_NAME) -v
 	cd cmd; env GOOS=darwin GOARCH=amd64 $(GOBUILD) -o ../builds/$(BINARY_NAME)-$(VERSION)-darwin-amd64 -v
@@ -46,12 +43,11 @@ deps: ## Install dependencies
 	$(GOGET) ./...
 	$(GOGET) github.com/rangertaha/urlinsane
 
-docker: ## Build docker image and upload to docker hub
-docker: image
+docker: image ## Build docker image and upload to docker hub
 	docker login
 
 image: ## Build docker image
-	docker build -t urlinsane .
+	docker build -t $(BINARY_NAME) .
 
 release: publish ## deploys the service
 	gcloud beta run deploy --region=$(SERVICE_REGION) $(SERVICE_ID) --image gcr.io/$(PROJECT_ID)/$(BINARY_NAME)
