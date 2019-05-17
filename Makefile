@@ -30,12 +30,11 @@ deps: ## Install dependencies
 	$(GOGET) ./...
 	# $(GOGET) github.com/rangertaha/urlinsane
 
-docker: ## Build docker image and upload to docker hub
-docker: image
+docker: image ## Build docker image and upload to docker hub
 	docker login
 
 image: clean ## Build docker image
-	docker build -t urlinsane .
+	docker build -t $(BINARY_NAME) .
 
 test: ## Run unit test
 test: deps
