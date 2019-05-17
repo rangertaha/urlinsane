@@ -291,7 +291,7 @@ This table shows the list of algorithms supported for each tool.
 | Wrong Second Level Domain       |     X     |     X     |            |             |          
 | Wrong Third Level Domain        |     X     |           |            |             |           
 | Ordinal Number Swap             |     X     |           |            |             |           
-| Cardinal Number Swap            |           |           |            |             |         
+| Cardinal Number Swap            |     X     |           |            |             |         
 | Hyphenation                     |           |           |      X     |             |         
 | Combosquatting(Keywords)        |           |           |            |             |           
 | Multithreaded Algorithms        |     X     |     ?     |      X     |             |         
