@@ -1,0 +1,9 @@
+steps:
+- name: 'gcr.io/cloud-builders/go'
+  id: Unit Tests
+  args:
+  - 'test'
+  - '-v'
+  - './...'
+  waitFor:
+  - '-'
