@@ -22,10 +22,9 @@ package urlinsane
 
 import (
 	"sync"
+	"strings"
 
 	"golang.org/x/net/idna"
-
-	"strings"
 
 	"github.com/rangertaha/urlinsane/languages"
 )
