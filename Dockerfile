@@ -1,26 +1,15 @@
+FROM golang:alpine as builder
 
-# Start from golang v1.11 base image
-FROM golang:1.11
+RUN apk update && apk add --no-cache git
 
-# Add Maintainer Info
-LABEL maintainer="Tal Hachi <rangertaha@gmail.com>"
-
-# Set the Current Working Directory inside the container
-WORKDIR $GOPATH/src/github.com/rangertaha/urlinsane
-
-# Copy everything from the current directory
+WORKDIR /go/src/github.com/rangertaha/urlinsane
 COPY . .
 
-# Download all the dependencies
-RUN go get -d -v ./...
+RUN go get ./...
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o /go/bin/urlinsane ./cmd
 
-# Install the package
-RUN go install -v ./...
+FROM iron/go
 
-RUN mv $GOPATH/bin/cmd $GOPATH/bin/urlinsane
+COPY --from=builder /go/bin/urlinsane /bin/urlinsane
 
-# Exposes port 8080 to the outside world
-EXPOSE 8080
-
-# Run the executable
 CMD ["urlinsane", "server", "-a", "0.0.0.0", "-p", "8080"]
