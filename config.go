@@ -32,6 +32,7 @@ import (
 type BasicConfig struct {
 	Domains     []string `json:"domains,omitempty"`
 	Keyboards   []string `json:"keyboards,omitempty"`
+	Filters     []string `json:"filters,omitempty"`
 	Typos       []string `json:"typos,omitempty"`
 	Funcs       []string `json:"funcs,omitempty"`
 	Concurrency int      `json:"concurrency,omitempty"`
@@ -46,6 +47,7 @@ type Config struct {
 	// languages   []languages.Language
 	typos       []Typo
 	funcs       []Extra
+	filters     []Extra
 	headers     []string
 	concurrency int
 
@@ -63,6 +65,7 @@ func (b *BasicConfig) Config() (c Config) {
 	// Registered functions
 	c.GetTypos(b.Typos)
 	c.GetFuncs(b.Funcs)
+	c.GetFuncs(b.Filters)
 
 	// Processing option
 	c.GetConcurrency(b.Concurrency)
@@ -106,7 +109,7 @@ func (c *Config) GetTypos(typos []string) {
 	c.typos = TRetrieve(typos...)
 }
 
-// GetFuncs
+// GetFuncs ...
 func (c *Config) GetFuncs(funcs []string) {
 	if funcs := FRetrieve(funcs...); len(funcs) > 0 {
 		c.funcs = funcs
@@ -115,7 +118,14 @@ func (c *Config) GetFuncs(funcs []string) {
 	}
 }
 
-// GetHeaders
+// GetFilters ...
+func (c *Config) GetFilters(filters []string) {
+	if filters := FilterRetrieve(filters...); len(filters) > 0 {
+		c.filters = filters
+	}
+}
+
+// GetHeaders ...
 func (c *Config) GetHeaders(funcs []Extra) {
 	c.headers = []string{"Live", "Type", "Typo", "Suffix"}
 	for _, fnc := range funcs {
@@ -188,6 +198,14 @@ func CobraConfig(cmd *cobra.Command, args []string) (c Config) {
 	}
 	errHandler(err)
 	c.GetFuncs(funcs)
+
+	var fltrs []string
+	filters, err := cmd.PersistentFlags().GetStringArray("filters")
+	for _, filter := range filters {
+		fltrs = append(fltrs, strings.ToUpper(filter))
+	}
+	errHandler(err)
+	c.GetFilters(fltrs)
 
 	// Processing option
 	concurrency, err := cmd.PersistentFlags().GetInt("concurrency")

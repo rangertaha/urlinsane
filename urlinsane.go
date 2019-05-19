@@ -36,8 +36,9 @@ type (
 		keyboards []languages.Keyboard
 		languages []languages.Language
 
-		types []Typo
-		funcs []Extra
+		types   []Typo
+		funcs   []Extra
+		filters []Extra
 
 		file        string
 		count       int
@@ -50,6 +51,7 @@ type (
 
 		typoWG sync.WaitGroup
 		funcWG sync.WaitGroup
+		fltrWG sync.WaitGroup
 	}
 	Domain struct {
 		Subdomain string `json:"subdomain,omitempty"`
@@ -114,6 +116,7 @@ func New(c Config) (i URLInsane) {
 		keyboards:   c.keyboards,
 		types:       c.typos,
 		funcs:       c.funcs,
+		filters:     c.filters,
 		concurrency: c.concurrency,
 		headers:     c.headers,
 		format:      c.format,
@@ -161,7 +164,7 @@ func (urli *URLInsane) Typos(in <-chan TypoConfig) <-chan TypoConfig {
 	return out
 }
 
-// Results
+// Results ...
 func (urli *URLInsane) Results(in <-chan TypoConfig) <-chan TypoResult {
 	out := make(chan TypoResult)
 	go func() {
@@ -227,6 +230,48 @@ func (urli *URLInsane) DistChain(in <-chan TypoResult) <-chan TypoResult {
 	return out
 }
 
+// FilterChain creates workers of chained functions
+// func (urli *URLInsane) FilterChain(in <-chan TypoResult) <-chan TypoResult {
+// 	out := make(chan TypoResult)
+// 	for w := 1; w <= urli.concurrency; w++ {
+// 		urli.fltrWG.Add(1)
+// 		go func(in <-chan TypoResult, out chan<- TypoResult) {
+// 			defer urli.fltrWG.Done()
+// 			output := urli.FuncChain(urli.filters, in)
+// 			for c := range output {
+
+// 				out <- c
+
+// 			}
+// 		}(in, out)
+// 	}
+// 	go func() {
+// 		urli.fltrWG.Wait()
+// 		close(out)
+// 	}()
+// 	return out
+// }
+func (urli *URLInsane) FilterChain(in <-chan TypoResult) <-chan TypoResult {
+	//var xfunc Extra
+	out := make(chan TypoResult)
+	// xfunc, funcs = funcs[len(funcs)-1], funcs[:len(funcs)-1]
+	go func() {
+		for i := range in {
+			if len(urli.filters) > 0 {
+				for _, filter := range urli.filters {
+					for _, result := range filter.Exec(i) {
+						out <- result
+					}
+				}
+			} else {
+				out <- i
+			}
+		}
+		close(out)
+	}()
+	return out
+}
+
 // Execute program returning results
 func (urli *URLInsane) Execute() (res []TypoResult) {
 
@@ -251,7 +296,10 @@ func (urli *URLInsane) Stream() <-chan TypoResult {
 	// Execute extra functions
 	output := urli.DistChain(results)
 
-	return urli.Dedup(output)
+	// Execute filter functions
+	filtred := urli.FilterChain(output)
+
+	return urli.Dedup(filtred)
 }
 
 // Dedup filters the results for unique variations of domains
