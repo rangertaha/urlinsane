@@ -7,11 +7,6 @@ GOGET=$(GOCMD) get
 BINARY_NAME=urlinsane
 VERSION=$(shell grep -e 'VERSION = ".*"' urlinsane.go | cut -d= -f2 | sed  s/[[:space:]]*\"//g)
 
-PROJECT_ID=cyberse
-SERVICE_REGION=us-central1
-SERVICE_ID=BINARY_NAME
-BUILD_CMD=docker build
-
 .PHONY: help
 
 help:
