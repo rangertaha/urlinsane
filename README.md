@@ -1,14 +1,14 @@
 # URLInsane
 
-[![Build Status](https://travis-ci.org/rangertaha/urlinsane.svg?branch=master)](https://travis-ci.org/rangertaha/urlinsane) 
+[![Build Status](https://travis-ci.org/cybersectech-org/urlinsane.svg?branch=master)](https://travis-ci.org/cybersectech-org/urlinsane) 
 
 Multilingual domain typo permutation engine used to perform or detect typosquatting, 
 brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and 
 threat intelligence.
 
-**Documentation:** [URLInsane Docs](https://rangertaha.github.io/urlinsane/)
+**Documentation:** [URLInsane Docs](https://cybersectech-org.github.io/urlinsane/)
 
-**Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0)
+**Downloads:** [URLInsane Downloads](https://github.com/cybersectech-org/urlinsane/releases/tag/0.3.0)
 
 
 <div align="center">
@@ -221,14 +221,14 @@ urlinsane typo google.com -t hg -v -x ip -x idna -x ns
 
 ### Finnish, Russian, Persian, Hebrew, Arabic, Spanish
 
-See [Languages](https://rangertaha.github.io/urlinsane/#languages) for details 
+See [Languages](https://cybersectech-org.github.io/urlinsane/#languages) for details 
 on other languages.
 
 ## Algorithms
 
 The modular architecture for code extensibility allows developers to add new 
 typosquatting algorithms with ease. Currently we have implements 19 
-typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/urlinsane/#algorithms) for details.
+typosquatting algorithms. See [Typo Algorithms](https://cybersectech-org.github.io/urlinsane/#algorithms) for details.
 
 
 ## Extra Functions
