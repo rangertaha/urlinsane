@@ -1,4 +1,4 @@
-// Copyright © 2019 rangertaha rangertaha@gmail.com
+// Copyright © 2019 CyberSecTech Inc
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ import (
 
 	"golang.org/x/net/idna"
 
-	"github.com/rangertaha/urlinsane/languages"
+	"github.com/cybersectech-org/urlinsane/languages"
 )
 
 type (

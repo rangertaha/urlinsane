@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/rangertaha/urlinsane"
+	"github.com/cybersectech-org/urlinsane"
 )
 
 func main() {

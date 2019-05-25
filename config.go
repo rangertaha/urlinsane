@@ -1,4 +1,4 @@
-// Copyright © 2018 rangertaha rangertaha@gmail.com
+// Copyright © 2018 CyberSecTech Inc
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ import (
 	"strings"
 
 	"github.com/bobesa/go-domain-util/domainutil"
-	"github.com/rangertaha/urlinsane/languages"
+	"github.com/cybersectech-org/urlinsane/languages"
 	"github.com/spf13/cobra"
 )
 

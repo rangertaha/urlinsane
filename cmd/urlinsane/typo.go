@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"text/template"
 
-	"github.com/rangertaha/urlinsane"
-	"github.com/rangertaha/urlinsane/languages"
+	"github.com/cybersectech-org/urlinsane"
+	"github.com/cybersectech-org/urlinsane/languages"
 	"github.com/spf13/cobra"
 )
 
