@@ -21,15 +21,21 @@
 package server
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net"
 	"net/http"
+	"os"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"github.com/spf13/cobra"
+	"golang.org/x/net/websocket"
+
 	"github.com/cybersectech-org/urlinsane"
 	"github.com/cybersectech-org/urlinsane/languages"
-	"github.com/spf13/cobra"
 )
 
 // Property ...
@@ -134,15 +140,73 @@ func NewResponse(results []urlinsane.TypoResult) (resp Response) {
 	return resp
 }
 
+// NewTCPServer ...
+func NewTCPServer(cmd *cobra.Command, args []string) {
+	address, _ := cmd.Flags().GetString("host")
+	port, _ := cmd.Flags().GetString("port")
+	l, nerr := net.Listen("tcp", address+":"+port)
+	if nerr != nil {
+		fmt.Println("ERROR", nerr)
+		os.Exit(1)
+	}
+
+	for {
+		conn, err := l.Accept()
+		// Read
+		if err != nil {
+			fmt.Println("ERROR", err)
+			continue
+		}
+
+		go func(conn net.Conn) {
+			r := bufio.NewReader(conn)
+			for {
+				input, err := r.ReadBytes(byte('\n'))
+				switch err {
+				case nil:
+					break
+				case io.EOF:
+				default:
+					fmt.Println("ERROR", err)
+				}
+
+				config := new(urlinsane.BasicConfig)
+				config.Concurrency = concurrency
+				if err := json.Unmarshal(input, &config); err != nil {
+					fmt.Println("ERROR", err)
+				}
+				fmt.Println(string(input), config)
+
+				urli := urlinsane.New(config.Config())
+
+				// Stream response
+				results := urli.Stream()
+				for r := range results {
+					// Write
+					fmt.Println(r)
+					data, err := json.Marshal(r)
+					if err != nil {
+						fmt.Println("ERROR", err)
+					}
+					fmt.Println(string(data))
+					conn.Write(data)
+				}
+			}
+
+		}(conn)
+	}
+
+}
+
 // NewServer ...
-func NewServer(cmd *cobra.Command, args []string) {
+func NewWebServer(cmd *cobra.Command, args []string) {
 	// Echo instance
 	e := echo.New()
 	e.HideBanner = true
 
-	address, err := cmd.Flags().GetString("addr.host")
-	port, err := cmd.Flags().GetString("addr.port")
-	stream, err := cmd.Flags().GetBool("stream")
+	address, err := cmd.Flags().GetString("host")
+	port, err := cmd.Flags().GetString("port")
+	proto, err := cmd.Flags().GetString("type")
 	concurrency, err = cmd.Flags().GetInt("concurrency")
 	if err != nil {
 		e.Logger.Fatal(err)
@@ -153,11 +217,13 @@ func NewServer(cmd *cobra.Command, args []string) {
 	e.Use(middleware.Recover())
 
 	// Handlers
-	if stream {
-		// https://echo.labstack.com/cookbook/streaming-response
-		e.POST("/", postStreamHandler)
-	} else {
-		e.POST("/", postHandler)
+	fmt.Println(proto)
+	fmt.Println("Start handlers")
+	if proto == "http" {
+		e.POST("/", httpHandler)
+
+	} else if proto == "ws" {
+		e.GET("/", websocketHandler)
 	}
 	e.GET("/options", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, properties)
@@ -168,7 +234,7 @@ func NewServer(cmd *cobra.Command, args []string) {
 }
 
 // postHandler ....
-func postHandler(c echo.Context) (err error) {
+func httpHandler(c echo.Context) (err error) {
 	// // Get parameters from json payload
 	config := new(urlinsane.BasicConfig)
 	config.Concurrency = concurrency
@@ -187,29 +253,37 @@ func postHandler(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, reponse)
 }
 
-// postStreamHandler ...
-func postStreamHandler(c echo.Context) (err error) {
+func websocketHandler(c echo.Context) error {
+	websocket.Handler(func(ws *websocket.Conn) {
+		defer ws.Close()
+		for {
+			// Read
+			config := new(urlinsane.BasicConfig)
+			config.Concurrency = concurrency
+			msg := ""
+			err := websocket.Message.Receive(ws, &msg)
+			if err != nil {
+				c.Logger().Error(err)
+			}
+			if err := json.Unmarshal([]byte(msg), &config); err != nil {
+				c.Logger().Error(err)
+			}
 
-	// Get parameters from the context
-	config := new(urlinsane.BasicConfig)
-	config.Concurrency = concurrency
-	if err = c.Bind(config); err != nil {
-		c.Logger().Error(err)
-		return
-	}
+			// Initialize urlinsane object
+			urli := urlinsane.New(config.Config())
 
-	// Initialize urlinsane object
-	urli := urlinsane.New(config.Config())
-
-	// Stream response
-	results := urli.Stream()
-	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	c.Response().WriteHeader(http.StatusOK)
-	for r := range results {
-		if err := json.NewEncoder(c.Response()).Encode(r); err != nil {
-			return err
+			// Stream response
+			results := urli.Stream()
+			for r := range results {
+				// Write
+				data, _ := json.Marshal(r)
+				fmt.Println(string(data))
+				err = websocket.Message.Send(ws, string(data))
+				if err != nil {
+					c.Logger().Error(err)
+				}
+			}
 		}
-		c.Response().Flush()
-	}
+	}).ServeHTTP(c.Response(), c.Request())
 	return nil
 }
