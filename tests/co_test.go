@@ -1,4 +1,4 @@
-// Copyright © 2019 rangertaha rangertaha@gmail.com
+// Copyright © 2019 CyberSecTech Inc
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/rangertaha/urlinsane"
+	"github.com/cybersectech-org/urlinsane"
 )
 
 type testpair struct {
