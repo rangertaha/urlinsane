@@ -23,13 +23,14 @@ build: deps ## Build the binaries for Windows, OSX, and Linux
 	cd cmd; env GOOS=darwin GOARCH=amd64 $(GOBUILD) -o ../builds/$(BINARY_NAME)-$(VERSION)-darwin-amd64 -v
 	cd cmd; env GOOS=linux GOARCH=amd64 $(GOBUILD) -o ../builds/$(BINARY_NAME)-$(VERSION)-linux-amd64 -v
 	cd cmd; env GOOS=windows GOARCH=amd64 $(GOBUILD) -o ../builds/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe -v
-	md5 builds/$(BINARY_NAME) | md5sum builds/$(BINARY_NAME)
 
 install: build ## build and install the binary
 	cp builds/$(BINARY_NAME) $(GOPATH)/bin/$(BINARY_NAME)
+	md5 builds/$(BINARY_NAME) || md5sum builds/$(BINARY_NAME)
 
 deps: ## Install dependencies
 	$(GOGET) ./...
+	$(GOGET) github.com/inconshreveable/mousetrap
 	# $(GOGET) github.com/rangertaha/urlinsane
 
 docker: image ## Build docker image and upload to docker hub
