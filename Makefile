@@ -30,7 +30,7 @@ install: build ## build and install the binary
 
 deps: ## Install dependencies
 	$(GOGET) ./...
-	# $(GOGET) github.com/rangertaha/urlinsane
+	# $(GOGET) github.com/cybersectech-org/urlinsane
 
 docker: image ## Build docker image and upload to docker hub
 	docker login
