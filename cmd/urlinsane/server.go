@@ -29,7 +29,7 @@ import (
 // serverCmd represents the server command
 var serverCmd = &cobra.Command{
 	Use:   "server",
-	Short: "Start an API server to use this tool programmatically",
+	Short: "Start a websocket server to use this tool programmatically",
 	Long:  `This command starts up a REST API server to use this tool programmatically.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		host, _ := cmd.Flags().GetString("host")
