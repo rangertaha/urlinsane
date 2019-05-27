@@ -292,9 +292,11 @@ This table shows the list of algorithms supported for each tool.
 | Wrong Third Level Domain        |     X     |           |            |             |           
 | Ordinal Number Swap             |     X     |           |            |             |           
 | Cardinal Number Swap            |     X     |           |            |             |         
-| Hyphenation                     |           |           |      X     |             |         
+| Hyphenation                     |     X     |           |      X     |             |         
 | Combosquatting(Keywords)        |           |           |            |             |           
-| Multithreaded Algorithms        |     X     |     ?     |      X     |             |         
+| Multithreaded Algorithms        |     X     |     ?     |      X     |             |
+| Subdomain insertion             |     X     |           |            |             |
+| Period Insertion                |     X     |           |            |             |  
 
 ## Post Typo Functions
 
