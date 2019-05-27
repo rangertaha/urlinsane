@@ -21,21 +21,16 @@
 package server
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
-	"io"
-	"net"
-	"net/http"
 	"os"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"github.com/spf13/cobra"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/net/websocket"
 
 	"github.com/cybersectech-org/urlinsane"
-	"github.com/cybersectech-org/urlinsane/languages"
 )
 
 // Property ...
@@ -66,224 +61,207 @@ var concurrency int
 var properties *Properties
 
 func init() {
-	properties = &Properties{
-		"domain": Property{
-			Type:        "input",
-			Optional:    false,
-			Description: "The domain",
-		},
-		"funcs": Property{
-			Type:        "multi-select",
-			Optional:    true,
-			Description: "Extra functions for data or filtering (default [idna])",
-			Values:      getFuncOptions(),
-		},
-		"typos": Property{
-			Type:        "multi-select",
-			Optional:    true,
-			Description: "The domain",
-			Values:      getTypoOptions(),
-		},
-		"keyboards": Property{
-			Type:        "multi-select",
-			Optional:    true,
-			Description: "Keyboards/layouts ID to use (default [en1])",
-			Values:      getKeyboardOptions(),
-		},
-	}
+	// Log as JSON instead of the default ASCII formatter.
+	logrus.SetFormatter(&logrus.JSONFormatter{})
+
+	// Output to stdout instead of the default stderr
+	// Can be any io.Writer, see below for File example
+	logrus.SetOutput(os.Stdout)
+
+	// Only log the warning severity or above.
+	logrus.SetLevel(logrus.DebugLevel)
+
+	// properties = &Properties{
+	// 	"domain": Property{
+	// 		Type:        "input",
+	// 		Optional:    false,
+	// 		Description: "The domain",
+	// 	},
+	// 	"funcs": Property{
+	// 		Type:        "multi-select",
+	// 		Optional:    true,
+	// 		Description: "Extra functions for data or filtering (default [idna])",
+	// 		Values:      getFuncOptions(),
+	// 	},
+	// 	"typos": Property{
+	// 		Type:        "multi-select",
+	// 		Optional:    true,
+	// 		Description: "The domain",
+	// 		Values:      getTypoOptions(),
+	// 	},
+	// 	"keyboards": Property{
+	// 		Type:        "multi-select",
+	// 		Optional:    true,
+	// 		Description: "Keyboards/layouts ID to use (default [en1])",
+	// 		Values:      getKeyboardOptions(),
+	// 	},
+	// }
 
 }
 
-func getTypoOptions() (p []PropertyValue) {
-	for _, t := range urlinsane.TRetrieve("all") {
-		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
+func errorHandler(err error) {
+	if err != nil {
+		logrus.Error(err)
 	}
-	return
 }
 
-func getFuncOptions() (p []PropertyValue) {
-	for _, t := range urlinsane.FRetrieve("all") {
-		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
-	}
-	return
-}
+// func getTypoOptions() (p []PropertyValue) {
+// 	for _, t := range urlinsane.TRetrieve("all") {
+// 		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
+// 	}
+// 	return
+// }
 
-func getKeyboardOptions() (p []PropertyValue) {
-	for _, t := range languages.KEYBOARDS.Keyboards("all") {
-		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
-	}
-	return
-}
+// func getFuncOptions() (p []PropertyValue) {
+// 	for _, t := range urlinsane.FRetrieve("all") {
+// 		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
+// 	}
+// 	return
+// }
 
-// NewResponse ...
-func NewResponse(results []urlinsane.TypoResult) (resp Response) {
-	for _, record := range results {
-		m := make(map[string]interface{})
+// func getKeyboardOptions() (p []PropertyValue) {
+// 	for _, t := range languages.KEYBOARDS.Keyboards("all") {
+// 		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
+// 	}
+// 	return
+// }
 
-		for key, value := range record.Data {
-			strKey := fmt.Sprintf("%v", key)
-			strValue := fmt.Sprintf("%v", value)
-			m[strKey] = strValue
-		}
+// // NewResponse ...
+// func NewResponse(results []urlinsane.TypoResult) (resp Response) {
+// 	for _, record := range results {
+// 		m := make(map[string]interface{})
 
-		m["Live"] = record.Live
-		m["Variant"] = record.Variant.String()
-		m["Typo"] = record.Typo.Name
-		resp.Rows = append(resp.Rows, m)
-	}
-	if len(resp.Rows) > 0 {
-		for k := range resp.Rows[0] {
-			resp.Headers = append(resp.Headers, k)
-		}
-	}
+// 		for key, value := range record.Data {
+// 			strKey := fmt.Sprintf("%v", key)
+// 			strValue := fmt.Sprintf("%v", value)
+// 			m[strKey] = strValue
+// 		}
 
-	return resp
-}
+// 		m["Live"] = record.Live
+// 		m["Variant"] = record.Variant.String()
+// 		m["Typo"] = record.Typo.Name
+// 		resp.Rows = append(resp.Rows, m)
+// 	}
+// 	if len(resp.Rows) > 0 {
+// 		for k := range resp.Rows[0] {
+// 			resp.Headers = append(resp.Headers, k)
+// 		}
+// 	}
 
-// NewTCPServer ...
-func NewTCPServer(cmd *cobra.Command, args []string) {
-	address, _ := cmd.Flags().GetString("host")
-	port, _ := cmd.Flags().GetString("port")
-	l, nerr := net.Listen("tcp", address+":"+port)
-	if nerr != nil {
-		fmt.Println("ERROR", nerr)
-		os.Exit(1)
-	}
+// 	return resp
+// }
 
-	for {
-		conn, err := l.Accept()
-		// Read
-		if err != nil {
-			fmt.Println("ERROR", err)
-			continue
-		}
+// // NewTCPServer ...
+// func NewTCPServer(cmd *cobra.Command, args []string) {
+// 	address, err := cmd.Flags().GetString("host")
+// 	errorHandler(err)
 
-		go func(conn net.Conn) {
-			r := bufio.NewReader(conn)
+// 	port, err := cmd.Flags().GetString("port")
+// 	errorHandler(err)
+
+// 	l, nerr := net.Listen("tcp", address+":"+port)
+// 	errorHandler(nerr)
+// 	defer l.Close()
+
+// 	for {
+// 		conn, err := l.Accept()
+// 		errorHandler(err)
+// 		if err != nil {
+// 			return
+// 		}
+
+// 		go func(cn net.Conn) {
+// 			r := bufio.NewReader(cn)
+// 			for {
+// 				input, err := r.ReadBytes(byte('\n'))
+// 				errorHandler(err)
+// 				switch err {
+// 				case nil:
+// 					break
+// 				case io.EOF:
+// 				default:
+// 					fmt.Println("ERROR", err)
+// 				}
+
+// 				config := new(urlinsane.BasicConfig)
+// 				config.Concurrency = concurrency
+// 				if err := json.Unmarshal(input, &config); err != nil {
+// 					errorHandler(err)
+// 				}
+// 				cn.Write(input)
+
+// 				urli := urlinsane.New(config.Config())
+
+// 				// Stream response
+// 				results := urli.Stream()
+// 				for r := range results {
+// 					// Write
+// 					fmt.Println(r)
+// 					data, err := json.Marshal(r)
+// 					if err != nil {
+// 						fmt.Println("ERROR", err)
+// 					}
+// 					fmt.Println(string(data))
+// 					cn.Write(data)
+// 				}
+// 				cn.Close()
+// 			}
+
+// 		}(conn)
+// 	}
+// }
+
+// NewWebSocketServer ...
+func NewWebSocketServer(host, port string, concurrency int) {
+	// Echo instance
+	e := echo.New()
+	e.HideBanner = true
+
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	e.GET("/", func(c echo.Context) error {
+		websocket.Handler(func(ws *websocket.Conn) {
+			defer ws.Close()
 			for {
-				input, err := r.ReadBytes(byte('\n'))
-				switch err {
-				case nil:
-					break
-				case io.EOF:
-				default:
-					fmt.Println("ERROR", err)
-				}
-
+				// Read
 				config := new(urlinsane.BasicConfig)
 				config.Concurrency = concurrency
-				if err := json.Unmarshal(input, &config); err != nil {
-					fmt.Println("ERROR", err)
+				msg := ""
+				err := websocket.Message.Receive(ws, &msg)
+				if err != nil {
+					c.Logger().Error(err)
 				}
-				fmt.Println(string(input), config)
+				if err := json.Unmarshal([]byte(msg), &config); err != nil {
+					c.Logger().Error(err)
+				}
 
+				// Initialize urlinsane object
 				urli := urlinsane.New(config.Config())
 
 				// Stream response
 				results := urli.Stream()
 				for r := range results {
 					// Write
-					fmt.Println(r)
-					data, err := json.Marshal(r)
-					if err != nil {
-						fmt.Println("ERROR", err)
-					}
+					data, _ := json.Marshal(r)
 					fmt.Println(string(data))
-					conn.Write(data)
+					err = websocket.Message.Send(ws, string(data))
+					if err != nil {
+						c.Logger().Error(err)
+					}
 				}
-			}
-
-		}(conn)
-	}
-
-}
-
-// NewServer ...
-func NewWebServer(cmd *cobra.Command, args []string) {
-	// Echo instance
-	e := echo.New()
-	e.HideBanner = true
-
-	address, err := cmd.Flags().GetString("host")
-	port, err := cmd.Flags().GetString("port")
-	proto, err := cmd.Flags().GetString("type")
-	concurrency, err = cmd.Flags().GetInt("concurrency")
-	if err != nil {
-		e.Logger.Fatal(err)
-	}
-
-	// Middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-
-	// Handlers
-	fmt.Println(proto)
-	fmt.Println("Start handlers")
-	if proto == "http" {
-		e.POST("/", httpHandler)
-
-	} else if proto == "ws" {
-		e.GET("/", websocketHandler)
-	}
-	e.GET("/options", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, properties)
-	})
-
-	// Start server
-	e.Logger.Fatal(e.Start(address + ":" + port))
-}
-
-// postHandler ....
-func httpHandler(c echo.Context) (err error) {
-	// // Get parameters from json payload
-	config := new(urlinsane.BasicConfig)
-	config.Concurrency = concurrency
-	if err = c.Bind(config); err != nil {
-		c.Logger().Error(err)
-		return
-	}
-
-	// Initialize urlinsane object
-	urli := urlinsane.New(config.Config())
-
-	// Execute returning results
-	reponse := NewResponse(urli.Execute())
-
-	// Return JSON results
-	return c.JSON(http.StatusOK, reponse)
-}
-
-func websocketHandler(c echo.Context) error {
-	websocket.Handler(func(ws *websocket.Conn) {
-		defer ws.Close()
-		for {
-			// Read
-			config := new(urlinsane.BasicConfig)
-			config.Concurrency = concurrency
-			msg := ""
-			err := websocket.Message.Receive(ws, &msg)
-			if err != nil {
-				c.Logger().Error(err)
-			}
-			if err := json.Unmarshal([]byte(msg), &config); err != nil {
-				c.Logger().Error(err)
-			}
-
-			// Initialize urlinsane object
-			urli := urlinsane.New(config.Config())
-
-			// Stream response
-			results := urli.Stream()
-			for r := range results {
-				// Write
-				data, _ := json.Marshal(r)
-				fmt.Println(string(data))
-				err = websocket.Message.Send(ws, string(data))
+				msgDone := `{"total": {"progress": 100}, "status": "done"}`
+				err = websocket.Message.Send(ws, msgDone)
 				if err != nil {
 					c.Logger().Error(err)
 				}
+				break
 			}
-		}
-	}).ServeHTTP(c.Response(), c.Request())
-	return nil
+		}).ServeHTTP(c.Response(), c.Request())
+		return nil
+	})
+
+	// Start server
+	e.Logger.Fatal(e.Start(host + ":" + port))
 }
