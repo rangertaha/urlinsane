@@ -32,11 +32,10 @@ var serverCmd = &cobra.Command{
 	Short: "Start an API server to use this tool programmatically",
 	Long:  `This command starts up a REST API server to use this tool programmatically.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		proto, _ := cmd.Flags().GetString("type")
-		if proto == "tcp" {
-			server.NewTCPServer(cmd, args)
-		}
-		server.NewWebServer(cmd, args)
+		host, _ := cmd.Flags().GetString("host")
+		port, _ := cmd.Flags().GetString("port")
+		concurrency, _ := cmd.Flags().GetInt("concurrency")
+		server.NewWebSocketServer(host, port, concurrency)
 	},
 }
 
@@ -44,6 +43,5 @@ func init() {
 	rootCmd.AddCommand(serverCmd)
 	serverCmd.Flags().StringP("host", "a", "127.0.0.1", "IP address for API server")
 	serverCmd.Flags().StringP("port", "p", "8080", "Port to use")
-	serverCmd.Flags().StringP("type", "t", "ws", "Protocol to use: (tcp,http,ws)")
 	serverCmd.Flags().IntP("concurrency", "c", 50, "Number of concurrent workers")
 }
