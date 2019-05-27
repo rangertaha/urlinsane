@@ -359,14 +359,16 @@ func stripDashesFunc(tc TypoConfig) (results []TypoConfig) {
 // vice versa. For example, www.google.com becomes www.googles.com and
 // www.games.co.nz becomes www.game.co.nz
 func singularPluraliseFunc(tc TypoConfig) (results []TypoConfig) {
-	var domain string
-	if strings.HasSuffix(tc.Original.Domain, "s") {
-		domain = strings.TrimSuffix(tc.Original.Domain, "s")
-	} else {
-		domain = tc.Original.Domain + "s"
+	for _, pchar := range []string{"s", "ing"} {
+		var domain string
+		if strings.HasSuffix(tc.Original.Domain, pchar) {
+			domain = strings.TrimSuffix(tc.Original.Domain, pchar)
+		} else {
+			domain = tc.Original.Domain + pchar
+		}
+		dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
+		results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 	}
-	dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
-	results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 	return
 }
 
