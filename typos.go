@@ -157,6 +157,20 @@ var numeralSwap = Typo{
 	Exec:        numeralSwapFunc,
 }
 
+var periodInsertion = Typo{
+	Code:        "PI",
+	Name:        "Period Insertion",
+	Description: "Inserting periods in the target domain",
+	Exec:        periodInsertionFunc,
+}
+
+var hyphenInsertion = Typo{
+	Code:        "HI",
+	Name:        "Dash Insertion",
+	Description: "Inserting hyphens in the target domain",
+	Exec:        hyphenInsertionFunc,
+}
+
 func init() {
 	TRegister("MD", missingDot)
 	TRegister("SI", subdomainInsertion)
@@ -178,6 +192,8 @@ func init() {
 	TRegister("HP", homophones)
 	TRegister("BF", bitFlipping)
 	TRegister("NS", numeralSwap)
+	TRegister("PI", periodInsertion)
+	TRegister("HI", hyphenInsertion)
 
 	TRegister("ALL",
 		missingDot,
@@ -200,6 +216,8 @@ func init() {
 		homophones,
 		bitFlipping,
 		numeralSwap,
+		periodInsertion,
+		hyphenInsertion,
 	)
 
 }
@@ -318,6 +336,36 @@ func adjacentCharacterInsertionFunc(tc TypoConfig) (results []TypoConfig) {
 	return
 }
 
+// adjacentCharacterInsertionFunc are created by inserting letters adjacent of each letter. For example, www.googhle.com
+// and www.goopgle.com
+func hyphenInsertionFunc(tc TypoConfig) (results []TypoConfig) {
+
+	for i, char := range tc.Original.Domain {
+
+		d1 := tc.Original.Domain[:i] + "-" + string(char) + tc.Original.Domain[i+1:]
+		dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
+		results = append(results,
+			TypoConfig{tc.Original, dm1, tc.Keyboards, tc.Languages, tc.Typo})
+	}
+
+	return
+}
+
+// adjacentCharacterInsertionFunc are created by inserting letters adjacent of each letter. For example, www.googhle.com
+// and www.goopgle.com
+func periodInsertionFunc(tc TypoConfig) (results []TypoConfig) {
+
+	for i, char := range tc.Original.Domain {
+
+		d1 := tc.Original.Domain[:i] + "." + string(char) + tc.Original.Domain[i+1:]
+		dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
+		results = append(results,
+			TypoConfig{tc.Original, dm1, tc.Keyboards, tc.Languages, tc.Typo})
+	}
+
+	return
+}
+
 // characterRepeatFunc are created by repeating a letter of the domain name.
 // Example, www.ggoogle.com and www.gooogle.com
 func characterRepeatFunc(tc TypoConfig) (results []TypoConfig) {
@@ -376,14 +424,16 @@ func stripDashesFunc(tc TypoConfig) (results []TypoConfig) {
 // vice versa. For example, www.google.com becomes www.googles.com and
 // www.games.co.nz becomes www.game.co.nz
 func singularPluraliseFunc(tc TypoConfig) (results []TypoConfig) {
-	var domain string
-	if strings.HasSuffix(tc.Original.Domain, "s") {
-		domain = strings.TrimSuffix(tc.Original.Domain, "s")
-	} else {
-		domain = tc.Original.Domain + "s"
+	for _, pchar := range []string{"s", "ing"} {
+		var domain string
+		if strings.HasSuffix(tc.Original.Domain, pchar) {
+			domain = strings.TrimSuffix(tc.Original.Domain, pchar)
+		} else {
+			domain = tc.Original.Domain + pchar
+		}
+		dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
+		results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 	}
-	dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
-	results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 	return
 }
 
