@@ -25,9 +25,9 @@ threat intelligence.
 
 * Binary executable, written in Go with no dependencies. 
 * Will have all the functionally of URLCrazy and DNSTwist. 
-* Contains 19 typosquatting algorithms and 10 extra functions to retrieve additional data such as ip to geographic location, dns lookups and more 
+* Contains 22 typosquatting algorithms and 10 extra functions to retrieve additional data such as ip to geographic location, dns lookups and more 
 * Modular architecture for language, keyboard, typo algorithm, and functions extensibility.
-* Supports multiple keyboard layouts found in English, Spanish, Russian, Finish, and Arabic.
+* Supports multiple keyboard layouts found in English, Spanish, Russian, Armenian, Finish, French, Hebrew, Persian, and Arabic.
 * Supports multiple languages with the ability to add more languages with ease.
 * Concurrent function (**-x --funcs**) workers to retrieve additional info on each record.
 * Concurrent typo squatting workers.
