@@ -1,4 +1,4 @@
-// Copyright © 2019 rangertaha rangertaha@gmail.com
+// Copyright © 2019 CyberSecTech Inc
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,12 @@ var missingDot = Typo{
 	Name:        "Missing Dot",
 	Description: "Missing Dot is created by omitting a dot from the domain.",
 	Exec:        missingDotFunc,
+}
+var subdomainInsertion = Typo{
+	Code:        "SI",
+	Name:        "Subdomain Insertion",
+	Description: "Inserting common subdomain at the beginning of the domain.",
+	Exec:        subdomainInsertionFunc,
 }
 var missingDashes = Typo{
 	Code:        "MDS",
@@ -151,8 +157,30 @@ var numeralSwap = Typo{
 	Exec:        numeralSwapFunc,
 }
 
+var periodInsertion = Typo{
+	Code:        "PI",
+	Name:        "Period Insertion",
+	Description: "Inserting periods in the target domain",
+	Exec:        periodInsertionFunc,
+}
+
+var hyphenInsertion = Typo{
+	Code:        "HI",
+	Name:        "Dash Insertion",
+	Description: "Inserting hyphens in the target domain",
+	Exec:        hyphenInsertionFunc,
+}
+
+var alphabetInsertion = Typo{
+	Code:        "AI",
+	Name:        "Alphabet Insertion",
+	Description: "Inserting the language spesific alphabet in the target domain",
+	Exec:        alphabetInsertionFunc,
+}
+
 func init() {
 	TRegister("MD", missingDot)
+	TRegister("SI", subdomainInsertion)
 	TRegister("MDS", missingDashes)
 	TRegister("CO", characterOmission)
 	TRegister("CS", characterSwap)
@@ -171,9 +199,13 @@ func init() {
 	TRegister("HP", homophones)
 	TRegister("BF", bitFlipping)
 	TRegister("NS", numeralSwap)
+	TRegister("PI", periodInsertion)
+	TRegister("HI", hyphenInsertion)
+	TRegister("AI", alphabetInsertion)
 
 	TRegister("ALL",
 		missingDot,
+		subdomainInsertion,
 		missingDashes,
 		characterOmission,
 		characterSwap,
@@ -192,6 +224,9 @@ func init() {
 		homophones,
 		bitFlipping,
 		numeralSwap,
+		periodInsertion,
+		hyphenInsertion,
+		alphabetInsertion,
 	)
 
 }
@@ -206,6 +241,15 @@ func missingDotFunc(tc TypoConfig) (results []TypoConfig) {
 	}
 	dm := Domain{tc.Original.Subdomain, strings.Replace(tc.Original.Domain, ".", "", -1), tc.Original.Suffix}
 	results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
+	return results
+}
+
+// subdomainInsertionFunc typos are created by inserting common subdomains at the begining of the domain. wwwgoogle.com and ftpgoogle.com
+func subdomainInsertionFunc(tc TypoConfig) (results []TypoConfig) {
+	for _, str := range SUBDOMAINS {
+		dm := Domain{tc.Original.Subdomain, str + tc.Original.Domain, tc.Original.Suffix}
+		results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
+	}
 	return results
 }
 
@@ -301,6 +345,73 @@ func adjacentCharacterInsertionFunc(tc TypoConfig) (results []TypoConfig) {
 	return
 }
 
+// adjacentCharacterInsertionFunc are created by inserting letters adjacent of each letter. For example, www.googhle.com
+// and www.goopgle.com
+func hyphenInsertionFunc(tc TypoConfig) (results []TypoConfig) {
+
+	for i, char := range tc.Original.Domain {
+		d1 := tc.Original.Domain[:i] + "-" + string(char) + tc.Original.Domain[i+1:]
+		dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
+		results = append(results,
+			TypoConfig{tc.Original, dm1, tc.Keyboards, tc.Languages, tc.Typo})
+
+		if i == len(tc.Original.Domain)-1 {
+			d1 = tc.Original.Domain[:i] + string(char) + "-" + tc.Original.Domain[i+1:]
+			dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
+			results = append(results,
+				TypoConfig{tc.Original, dm1, tc.Keyboards, tc.Languages, tc.Typo})
+		}
+
+	}
+
+	return
+}
+
+func alphabetInsertionFunc(tc TypoConfig) (results []TypoConfig) {
+	alphabet := map[string]bool{}
+	for _, keyboard := range tc.Keyboards {
+		for _, a := range keyboard.Language.Graphemes {
+			alphabet[a] = true
+		}
+	}
+
+	for i, char := range tc.Original.Domain {
+		for alp, _ := range alphabet {
+
+			d1 := tc.Original.Domain[:i] + alp + string(char) + tc.Original.Domain[i+1:]
+			dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
+			results = append(results,
+				TypoConfig{tc.Original, dm1, tc.Keyboards, tc.Languages, tc.Typo})
+
+			if i == len(tc.Original.Domain)-1 {
+				d1 = tc.Original.Domain[:i] + string(char) + alp + tc.Original.Domain[i+1:]
+				dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
+				results = append(results,
+					TypoConfig{tc.Original, dm1, tc.Keyboards, tc.Languages, tc.Typo})
+			}
+
+		}
+
+	}
+
+	return
+}
+
+// adjacentCharacterInsertionFunc are created by inserting letters adjacent of each letter. For example, www.googhle.com
+// and www.goopgle.com
+func periodInsertionFunc(tc TypoConfig) (results []TypoConfig) {
+
+	for i, char := range tc.Original.Domain {
+
+		d1 := tc.Original.Domain[:i] + "." + string(char) + tc.Original.Domain[i+1:]
+		dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
+		results = append(results,
+			TypoConfig{tc.Original, dm1, tc.Keyboards, tc.Languages, tc.Typo})
+	}
+
+	return
+}
+
 // characterRepeatFunc are created by repeating a letter of the domain name.
 // Example, www.ggoogle.com and www.gooogle.com
 func characterRepeatFunc(tc TypoConfig) (results []TypoConfig) {
@@ -359,14 +470,16 @@ func stripDashesFunc(tc TypoConfig) (results []TypoConfig) {
 // vice versa. For example, www.google.com becomes www.googles.com and
 // www.games.co.nz becomes www.game.co.nz
 func singularPluraliseFunc(tc TypoConfig) (results []TypoConfig) {
-	var domain string
-	if strings.HasSuffix(tc.Original.Domain, "s") {
-		domain = strings.TrimSuffix(tc.Original.Domain, "s")
-	} else {
-		domain = tc.Original.Domain + "s"
+	for _, pchar := range []string{"s", "ing"} {
+		var domain string
+		if strings.HasSuffix(tc.Original.Domain, pchar) {
+			domain = strings.TrimSuffix(tc.Original.Domain, pchar)
+		} else {
+			domain = tc.Original.Domain + pchar
+		}
+		dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
+		results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 	}
-	dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
-	results = append(results, TypoConfig{tc.Original, dm, tc.Keyboards, tc.Languages, tc.Typo})
 	return
 }
 

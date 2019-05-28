@@ -1,14 +1,14 @@
 # URLInsane
 
-[![Build Status](https://travis-ci.org/rangertaha/urlinsane.svg?branch=master)](https://travis-ci.org/rangertaha/urlinsane) 
+[![Build Status](https://travis-ci.org/cybersectech-org/urlinsane.svg?branch=master)](https://travis-ci.org/cybersectech-org/urlinsane) 
 
 Multilingual domain typo permutation engine used to perform or detect typosquatting, 
 brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and 
 threat intelligence.
 
-**Documentation:** [URLInsane Docs](https://rangertaha.github.io/urlinsane/)
+**Documentation:** [URLInsane Docs](https://cybersectech-org.github.io/urlinsane/)
 
-**Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.3.0)
+**Downloads:** [URLInsane Downloads](https://github.com/cybersectech-org/urlinsane/releases/tag/0.3.0)
 
 
 <div align="center">
@@ -25,9 +25,9 @@ threat intelligence.
 
 * Binary executable, written in Go with no dependencies. 
 * Will have all the functionally of URLCrazy and DNSTwist. 
-* Contains 19 typosquatting algorithms and 10 extra functions to retrieve additional data such as ip to geographic location, dns lookups and more 
+* Contains 22 typosquatting algorithms and 10 extra functions to retrieve additional data such as ip to geographic location, dns lookups and more 
 * Modular architecture for language, keyboard, typo algorithm, and functions extensibility.
-* Supports multiple keyboard layouts found in English, Spanish, Russian, Finish, and Arabic.
+* Supports multiple keyboard layouts found in English, Spanish, Russian, Armenian, Finish, French, Hebrew, Persian, and Arabic.
 * Supports multiple languages with the ability to add more languages with ease.
 * Concurrent function (**-x --funcs**) workers to retrieve additional info on each record.
 * Concurrent typo squatting workers.
@@ -221,14 +221,14 @@ urlinsane typo google.com -t hg -v -x ip -x idna -x ns
 
 ### Finnish, Russian, Persian, Hebrew, Arabic, Spanish
 
-See [Languages](https://rangertaha.github.io/urlinsane/#languages) for details 
+See [Languages](https://cybersectech-org.github.io/urlinsane/#languages) for details 
 on other languages.
 
 ## Algorithms
 
 The modular architecture for code extensibility allows developers to add new 
 typosquatting algorithms with ease. Currently we have implements 19 
-typosquatting algorithms. See [Typo Algorithms](https://rangertaha.github.io/urlinsane/#algorithms) for details.
+typosquatting algorithms. See [Typo Algorithms](https://cybersectech-org.github.io/urlinsane/#algorithms) for details.
 
 
 ## Extra Functions
@@ -291,10 +291,12 @@ This table shows the list of algorithms supported for each tool.
 | Wrong Second Level Domain       |     X     |     X     |            |             |          
 | Wrong Third Level Domain        |     X     |           |            |             |           
 | Ordinal Number Swap             |     X     |           |            |             |           
-| Cardinal Number Swap            |           |           |            |             |         
-| Hyphenation                     |           |           |      X     |             |         
+| Cardinal Number Swap            |     X     |           |            |             |         
+| Hyphenation                     |     X     |           |      X     |             |         
 | Combosquatting(Keywords)        |           |           |            |             |           
-| Multithreaded Algorithms        |     X     |     ?     |      X     |             |         
+| Multithreaded Algorithms        |     X     |     ?     |      X     |             |
+| Subdomain insertion             |     X     |           |            |             |
+| Period Insertion                |     X     |           |            |             |  
 
 ## Post Typo Functions
 

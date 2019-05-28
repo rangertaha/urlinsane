@@ -1,9 +1,31 @@
 steps:
 - name: 'gcr.io/cloud-builders/go'
+  id: Get Deps
+  env:
+  - 'PROJECT_ROOT=/'
+  args:
+  - 'get'
+  - '-d'
+  - '-v'
+  - './...'
+  waitFor:
+  - '-'
+- name: 'gcr.io/cloud-builders/go'
+  id: Install
+  env:
+  - 'PROJECT_ROOT=/'
+  args:
+  - 'install'
+  - '.'
+  waitFor:
+  - 'Get Deps'
+- name: 'gcr.io/cloud-builders/go'
   id: Unit Tests
+  env:
+  - 'PROJECT_ROOT=/'
   args:
   - 'test'
   - '-v'
   - './...'
   waitFor:
-  - '-'
+  - 'Install'

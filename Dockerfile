@@ -2,7 +2,7 @@ FROM golang:alpine as builder
 
 RUN apk update && apk add --no-cache git
 
-WORKDIR /go/src/github.com/rangertaha/urlinsane
+WORKDIR /go/src/github.com/cybersectech-org/urlinsane
 COPY . .
 
 RUN go get ./...
