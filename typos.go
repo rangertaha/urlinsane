@@ -171,6 +171,13 @@ var hyphenInsertion = Typo{
 	Exec:        hyphenInsertionFunc,
 }
 
+var alphabetInsertion = Typo{
+	Code:        "AI",
+	Name:        "Alphabet Insertion",
+	Description: "Inserting the language spesific alphabet in the target domain",
+	Exec:        alphabetInsertionFunc,
+}
+
 func init() {
 	TRegister("MD", missingDot)
 	TRegister("SI", subdomainInsertion)
@@ -194,6 +201,7 @@ func init() {
 	TRegister("NS", numeralSwap)
 	TRegister("PI", periodInsertion)
 	TRegister("HI", hyphenInsertion)
+	TRegister("AI", alphabetInsertion)
 
 	TRegister("ALL",
 		missingDot,
@@ -218,6 +226,7 @@ func init() {
 		numeralSwap,
 		periodInsertion,
 		hyphenInsertion,
+		alphabetInsertion,
 	)
 
 }
@@ -341,11 +350,48 @@ func adjacentCharacterInsertionFunc(tc TypoConfig) (results []TypoConfig) {
 func hyphenInsertionFunc(tc TypoConfig) (results []TypoConfig) {
 
 	for i, char := range tc.Original.Domain {
-
 		d1 := tc.Original.Domain[:i] + "-" + string(char) + tc.Original.Domain[i+1:]
 		dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
 		results = append(results,
 			TypoConfig{tc.Original, dm1, tc.Keyboards, tc.Languages, tc.Typo})
+
+		if i == len(tc.Original.Domain)-1 {
+			d1 = tc.Original.Domain[:i] + string(char) + "-" + tc.Original.Domain[i+1:]
+			dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
+			results = append(results,
+				TypoConfig{tc.Original, dm1, tc.Keyboards, tc.Languages, tc.Typo})
+		}
+
+	}
+
+	return
+}
+
+func alphabetInsertionFunc(tc TypoConfig) (results []TypoConfig) {
+	alphabet := map[string]bool{}
+	for _, keyboard := range tc.Keyboards {
+		for _, a := range keyboard.Language.Graphemes {
+			alphabet[a] = true
+		}
+	}
+
+	for i, char := range tc.Original.Domain {
+		for alp, _ := range alphabet {
+
+			d1 := tc.Original.Domain[:i] + alp + string(char) + tc.Original.Domain[i+1:]
+			dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
+			results = append(results,
+				TypoConfig{tc.Original, dm1, tc.Keyboards, tc.Languages, tc.Typo})
+
+			if i == len(tc.Original.Domain)-1 {
+				d1 = tc.Original.Domain[:i] + string(char) + alp + tc.Original.Domain[i+1:]
+				dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
+				results = append(results,
+					TypoConfig{tc.Original, dm1, tc.Keyboards, tc.Languages, tc.Typo})
+			}
+
+		}
+
 	}
 
 	return
