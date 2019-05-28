@@ -69,7 +69,7 @@ EXAMPLE:
     urlinsane google.com -t co -x ip -x idna -x ns
 
 AUTHOR:
-  Written by Rangertaha <rangertaha@gmail.com>
+  Written by Tal Hachi <talhachi2019@gmail.com>
 
 `
 
