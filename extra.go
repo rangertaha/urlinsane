@@ -24,16 +24,18 @@ import (
 	"net"
 	"strings"
 
-	"github.com/glaslos/ssdeep"
 	"net/http"
 
+	"github.com/glaslos/ssdeep"
+
 	"fmt"
+	"io/ioutil"
+
 	"github.com/bobesa/go-domain-util/domainutil"
 	"github.com/oschwald/geoip2-golang"
-	"io/ioutil"
 )
 
-// The registry for extra functions
+// FREGISTRY is the registry for extra functions
 var FREGISTRY = make(map[string][]Extra)
 
 var mxLookup = Extra{
@@ -100,13 +102,13 @@ var ssdeepLookup = Extra{
 	Headers:     []string{"IPv4", "IPv6", "SIM"},
 }
 
-var liveFilter = Extra{
-	Code:        "LIVE",
-	Name:        "Online domians",
-	Description: "Show domains with ip addresses only",
-	Exec:        liveFilterFunc,
-	Headers:     []string{"IPv4", "IPv6"},
-}
+// var liveFilter = Extra{
+// 	Code:        "LIVE",
+// 	Name:        "Online domians",
+// 	Description: "Show domains with ip addresses only",
+// 	Exec:        liveFilterFunc,
+// 	Headers:     []string{"IPv4", "IPv6"},
+// }
 
 var redirectLookup = Extra{
 	Code:        "301",
@@ -132,7 +134,7 @@ func init() {
 	FRegister("NS", nsLookup)
 	FRegister("CNAME", cnameLookup)
 	FRegister("SIM", ssdeepLookup)
-	FRegister("LIVE", liveFilter)
+	// FRegister("LIVE", liveFilter)
 	FRegister("301", redirectLookup)
 
 	//FRegister("WHOIS", whoisLookup)
@@ -146,7 +148,7 @@ func init() {
 		nsLookup,
 		cnameLookup,
 		ssdeepLookup,
-		liveFilter,
+		// liveFilter,
 		redirectLookup,
 
 		//whoisLookup,
@@ -287,13 +289,13 @@ func ssdeepFunc(tr TypoResult) (results []TypoResult) {
 }
 
 // liveFilterFunc
-func liveFilterFunc(tr TypoResult) (results []TypoResult) {
-	tr = checkIP(tr)
-	if tr.Live {
-		results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
-	}
-	return
-}
+// func liveFilterFunc(tr TypoResult) (results []TypoResult) {
+// 	tr = checkIP(tr)
+// 	if tr.Live {
+// 		results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
+// 	}
+// 	return
+// }
 
 // redirectLookupFunc
 func redirectLookupFunc(tr TypoResult) (results []TypoResult) {

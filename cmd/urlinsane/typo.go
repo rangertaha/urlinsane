@@ -57,6 +57,10 @@ TYPOS: These are the types of typo/error algorithms that generate the domain var
 FUNCTIONS: Post processig functions that retieve aditional information on each domain variant.{{range .Funcs}}
   {{.Code}}	{{.Description}}{{end}}
   ALL  	Apply all post typosquating functions
+{{end}}{{if .Filters}}
+FILTERS: Filters to reduce the number domain variants returned.{{range .Filters}}
+  {{.Code}}	{{.Description}}{{end}}
+  ALL  	Apply all filters
 {{end}}
 EXAMPLE:
 
@@ -65,7 +69,7 @@ EXAMPLE:
     urlinsane google.com -t co -x ip -x idna -x ns
 
 AUTHOR:
-  Written by Rangertaha <rangertaha@gmail.com>
+  Written by Tal Hachi <talhachi2019@gmail.com>
 
 `
 
@@ -73,6 +77,7 @@ type HelpOptions struct {
 	Keyboards []languages.Keyboard
 	Typos     []urlinsane.Typo
 	Funcs     []urlinsane.Extra
+	Filters   []urlinsane.Extra
 }
 
 var cliOptions bytes.Buffer
@@ -99,6 +104,7 @@ func init() {
 		languages.KEYBOARDS.Keyboards("all"),
 		urlinsane.TRetrieve("all"),
 		urlinsane.FRetrieve("all"),
+		urlinsane.FilterRetrieve("all"),
 	}
 
 	// Create a new template and parse the letter into it.
@@ -127,6 +133,9 @@ func init() {
 	// Post Processing options for retrieving additional data
 	typoCmd.PersistentFlags().StringArrayP("funcs", "x", []string{"idna"},
 		"Extra functions or filters")
+
+	typoCmd.PersistentFlags().StringArrayP("filters", "r", []string{""},
+		"Filter results to reduce the number of results")
 
 	// Output options
 	typoCmd.PersistentFlags().StringP("file", "f", "", "Output filename")
