@@ -29,18 +29,6 @@ import (
 	"github.com/cybersectech-org/urlinsane/languages"
 )
 
-type (
-// Moduler ...
-
-)
-
-// 	Typo struct {
-// 		Code        string   `json:"code,omitempty"`
-// 		Name        string   `json:"name,omitempty"`
-// 		Description string   `json:"description,omitempty"`
-// 		Exec        TypoFunc `json:"-"`
-// 	}
-// )
 
 type (
 	TypoModuler interface {
