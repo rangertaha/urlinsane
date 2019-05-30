@@ -56,7 +56,7 @@ func onlineFilterFunc(tr TypoResult) (results []TypoResult) {
 	_, ok := tr.Data["IPv6"]
 	if ok {
 		if tr.Live {
-			results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
+			results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
 		}
 	}
 	return

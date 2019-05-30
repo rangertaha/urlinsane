@@ -21,8 +21,8 @@
 package urlinsane
 
 import (
-	"sync"
 	"strings"
+	"sync"
 
 	"golang.org/x/net/idna"
 
@@ -30,6 +30,27 @@ import (
 )
 
 type (
+// Moduler ...
+
+)
+
+// 	Typo struct {
+// 		Code        string   `json:"code,omitempty"`
+// 		Name        string   `json:"name,omitempty"`
+// 		Description string   `json:"description,omitempty"`
+// 		Exec        TypoFunc `json:"-"`
+// 	}
+// )
+
+type (
+	TypoModuler interface {
+		Exec(TypoResult) []TypoResult
+	}
+	FuncModuler interface {
+		TypoModuler
+		Headers() []string
+	}
+
 	URLInsane struct {
 		domains   []Domain
 		keyboards []languages.Keyboard
@@ -68,28 +89,25 @@ type (
 		Code        string   `json:"code,omitempty"`
 		Name        string   `json:"name,omitempty"`
 		Description string   `json:"description,omitempty"`
-		Exec        TypoFunc `json:"-"`
-	}
-	TypoConfig struct {
-		Original  Domain               `json:"original,omitempty"`
-		Variant   Domain               `json:"variant,omitempty"`
-		Keyboards []languages.Keyboard `json:"keyboards,omitempty"`
-		Languages []languages.Language `json:"languages,omitempty"`
-		Typo      Typo                 `json:"typo,omitempty"`
+		exec        TypoFunc `json:"-"`
 	}
 
+	// TypoResult ...
 	TypoResult struct {
-		Original Domain            `json:"original,omitempty"`
-		Variant  Domain            `json:"variant,omitempty"`
-		Typo     Typo              `json:"typo,omitempty"`
-		Live     bool              `json:"live,omitempty"`
-		Data     map[string]string `json:"data,omitempty"`
+		Keyboards []languages.Keyboard `json:"keyboards,omitempty"`
+		Languages []languages.Language `json:"languages,omitempty"`
+		Original  Domain               `json:"original,omitempty"`
+		Variant   Domain               `json:"variant,omitempty"`
+		Typo      Typo                 `json:"typo,omitempty"`
+		Meta      map[string]string    `json:"meta,omitempty"`
+		Data      map[string]string    `json:"data,omitempty"`
+		Live      bool                 `json:"live,omitempty"`
 	}
 
 	OutputResult map[string]interface{}
 
 	// TypoFunc defines a function to register typos.
-	TypoFunc func(TypoConfig) []TypoConfig
+	TypoFunc func(TypoResult) []TypoResult
 
 	// ExtraFunc defines a function to register typos.
 	ExtraFunc func(TypoResult) []TypoResult
@@ -125,13 +143,18 @@ func New(c Config) (i URLInsane) {
 	return
 }
 
+func (t *Typo) Exec(tres TypoResult) []TypoResult {
+	return t.exec(tres)
+}
+
 // GenTypoConfig
-func (urli *URLInsane) GenTypoConfig() <-chan TypoConfig {
-	out := make(chan TypoConfig)
+func (urli *URLInsane) GenTypoConfig() <-chan TypoResult {
+	out := make(chan TypoResult)
 	go func() {
 		for _, domain := range urli.domains {
 			for _, typo := range urli.types {
-				out <- TypoConfig{domain, Domain{}, urli.keyboards, urli.languages, typo}
+				// out <- TypoResult{domain, Domain{}, urli.keyboards, urli.languages, typo}
+				out <- TypoResult{Original: domain, Variant: Domain{}, Typo: typo, Keyboards: urli.keyboards, Languages: urli.languages}
 			}
 		}
 		close(out)
@@ -140,11 +163,11 @@ func (urli *URLInsane) GenTypoConfig() <-chan TypoConfig {
 }
 
 // Typos gives typo options to a pool of workers
-func (urli *URLInsane) Typos(in <-chan TypoConfig) <-chan TypoConfig {
-	out := make(chan TypoConfig)
+func (urli *URLInsane) Typos(in <-chan TypoResult) <-chan TypoResult {
+	out := make(chan TypoResult)
 	for w := 1; w <= urli.concurrency; w++ {
 		urli.typoWG.Add(1)
-		go func(id int, in <-chan TypoConfig, out chan<- TypoConfig) {
+		go func(id int, in <-chan TypoResult, out chan<- TypoResult) {
 			defer urli.typoWG.Done()
 			for c := range in {
 				// Execute typo function returning typo results
@@ -164,7 +187,7 @@ func (urli *URLInsane) Typos(in <-chan TypoConfig) <-chan TypoConfig {
 }
 
 // Results ...
-func (urli *URLInsane) Results(in <-chan TypoConfig) <-chan TypoResult {
+func (urli *URLInsane) Results(in <-chan TypoResult) <-chan TypoResult {
 	out := make(chan TypoResult)
 	go func() {
 		for r := range in {
@@ -229,27 +252,6 @@ func (urli *URLInsane) DistChain(in <-chan TypoResult) <-chan TypoResult {
 	return out
 }
 
-// FilterChain creates workers of chained functions
-// func (urli *URLInsane) FilterChain(in <-chan TypoResult) <-chan TypoResult {
-// 	out := make(chan TypoResult)
-// 	for w := 1; w <= urli.concurrency; w++ {
-// 		urli.fltrWG.Add(1)
-// 		go func(in <-chan TypoResult, out chan<- TypoResult) {
-// 			defer urli.fltrWG.Done()
-// 			output := urli.FuncChain(urli.filters, in)
-// 			for c := range output {
-
-// 				out <- c
-
-// 			}
-// 		}(in, out)
-// 	}
-// 	go func() {
-// 		urli.fltrWG.Wait()
-// 		close(out)
-// 	}()
-// 	return out
-// }
 func (urli *URLInsane) FilterChain(in <-chan TypoResult) <-chan TypoResult {
 	//var xfunc Extra
 	out := make(chan TypoResult)
@@ -284,10 +286,10 @@ func (urli *URLInsane) Execute() (res []TypoResult) {
 func (urli *URLInsane) Stream() <-chan TypoResult {
 
 	// Generate typosquatting options
-	typoConfigs := urli.GenTypoConfig()
+	TypoResults := urli.GenTypoConfig()
 
 	// Execute typosquatting algorithms
-	typos := urli.Typos(typoConfigs)
+	typos := urli.Typos(TypoResults)
 
 	// Converting typos to results and remove duplicates
 	results := urli.Results(typos)
