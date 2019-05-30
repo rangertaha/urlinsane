@@ -165,7 +165,7 @@ func mxLookupFunc(tr TypoResult) (results []TypoResult) {
 			tr.Data["MX"] = strings.TrimSpace(tr.Data["MX"] + "\n" + record)
 		}
 	}
-	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
+	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
 	return
 }
 
@@ -178,7 +178,7 @@ func nsLookupFunc(tr TypoResult) (results []TypoResult) {
 			tr.Data["NS"] = strings.TrimSpace(tr.Data["NS"] + "\n" + record)
 		}
 	}
-	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
+	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
 	return
 }
 
@@ -188,7 +188,7 @@ func cnameLookupFunc(tr TypoResult) (results []TypoResult) {
 	for _, record := range records {
 		tr.Data["CNAME"] = strings.TrimSuffix(string(record), ".")
 	}
-	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
+	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
 	return
 }
 
@@ -204,7 +204,7 @@ func txtLookupFunc(tr TypoResult) (results []TypoResult) {
 	for _, record := range records {
 		tr.Data["TXT"] = record
 	}
-	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
+	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
 	return
 }
 
@@ -243,7 +243,7 @@ func geoIPLookupFunc(tr TypoResult) (results []TypoResult) {
 
 	// If you are using strings that may be invalid, check that ip is not nil
 
-	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
+	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
 	return
 }
 
@@ -251,7 +251,7 @@ func geoIPLookupFunc(tr TypoResult) (results []TypoResult) {
 func idnaFunc(tr TypoResult) (results []TypoResult) {
 
 	tr.Data["IDNA"] = tr.Variant.Idna()
-	results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
+	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
 	return
 }
 
@@ -292,7 +292,7 @@ func ssdeepFunc(tr TypoResult) (results []TypoResult) {
 // func liveFilterFunc(tr TypoResult) (results []TypoResult) {
 // 	tr = checkIP(tr)
 // 	if tr.Live {
-// 		results = append(results, TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data})
+// 		results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
 // 	}
 // 	return
 // }
@@ -347,7 +347,7 @@ func checkIP(tr TypoResult) TypoResult {
 		}
 	}
 
-	return TypoResult{tr.Original, tr.Variant, tr.Typo, tr.Live, tr.Data}
+	return TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data}
 }
 
 // FRegister
