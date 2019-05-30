@@ -21,8 +21,8 @@
 package urlinsane
 
 import (
-	"sync"
 	"strings"
+	"sync"
 
 	"golang.org/x/net/idna"
 
