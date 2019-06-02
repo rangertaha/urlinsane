@@ -4,6 +4,7 @@ GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
+GODOC=$(GOCMD)doc
 BINARY_NAME=urlinsane
 VERSION=$(shell grep -e 'VERSION = ".*"' pkg/typo/urlinsane.go | cut -d= -f2 | sed  s/[[:space:]]*\"//g)
 
@@ -27,7 +28,6 @@ deps: ## Install dependencies
 	$(GOGET) ./...
 	$(GOGET) github.com/inconshreveable/mousetrap
 	$(GOGET) github.com/konsorten/go-windows-terminal-sequences
-	# $(GOGET) github.com/cybersectech-org/urlinsane
 
 docker: image ## Build docker image and upload to docker hub
 	docker login
@@ -44,3 +44,6 @@ clean: ## Remove files created by the build
 
 run: ## Run server docker image
 	docker run -it --rm -p 8080:8080 urlinsane
+
+doc: ## Go documentation
+	$(GODOC) -http=:6060
