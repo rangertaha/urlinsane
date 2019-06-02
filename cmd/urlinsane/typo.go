@@ -30,7 +30,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const TEMPLATE_BASE = `USAGE:{{if .Runnable}}
+const templateBase = `USAGE:{{if .Runnable}}
   {{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}
   {{.CommandPath}} [command]{{end}}{{if gt (len .Aliases) 0}}
 ALIASES:
@@ -51,7 +51,7 @@ Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
 
 Use "{{.CommandPath}} [command] --help" for more information about a command.{{end}}`
 
-const TEMPLATE = `
+const helpTemplate = `
 {{if .Keyboards}}
 KEYBOARDS:{{range .Keyboards}}
   {{.Code}}	{{.Description}}{{end}}
@@ -115,7 +115,7 @@ func init() {
 	}
 
 	// Create a new template and parse the letter into it.
-	tmpl := template.Must(template.New("help").Parse(TEMPLATE))
+	tmpl := template.Must(template.New("help").Parse(helpTemplate))
 
 	// Run the template to verify the output.
 	err := tmpl.Execute(&cliOptions, helpOptions)
@@ -123,7 +123,7 @@ func init() {
 		fmt.Printf("Execution: %s", err)
 	}
 
-	typoCmd.SetUsageTemplate(TEMPLATE_BASE + cliOptions.String())
+	typoCmd.SetUsageTemplate(templateBase + cliOptions.String())
 
 	// Basic options
 	typoCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"en"},

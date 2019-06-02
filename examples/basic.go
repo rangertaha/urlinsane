@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 
-	"github.com/cybersectech-org/urlinsane"
+	"github.com/cybersectech-org/urlinsane/pkg/typo"
 )
 
 func main() {
 
-	conf := urlinsane.BasicConfig{
+	conf := typo.BasicConfig{
 		Domains:     []string{"google.com"},
 		Keyboards:   []string{"en1"},
 		Typos:       []string{"co"},
@@ -18,7 +18,7 @@ func main() {
 		Verbose:     false,
 	}
 
-	urli := urlinsane.New(conf.Config())
+	urli := typo.New(conf.Config())
 
 	out := urli.Stream()
 
