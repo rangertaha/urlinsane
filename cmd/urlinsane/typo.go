@@ -25,8 +25,8 @@ import (
 	"fmt"
 	"text/template"
 
-	"github.com/cybersectech-org/urlinsane"
-	"github.com/cybersectech-org/urlinsane/languages"
+	"github.com/cybersectech-org/urlinsane/pkg/typo"
+	"github.com/cybersectech-org/urlinsane/pkg/typo/languages"
 	"github.com/spf13/cobra"
 )
 
@@ -82,9 +82,9 @@ AUTHOR:
 
 type HelpOptions struct {
 	Keyboards []languages.Keyboard
-	Typos     []urlinsane.Typo
-	Funcs     []urlinsane.Extra
-	Filters   []urlinsane.Extra
+	Typos     []typo.Typo
+	Funcs     []typo.Extra
+	Filters   []typo.Extra
 }
 
 var cliOptions bytes.Buffer
@@ -96,10 +96,10 @@ var typoCmd = &cobra.Command{
 	Long:  `Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// Create config from cli options/arguments
-		config := urlinsane.CobraConfig(cmd, args)
+		config := typo.CobraConfig(cmd, args)
 
 		// Create a new instance of urlinsane
-		urli := urlinsane.New(config)
+		urli := typo.New(config)
 
 		// Start generating results
 		urli.Start()
@@ -109,9 +109,9 @@ var typoCmd = &cobra.Command{
 func init() {
 	helpOptions := HelpOptions{
 		languages.KEYBOARDS.Keyboards("all"),
-		urlinsane.TRetrieve("all"),
-		urlinsane.FRetrieve("all"),
-		urlinsane.FilterRetrieve("all"),
+		typo.TRetrieve("all"),
+		typo.FRetrieve("all"),
+		typo.FilterRetrieve("all"),
 	}
 
 	// Create a new template and parse the letter into it.

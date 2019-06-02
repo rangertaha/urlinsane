@@ -1,3 +1,5 @@
+// The MIT License (MIT)
+//
 // Copyright © 2018 Tal Hachi
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,8 +29,8 @@ import (
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"github.com/cybersectech-org/urlinsane"
-	"github.com/cybersectech-org/urlinsane/languages"
+	"github.com/cybersectech-org/urlinsane/pkg/typo"
+	"github.com/cybersectech-org/urlinsane/pkg/typo/languages"
 	"github.com/spf13/cobra"
 )
 
@@ -89,14 +91,14 @@ func init() {
 }
 
 func getTypoOptions() (p []PropertyValue) {
-	for _, t := range urlinsane.TRetrieve("all") {
+	for _, t := range typo.TRetrieve("all") {
 		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
 	}
 	return
 }
 
 func getFuncOptions() (p []PropertyValue) {
-	for _, t := range urlinsane.FRetrieve("all") {
+	for _, t := range typo.FRetrieve("all") {
 		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
 	}
 	return
@@ -110,7 +112,7 @@ func getKeyboardOptions() (p []PropertyValue) {
 }
 
 // NewResponse ...
-func NewResponse(results []urlinsane.TypoResult) (resp Response) {
+func NewResponse(results []typo.TypoResult) (resp Response) {
 	for _, record := range results {
 		m := make(map[string]interface{})
 
@@ -170,7 +172,7 @@ func NewServer(cmd *cobra.Command, args []string) {
 // postHandler ....
 func postHandler(c echo.Context) (err error) {
 	// // Get parameters from json payload
-	config := new(urlinsane.BasicConfig)
+	config := new(typo.BasicConfig)
 	config.Concurrency = concurrency
 	if err = c.Bind(config); err != nil {
 		c.Logger().Error(err)
@@ -178,7 +180,7 @@ func postHandler(c echo.Context) (err error) {
 	}
 
 	// Initialize urlinsane object
-	urli := urlinsane.New(config.Config())
+	urli := typo.New(config.Config())
 
 	// Execute returning results
 	reponse := NewResponse(urli.Execute())
@@ -191,7 +193,7 @@ func postHandler(c echo.Context) (err error) {
 func postStreamHandler(c echo.Context) (err error) {
 
 	// Get parameters from the context
-	config := new(urlinsane.BasicConfig)
+	config := new(typo.BasicConfig)
 	config.Concurrency = concurrency
 	if err = c.Bind(config); err != nil {
 		c.Logger().Error(err)
@@ -199,7 +201,7 @@ func postStreamHandler(c echo.Context) (err error) {
 	}
 
 	// Initialize urlinsane object
-	urli := urlinsane.New(config.Config())
+	urli := typo.New(config.Config())
 
 	// Stream response
 	results := urli.Stream()
