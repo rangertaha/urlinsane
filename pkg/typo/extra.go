@@ -24,6 +24,7 @@ package typo
 
 import (
 	"net"
+	"strconv"
 	"strings"
 
 	"net/http"
@@ -39,6 +40,14 @@ import (
 
 // FREGISTRY is the registry for extra functions
 var FREGISTRY = make(map[string][]Extra)
+
+var levenshteinDistance = Extra{
+	Code:        "LD",
+	Name:        "Levenshtein Distance",
+	Description: "The Levenshtein distance is a string metric for measuring the difference between two domains",
+	Exec:        levenshteinDistanceFunc,
+	Headers:     []string{"LD"},
+}
 
 var mxLookup = Extra{
 	Code:        "MX",
@@ -104,14 +113,6 @@ var ssdeepLookup = Extra{
 	Headers:     []string{"IPv4", "IPv6", "SIM"},
 }
 
-// var liveFilter = Extra{
-// 	Code:        "LIVE",
-// 	Name:        "Online domians",
-// 	Description: "Show domains with ip addresses only",
-// 	Exec:        liveFilterFunc,
-// 	Headers:     []string{"IPv4", "IPv6"},
-// }
-
 var redirectLookup = Extra{
 	Code:        "301",
 	Name:        "Redirected Domain",
@@ -129,6 +130,7 @@ var whoisLookup = Extra{
 }
 
 func init() {
+	FRegister("LD", levenshteinDistance)
 	FRegister("IDNA", idnaLookup)
 	FRegister("MX", mxLookup)
 	FRegister("IP", ipLookup)
@@ -136,13 +138,13 @@ func init() {
 	FRegister("NS", nsLookup)
 	FRegister("CNAME", cnameLookup)
 	FRegister("SIM", ssdeepLookup)
-	// FRegister("LIVE", liveFilter)
 	FRegister("301", redirectLookup)
 
 	//FRegister("WHOIS", whoisLookup)
 	FRegister("GEO", geoIPLookup)
 
 	FRegister("ALL",
+		levenshteinDistance,
 		mxLookup,
 		ipLookup,
 		idnaLookup,
@@ -156,6 +158,15 @@ func init() {
 		//whoisLookup,
 		geoIPLookup,
 	)
+}
+
+// levenshteinDistanceFunc
+func levenshteinDistanceFunc(tr TypoResult) (results []TypoResult) {
+	domain := tr.Original.String()
+	variant := tr.Variant.String()
+	tr.Data["LD"] = strconv.Itoa(Levenshtein(domain, variant))
+	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
+	return
 }
 
 // mxLookupFunc
@@ -290,15 +301,6 @@ func ssdeepFunc(tr TypoResult) (results []TypoResult) {
 	return
 }
 
-// liveFilterFunc
-// func liveFilterFunc(tr TypoResult) (results []TypoResult) {
-// 	tr = checkIP(tr)
-// 	if tr.Live {
-// 		results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
-// 	}
-// 	return
-// }
-
 // redirectLookupFunc
 func redirectLookupFunc(tr TypoResult) (results []TypoResult) {
 	tr = checkIP(tr)
@@ -352,7 +354,7 @@ func checkIP(tr TypoResult) TypoResult {
 	return TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data}
 }
 
-// FRegister
+// FRegister ...
 func FRegister(name string, efunc ...Extra) {
 	_, registered := FREGISTRY[strings.ToUpper(name)]
 	if !registered {
@@ -360,7 +362,7 @@ func FRegister(name string, efunc ...Extra) {
 	}
 }
 
-// FRetrieve
+// FRetrieve ...
 func FRetrieve(strs ...string) (results []Extra) {
 	for _, f := range strs {
 		value, ok := FREGISTRY[strings.ToUpper(f)]
