@@ -1,4 +1,4 @@
-// Copyright © 2018 CyberSecTech Inc
+// Copyright © 2018 Tal Hachi
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// BasicConfig ...
 type BasicConfig struct {
 	Domains     []string `json:"domains,omitempty"`
 	Keyboards   []string `json:"keyboards,omitempty"`
@@ -41,6 +42,7 @@ type BasicConfig struct {
 	Verbose     bool     `json:"verbose,omitempty"`
 }
 
+// Config ...
 type Config struct {
 	domains   []Domain
 	keyboards []languages.Keyboard
@@ -54,6 +56,31 @@ type Config struct {
 	format  string
 	file    string
 	verbose bool
+}
+
+// NewConfig ...
+func NewConfig(basic BasicConfig) (config *Config) {
+	// Basic options
+	config.GetDomains(basic.Domains)
+	config.GetKeyboards(basic.Keyboards)
+
+	// Registered functions
+	config.GetTypos(basic.Typos)
+	config.GetFuncs(basic.Funcs)
+	config.GetFuncs(basic.Filters)
+
+	// Processing option
+	config.GetConcurrency(basic.Concurrency)
+
+	// Output options
+	config.GetFile(basic.File)
+	config.GetFormat(basic.Format)
+	config.GetVerbose(basic.Verbose)
+
+	// Requires config.GetFuncs()
+	config.GetHeaders(config.funcs)
+
+	return
 }
 
 // Config creates a Config

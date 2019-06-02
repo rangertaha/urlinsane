@@ -1,4 +1,4 @@
-// Copyright © 2019 CyberSecTech Inc
+// Copyright © 2019 Tal Hachi
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,11 @@ package urlinsane
 import (
 	"fmt"
 	"strings"
+
+	"github.com/cybersectech-org/urlinsane/datasets"
 )
 
-// The registry for typos functions
+// TREGISTRY is the registry for typos functions
 var TREGISTRY = make(map[string][]Typo)
 
 var missingDot = Typo{
@@ -582,7 +584,7 @@ func homoglyphFunc(tc TypoResult) (results []TypoResult) {
 func wrongTopLevelDomainFunc(tc TypoResult) (results []TypoResult) {
 	labels := strings.Split(tc.Original.Suffix, ".")
 	length := len(labels)
-	for _, suffix := range TLD {
+	for _, suffix := range datasets.TLD {
 		suffixLen := len(strings.Split(suffix, "."))
 		if length == suffixLen && length == 1 {
 			if suffix != tc.Original.Suffix {
@@ -602,7 +604,7 @@ func wrongSecondLevelDomainFunc(tc TypoResult) (results []TypoResult) {
 	labels := strings.Split(tc.Original.Suffix, ".")
 	length := len(labels)
 	//fmt.Println(length, labels)
-	for _, suffix := range TLD {
+	for _, suffix := range datasets.TLD {
 		suffixLbl := strings.Split(suffix, ".")
 		suffixLen := len(suffixLbl)
 		if length == suffixLen && length == 2 {
@@ -622,7 +624,7 @@ func wrongSecondLevelDomainFunc(tc TypoResult) (results []TypoResult) {
 func wrongThirdLevelDomainFunc(tc TypoResult) (results []TypoResult) {
 	labels := strings.Split(tc.Original.Suffix, ".")
 	length := len(labels)
-	for _, suffix := range TLD {
+	for _, suffix := range datasets.TLD {
 		suffixLbl := strings.Split(suffix, ".")
 		suffixLen := len(suffixLbl)
 		if length == suffixLen && length == 3 {

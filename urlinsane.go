@@ -1,4 +1,4 @@
-// Copyright © 2019 CyberSecTech Inc
+// Copyright © 2019 Tal Hachi
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,16 +29,18 @@ import (
 	"github.com/cybersectech-org/urlinsane/languages"
 )
 
-
 type (
+	// TypoModuler  ...
 	TypoModuler interface {
 		Exec(TypoResult) []TypoResult
 	}
+	// FuncModuler ...
 	FuncModuler interface {
 		TypoModuler
 		Headers() []string
 	}
 
+	// URLInsane ...
 	URLInsane struct {
 		domains   []Domain
 		keyboards []languages.Keyboard
@@ -61,23 +63,29 @@ type (
 		funcWG sync.WaitGroup
 		fltrWG sync.WaitGroup
 	}
+
+	// Domain ...
 	Domain struct {
 		Subdomain string `json:"subdomain,omitempty"`
 		Domain    string `json:"domain,omitempty"`
 		Suffix    string `json:"suffix,omitempty"`
 	}
+
+	// Extra ...
 	Extra struct {
 		Code        string    `json:"code,omitempty"`
 		Name        string    `json:"name,omitempty"`
 		Description string    `json:"description,omitempty"`
-		Headers     []string  `json:"code,omitempty"`
+		Headers     []string  `json:"headers,omitempty"`
 		Exec        ExtraFunc `json:"-"`
 	}
+
+	// Typo ...
 	Typo struct {
-		Code        string   `json:"code,omitempty"`
-		Name        string   `json:"name,omitempty"`
-		Description string   `json:"description,omitempty"`
-		exec        TypoFunc `json:"-"`
+		Code        string `json:"code,omitempty"`
+		Name        string `json:"name,omitempty"`
+		Description string `json:"description,omitempty"`
+		exec        TypoFunc
 	}
 
 	// TypoResult ...
@@ -92,6 +100,7 @@ type (
 		Live      bool                 `json:"live,omitempty"`
 	}
 
+	// OutputResult ...
 	OutputResult map[string]interface{}
 
 	// TypoFunc defines a function to register typos.
@@ -131,17 +140,17 @@ func New(c Config) (i URLInsane) {
 	return
 }
 
+// Exec ...
 func (t *Typo) Exec(tres TypoResult) []TypoResult {
 	return t.exec(tres)
 }
 
-// GenTypoConfig
+// GenTypoConfig ...
 func (urli *URLInsane) GenTypoConfig() <-chan TypoResult {
 	out := make(chan TypoResult)
 	go func() {
 		for _, domain := range urli.domains {
 			for _, typo := range urli.types {
-				// out <- TypoResult{domain, Domain{}, urli.keyboards, urli.languages, typo}
 				out <- TypoResult{Original: domain, Variant: Domain{}, Typo: typo, Keyboards: urli.keyboards, Languages: urli.languages}
 			}
 		}
@@ -240,6 +249,7 @@ func (urli *URLInsane) DistChain(in <-chan TypoResult) <-chan TypoResult {
 	return out
 }
 
+// FilterChain ...
 func (urli *URLInsane) FilterChain(in <-chan TypoResult) <-chan TypoResult {
 	//var xfunc Extra
 	out := make(chan TypoResult)
