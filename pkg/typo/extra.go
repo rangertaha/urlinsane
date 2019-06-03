@@ -165,43 +165,47 @@ func levenshteinDistanceFunc(tr TypoResult) (results []TypoResult) {
 	domain := tr.Original.String()
 	variant := tr.Variant.String()
 	tr.Data["LD"] = strconv.Itoa(Levenshtein(domain, variant))
-	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
+	tr.Meta["levenshtein"] = Levenshtein(domain, variant)
+	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
 	return
 }
 
 // mxLookupFunc
 func mxLookupFunc(tr TypoResult) (results []TypoResult) {
 	records, _ := net.LookupMX(tr.Variant.String())
+	tr.Meta["mx"] = records
 	for _, record := range records {
 		record := strings.TrimSuffix(record.Host, ".")
 		if !strings.Contains(tr.Data["MX"], record) {
 			tr.Data["MX"] = strings.TrimSpace(tr.Data["MX"] + "\n" + record)
 		}
 	}
-	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
+	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
 	return
 }
 
 // nsLookupFunc
 func nsLookupFunc(tr TypoResult) (results []TypoResult) {
 	records, _ := net.LookupNS(tr.Variant.String())
+	tr.Meta["ns"] = records
 	for _, record := range records {
 		record := strings.TrimSuffix(record.Host, ".")
 		if !strings.Contains(tr.Data["NS"], record) {
 			tr.Data["NS"] = strings.TrimSpace(tr.Data["NS"] + "\n" + record)
 		}
 	}
-	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
+	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
 	return
 }
 
 // cnameLookupFunc
 func cnameLookupFunc(tr TypoResult) (results []TypoResult) {
 	records, _ := net.LookupCNAME(tr.Variant.String())
+	tr.Meta["cname"] = records
 	for _, record := range records {
 		tr.Data["CNAME"] = strings.TrimSuffix(string(record), ".")
 	}
-	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
+	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
 	return
 }
 
@@ -214,10 +218,11 @@ func ipLookupFunc(tr TypoResult) (results []TypoResult) {
 // txtLookupFunc
 func txtLookupFunc(tr TypoResult) (results []TypoResult) {
 	records, _ := net.LookupTXT(tr.Variant.String())
+	tr.Meta["txt"] = records
 	for _, record := range records {
 		tr.Data["TXT"] = record
 	}
-	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
+	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
 	return
 }
 
@@ -247,16 +252,14 @@ func geoIPLookupFunc(tr TypoResult) (results []TypoResult) {
 						fmt.Print(err)
 					}
 					tr.Data["GEO"] = fmt.Sprint(record.Country.Names["en"])
-
+					tr.Meta["country"] = record
 				}
-
 			}
 		}
 	}
 
 	// If you are using strings that may be invalid, check that ip is not nil
-
-	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
+	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
 	return
 }
 
@@ -264,7 +267,8 @@ func geoIPLookupFunc(tr TypoResult) (results []TypoResult) {
 func idnaFunc(tr TypoResult) (results []TypoResult) {
 
 	tr.Data["IDNA"] = tr.Variant.Idna()
-	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
+	tr.Meta["idna"] = tr.Variant.Idna()
+	results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
 	return
 }
 
@@ -274,10 +278,11 @@ func ssdeepFunc(tr TypoResult) (results []TypoResult) {
 		var h1, h2 string
 		{
 			original, gerr := http.Get("http://" + tr.Original.String())
+			tr.Meta["original"] = original
 			if gerr == nil {
 				if o, err := ioutil.ReadAll(original.Body); err == nil {
 					h1, _ = ssdeep.FuzzyBytes(o)
-					//fmt.Println(h1, err)
+					tr.Meta["original-ssdeep"] = h1
 				}
 			}
 		}
@@ -286,7 +291,7 @@ func ssdeepFunc(tr TypoResult) (results []TypoResult) {
 			if gerr == nil {
 				if v, err := ioutil.ReadAll(variation.Body); err == nil {
 					h2, _ = ssdeep.FuzzyBytes(v)
-					//fmt.Println(h2, err)
+					tr.Meta["variant-ssdeep"] = h2
 				}
 			}
 		}
@@ -294,6 +299,7 @@ func ssdeepFunc(tr TypoResult) (results []TypoResult) {
 			if compare, err := ssdeep.Distance(h1, h2); err == nil {
 				//fmt.Println(compare, h2, err)
 				tr.Data["SIM"] = fmt.Sprintf("%d%s", compare, "%")
+				tr.Meta["ssdeep"] = fmt.Sprintf("%d%s", compare, "%")
 			}
 		}
 	}
@@ -307,6 +313,7 @@ func redirectLookupFunc(tr TypoResult) (results []TypoResult) {
 	if tr.Live {
 		variation, err := http.Get("http://" + tr.Variant.String())
 		if err == nil {
+			tr.Meta["variant"] = variation
 			str := variation.Request.URL.String()
 			subdomain := domainutil.Subdomain(str)
 			domain := domainutil.DomainPrefix(str)
@@ -317,6 +324,7 @@ func redirectLookupFunc(tr TypoResult) (results []TypoResult) {
 			dm := Domain{subdomain, domain, suffix}
 			if tr.Original.String() != dm.String() {
 				tr.Data["Redirect"] = dm.String()
+				tr.Meta["redirect"] = dm
 			}
 		}
 	}
@@ -349,9 +357,10 @@ func checkIP(tr TypoResult) TypoResult {
 			}
 			tr.Live = true
 		}
+		tr.Meta["IP"] = records
 	}
 
-	return TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data}
+	return TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta}
 }
 
 // FRegister ...

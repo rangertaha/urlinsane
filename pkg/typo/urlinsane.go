@@ -92,14 +92,14 @@ type (
 
 	// TypoResult ...
 	TypoResult struct {
-		Keyboards []languages.Keyboard `json:"keyboards,omitempty"`
-		Languages []languages.Language `json:"languages,omitempty"`
-		Original  Domain               `json:"original,omitempty"`
-		Variant   Domain               `json:"variant,omitempty"`
-		Typo      Typo                 `json:"typo,omitempty"`
-		Meta      map[string]string    `json:"meta,omitempty"`
-		Data      map[string]string    `json:"data,omitempty"`
-		Live      bool                 `json:"live,omitempty"`
+		Keyboards []languages.Keyboard   `json:"keyboards,omitempty"`
+		Languages []languages.Language   `json:"languages,omitempty"`
+		Original  Domain                 `json:"original,omitempty"`
+		Variant   Domain                 `json:"variant,omitempty"`
+		Typo      Typo                   `json:"typo,omitempty"`
+		Meta      map[string]interface{} `json:"meta,omitempty"`
+		Data      map[string]string      `json:"data,omitempty"`
+		Live      bool                   `json:"live,omitempty"`
 	}
 
 	// OutputResult ...
@@ -145,6 +145,16 @@ func New(c Config) (i URLInsane) {
 // Exec ...
 func (t *Typo) Exec(tres TypoResult) []TypoResult {
 	return t.exec(tres)
+}
+
+// SetMeta ...
+func (t *TypoResult) SetMeta(key string, obj interface{}) {
+	t.Meta[key] = obj
+}
+
+// GetMeta ...
+func (t *TypoResult) GetMeta(key string) interface{} {
+	return t.Meta[key]
 }
 
 // GenTypoConfig ...
@@ -195,12 +205,19 @@ func (urli *URLInsane) Results(in <-chan TypoResult) <-chan TypoResult {
 			// Initialize a place to store extra data for a record
 			record.Data = make(map[string]string)
 
+			// Initialize a place to store meta data
+			record.Meta = make(map[string]interface{})
+
 			// Add record placeholder for consistent records
 			for _, name := range urli.headers {
 				_, ok := record.Data[name]
 				if !ok {
 					record.Data[name] = ""
 				}
+				// _, mok := record.Meta[name]
+				// if !mok {
+				// 	record.Meta[name] = nil
+				// }
 			}
 
 			out <- record
