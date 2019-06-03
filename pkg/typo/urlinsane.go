@@ -353,13 +353,13 @@ func (urli *URLInsane) Start() {
 	urli.Output(output)
 }
 
-// Idna
+// Idna ...
 func (d *Domain) Idna() (punycode string) {
 	punycode, _ = idna.Punycode.ToASCII(d.String())
 	return
 }
 
-// String
+// String ...
 func (d *Domain) String() (domain string) {
 	if d.Subdomain != "" {
 		domain = d.Subdomain + "."
