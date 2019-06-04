@@ -29,15 +29,15 @@ import (
 
 // TestLevenshtein ...
 func TestLevenshtein(t *testing.T) {
-	var str1 = []rune("Asheville")
-	var str2 = []rune("Arizona")
+	var str1 = "Asheville"
+	var str2 = "Arizona"
 	fmt.Println("Distance between Asheville and Arizona:", Levenshtein(str1, str2))
 
-	str1 = []rune("Python")
-	str2 = []rune("Peithen")
+	str1 = "Python"
+	str2 = "Peithen"
 	fmt.Println("Distance between Python and Peithen:", Levenshtein(str1, str2))
 
-	str1 = []rune("Orange")
-	str2 = []rune("Apple")
+	str1 = "Orange"
+	str2 = "Apple"
 	fmt.Println("Distance between Orange and Apple:", Levenshtein(str1, str2))
 }
