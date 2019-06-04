@@ -61,6 +61,9 @@ type (
 
 		data map[string]map[string]string
 
+		// Used to store collected data of the trget domains
+		meta map[string]map[string]interface{}
+
 		typoWG sync.WaitGroup
 		funcWG sync.WaitGroup
 		fltrWG sync.WaitGroup
@@ -194,6 +197,28 @@ func (urli *URLInsane) Typos(in <-chan TypoResult) <-chan TypoResult {
 	}()
 	return out
 }
+
+// // initInfoFuncs is used to collect data on the target domains and prepare for
+// // information collection on domain variants
+// func (urli *URLInsane) initInfoFuncs(in <-chan TypoResult) <-chan TypoResult {
+// 	for _, domain := range urli.domains {
+// 		req, httpErr := http.Get("http://" + domain.String()); httpErr == nil {
+// 			// Get domain request
+// 			urli.meta[domain.Domain]["http"] = req
+
+// 			// Get request headers & banners
+
+// 			// Get IP address
+
+// 			// Get ssdeep hash
+// 			if body, err := ioutil.ReadAll(req.Body); err == nil {
+// 				h1, _ = ssdeep.FuzzyBytes(body)
+// 				urli.meta[domain.Domain]["original-ssdeep"] = h1
+// 			}
+// 		}
+// 	}
+// 	return urli.Results(in)
+// }
 
 // Results ...
 func (urli *URLInsane) Results(in <-chan TypoResult) <-chan TypoResult {
