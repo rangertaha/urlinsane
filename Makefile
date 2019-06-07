@@ -6,6 +6,8 @@ GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 GODOC=$(GOCMD)doc
 BINARY_NAME=urlinsane
+GCP_PROJECT_ID=cyberse
+GCR_HOST=gcr.io
 VERSION=$(shell grep -e 'VERSION = ".*"' pkg/typo/urlinsane.go | cut -d= -f2 | sed  s/[[:space:]]*\"//g)
 
 .PHONY: help
@@ -47,3 +49,13 @@ run: ## Run server docker image
 
 doc: ## Go documentation
 	$(GODOC) -http=:6060
+
+login-gcr: ## docker login to GCR
+	docker login -u oauth2accesstoken -p "$(shell gcloud auth print-access-token)" https://$(GCR_HOST)
+
+push-gcr: login-gcr image ## Push build to Google Container Registry
+	docker tag $(BINARY_NAME) $(GCR_HOST)/$(GCP_PROJECT_ID)/$(BINARY_NAME)
+	docker push $(GCR_HOST)/$(GCP_PROJECT_ID)/$(BINARY_NAME)
+
+deploy-gcr: push-gcr ## Deploy api service to Google Cloud Run
+	gcloud beta run deploy --region=us-central1 urlinsane-api --image $(GCR_HOST)/$(GCP_PROJECT_ID)/$(BINARY_NAME) --allow-unauthenticated --memory=512Mi --concurrency=1

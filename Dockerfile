@@ -14,4 +14,4 @@ COPY --from=builder /go/bin/urlinsane /bin/urlinsane
 
 EXPOSE 8080
 
-CMD ["urlinsane", "server", "-a", "0.0.0.0", "-p", "8080", "-s"]
+CMD ["urlinsane", "server", "-a", "0.0.0.0", "-p", "8080"]
