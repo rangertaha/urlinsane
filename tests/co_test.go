@@ -1,4 +1,6 @@
-// Copyright © 2019 CyberSecTech Inc
+// The MIT License (MIT)
+//
+// Copyright © 2019 Tal Hachi
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +25,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/cybersectech-org/urlinsane"
+	"github.com/cybersectech-org/urlinsane/pkg/typo"
 )
 
 type testpair struct {
@@ -59,7 +61,7 @@ func TestCharacterOmission(t *testing.T) {
 	for _, lang := range languages {
 		count := 0
 		for _, tcase := range characterOmissionCases {
-			conf := urlinsane.BasicConfig{
+			conf := typo.BasicConfig{
 				Domains:     tcase.domains,
 				Keyboards:   []string{lang},
 				Typos:       []string{"co"},
@@ -69,7 +71,7 @@ func TestCharacterOmission(t *testing.T) {
 				Verbose:     false,
 			}
 
-			urli := urlinsane.New(conf.Config())
+			urli := typo.New(conf.Config())
 
 			out := urli.Stream()
 

@@ -1,4 +1,6 @@
-// Copyright © 2018 CyberSecTech Inc
+// The MIT License (MIT)
+//
+// Copyright © 2018 Tal Hachi
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,12 +27,12 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/cybersectech-org/urlinsane/pkg/typo"
+	"github.com/cybersectech-org/urlinsane/pkg/typo/languages"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/websocket"
-
-	"github.com/cybersectech-org/urlinsane"
 )
 
 // Property ...
@@ -105,111 +107,51 @@ func errorHandler(err error) {
 	}
 }
 
-// func getTypoOptions() (p []PropertyValue) {
-// 	for _, t := range urlinsane.TRetrieve("all") {
-// 		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
-// 	}
-// 	return
-// }
+func getTypoOptions() (p []PropertyValue) {
+	for _, t := range typo.TRetrieve("all") {
+		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
+	}
+	return
+}
 
-// func getFuncOptions() (p []PropertyValue) {
-// 	for _, t := range urlinsane.FRetrieve("all") {
-// 		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
-// 	}
-// 	return
-// }
+func getFuncOptions() (p []PropertyValue) {
+	for _, t := range typo.FRetrieve("all") {
+		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
+	}
+	return
+}
 
-// func getKeyboardOptions() (p []PropertyValue) {
-// 	for _, t := range languages.KEYBOARDS.Keyboards("all") {
-// 		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
-// 	}
-// 	return
-// }
+func getKeyboardOptions() (p []PropertyValue) {
+	for _, t := range languages.KEYBOARDS.Keyboards("all") {
+		p = append(p, PropertyValue{t.Code, t.Name, t.Description})
+	}
+	return
+}
 
-// // NewResponse ...
-// func NewResponse(results []urlinsane.TypoResult) (resp Response) {
-// 	for _, record := range results {
-// 		m := make(map[string]interface{})
+// NewResponse ...
+func NewResponse(results []typo.TypoResult) (resp Response) {
+	for _, record := range results {
+		m := make(map[string]interface{})
 
-// 		for key, value := range record.Data {
-// 			strKey := fmt.Sprintf("%v", key)
-// 			strValue := fmt.Sprintf("%v", value)
-// 			m[strKey] = strValue
-// 		}
+		for key, value := range record.Data {
+			strKey := fmt.Sprintf("%v", key)
+			strValue := fmt.Sprintf("%v", value)
+			m[strKey] = strValue
+		}
 
-// 		m["Live"] = record.Live
-// 		m["Variant"] = record.Variant.String()
-// 		m["Typo"] = record.Typo.Name
-// 		resp.Rows = append(resp.Rows, m)
-// 	}
-// 	if len(resp.Rows) > 0 {
-// 		for k := range resp.Rows[0] {
-// 			resp.Headers = append(resp.Headers, k)
-// 		}
-// 	}
+		m["Live"] = record.Live
+		m["Variant"] = record.Variant.String()
+		m["Typo"] = record.Typo.Name
+		resp.Rows = append(resp.Rows, m)
+	}
+	if len(resp.Rows) > 0 {
+		for k := range resp.Rows[0] {
+			resp.Headers = append(resp.Headers, k)
+		}
+	}
 
-// 	return resp
-// }
-
-// // NewTCPServer ...
-// func NewTCPServer(cmd *cobra.Command, args []string) {
-// 	address, err := cmd.Flags().GetString("host")
-// 	errorHandler(err)
-
-// 	port, err := cmd.Flags().GetString("port")
-// 	errorHandler(err)
-
-// 	l, nerr := net.Listen("tcp", address+":"+port)
-// 	errorHandler(nerr)
-// 	defer l.Close()
-
-// 	for {
-// 		conn, err := l.Accept()
-// 		errorHandler(err)
-// 		if err != nil {
-// 			return
-// 		}
-
-// 		go func(cn net.Conn) {
-// 			r := bufio.NewReader(cn)
-// 			for {
-// 				input, err := r.ReadBytes(byte('\n'))
-// 				errorHandler(err)
-// 				switch err {
-// 				case nil:
-// 					break
-// 				case io.EOF:
-// 				default:
-// 					fmt.Println("ERROR", err)
-// 				}
-
-// 				config := new(urlinsane.BasicConfig)
-// 				config.Concurrency = concurrency
-// 				if err := json.Unmarshal(input, &config); err != nil {
-// 					errorHandler(err)
-// 				}
-// 				cn.Write(input)
-
-// 				urli := urlinsane.New(config.Config())
-
-// 				// Stream response
-// 				results := urli.Stream()
-// 				for r := range results {
-// 					// Write
-// 					fmt.Println(r)
-// 					data, err := json.Marshal(r)
-// 					if err != nil {
-// 						fmt.Println("ERROR", err)
-// 					}
-// 					fmt.Println(string(data))
-// 					cn.Write(data)
-// 				}
-// 				cn.Close()
-// 			}
-
-// 		}(conn)
-// 	}
-// }
+	return resp
+}
 
 // NewWebSocketServer ...
 func NewWebSocketServer(host, port string, concurrency int) {
@@ -226,7 +168,7 @@ func NewWebSocketServer(host, port string, concurrency int) {
 			defer ws.Close()
 			for {
 				// Read
-				config := new(urlinsane.BasicConfig)
+				config := new(typo.BasicConfig)
 				config.Concurrency = concurrency
 				msg := ""
 				err := websocket.Message.Receive(ws, &msg)
@@ -237,8 +179,8 @@ func NewWebSocketServer(host, port string, concurrency int) {
 					c.Logger().Error(err)
 				}
 
-				// Initialize urlinsane object
-				urli := urlinsane.New(config.Config())
+				// Initialize typo object
+				urli := typo.New(config.Config())
 
 				// Stream response
 				results := urli.Stream()

@@ -12,4 +12,6 @@ FROM iron/go
 
 COPY --from=builder /go/bin/urlinsane /bin/urlinsane
 
-CMD ["urlinsane", "server", "-a", "0.0.0.0", "-p", "8080"]
+EXPOSE 8080
+
+CMD ["urlinsane", "server", "-a", "0.0.0.0", "-p", "8080", "-s"]
