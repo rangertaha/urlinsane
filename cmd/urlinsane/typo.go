@@ -1,4 +1,4 @@
-// Copyright © 2018 Tal Hachi
+// Copyright © 2018 Rangertaha <rangertaha@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -76,7 +76,7 @@ EXAMPLE:
     urlinsane google.com -t co -x ip -x idna -x ns
 
 AUTHOR:
-  Written by Tal Hachi <talhachi2019@gmail.com>
+  Written by Rangertaha <rangertaha@gmail.com> <talhachi2019@gmail.com>
 
 `
 

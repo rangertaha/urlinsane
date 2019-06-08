@@ -339,7 +339,7 @@ This table shows the list of algorithms supported for each tool.
 
 ## Authors
 
-* [Tal Hachi](https://github.com/talhachi)
+* [Rangertaha <rangertaha@gmail.com>](https://github.com/talhachi)
 
 
 ## License
