@@ -23,16 +23,18 @@
 package typo
 
 type (
+	// Metric ...
 	Metric struct {
-		Time        int        `json:"time,omitempty"`
-		Name        string     `json:"domain,omitempty"`
-		Variant     Domain     `json:"domain,omitempty"`
-		TypoMetrics []Metric   `json:"typometrics,omitempty"`
-		InfoMetrics []Metric   `json:"infometrics,omitempty"`
-		Result      TypoResult `json:"result,omitempty"`
+		Time        int      `json:"time,omitempty"`
+		Name        string   `json:"name,omitempty"`
+		Variant     Domain   `json:"variant,omitempty"`
+		TypoMetrics []Metric `json:"typometrics,omitempty"`
+		InfoMetrics []Metric `json:"infometrics,omitempty"`
+		Result      Result   `json:"result,omitempty"`
 	}
 )
 
+// Progress ...
 func (m *Metric) Progress() {
 
 }

@@ -82,9 +82,9 @@ AUTHOR:
 
 type HelpOptions struct {
 	Keyboards []languages.Keyboard
-	Typos     []typo.Typo
-	Funcs     []typo.Extra
-	Filters   []typo.Extra
+	Typos     []typo.Module
+	Funcs     []typo.Module
+	Filters   []typo.Module
 }
 
 var cliOptions bytes.Buffer
@@ -99,10 +99,10 @@ var typoCmd = &cobra.Command{
 		config := typo.CobraConfig(cmd, args)
 
 		// Create a new instance of urlinsane
-		urli := typo.New(config)
+		typosquating := typo.New(config)
 
 		// Start generating results
-		urli.Start()
+		typosquating.Execute()
 	},
 }
 
@@ -138,7 +138,7 @@ func init() {
 		"Types of typos to perform")
 
 	// Post Processing options for retrieving additional data
-	typoCmd.PersistentFlags().StringArrayP("funcs", "x", []string{"idna"},
+	typoCmd.PersistentFlags().StringArrayP("funcs", "x", []string{"ld", "idna"},
 		"Extra functions or filters")
 
 	typoCmd.PersistentFlags().StringArrayP("filters", "r", []string{""},
