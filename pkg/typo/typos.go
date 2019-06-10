@@ -26,163 +26,163 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cybersectech-org/urlinsane/pkg/typo/datasets"
+	"github.com/cybersectech-org/urlinsane/pkg/datasets"
 )
 
 // TREGISTRY is the registry for typos functions
-var TREGISTRY = make(map[string][]Typo)
+var TREGISTRY = make(map[string][]Module)
 
-var missingDot = Typo{
+var missingDot = Module{
 	Code:        "MD",
 	Name:        "Missing Dot",
 	Description: "Missing Dot is created by omitting a dot from the domain.",
 	exec:        missingDotFunc,
 }
-var subdomainInsertion = Typo{
+var subdomainInsertion = Module{
 	Code:        "SI",
 	Name:        "Subdomain Insertion",
 	Description: "Inserting common subdomain at the beginning of the domain.",
 	exec:        subdomainInsertionFunc,
 }
-var missingDashes = Typo{
+var missingDashes = Module{
 	Code:        "MDS",
 	Name:        "Missing Dashes",
 	Description: "Missing Dashes is created by stripping all dashes from the domain.",
 	exec:        missingDashFunc,
 }
-var stripDashes = Typo{
+var stripDashes = Module{
 	Code:        "SD",
 	Name:        "Strip Dashes",
 	Description: "Strip Dashes is created by omitting a dash from the domain",
 	exec:        stripDashesFunc,
 }
-var characterOmission = Typo{
+var characterOmission = Module{
 	Code:        "CO",
 	Name:        "Character Omission",
 	Description: "Character Omission Omitting a character from the domain.",
 	exec:        characterOmissionFunc,
 }
-var characterSwap = Typo{
+var characterSwap = Module{
 	Code:        "CS",
 	Name:        "Character Swap",
 	Description: "Character Swap Swapping two consecutive characters in a domain",
 	exec:        characterSwapFunc,
 }
-var adjacentCharacterSubstitution = Typo{
+var adjacentCharacterSubstitution = Module{
 	Code:        "ACS",
 	Name:        "Adjacent Character Substitution",
 	Description: "Adjacent Character Substitution replaces adjacent characters",
 	exec:        adjacentCharacterSubstitutionFunc,
 }
-var adjacentCharacterInsertion = Typo{
+var adjacentCharacterInsertion = Module{
 	Code:        "ACI",
 	Name:        "Adjacent Character Insertion",
 	Description: "Adjacent Character Insertion inserts adjacent character ",
 	exec:        adjacentCharacterInsertionFunc,
 }
-var homoglyphs = Typo{
+var homoglyphs = Module{
 	Code:        "HG",
 	Name:        "Homoglyphs",
 	Description: "Homoglyphs replaces characters with characters that look similar",
 	exec:        homoglyphFunc,
 }
-var singularPluralise = Typo{
+var singularPluralise = Module{
 	Code:        "SP",
 	Name:        "Singular Pluralise",
 	Description: "Singular Pluralise creates a singular domain plural and vice versa",
 	exec:        singularPluraliseFunc,
 }
 
-var characterRepeat = Typo{
+var characterRepeat = Module{
 	Code:        "CR",
 	Name:        "Character Repeat",
 	Description: "Character Repeat Repeats a character of the domain name twice",
 	exec:        characterRepeatFunc,
 }
 
-var doubleCharacterReplacement = Typo{
+var doubleCharacterReplacement = Module{
 	Code:        "DCR",
 	Name:        "Double Character Replacement",
 	Description: "Double Character Replacement repeats a character twice.",
 	exec:        doubleCharacterReplacementFunc,
 }
-var commonMisspellings = Typo{
+var commonMisspellings = Module{
 	Code:        "CM",
 	Name:        "Common Misspellings",
 	Description: "Common Misspellings are created from a dictionary of commonly misspelled words",
 	exec:        commonMisspellingsFunc,
 }
-var homophones = Typo{
+var homophones = Module{
 	Code:        "HP",
 	Name:        "Homophones",
-	Description: "Homophones Typos are created from sets of words that sound the same",
+	Description: "Homophones Modules are created from sets of words that sound the same",
 	exec:        homophonesFunc,
 }
 
-var vowelSwapping = Typo{
+var vowelSwapping = Module{
 	Code:        "VS",
 	Name:        "Vowel Swapping",
 	Description: "Vowel Swapping is created by swaps vowels",
 	exec:        vowelSwappingFunc,
 }
 
-var bitFlipping = Typo{
+var bitFlipping = Module{
 	Code:        "BF",
 	Name:        "Bit Flipping",
 	Description: "Bitsquatting relies on random bit-errors to redirect connections",
 	exec:        bitsquattingFunc,
 }
 
-var wrongTopLevelDomain = Typo{
+var wrongTopLevelDomain = Module{
 	Code:        "WTLD",
 	Name:        "Wrong TLD",
 	Description: "Wrong Top Level Domain",
 	exec:        wrongTopLevelDomainFunc,
 }
 
-var wrongSecondLevelDomain = Typo{
+var wrongSecondLevelDomain = Module{
 	Code:        "W2TLD",
 	Name:        "Wrong 2nd TLD",
 	Description: "Wrong Second Level Domain",
 	exec:        wrongSecondLevelDomainFunc,
 }
 
-var wrongThirdLevelDomain = Typo{
+var wrongThirdLevelDomain = Module{
 	Code:        "W3TLD",
 	Name:        "Wrong 3rd TLD",
 	Description: "Wrong Third Level Domain",
 	exec:        wrongThirdLevelDomainFunc,
 }
 
-var numeralSwap = Typo{
+var numeralSwap = Module{
 	Code:        "NS",
 	Name:        "Numeral Swap",
 	Description: "Numeral Swap numbers, words and vice versa",
 	exec:        numeralSwapFunc,
 }
 
-var periodInsertion = Typo{
+var periodInsertion = Module{
 	Code:        "PI",
 	Name:        "Period Insertion",
 	Description: "Inserting periods in the target domain",
 	exec:        periodInsertionFunc,
 }
 
-var hyphenInsertion = Typo{
+var hyphenInsertion = Module{
 	Code:        "HI",
 	Name:        "Dash Insertion",
 	Description: "Inserting hyphens in the target domain",
 	exec:        hyphenInsertionFunc,
 }
 
-var alphabetInsertion = Typo{
+var alphabetInsertion = Module{
 	Code:        "AI",
 	Name:        "Alphabet Insertion",
 	Description: "Inserting the language specific alphabet in the target domain",
 	exec:        alphabetInsertionFunc,
 }
 
-var alphabetReplacement = Typo{
+var alphabetReplacement = Module{
 	Code:        "AR",
 	Name:        "Alphabet Replacement",
 	Description: "Replacing the language specific alphabet in the target domain",
@@ -245,44 +245,44 @@ func init() {
 }
 
 // missingDotFunc typos are created by omitting a dot from the domain. For example, wwwgoogle.com and www.googlecom
-func missingDotFunc(tc TypoResult) (results []TypoResult) {
+func missingDotFunc(tc Result) (results []Result) {
 	for _, str := range missingCharFunc(tc.Original.String(), ".") {
 		if tc.Original.Domain != str {
 			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix}
-			results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 		}
 	}
 	dm := Domain{tc.Original.Subdomain, strings.Replace(tc.Original.Domain, ".", "", -1), tc.Original.Suffix}
-	results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+	results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 	return results
 }
 
 // subdomainInsertionFunc typos are created by inserting common subdomains at the begining of the domain. wwwgoogle.com and ftpgoogle.com
-func subdomainInsertionFunc(tc TypoResult) (results []TypoResult) {
-	for _, str := range SUBDOMAINS {
+func subdomainInsertionFunc(tc Result) (results []Result) {
+	for _, str := range datasets.SUBDOMAINS {
 		dm := Domain{tc.Original.Subdomain, str + tc.Original.Domain, tc.Original.Suffix}
-		results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+		results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 	}
 	return results
 }
 
 // missingDashFunc typos are created by omitting a dash from the domain.
 // For example, www.a-b-c.com becomes www.ab-c.com, www.a-bc.com, and ww.abc.com
-func missingDashFunc(tc TypoResult) (results []TypoResult) {
+func missingDashFunc(tc Result) (results []Result) {
 	for _, str := range missingCharFunc(tc.Original.Domain, "-") {
 		if tc.Original.Domain != str {
 			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix}
-			results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 		}
 	}
 	dm := Domain{tc.Original.Subdomain, strings.Replace(tc.Original.Domain, "-", "", -1), tc.Original.Suffix}
-	results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+	results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 	return results
 }
 
 // characterOmissionFunc typos are when one character in the original domain name is omitted.
 // For example: www.exmple.com
-func characterOmissionFunc(tc TypoResult) (results []TypoResult) {
+func characterOmissionFunc(tc Result) (results []Result) {
 	for i := range tc.Original.Domain {
 		if i <= len(tc.Original.Domain)-1 {
 			domain := fmt.Sprint(
@@ -291,7 +291,7 @@ func characterOmissionFunc(tc TypoResult) (results []TypoResult) {
 			)
 			if tc.Original.Domain != domain {
 				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
-				results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 
 			}
 		}
@@ -301,7 +301,7 @@ func characterOmissionFunc(tc TypoResult) (results []TypoResult) {
 
 // characterSwapFunc typos are when two consecutive characters are swapped in the original domain name.
 // Example: www.examlpe.com
-func characterSwapFunc(tc TypoResult) (results []TypoResult) {
+func characterSwapFunc(tc Result) (results []Result) {
 	for i := range tc.Original.Domain {
 		if i <= len(tc.Original.Domain)-2 {
 			domain := fmt.Sprint(
@@ -312,7 +312,7 @@ func characterSwapFunc(tc TypoResult) (results []TypoResult) {
 			)
 			if tc.Original.Domain != domain {
 				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
-				results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 			}
 		}
 	}
@@ -322,13 +322,13 @@ func characterSwapFunc(tc TypoResult) (results []TypoResult) {
 // adjacentCharacterSubstitutionFunc typos are when characters are replaced in the original domain name by their
 // adjacent ones on a specific keyboard layout, e.g., www.ezample.com, where “x” was replaced by the adjacent
 // character “z” in a the QWERTY keyboard layout.
-func adjacentCharacterSubstitutionFunc(tc TypoResult) (results []TypoResult) {
+func adjacentCharacterSubstitutionFunc(tc Result) (results []Result) {
 	for _, keyboard := range tc.Keyboards {
 		for i, char := range tc.Original.Domain {
 			for _, key := range keyboard.Adjacent(string(char)) {
 				domain := tc.Original.Domain[:i] + string(key) + tc.Original.Domain[i+1:]
 				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
-				results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 			}
 		}
 	}
@@ -337,17 +337,17 @@ func adjacentCharacterSubstitutionFunc(tc TypoResult) (results []TypoResult) {
 
 // adjacentCharacterInsertionFunc are created by inserting letters adjacent of each letter. For example, www.googhle.com
 // and www.goopgle.com
-func adjacentCharacterInsertionFunc(tc TypoResult) (results []TypoResult) {
+func adjacentCharacterInsertionFunc(tc Result) (results []Result) {
 	for _, keyboard := range tc.Keyboards {
 		for i, char := range tc.Original.Domain {
 			for _, key := range keyboard.Adjacent(string(char)) {
 				d1 := tc.Original.Domain[:i] + string(key) + string(char) + tc.Original.Domain[i+1:]
 				dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
-				results = append(results, TypoResult{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 
 				d2 := tc.Original.Domain[:i] + string(char) + string(key) + tc.Original.Domain[i+1:]
 				dm2 := Domain{tc.Original.Subdomain, d2, tc.Original.Suffix}
-				results = append(results, TypoResult{Original: tc.Original, Variant: dm2, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				results = append(results, Result{Original: tc.Original, Variant: dm2, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 			}
 		}
 	}
@@ -356,7 +356,7 @@ func adjacentCharacterInsertionFunc(tc TypoResult) (results []TypoResult) {
 
 // adjacentCharacterInsertionFunc are created by inserting letters adjacent of each letter. For example, www.googhle.com
 // and www.goopgle.com
-func hyphenInsertionFunc(tc TypoResult) (results []TypoResult) {
+func hyphenInsertionFunc(tc Result) (results []Result) {
 
 	for i, char := range tc.Original.Domain {
 		d1 := tc.Original.Domain[:i] + "-" + string(char) + tc.Original.Domain[i+1:]
@@ -364,12 +364,12 @@ func hyphenInsertionFunc(tc TypoResult) (results []TypoResult) {
 			d1 = tc.Original.Domain[:i] + string(char) + "-" + tc.Original.Domain[i+1:]
 		}
 		dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
-		results = append(results, TypoResult{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+		results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 	}
 	return
 }
 
-func alphabetInsertionFunc(tc TypoResult) (results []TypoResult) {
+func alphabetInsertionFunc(tc Result) (results []Result) {
 	alphabet := map[string]bool{}
 	for _, keyboard := range tc.Keyboards {
 		for _, a := range keyboard.Language.Graphemes {
@@ -383,13 +383,13 @@ func alphabetInsertionFunc(tc TypoResult) (results []TypoResult) {
 				d1 = tc.Original.Domain[:i] + string(char) + alp + tc.Original.Domain[i+1:]
 			}
 			dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
-			results = append(results, TypoResult{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+			results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 		}
 	}
 	return
 }
 
-func alphabetReplacementnFunc(tc TypoResult) (results []TypoResult) {
+func alphabetReplacementnFunc(tc Result) (results []Result) {
 	alphabet := map[string]bool{}
 	for _, keyboard := range tc.Keyboards {
 		for _, a := range keyboard.Language.Graphemes {
@@ -402,30 +402,27 @@ func alphabetReplacementnFunc(tc TypoResult) (results []TypoResult) {
 
 			d1 := tc.Original.Domain[:i] + alp + tc.Original.Domain[i+1:]
 			dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
-			results = append(results, TypoResult{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+			results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 
 			if i == len(tc.Original.Domain)-1 {
 				d1 = tc.Original.Domain[:i] + alp + tc.Original.Domain[i+1:]
 				dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
-				results = append(results, TypoResult{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 			}
-
 		}
-
 	}
-
 	return
 }
 
 // adjacentCharacterInsertionFunc are created by inserting letters adjacent of each letter. For example, www.googhle.com
 // and www.goopgle.com
-func periodInsertionFunc(tc TypoResult) (results []TypoResult) {
+func periodInsertionFunc(tc Result) (results []Result) {
 
 	for i, char := range tc.Original.Domain {
 
 		d1 := tc.Original.Domain[:i] + "." + string(char) + tc.Original.Domain[i+1:]
 		dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix}
-		results = append(results, TypoResult{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+		results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 	}
 
 	return
@@ -433,7 +430,7 @@ func periodInsertionFunc(tc TypoResult) (results []TypoResult) {
 
 // characterRepeatFunc are created by repeating a letter of the domain name.
 // Example, www.ggoogle.com and www.gooogle.com
-func characterRepeatFunc(tc TypoResult) (results []TypoResult) {
+func characterRepeatFunc(tc Result) (results []Result) {
 	for i := range tc.Original.Domain {
 		if i <= len(tc.Original.Domain) {
 			domain := fmt.Sprint(
@@ -444,7 +441,7 @@ func characterRepeatFunc(tc TypoResult) (results []TypoResult) {
 			)
 			if tc.Original.Domain != domain {
 				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
-				results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 			}
 		}
 	}
@@ -454,7 +451,7 @@ func characterRepeatFunc(tc TypoResult) (results []TypoResult) {
 // doubleCharacterReplacementFunc are created by replacing identical, consecutive
 // letters of the domain name with adjacent letters on the keyboard.
 // For example, www.gppgle.com and www.giigle.com
-func doubleCharacterReplacementFunc(tc TypoResult) (results []TypoResult) {
+func doubleCharacterReplacementFunc(tc Result) (results []Result) {
 	for _, keyboard := range tc.Keyboards {
 		for i, char := range tc.Original.Domain {
 			if i < len(tc.Original.Domain)-1 {
@@ -462,7 +459,7 @@ func doubleCharacterReplacementFunc(tc TypoResult) (results []TypoResult) {
 					for _, key := range keyboard.Adjacent(string(char)) {
 						domain := tc.Original.Domain[:i] + string(key) + string(key) + tc.Original.Domain[i+2:]
 						dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
-						results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+						results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 					}
 				}
 			}
@@ -473,11 +470,11 @@ func doubleCharacterReplacementFunc(tc TypoResult) (results []TypoResult) {
 
 // stripDashesFunc typos are created by omitting a dot from the domain.
 // For example, www.a-b-c.com becomes www.abc.com
-func stripDashesFunc(tc TypoResult) (results []TypoResult) {
+func stripDashesFunc(tc Result) (results []Result) {
 	for _, str := range replaceCharFunc(tc.Original.Domain, "-", "") {
 		if tc.Original.Domain != str {
 			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix}
-			results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 		}
 	}
 	return
@@ -486,7 +483,7 @@ func stripDashesFunc(tc TypoResult) (results []TypoResult) {
 // singularPluraliseFunc are created by making a singular domain plural and
 // vice versa. For example, www.google.com becomes www.googles.com and
 // www.games.co.nz becomes www.game.co.nz
-func singularPluraliseFunc(tc TypoResult) (results []TypoResult) {
+func singularPluraliseFunc(tc Result) (results []Result) {
 	for _, pchar := range []string{"s", "ing"} {
 		var domain string
 		if strings.HasSuffix(tc.Original.Domain, pchar) {
@@ -495,7 +492,7 @@ func singularPluraliseFunc(tc TypoResult) (results []TypoResult) {
 			domain = tc.Original.Domain + pchar
 		}
 		dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
-		results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+		results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 	}
 	return
 }
@@ -503,11 +500,11 @@ func singularPluraliseFunc(tc TypoResult) (results []TypoResult) {
 // CcommonMisspellingsFunc are created with common misspellings in the given
 // language. For example, www.youtube.com becomes www.youtub.com and
 // www.abseil.com becomes www.absail.com
-func commonMisspellingsFunc(tc TypoResult) (results []TypoResult) {
+func commonMisspellingsFunc(tc Result) (results []Result) {
 	for _, keyboard := range tc.Keyboards {
 		for _, word := range keyboard.Language.SimilarSpellings(tc.Original.Domain) {
 			dm := Domain{tc.Original.Subdomain, word, tc.Original.Suffix}
-			results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 
 		}
 	}
@@ -516,7 +513,7 @@ func commonMisspellingsFunc(tc TypoResult) (results []TypoResult) {
 
 // vowelSwappingFunc swaps vowels within the domain name except for the first letter.
 // For example, www.google.com becomes www.gaagle.com.
-func vowelSwappingFunc(tc TypoResult) (results []TypoResult) {
+func vowelSwappingFunc(tc Result) (results []Result) {
 	for _, keyboard := range tc.Keyboards {
 		for _, vchar := range keyboard.Language.Vowels {
 			if strings.Contains(tc.Original.Domain, vchar) {
@@ -524,11 +521,9 @@ func vowelSwappingFunc(tc TypoResult) (results []TypoResult) {
 					new := strings.Replace(tc.Original.Domain, vchar, vvchar, -1)
 					if new != tc.Original.Domain {
 						dm := Domain{tc.Original.Subdomain, new, tc.Original.Suffix}
-						results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+						results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 					}
-
 				}
-
 			}
 		}
 	}
@@ -537,12 +532,11 @@ func vowelSwappingFunc(tc TypoResult) (results []TypoResult) {
 
 // homophonesFunc are created from sets of words that sound the same when spoken.
 // For example, www.base.com becomes www .bass.com.
-func homophonesFunc(tc TypoResult) (results []TypoResult) {
+func homophonesFunc(tc Result) (results []Result) {
 	for _, keyboard := range tc.Keyboards {
 		for _, word := range keyboard.Language.SimilarSounds(tc.Original.Domain) {
 			dm := Domain{tc.Original.Subdomain, word, tc.Original.Suffix}
-			results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
-
+			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 		}
 	}
 	return
@@ -552,7 +546,7 @@ func homophonesFunc(tc TypoResult) (results []TypoResult) {
 // character but are different are called homogylphs. An example is that the
 // lower case l looks similar to the numeral one, e.g. l vs 1. For example,
 // google.com becomes goog1e.com.
-func homoglyphFunc(tc TypoResult) (results []TypoResult) {
+func homoglyphFunc(tc Result) (results []Result) {
 	for i, char := range tc.Original.Domain {
 		// Check the alphabet of the language associated with the keyboard for
 		// homoglyphs
@@ -561,7 +555,7 @@ func homoglyphFunc(tc TypoResult) (results []TypoResult) {
 				domain := fmt.Sprint(tc.Original.Domain[:i], kchar, tc.Original.Domain[i+1:])
 				if tc.Original.Domain != domain {
 					dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
-					results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 				}
 			}
 		}
@@ -571,7 +565,7 @@ func homoglyphFunc(tc TypoResult) (results []TypoResult) {
 				domain := fmt.Sprint(tc.Original.Domain[:i], lchar, tc.Original.Domain[i+1:])
 				if tc.Original.Domain != domain {
 					dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix}
-					results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 				}
 			}
 		}
@@ -583,7 +577,7 @@ func homoglyphFunc(tc TypoResult) (results []TypoResult) {
 // wrongTopLevelDomain for example, www.google.co.nz becomes www.google.co.ns
 // and www.google.com becomes www.google.org. uses the 19 most common top level
 // domains.
-func wrongTopLevelDomainFunc(tc TypoResult) (results []TypoResult) {
+func wrongTopLevelDomainFunc(tc Result) (results []Result) {
 	labels := strings.Split(tc.Original.Suffix, ".")
 	length := len(labels)
 	for _, suffix := range datasets.TLD {
@@ -591,9 +585,8 @@ func wrongTopLevelDomainFunc(tc TypoResult) (results []TypoResult) {
 		if length == suffixLen && length == 1 {
 			if suffix != tc.Original.Suffix {
 				dm := Domain{tc.Original.Subdomain, tc.Original.Domain, suffix}
-				results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 			}
-
 		}
 	}
 	return
@@ -602,7 +595,7 @@ func wrongTopLevelDomainFunc(tc TypoResult) (results []TypoResult) {
 // wrongSecondLevelDomain uses an alternate, valid second level domain for the
 // top level domain. For example, www.trademe.co.nz becomes www.trademe.ac.nz
 // and www.trademe.iwi.nz
-func wrongSecondLevelDomainFunc(tc TypoResult) (results []TypoResult) {
+func wrongSecondLevelDomainFunc(tc Result) (results []Result) {
 	labels := strings.Split(tc.Original.Suffix, ".")
 	length := len(labels)
 	//fmt.Println(length, labels)
@@ -613,9 +606,8 @@ func wrongSecondLevelDomainFunc(tc TypoResult) (results []TypoResult) {
 			if suffixLbl[1] == labels[1] {
 				if suffix != tc.Original.Suffix {
 					dm := Domain{tc.Original.Subdomain, tc.Original.Domain, suffix}
-					results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 				}
-
 			}
 		}
 	}
@@ -623,7 +615,7 @@ func wrongSecondLevelDomainFunc(tc TypoResult) (results []TypoResult) {
 }
 
 // wrongThirdLevelDomainFunc uses an alternate, valid third level domain.
-func wrongThirdLevelDomainFunc(tc TypoResult) (results []TypoResult) {
+func wrongThirdLevelDomainFunc(tc Result) (results []Result) {
 	labels := strings.Split(tc.Original.Suffix, ".")
 	length := len(labels)
 	for _, suffix := range datasets.TLD {
@@ -633,9 +625,8 @@ func wrongThirdLevelDomainFunc(tc TypoResult) (results []TypoResult) {
 			if suffixLbl[1] == labels[1] && suffixLbl[2] == labels[2] {
 				if suffix != tc.Original.Suffix {
 					dm := Domain{tc.Original.Subdomain, tc.Original.Domain, suffix}
-					results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 				}
-
 			}
 		}
 	}
@@ -644,7 +635,7 @@ func wrongThirdLevelDomainFunc(tc TypoResult) (results []TypoResult) {
 
 // bitsquattingFunc relies on random bit- errors to redirect connections
 // intended for popular domains
-func bitsquattingFunc(tc TypoResult) (results []TypoResult) {
+func bitsquattingFunc(tc Result) (results []Result) {
 	// TOOO: need to improve.
 	masks := []int{1, 2, 4, 8, 16, 32, 64, 128}
 	charset := make(map[string][]string)
@@ -657,7 +648,6 @@ func bitsquattingFunc(tc TypoResult) (results []TypoResult) {
 						charset[string(alpha)] = append(charset[string(alpha)], string(new))
 					}
 				}
-
 			}
 		}
 	}
@@ -667,14 +657,14 @@ func bitsquattingFunc(tc TypoResult) (results []TypoResult) {
 
 			dnew := tc.Original.Domain[:d] + string(char) + tc.Original.Domain[d+1:]
 			dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix}
-			results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 		}
 	}
 	return
 }
 
 // numeralSwapFunc are created by swapping numbers and corresponding words
-func numeralSwapFunc(tc TypoResult) (results []TypoResult) {
+func numeralSwapFunc(tc Result) (results []Result) {
 	for _, keyboard := range tc.Keyboards {
 		for inum, words := range keyboard.Language.Numerals {
 			for _, snum := range words {
@@ -682,18 +672,17 @@ func numeralSwapFunc(tc TypoResult) (results []TypoResult) {
 					dnew := strings.Replace(tc.Original.Domain, snum, inum, -1)
 					dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix}
 					if dnew != tc.Original.Domain {
-						results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+						results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 					}
 				}
 				{
 					dnew := strings.Replace(tc.Original.Domain, inum, snum, -1)
 					dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix}
 					if dnew != tc.Original.Domain {
-						results = append(results, TypoResult{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+						results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
 					}
 				}
 			}
-
 		}
 	}
 	return
@@ -718,7 +707,7 @@ func replaceCharFunc(str, old, new string) (results []string) {
 }
 
 // TRegister
-func TRegister(name string, typo ...Typo) {
+func TRegister(name string, typo ...Module) {
 	_, registered := TREGISTRY[strings.ToUpper(name)]
 	if !registered {
 		TREGISTRY[strings.ToUpper(name)] = typo
@@ -726,7 +715,7 @@ func TRegister(name string, typo ...Typo) {
 }
 
 // TRetrieve
-func TRetrieve(strs ...string) (results []Typo) {
+func TRetrieve(strs ...string) (results []Module) {
 	for _, f := range strs {
 		value, ok := TREGISTRY[strings.ToUpper(f)]
 		if ok {

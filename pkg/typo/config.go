@@ -23,7 +23,6 @@
 package typo
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/bobesa/go-domain-util/domainutil"
@@ -42,22 +41,33 @@ type BasicConfig struct {
 	Format      string   `json:"format,omitempty"`
 	File        string   `json:"file,omitempty"`
 	Verbose     bool     `json:"verbose,omitempty"`
+	Timing      Timing   `json:"timing,omitempty"`
+}
+
+// Timing ...
+type Timing struct {
+	Delay  int `json:"delay,omitempty"`
+	Random int `json:"random,omitempty"`
 }
 
 // Config ...
 type Config struct {
 	domains   []Domain
 	keyboards []languages.Keyboard
-	// languages   []languages.Language
-	typos       []Typo
-	funcs       []Extra
-	filters     []Extra
-	headers     []string
-	concurrency int
+	languages []languages.Language
 
-	format  string
-	file    string
-	verbose bool
+	typos     []Module
+	funcs     []Module
+	filters   []Module
+	storage   []Module
+	analyzers []Module
+
+	headers     []string
+	format      string
+	file        string
+	verbose     bool
+	concurrency int
+	timing      Timing
 }
 
 // NewConfig ...
@@ -110,7 +120,7 @@ func (b *BasicConfig) Config() (c Config) {
 	return
 }
 
-// GetDomains
+// GetDomains ...
 func (c *Config) GetDomains(args []string) {
 	dmns := []Domain{}
 	for _, str := range args {
@@ -133,7 +143,7 @@ func (c *Config) GetKeyboards(keyboards []string) {
 	c.keyboards = languages.KEYBOARDS.Keyboards(keyboards...)
 }
 
-// GetTypos
+// GetTypos ...
 func (c *Config) GetTypos(typos []string) {
 	c.typos = TRetrieve(typos...)
 }
@@ -143,7 +153,7 @@ func (c *Config) GetFuncs(funcs []string) {
 	if funcs := FRetrieve(funcs...); len(funcs) > 0 {
 		c.funcs = funcs
 	} else {
-		c.funcs = FRetrieve("idna")
+		c.funcs = FRetrieve("idna", "ld")
 	}
 }
 
@@ -155,10 +165,10 @@ func (c *Config) GetFilters(filters []string) {
 }
 
 // GetHeaders ...
-func (c *Config) GetHeaders(funcs []Extra) {
+func (c *Config) GetHeaders(funcs []Module) {
 	c.headers = []string{"Live", "Type", "Typo", "Suffix"}
 	for _, fnc := range funcs {
-		for _, h := range fnc.Headers {
+		for _, h := range fnc.Headers() {
 			c.headers = appendIfMissing(c.headers, h)
 		}
 	}
@@ -173,22 +183,22 @@ func appendIfMissing(slice []string, i string) []string {
 	return append(slice, i)
 }
 
-// GetConcurrency
+// GetConcurrency ...
 func (c *Config) GetConcurrency(concurrency int) {
 	c.concurrency = concurrency
 }
 
-// GetFile
+// GetFile ...
 func (c *Config) GetFile(file string) {
 	c.file = file
 }
 
-// GetFormat
+// GetFormat ...
 func (c *Config) GetFormat(format string) {
 	c.format = format
 }
 
-// GetVerbose
+// GetVerbose ...
 func (c *Config) GetVerbose(verbose bool) {
 	c.verbose = verbose
 }
@@ -202,7 +212,7 @@ func errHandler(err error) {
 func CobraConfig(cmd *cobra.Command, args []string) (c Config) {
 
 	// Print logo
-	fmt.Println(LOGO)
+	// fmt.Println(LOGO)
 
 	// Basic options
 	c.GetDomains(args)

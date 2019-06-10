@@ -27,23 +27,15 @@ import (
 )
 
 // FilterREGISTRY The registry for extra functions
-var FilterREGISTRY = make(map[string][]Extra)
+var FilterREGISTRY = make(map[string][]Module)
 
-var onlineFilter = Extra{
+var onlineFilter = Module{
 	Code:        "LIVE",
 	Name:        "Online domians",
 	Description: "Show online/live domains only.",
-	Exec:        onlineFilterFunc,
-	Headers:     []string{"IPv4", "IPv6"},
+	exec:        onlineFilterFunc,
+	headers:     []string{"IPv4", "IPv6"},
 }
-
-// var onlineFilter = Filter{
-// 	Code:        "LIVE",
-// 	Name:        "Online domians",
-// 	Description: "Show online/live domains only.",
-// 	Exec:        onlineFilterFunc,
-// 	Requiments:  []string{"IPv4", "IPv6"},
-// }
 
 func init() {
 	FilterRegister("LIVE", onlineFilter)
@@ -54,18 +46,18 @@ func init() {
 }
 
 // onlineFilterFunc ...
-func onlineFilterFunc(tr TypoResult) (results []TypoResult) {
+func onlineFilterFunc(tr Result) (results []Result) {
 	_, ok := tr.Data["IPv6"]
 	if ok {
 		if tr.Live {
-			results = append(results, TypoResult{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
+			results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
 		}
 	}
 	return
 }
 
 // FilterRegister ...
-func FilterRegister(name string, efunc ...Extra) {
+func FilterRegister(name string, efunc ...Module) {
 	_, registered := FilterREGISTRY[strings.ToUpper(name)]
 	if !registered {
 		FilterREGISTRY[strings.ToUpper(name)] = efunc
@@ -73,7 +65,7 @@ func FilterRegister(name string, efunc ...Extra) {
 }
 
 // FilterRetrieve ...
-func FilterRetrieve(strs ...string) (results []Extra) {
+func FilterRetrieve(strs ...string) (results []Module) {
 	for _, f := range strs {
 		value, ok := FilterREGISTRY[strings.ToUpper(f)]
 		if ok {

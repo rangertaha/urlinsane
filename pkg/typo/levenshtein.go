@@ -22,6 +22,7 @@
 
 package typo
 
+// Levenshtein ...
 func Levenshtein(original, variant string) int {
 
 	str1 := []rune(original)

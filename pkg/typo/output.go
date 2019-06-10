@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright © 2019 Rangertaha <rangertaha@gmail.com>
+// Copyright © 2019 Resulta <rangertaha@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,10 +30,10 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func (urli *URLInsane) outFile() (file *os.File) {
-	if urli.file != "" {
+func (urli *Typosquatting) outFile() (file *os.File) {
+	if urli.config.file != "" {
 		var err error
-		file, err = os.OpenFile(urli.file, os.O_CREATE|os.O_WRONLY, 0644)
+		file, err = os.OpenFile(urli.config.file, os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -43,11 +43,11 @@ func (urli *URLInsane) outFile() (file *os.File) {
 	return
 }
 
-func (urli *URLInsane) jsonOutput(in <-chan TypoResult) {
+func (urli *Typosquatting) jsonOutput(in <-chan Result) {
 
 }
 
-func (urli *URLInsane) csvOutput(in <-chan TypoResult) {
+func (urli *Typosquatting) csvOutput(in <-chan Result) {
 	w := csv.NewWriter(urli.outFile())
 
 	live := func(l bool) string {
@@ -59,18 +59,18 @@ func (urli *URLInsane) csvOutput(in <-chan TypoResult) {
 	}
 
 	// CSV column headers
-	w.Write(urli.headers)
+	w.Write(urli.config.headers)
 
 	for v := range in {
 		var data []string
-		if urli.verbose {
+		if urli.config.verbose {
 			data = []string{live(v.Live), v.Typo.Name, v.Variant.String(), v.Variant.Suffix}
 		} else {
 			data = []string{live(v.Live), v.Typo.Code, v.Variant.String(), v.Variant.Suffix}
 		}
 
 		// Add a column of data to the results
-		for _, head := range urli.headers[4:] {
+		for _, head := range urli.config.headers[4:] {
 			value, ok := v.Data[head]
 			if ok {
 				data = append(data, value)
@@ -87,9 +87,9 @@ func (urli *URLInsane) csvOutput(in <-chan TypoResult) {
 	}
 }
 
-func (urli *URLInsane) stdOutput(in <-chan TypoResult) {
+func (urli *Typosquatting) stdOutput(in <-chan Result) {
 	table := tablewriter.NewWriter(urli.outFile())
-	table.SetHeader(urli.headers)
+	table.SetHeader(urli.config.headers)
 	table.SetBorder(false)
 
 	live := func(l bool) string {
@@ -101,14 +101,14 @@ func (urli *URLInsane) stdOutput(in <-chan TypoResult) {
 	}
 	for v := range in {
 		var data []string
-		if urli.verbose {
+		if urli.config.verbose {
 			data = []string{live(v.Live), v.Typo.Name, v.Variant.String(), v.Variant.Suffix}
 		} else {
 			data = []string{live(v.Live), v.Typo.Code, v.Variant.String(), v.Variant.Suffix}
 		}
 
 		// Add a column of data to the results
-		for _, head := range urli.headers[4:] {
+		for _, head := range urli.config.headers[4:] {
 			value, ok := v.Data[head]
 			if ok {
 				data = append(data, value)
@@ -119,14 +119,14 @@ func (urli *URLInsane) stdOutput(in <-chan TypoResult) {
 	table.Render()
 }
 
-func (urli *URLInsane) Output(in <-chan TypoResult) {
-	if urli.format == "json" {
-		urli.jsonOutput(in)
-	}
-	if urli.format == "csv" {
-		urli.csvOutput(in)
-	}
-	if urli.format == "text" {
-		urli.stdOutput(in)
-	}
-}
+// func (urli *Typosquatting) Output(in <-chan Result) {
+// 	if urli.config.format == "json" {
+// 		urli.jsonOutput(in)
+// 	}
+// 	if urli.config.format == "csv" {
+// 		urli.csvOutput(in)
+// 	}
+// 	if urli.config.format == "text" {
+// 		urli.stdOutput(in)
+// 	}
+// }
