@@ -1,0 +1,10 @@
+service: urlinsane-api
+
+runtime: custom
+env: flex
+
+manual_scaling:
+  instances: 1
+
+network:
+  session_affinity: true
