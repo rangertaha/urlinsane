@@ -11,15 +11,10 @@ steps:
 - name: 'gcr.io/cloud-builders/gcloud'
   id: Deploy
   args:
-  - 'beta'
-  - 'run'
+  - 'app'
   - 'deploy'
-  - '--region=us-central1'
-  - 'urlinsane-api'
-  - '--image'
+  - '--quiet'
+  - '--image-url'
   - 'gcr.io/$PROJECT_ID/urlinsane'
-  - '--allow-unauthenticated'
-  - '--memory=512Mi'
-  - '--concurrency=1'
   waitFor:
   - 'Push'
