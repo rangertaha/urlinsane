@@ -57,5 +57,5 @@ push-gcr: login-gcr image ## Push build to Google Container Registry
 	docker tag $(BINARY_NAME) $(GCR_HOST)/$(GCP_PROJECT_ID)/$(BINARY_NAME)
 	docker push $(GCR_HOST)/$(GCP_PROJECT_ID)/$(BINARY_NAME)
 
-deploy-gcr: push-gcr ## Deploy api service to Google Cloud Run
-	gcloud beta run deploy --region=us-central1 urlinsane-api --image $(GCR_HOST)/$(GCP_PROJECT_ID)/$(BINARY_NAME) --allow-unauthenticated --memory=512Mi --concurrency=1
+deploy-gc-app-engine: push-gcr ## Deploy api service to Google Cloud AppEngine
+	gcloud app deploy --quiet --image-url $(GCR_HOST)/$(GCP_PROJECT_ID)/$(BINARY_NAME)
