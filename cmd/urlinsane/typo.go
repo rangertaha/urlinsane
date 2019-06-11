@@ -107,11 +107,17 @@ var typoCmd = &cobra.Command{
 }
 
 func init() {
+	// helpOptions := HelpOptions{
+	// 	languages.KEYBOARDS.Keyboards("all"),
+	// 	typo.TRetrieve("all"),
+	// 	typo.FRetrieve("all"),
+	// 	typo.FilterRetrieve("all"),
+	// }
 	helpOptions := HelpOptions{
 		languages.KEYBOARDS.Keyboards("all"),
-		typo.TRetrieve("all"),
-		typo.FRetrieve("all"),
-		typo.FilterRetrieve("all"),
+		typo.Typos.Get("all"),
+		typo.Extras.Get("all"),
+		typo.Filters.Get("all"),
 	}
 
 	// Create a new template and parse the letter into it.
