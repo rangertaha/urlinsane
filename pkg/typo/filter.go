@@ -22,25 +22,22 @@
 
 package typo
 
-import (
-	"strings"
-)
-
 // FilterREGISTRY The registry for extra functions
-var FilterREGISTRY = make(map[string][]Module)
+// var FilterREGISTRY = make(map[string][]Module)
+var Filters = NewRegistry()
 
 var onlineFilter = Module{
 	Code:        "LIVE",
 	Name:        "Online domians",
 	Description: "Show online/live domains only.",
-	exec:        onlineFilterFunc,
-	headers:     []string{"IPv4", "IPv6"},
+	Exe:         onlineFilterFunc,
+	Fields:      []string{"IPv4", "IPv6"},
 }
 
 func init() {
-	FilterRegister("LIVE", onlineFilter)
+	Filters.Set("LIVE", onlineFilter)
 
-	FilterRegister("ALL",
+	Filters.Set("ALL",
 		onlineFilter,
 	)
 }
@@ -56,21 +53,21 @@ func onlineFilterFunc(tr Result) (results []Result) {
 	return
 }
 
-// FilterRegister ...
-func FilterRegister(name string, efunc ...Module) {
-	_, registered := FilterREGISTRY[strings.ToUpper(name)]
-	if !registered {
-		FilterREGISTRY[strings.ToUpper(name)] = efunc
-	}
-}
+// // FilterRegister ...
+// func FilterRegister(name string, efunc ...Module) {
+// 	_, registered := FilterREGISTRY[strings.ToUpper(name)]
+// 	if !registered {
+// 		FilterREGISTRY[strings.ToUpper(name)] = efunc
+// 	}
+// }
 
-// FilterRetrieve ...
-func FilterRetrieve(strs ...string) (results []Module) {
-	for _, f := range strs {
-		value, ok := FilterREGISTRY[strings.ToUpper(f)]
-		if ok {
-			results = append(results, value...)
-		}
-	}
-	return
-}
+// // FilterRetrieve ...
+// func FilterRetrieve(strs ...string) (results []Module) {
+// 	for _, f := range strs {
+// 		value, ok := FilterREGISTRY[strings.ToUpper(f)]
+// 		if ok {
+// 			results = append(results, value...)
+// 		}
+// 	}
+// 	return
+// }

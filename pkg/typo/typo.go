@@ -46,7 +46,7 @@ type (
 	// Statser ...
 	Statser interface{}
 
-	// Registry ...
+	// Register ...
 	Register interface {
 		Set(string, ...Module)
 		Get(...string) []Module
@@ -74,17 +74,17 @@ type (
 
 	// Module ...
 	Module struct {
-		Code        string `json:"code,omitempty"`
-		Name        string `json:"name,omitempty"`
-		Description string `json:"description,omitempty"`
-		headers     []string
-		exec        ModuleFunc
+		Code        string     `json:"code,omitempty"`
+		Name        string     `json:"name,omitempty"`
+		Description string     `json:"description,omitempty"`
+		Fields      []string   `json:"-"`
+		Exe         ModuleFunc `json:"-"`
 	}
 
 	// Result ...
 	Result struct {
-		Keyboards []languages.Keyboard
-		Languages []languages.Language
+		Keyboards []languages.Keyboard   `json:"-"`
+		Languages []languages.Language   `json:"-"`
 		Original  Domain                 `json:"original,omitempty"`
 		Variant   Domain                 `json:"variant,omitempty"`
 		Typo      Module                 `json:"typo,omitempty"`
@@ -99,16 +99,17 @@ type (
 	// ModuleFunc defines a function to register typos.
 	ModuleFunc func(Result) []Result
 
-	registry map[string][]Module
+	// Registry ...
+	Registry map[string][]Module
 )
 
 // NewRegistry ...
-func NewRegistry() registry {
-	return make(registry)
+func NewRegistry() Registry {
+	return make(Registry)
 }
 
 // Get ...
-func (reg registry) Get(names ...string) (mods []Module) {
+func (reg Registry) Get(names ...string) (mods []Module) {
 	for _, f := range names {
 		value, ok := reg[strings.ToUpper(f)]
 		if ok {
@@ -122,11 +123,32 @@ func (reg registry) Get(names ...string) (mods []Module) {
 }
 
 // Set ...
-func (reg registry) Set(name string, mod ...Module) {
+func (reg Registry) Set(name string, mod ...Module) {
 	_, registered := reg[strings.ToUpper(name)]
 	if !registered {
 		reg[strings.ToUpper(name)] = mod
 	}
+}
+
+// Idna ...
+func (d *Domain) Idna() (punycode string) {
+	punycode, _ = idna.Punycode.ToASCII(d.String())
+	return
+}
+
+// String ...
+func (d *Domain) String() (domain string) {
+	if d.Subdomain != "" {
+		domain = d.Subdomain + "."
+	}
+	if d.Domain != "" {
+		domain = domain + d.Domain
+	}
+	if d.Suffix != "" {
+		domain = domain + "." + d.Suffix
+	}
+	domain = strings.TrimSpace(domain)
+	return
 }
 
 // New ...
@@ -136,12 +158,12 @@ func New(conf Config) Typosquatting {
 
 // Exec ...
 func (m *Module) Exec(res Result) []Result {
-	return m.exec(res)
+	return m.Exe(res)
 }
 
 // Headers ...
 func (m *Module) Headers() []string {
-	return m.headers
+	return m.Fields
 }
 
 // SetMeta ...
@@ -355,25 +377,4 @@ func (typ *Typosquatting) Output(in <-chan Result) {
 	if typ.config.format == "text" {
 		typ.stdOutput(in)
 	}
-}
-
-// Idna ...
-func (d *Domain) Idna() (punycode string) {
-	punycode, _ = idna.Punycode.ToASCII(d.String())
-	return
-}
-
-// String ...
-func (d *Domain) String() (domain string) {
-	if d.Subdomain != "" {
-		domain = d.Subdomain + "."
-	}
-	if d.Domain != "" {
-		domain = domain + d.Domain
-	}
-	if d.Suffix != "" {
-		domain = domain + "." + d.Suffix
-	}
-	domain = strings.TrimSpace(domain)
-	return
 }

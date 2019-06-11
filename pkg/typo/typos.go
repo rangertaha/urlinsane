@@ -30,192 +30,198 @@ import (
 )
 
 // TREGISTRY is the registry for typos functions
-var TREGISTRY = make(map[string][]Module)
+// var TREGISTRY = make(map[string][]Module)
+
+// Typo ...
+var Typos = NewRegistry()
 
 var missingDot = Module{
 	Code:        "MD",
 	Name:        "Missing Dot",
 	Description: "Missing Dot is created by omitting a dot from the domain.",
-	exec:        missingDotFunc,
+	Exe:         missingDotFunc,
 }
 var subdomainInsertion = Module{
 	Code:        "SI",
 	Name:        "Subdomain Insertion",
 	Description: "Inserting common subdomain at the beginning of the domain.",
-	exec:        subdomainInsertionFunc,
+	Exe:         subdomainInsertionFunc,
 }
 var missingDashes = Module{
 	Code:        "MDS",
 	Name:        "Missing Dashes",
 	Description: "Missing Dashes is created by stripping all dashes from the domain.",
-	exec:        missingDashFunc,
+	Exe:         missingDashFunc,
 }
 var stripDashes = Module{
 	Code:        "SD",
 	Name:        "Strip Dashes",
 	Description: "Strip Dashes is created by omitting a dash from the domain",
-	exec:        stripDashesFunc,
+	Exe:         stripDashesFunc,
 }
 var characterOmission = Module{
 	Code:        "CO",
 	Name:        "Character Omission",
 	Description: "Character Omission Omitting a character from the domain.",
-	exec:        characterOmissionFunc,
+	Exe:         characterOmissionFunc,
 }
 var characterSwap = Module{
 	Code:        "CS",
 	Name:        "Character Swap",
 	Description: "Character Swap Swapping two consecutive characters in a domain",
-	exec:        characterSwapFunc,
+	Exe:         characterSwapFunc,
 }
 var adjacentCharacterSubstitution = Module{
 	Code:        "ACS",
 	Name:        "Adjacent Character Substitution",
 	Description: "Adjacent Character Substitution replaces adjacent characters",
-	exec:        adjacentCharacterSubstitutionFunc,
+	Exe:         adjacentCharacterSubstitutionFunc,
 }
 var adjacentCharacterInsertion = Module{
 	Code:        "ACI",
 	Name:        "Adjacent Character Insertion",
 	Description: "Adjacent Character Insertion inserts adjacent character ",
-	exec:        adjacentCharacterInsertionFunc,
+	Exe:         adjacentCharacterInsertionFunc,
 }
 var homoglyphs = Module{
 	Code:        "HG",
 	Name:        "Homoglyphs",
 	Description: "Homoglyphs replaces characters with characters that look similar",
-	exec:        homoglyphFunc,
+	Exe:         homoglyphFunc,
 }
 var singularPluralise = Module{
 	Code:        "SP",
 	Name:        "Singular Pluralise",
 	Description: "Singular Pluralise creates a singular domain plural and vice versa",
-	exec:        singularPluraliseFunc,
+	Exe:         singularPluraliseFunc,
 }
 
 var characterRepeat = Module{
 	Code:        "CR",
 	Name:        "Character Repeat",
 	Description: "Character Repeat Repeats a character of the domain name twice",
-	exec:        characterRepeatFunc,
+	Exe:         characterRepeatFunc,
 }
 
 var doubleCharacterReplacement = Module{
 	Code:        "DCR",
 	Name:        "Double Character Replacement",
 	Description: "Double Character Replacement repeats a character twice.",
-	exec:        doubleCharacterReplacementFunc,
+	Exe:         doubleCharacterReplacementFunc,
 }
 var commonMisspellings = Module{
 	Code:        "CM",
 	Name:        "Common Misspellings",
 	Description: "Common Misspellings are created from a dictionary of commonly misspelled words",
-	exec:        commonMisspellingsFunc,
+	Exe:         commonMisspellingsFunc,
 }
 var homophones = Module{
 	Code:        "HP",
 	Name:        "Homophones",
 	Description: "Homophones Modules are created from sets of words that sound the same",
-	exec:        homophonesFunc,
+	Exe:         homophonesFunc,
 }
 
 var vowelSwapping = Module{
 	Code:        "VS",
 	Name:        "Vowel Swapping",
 	Description: "Vowel Swapping is created by swaps vowels",
-	exec:        vowelSwappingFunc,
+	Exe:         vowelSwappingFunc,
 }
 
 var bitFlipping = Module{
 	Code:        "BF",
 	Name:        "Bit Flipping",
 	Description: "Bitsquatting relies on random bit-errors to redirect connections",
-	exec:        bitsquattingFunc,
+	Exe:         bitsquattingFunc,
 }
 
 var wrongTopLevelDomain = Module{
 	Code:        "WTLD",
 	Name:        "Wrong TLD",
 	Description: "Wrong Top Level Domain",
-	exec:        wrongTopLevelDomainFunc,
+	Exe:         wrongTopLevelDomainFunc,
 }
 
 var wrongSecondLevelDomain = Module{
 	Code:        "W2TLD",
 	Name:        "Wrong 2nd TLD",
 	Description: "Wrong Second Level Domain",
-	exec:        wrongSecondLevelDomainFunc,
+	Exe:         wrongSecondLevelDomainFunc,
 }
 
 var wrongThirdLevelDomain = Module{
 	Code:        "W3TLD",
 	Name:        "Wrong 3rd TLD",
 	Description: "Wrong Third Level Domain",
-	exec:        wrongThirdLevelDomainFunc,
+	Exe:         wrongThirdLevelDomainFunc,
 }
 
 var numeralSwap = Module{
 	Code:        "NS",
 	Name:        "Numeral Swap",
 	Description: "Numeral Swap numbers, words and vice versa",
-	exec:        numeralSwapFunc,
+	Exe:         numeralSwapFunc,
 }
 
 var periodInsertion = Module{
 	Code:        "PI",
 	Name:        "Period Insertion",
 	Description: "Inserting periods in the target domain",
-	exec:        periodInsertionFunc,
+	Exe:         periodInsertionFunc,
 }
 
 var hyphenInsertion = Module{
 	Code:        "HI",
 	Name:        "Dash Insertion",
 	Description: "Inserting hyphens in the target domain",
-	exec:        hyphenInsertionFunc,
+	Exe:         hyphenInsertionFunc,
 }
 
 var alphabetInsertion = Module{
 	Code:        "AI",
 	Name:        "Alphabet Insertion",
 	Description: "Inserting the language specific alphabet in the target domain",
-	exec:        alphabetInsertionFunc,
+	Exe:         alphabetInsertionFunc,
 }
 
 var alphabetReplacement = Module{
 	Code:        "AR",
 	Name:        "Alphabet Replacement",
 	Description: "Replacing the language specific alphabet in the target domain",
-	exec:        alphabetReplacementnFunc,
+	Exe:         alphabetReplacementnFunc,
 }
 
 func init() {
-	TRegister("MD", missingDot)
-	TRegister("SI", subdomainInsertion)
-	TRegister("MDS", missingDashes)
-	TRegister("CO", characterOmission)
-	TRegister("CS", characterSwap)
-	TRegister("ACS", adjacentCharacterSubstitution)
-	TRegister("ACI", adjacentCharacterInsertion)
-	TRegister("CR", characterRepeat)
-	TRegister("DCR", doubleCharacterReplacement)
-	TRegister("SD", stripDashes)
-	TRegister("SP", singularPluralise)
-	TRegister("CM", commonMisspellings)
-	TRegister("VS", vowelSwapping)
-	TRegister("HG", homoglyphs)
-	TRegister("WTLD", wrongTopLevelDomain)
-	TRegister("W2TLD", wrongSecondLevelDomain)
-	TRegister("W3TLD", wrongThirdLevelDomain)
-	TRegister("HP", homophones)
-	TRegister("BF", bitFlipping)
-	TRegister("NS", numeralSwap)
-	TRegister("PI", periodInsertion)
-	TRegister("HI", hyphenInsertion)
-	TRegister("AI", alphabetInsertion)
-	TRegister("AR", alphabetReplacement)
+	Typos.Set("MD", missingDot)
+	Typos.Set("SI", subdomainInsertion)
 
-	TRegister("ALL",
+	Typos.Set("MD", missingDot)
+	Typos.Set("SI", subdomainInsertion)
+	Typos.Set("MDS", missingDashes)
+	Typos.Set("CO", characterOmission)
+	Typos.Set("CS", characterSwap)
+	Typos.Set("ACS", adjacentCharacterSubstitution)
+	Typos.Set("ACI", adjacentCharacterInsertion)
+	Typos.Set("CR", characterRepeat)
+	Typos.Set("DCR", doubleCharacterReplacement)
+	Typos.Set("SD", stripDashes)
+	Typos.Set("SP", singularPluralise)
+	Typos.Set("CM", commonMisspellings)
+	Typos.Set("VS", vowelSwapping)
+	Typos.Set("HG", homoglyphs)
+	Typos.Set("WTLD", wrongTopLevelDomain)
+	Typos.Set("W2TLD", wrongSecondLevelDomain)
+	Typos.Set("W3TLD", wrongThirdLevelDomain)
+	Typos.Set("HP", homophones)
+	Typos.Set("BF", bitFlipping)
+	Typos.Set("NS", numeralSwap)
+	Typos.Set("PI", periodInsertion)
+	Typos.Set("HI", hyphenInsertion)
+	Typos.Set("AI", alphabetInsertion)
+	Typos.Set("AR", alphabetReplacement)
+
+	Typos.Set("ALL",
 		missingDot,
 		subdomainInsertion,
 		missingDashes,
@@ -706,24 +712,24 @@ func replaceCharFunc(str, old, new string) (results []string) {
 	return
 }
 
-// TRegister
-func TRegister(name string, typo ...Module) {
-	_, registered := TREGISTRY[strings.ToUpper(name)]
-	if !registered {
-		TREGISTRY[strings.ToUpper(name)] = typo
-	}
-}
+// // TRegister
+// func TRegister(name string, typo ...Module) {
+// 	_, registered := TREGISTRY[strings.ToUpper(name)]
+// 	if !registered {
+// 		TREGISTRY[strings.ToUpper(name)] = typo
+// 	}
+// }
 
-// TRetrieve
-func TRetrieve(strs ...string) (results []Module) {
-	for _, f := range strs {
-		value, ok := TREGISTRY[strings.ToUpper(f)]
-		if ok {
-			results = append(results, value...)
-		}
-	}
-	if len(strs) == 0 {
-		return TRetrieve("all")
-	}
-	return
-}
+// // TRetrieve
+// func TRetrieve(strs ...string) (results []Module) {
+// 	for _, f := range strs {
+// 		value, ok := TREGISTRY[strings.ToUpper(f)]
+// 		if ok {
+// 			results = append(results, value...)
+// 		}
+// 	}
+// 	if len(strs) == 0 {
+// 		return TRetrieve("all")
+// 	}
+// 	return
+// }

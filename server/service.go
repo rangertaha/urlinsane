@@ -29,6 +29,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"golang.org/x/net/websocket"
+	// "github.com/davecgh/go-spew/spew"
 )
 
 // NewWebSocketServer ...
@@ -64,6 +65,7 @@ func NewWebSocketServer(host, port string, concurrency int) {
 				results := typosquatting.Stream()
 				for r := range results {
 					// Write
+					//  spew.Dump(r)
 					data, err := json.Marshal(r)
 					if err != nil {
 						c.Logger().Error(err)
