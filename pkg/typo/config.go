@@ -145,21 +145,21 @@ func (c *Config) GetKeyboards(keyboards []string) {
 
 // GetTypos ...
 func (c *Config) GetTypos(typos []string) {
-	c.typos = TRetrieve(typos...)
+	c.typos = Typos.Get(typos...)
 }
 
 // GetFuncs ...
 func (c *Config) GetFuncs(funcs []string) {
-	if funcs := FRetrieve(funcs...); len(funcs) > 0 {
+	if funcs := Extras.Get(funcs...); len(funcs) > 0 {
 		c.funcs = funcs
 	} else {
-		c.funcs = FRetrieve("idna", "ld")
+		c.funcs = Extras.Get("idna", "ld")
 	}
 }
 
 // GetFilters ...
 func (c *Config) GetFilters(filters []string) {
-	if filters := FilterRetrieve(filters...); len(filters) > 0 {
+	if filters := Filters.Get(filters...); len(filters) > 0 {
 		c.filters = filters
 	}
 }

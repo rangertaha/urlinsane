@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package typo
+package infos
 
 import (
 	"fmt"
@@ -32,60 +32,20 @@ import (
 
 	"github.com/bobesa/go-domain-util/domainutil"
 	"github.com/glaslos/ssdeep"
-	"github.com/oschwald/geoip2-golang"
 
-	"github.com/cybersectech-org/urlinsane/pkg/datasets"
+	"github.com/cybersectech-org/urlinsane/pkg/typo"
 )
 
 type (
-	Continent struct {
-		Code      string            `json:"code,omitempty"`
-		GeoNameID uint              `json:"geo_name,omitempty"`
-		Names     map[string]string `json:"names,omitempty"`
-	}
-	Country struct {
-		GeoNameID         uint              `json:"code,omitempty"`
-		IsInEuropeanUnion bool              `json:"european,omitempty"`
-		IsoCode           string            `json:"iso_code,omitempty"`
-		Names             map[string]string `json:"names,omitempty"`
-	}
-	RegisteredCountry struct {
-		GeoNameID         uint              `json:"geo_name,omitempty"`
-		IsInEuropeanUnion bool              `json:"european,omitempty"`
-		IsoCode           string            `json:"iso_code,omitempty"`
-		Names             map[string]string `json:"names,omitempty"`
-	}
-	RepresentedCountry struct {
-		GeoNameID         uint              `json:"geo_name,omitempty"`
-		IsInEuropeanUnion bool              `json:"european,omitempty"`
-		IsoCode           string            `json:"iso_code,omitempty"`
-		Names             map[string]string `json:"names,omitempty"`
-		Type              string            `json:"type,omitempty"`
-	}
-	Traits struct {
-		IsAnonymousProxy    bool `json:"is_anonymous_proxy,omitempty"`
-		IsSatelliteProvider bool `json:"is_satellite_provider,omitempty"`
-	}
-	GeoCountry struct {
-		Continent          Continent          `json:"continent,omitempty"`
-		Country            Country            `json:"country,omitempty"`
-		RegisteredCountry  RegisteredCountry  `json:"registered_country,omitempty"`
-		RepresentedCountry RepresentedCountry `json:"represented_country,omitempty"`
-		Traits             Traits             `json:"traits,omitempty"`
-	}
-
 	Meta struct {
 		Geo GeoCountry `json:"geo,omitempty"`
 	}
 )
 
 // FREGISTRY is the registry for extra functions
-// var FREGISTRY = make(map[string][]Module)
+var FREGISTRY = make(map[string][]typo.Module)
 
-// Extra is the registry for extra functions
-var Extras = NewRegistry()
-
-var levenshteinDistance = Module{
+var levenshteinDistance = typo.Module{
 	Code:        "LD",
 	Name:        "Levenshtein Distance",
 	Description: "The Levenshtein distance is a string metric for measuring the difference between two domains",
@@ -93,7 +53,7 @@ var levenshteinDistance = Module{
 	Fields:      []string{"LD"},
 }
 
-var mxLookup = Module{
+var mxLookup = typo.Module{
 	Code:        "MX",
 	Name:        "MX Lookup",
 	Description: "Checking for DNS's MX records",
@@ -101,7 +61,7 @@ var mxLookup = Module{
 	Fields:      []string{"MX"},
 }
 
-var txtLookup = Module{
+var txtLookup = typo.Module{
 	Code:        "TXT",
 	Name:        "TXT Lookup",
 	Description: "Checking for DNS's TXT records",
@@ -109,7 +69,7 @@ var txtLookup = Module{
 	Fields:      []string{"TXT"},
 }
 
-var ipLookup = Module{
+var ipLookup = typo.Module{
 	Code:        "IP",
 	Name:        "IP Lookup",
 	Description: "Checking for IP address",
@@ -117,7 +77,7 @@ var ipLookup = Module{
 	Fields:      []string{"IPv4", "IPv6"},
 }
 
-var nsLookup = Module{
+var nsLookup = typo.Module{
 	Code:        "NS",
 	Name:        "NS Lookup",
 	Description: "Checks DNS NS records",
@@ -125,7 +85,7 @@ var nsLookup = Module{
 	Fields:      []string{"NS"},
 }
 
-var cnameLookup = Module{
+var cnameLookup = typo.Module{
 	Code:        "CNAME",
 	Name:        "CNAME Lookup",
 	Description: "Checks DNS CNAME records",
@@ -133,15 +93,7 @@ var cnameLookup = Module{
 	Fields:      []string{"CNAME"},
 }
 
-var geoIPLookup = Module{
-	Code:        "GEO",
-	Name:        "GeoIP Lookup",
-	Description: "Show country location of ip address",
-	Exe:         geoIPLookupFunc,
-	Fields:      []string{"IPv4", "IPv6", "GEO"},
-}
-
-var idnaLookup = Module{
+var idnaLookup = typo.Module{
 	Code:        "IDNA",
 	Name:        "IDNA Domain",
 	Description: "Show international domain name",
@@ -149,7 +101,7 @@ var idnaLookup = Module{
 	Fields:      []string{"IDNA"},
 }
 
-var ssdeepLookup = Module{
+var ssdeepLookup = typo.Module{
 	Code:        "SIM",
 	Name:        "Domain Similarity",
 	Description: "Show domain content similarity",
@@ -157,7 +109,7 @@ var ssdeepLookup = Module{
 	Fields:      []string{"IPv4", "IPv6", "SIM"},
 }
 
-var redirectLookup = Module{
+var redirectLookup = typo.Module{
 	Code:        "301",
 	Name:        "Redirected Domain",
 	Description: "Show domains redirects",
@@ -165,7 +117,7 @@ var redirectLookup = Module{
 	Fields:      []string{"IPv4", "IPv6", "Redirect"},
 }
 
-var whoisLookup = Module{
+var whoisLookup = typo.Module{
 	Code:        "WHOIS",
 	Name:        "Show whois info",
 	Description: "Query whois for additional information",
@@ -174,20 +126,20 @@ var whoisLookup = Module{
 }
 
 func init() {
-	Extras.Set("LD", levenshteinDistance)
-	Extras.Set("IDNA", idnaLookup)
-	Extras.Set("MX", mxLookup)
-	Extras.Set("IP", ipLookup)
-	Extras.Set("TXT", txtLookup)
-	Extras.Set("NS", nsLookup)
-	Extras.Set("CNAME", cnameLookup)
-	Extras.Set("SIM", ssdeepLookup)
-	Extras.Set("301", redirectLookup)
+	FRegister("LD", levenshteinDistance)
+	FRegister("IDNA", idnaLookup)
+	FRegister("MX", mxLookup)
+	FRegister("IP", ipLookup)
+	FRegister("TXT", txtLookup)
+	FRegister("NS", nsLookup)
+	FRegister("CNAME", cnameLookup)
+	FRegister("SIM", ssdeepLookup)
+	FRegister("301", redirectLookup)
 
 	//FRegister("WHOIS", whoisLookup)
-	Extras.Set("GEO", geoIPLookup)
+	FRegister("GEO", geoIPLookup)
 
-	Extras.Set("ALL",
+	FRegister("ALL",
 		levenshteinDistance,
 		mxLookup,
 		ipLookup,
@@ -204,46 +156,18 @@ func init() {
 	)
 }
 
-// NewCountry ...
-func toCountry(g *geoip2.Country) (c GeoCountry) {
-	c.Continent.Code = g.Continent.Code
-	c.Continent.GeoNameID = g.Continent.GeoNameID
-	c.Continent.Names = g.Continent.Names
-
-	c.Country.GeoNameID = g.Country.GeoNameID
-	c.Country.IsInEuropeanUnion = g.Country.IsInEuropeanUnion
-	c.Country.IsoCode = g.Country.IsoCode
-	c.Country.Names = g.Country.Names
-
-	c.RegisteredCountry.GeoNameID = g.RegisteredCountry.GeoNameID
-	c.RegisteredCountry.IsInEuropeanUnion = g.RegisteredCountry.IsInEuropeanUnion
-	c.RegisteredCountry.IsoCode = g.RegisteredCountry.IsoCode
-	c.RegisteredCountry.Names = g.RegisteredCountry.Names
-
-	c.RepresentedCountry.GeoNameID = g.RegisteredCountry.GeoNameID
-	c.RepresentedCountry.IsInEuropeanUnion = g.RepresentedCountry.IsInEuropeanUnion
-	c.RepresentedCountry.IsoCode = g.RepresentedCountry.IsoCode
-	c.RepresentedCountry.Names = g.RepresentedCountry.Names
-	c.RepresentedCountry.Type = g.RepresentedCountry.Type
-
-	c.Traits.IsAnonymousProxy = g.Traits.IsAnonymousProxy
-	c.Traits.IsSatelliteProvider = g.Traits.IsSatelliteProvider
-
-	return
-}
-
 // levenshteinDistanceFunc
-func levenshteinDistanceFunc(tr Result) (results []Result) {
+func levenshteinDistanceFunc(tr typo.Result) (results []typo.Result) {
 	domain := tr.Original.String()
 	variant := tr.Variant.String()
 	tr.Data["LD"] = strconv.Itoa(Levenshtein(domain, variant))
 	tr.Meta["levenshtein"] = Levenshtein(domain, variant)
-	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
+	results = append(results, typo.Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
 	return
 }
 
 // mxLookupFunc
-func mxLookupFunc(tr Result) (results []Result) {
+func mxLookupFunc(tr typo.Result) (results []typo.Result) {
 	records, _ := net.LookupMX(tr.Variant.String())
 	tr.Meta["MX"] = records
 	for _, record := range records {
@@ -252,12 +176,12 @@ func mxLookupFunc(tr Result) (results []Result) {
 			tr.Data["MX"] = strings.TrimSpace(tr.Data["MX"] + "\n" + record)
 		}
 	}
-	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
+	results = append(results, typo.Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
 	return
 }
 
 // nsLookupFunc
-func nsLookupFunc(tr Result) (results []Result) {
+func nsLookupFunc(tr typo.Result) (results []typo.Result) {
 	records, _ := net.LookupNS(tr.Variant.String())
 	tr.Meta["NS"] = records
 	for _, record := range records {
@@ -266,85 +190,48 @@ func nsLookupFunc(tr Result) (results []Result) {
 			tr.Data["NS"] = strings.TrimSpace(tr.Data["NS"] + "\n" + record)
 		}
 	}
-	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
+	results = append(results, typo.Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
 	return
 }
 
 // cnameLookupFunc
-func cnameLookupFunc(tr Result) (results []Result) {
+func cnameLookupFunc(tr typo.Result) (results []typo.Result) {
 	records, _ := net.LookupCNAME(tr.Variant.String())
 	tr.Meta["CNAME"] = records
 	for _, record := range records {
 		tr.Data["CNAME"] = strings.TrimSuffix(string(record), ".")
 	}
-	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
+	results = append(results, typo.Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
 	return
 }
 
 // ipLookupFunc
-func ipLookupFunc(tr Result) (results []Result) {
+func ipLookupFunc(tr typo.Result) (results []typo.Result) {
 	results = append(results, checkIP(tr))
 	return
 }
 
 // txtLookupFunc
-func txtLookupFunc(tr Result) (results []Result) {
+func txtLookupFunc(tr typo.Result) (results []typo.Result) {
 	records, _ := net.LookupTXT(tr.Variant.String())
 	tr.Meta["TXT"] = records
 	for _, record := range records {
 		tr.Data["TXT"] = record
 	}
-	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
-	return
-}
-
-// geoIPLookupFunc
-func geoIPLookupFunc(tr Result) (results []Result) {
-	tr = checkIP(tr)
-	if tr.Live {
-		geolite2CityMmdb, err := datasets.Asset("GeoLite2-Country.mmdb")
-		if err != nil {
-			// Asset was not found.
-		}
-
-		db, err := geoip2.FromBytes(geolite2CityMmdb)
-		if err != nil {
-			fmt.Print(err)
-		}
-		defer db.Close()
-
-		ipv4s, ok := tr.Data["IPv4"]
-		if ok {
-			ips := strings.Split(ipv4s, "\n")
-			for _, ip4 := range ips {
-				ip := net.ParseIP(ip4)
-				if ip != nil {
-					record, err := db.Country(ip)
-					if err != nil {
-						fmt.Print(err)
-					}
-					tr.Data["GEO"] = fmt.Sprint(record.Country.Names["en"])
-					tr.Meta["GEO"] = toCountry(record)
-				}
-			}
-		}
-	}
-
-	// If you are using strings that may be invalid, check that ip is not nil
-	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
+	results = append(results, typo.Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
 	return
 }
 
 // idnaFunc
-func idnaFunc(tr Result) (results []Result) {
+func idnaFunc(tr typo.Result) (results []typo.Result) {
 
 	tr.Data["IDNA"] = tr.Variant.Idna()
 	tr.Meta["IDNA"] = tr.Variant.Idna()
-	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
+	results = append(results, typo.Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta})
 	return
 }
 
-func ssdeepFunc(tr Result) (results []Result) {
+func ssdeepFunc(tr typo.Result) (results []typo.Result) {
 	tr = checkIP(tr)
 	if tr.Live {
 		var h1, h2 string
@@ -380,7 +267,7 @@ func ssdeepFunc(tr Result) (results []Result) {
 }
 
 // redirectLookupFunc
-func redirectLookupFunc(tr Result) (results []Result) {
+func redirectLookupFunc(tr typo.Result) (results []typo.Result) {
 	tr = checkIP(tr)
 	if tr.Live {
 		variation, err := http.Get("http://" + tr.Variant.String())
@@ -404,11 +291,11 @@ func redirectLookupFunc(tr Result) (results []Result) {
 	return
 }
 
-func whoisLookupFunc(tr Result) (results []Result) {
+func whoisLookupFunc(tr typo.Result) (results []typo.Result) {
 	return
 }
 
-func checkIP(tr Result) Result {
+func checkIP(tr typo.Result) typo.Result {
 	ip4, _ := tr.Data["IPv4"]
 	ip6, _ := tr.Data["IPv6"]
 	if ip4 == "" || ip6 == "" {
@@ -432,27 +319,27 @@ func checkIP(tr Result) Result {
 		tr.Meta["IP"] = records
 	}
 
-	return Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta}
+	return typo.Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data, Meta: tr.Meta}
 }
 
-// // FRegister ...
-// func FRegister(name string, efunc ...Module) {
-// 	_, registered := FREGISTRY[strings.ToUpper(name)]
-// 	if !registered {
-// 		FREGISTRY[strings.ToUpper(name)] = efunc
-// 	}
-// }
+// FRegister ...
+func FRegister(name string, efunc ...typo.Module) {
+	_, registered := FREGISTRY[strings.ToUpper(name)]
+	if !registered {
+		FREGISTRY[strings.ToUpper(name)] = efunc
+	}
+}
 
-// // FRetrieve ...
-// func FRetrieve(strs ...string) (results []Module) {
-// 	for _, f := range strs {
-// 		value, ok := FREGISTRY[strings.ToUpper(f)]
-// 		if ok {
-// 			results = append(results, value...)
-// 		}
-// 	}
-// 	if len(strs) == 0 {
-// 		return FRetrieve("all")
-// 	}
-// 	return
-// }
+// FRetrieve ...
+func FRetrieve(strs ...string) (results []typo.Module) {
+	for _, f := range strs {
+		value, ok := FREGISTRY[strings.ToUpper(f)]
+		if ok {
+			results = append(results, value...)
+		}
+	}
+	if len(strs) == 0 {
+		return FRetrieve("all")
+	}
+	return
+}
