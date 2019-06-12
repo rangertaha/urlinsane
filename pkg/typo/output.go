@@ -118,15 +118,3 @@ func (urli *Typosquatting) stdOutput(in <-chan Result) {
 	}
 	table.Render()
 }
-
-// func (urli *Typosquatting) Output(in <-chan Result) {
-// 	if urli.config.format == "json" {
-// 		urli.jsonOutput(in)
-// 	}
-// 	if urli.config.format == "csv" {
-// 		urli.csvOutput(in)
-// 	}
-// 	if urli.config.format == "text" {
-// 		urli.stdOutput(in)
-// 	}
-// }
