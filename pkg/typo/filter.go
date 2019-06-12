@@ -22,8 +22,7 @@
 
 package typo
 
-// FilterREGISTRY The registry for extra functions
-// var FilterREGISTRY = make(map[string][]Module)
+// Filters ...
 var Filters = NewRegistry()
 
 var onlineFilter = Module{
@@ -52,22 +51,3 @@ func onlineFilterFunc(tr Result) (results []Result) {
 	}
 	return
 }
-
-// // FilterRegister ...
-// func FilterRegister(name string, efunc ...Module) {
-// 	_, registered := FilterREGISTRY[strings.ToUpper(name)]
-// 	if !registered {
-// 		FilterREGISTRY[strings.ToUpper(name)] = efunc
-// 	}
-// }
-
-// // FilterRetrieve ...
-// func FilterRetrieve(strs ...string) (results []Module) {
-// 	for _, f := range strs {
-// 		value, ok := FilterREGISTRY[strings.ToUpper(f)]
-// 		if ok {
-// 			results = append(results, value...)
-// 		}
-// 	}
-// 	return
-// }

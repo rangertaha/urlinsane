@@ -104,7 +104,7 @@ func (b *BasicConfig) Config() (c Config) {
 	// Registered functions
 	c.GetTypos(b.Typos)
 	c.GetFuncs(b.Funcs)
-	c.GetFuncs(b.Filters)
+	c.GetFilters(b.Filters)
 
 	// Processing option
 	c.GetConcurrency(b.Concurrency)
@@ -159,8 +159,8 @@ func (c *Config) GetFuncs(funcs []string) {
 
 // GetFilters ...
 func (c *Config) GetFilters(filters []string) {
-	if filters := Filters.Get(filters...); len(filters) > 0 {
-		c.filters = filters
+	if f := Filters.Get(filters...); len(filters) > 0 {
+		c.filters = f
 	}
 }
 

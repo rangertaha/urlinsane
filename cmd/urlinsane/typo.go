@@ -76,7 +76,7 @@ EXAMPLE:
     urlinsane google.com -t co -x ip -x idna -x ns
 
 AUTHOR:
-  Written by Rangertaha <rangertaha@gmail.com> <talhachi2019@gmail.com>
+  Written by Rangertaha <rangertaha@gmail.com>
 
 `
 
@@ -107,12 +107,6 @@ var typoCmd = &cobra.Command{
 }
 
 func init() {
-	// helpOptions := HelpOptions{
-	// 	languages.KEYBOARDS.Keyboards("all"),
-	// 	typo.TRetrieve("all"),
-	// 	typo.FRetrieve("all"),
-	// 	typo.FilterRetrieve("all"),
-	// }
 	helpOptions := HelpOptions{
 		languages.KEYBOARDS.Keyboards("all"),
 		typo.Typos.Get("all"),
