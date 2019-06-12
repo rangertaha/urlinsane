@@ -63,6 +63,7 @@ type (
 		fltrWG sync.WaitGroup
 
 		stats <-chan Statser
+		errs  <-chan interface{}
 	}
 
 	// Domain ...
@@ -236,7 +237,6 @@ func (typ *Typosquatting) Results(in <-chan Result) <-chan Result {
 	go func() {
 		for r := range in {
 			record := Result{Variant: r.Variant, Original: r.Original, Typo: r.Typo}
-
 			// Initialize a place to store extra data for a record
 			record.Data = make(map[string]string)
 
@@ -273,9 +273,8 @@ func (typ *Typosquatting) FuncChain(funcs []Module, in <-chan Result) <-chan Res
 
 	if len(funcs) > 0 {
 		return typ.FuncChain(funcs, out)
-	} else {
-		return out
 	}
+	return out
 }
 
 // DistChain creates workers of chained functions
@@ -300,9 +299,7 @@ func (typ *Typosquatting) DistChain(in <-chan Result) <-chan Result {
 
 // FilterChain ...
 func (typ *Typosquatting) FilterChain(in <-chan Result) <-chan Result {
-	//var xfunc Extra
 	out := make(chan Result)
-	// xfunc, funcs = funcs[len(funcs)-1], funcs[:len(funcs)-1]
 	go func() {
 		for i := range in {
 			if len(typ.config.filters) > 0 {
@@ -326,7 +323,6 @@ func (typ *Typosquatting) Dedup(in <-chan Result) <-chan Result {
 	out := make(chan Result)
 	go func(in <-chan Result, out chan<- Result) {
 		for c := range in {
-
 			// Count and remove deplicates
 			dup, ok := duplicates[c.Variant.String()]
 			if ok {
@@ -349,21 +345,16 @@ func (typ *Typosquatting) Stream() <-chan Result {
 
 // Batch returns all the results at once
 func (typ *Typosquatting) Batch() (res []Result) {
-
 	for r := range typ.Stream() {
 		res = append(res, r)
 	}
-	return res
+	return
 }
 
 // Execute starts the program and outputs results. Primarily used for CLI tools
 func (typ *Typosquatting) Execute() {
-
-	// Execute program returning a channel with results
-	output := typ.Stream()
-
 	// Output results based on config
-	typ.Output(output)
+	typ.Output(typ.Stream())
 }
 
 // Output ...
