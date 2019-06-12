@@ -29,10 +29,7 @@ import (
 	"github.com/cybersectech-org/urlinsane/pkg/datasets"
 )
 
-// TREGISTRY is the registry for typos functions
-// var TREGISTRY = make(map[string][]Module)
-
-// Typo ...
+// Typos ...
 var Typos = NewRegistry()
 
 var missingDot = Module{
@@ -711,25 +708,3 @@ func replaceCharFunc(str, old, new string) (results []string) {
 	results = append(results, strings.Replace(str, old, new, -1))
 	return
 }
-
-// // TRegister
-// func TRegister(name string, typo ...Module) {
-// 	_, registered := TREGISTRY[strings.ToUpper(name)]
-// 	if !registered {
-// 		TREGISTRY[strings.ToUpper(name)] = typo
-// 	}
-// }
-
-// // TRetrieve
-// func TRetrieve(strs ...string) (results []Module) {
-// 	for _, f := range strs {
-// 		value, ok := TREGISTRY[strings.ToUpper(f)]
-// 		if ok {
-// 			results = append(results, value...)
-// 		}
-// 	}
-// 	if len(strs) == 0 {
-// 		return TRetrieve("all")
-// 	}
-// 	return
-// }
