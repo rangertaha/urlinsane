@@ -144,6 +144,12 @@ func init() {
 	typoCmd.PersistentFlags().StringArrayP("filters", "r", []string{""},
 		"Filter results to reduce the number of results")
 
+	typoCmd.PersistentFlags().Int64("delay", 0,
+		"A delay between network calls")
+
+	typoCmd.PersistentFlags().Int64("random-delay", 0,
+		"Used to randomize the delay between network calls.")
+
 	// Output options
 	typoCmd.PersistentFlags().StringP("file", "f", "", "Output filename")
 	typoCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv, text)")
