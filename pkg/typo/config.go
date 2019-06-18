@@ -164,6 +164,12 @@ func (c *Config) GetFilters(filters []string) {
 	}
 }
 
+// GetTimming ...
+func (c *Config) GetTimming(delay, rand int) {
+	c.timing.Delay = delay
+	c.timing.Random = rand
+}
+
 // GetHeaders ...
 func (c *Config) GetHeaders(funcs []Module) {
 	c.headers = []string{"Live", "Type", "Typo", "Suffix"}
