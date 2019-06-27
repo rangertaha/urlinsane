@@ -265,7 +265,7 @@ func (typ *Typosquatting) Results(in <-chan Result) <-chan Result {
 			record.Data = make(map[string]string)
 
 			// Initialize a place to store meta data
-			record.Meta = make(map[string]interface{})
+			record.Variant.Meta = Meta{}
 
 			// Add record placeholder for consistent records
 			for _, name := range typ.config.headers {

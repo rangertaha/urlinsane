@@ -385,7 +385,7 @@ func alphabetInsertionFunc(tc Result) (results []Result) {
 			if i == len(tc.Original.Domain)-1 {
 				d1 = tc.Original.Domain[:i] + string(char) + alp + tc.Original.Domain[i+1:]
 			}
-			dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}}
+			dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}, false}
 			results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
 		}
 	}
@@ -404,12 +404,12 @@ func alphabetReplacementnFunc(tc Result) (results []Result) {
 		for alp, _ := range alphabet {
 
 			d1 := tc.Original.Domain[:i] + alp + tc.Original.Domain[i+1:]
-			dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}}
+			dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}, false}
 			results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
 
 			if i == len(tc.Original.Domain)-1 {
 				d1 = tc.Original.Domain[:i] + alp + tc.Original.Domain[i+1:]
-				dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}}
+				dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}, false}
 				results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
 			}
 		}
@@ -424,7 +424,7 @@ func periodInsertionFunc(tc Result) (results []Result) {
 	for i, char := range tc.Original.Domain {
 
 		d1 := tc.Original.Domain[:i] + "." + string(char) + tc.Original.Domain[i+1:]
-		dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}}
+		dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}, false}
 		results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
 	}
 
