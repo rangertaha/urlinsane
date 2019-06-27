@@ -29,6 +29,9 @@ import (
 	"golang.org/x/net/idna"
 
 	"github.com/cybersectech-org/urlinsane/pkg/typo/languages"
+	dnsLib "github.com/cybint/hackingo/net/dns"
+	geoLib "github.com/cybint/hackingo/net/geoip"
+	httpLib "github.com/cybint/hackingo/net/http"
 )
 
 type (
@@ -92,6 +95,27 @@ type (
 		Variant   Domain               `json:"variant,omitempty"`
 		Typo      Module               `json:"typo,omitempty"`
 		Data      map[string]string    `json:"data,omitempty"`
+	}
+	DNS struct {
+		IPv4  []string    `json:"ipv4,omitempty"`
+		IPv6  []string    `json:"ip46,omitempty"`
+		NS    []dnsLib.NS `json:"ns,omitempty"`
+		MX    []dnsLib.MX `json:"mx,omitempty"`
+		CName []string    `json:"cname,omitempty"`
+		TXT   []string    `json:"txt,omitempty"`
+	}
+
+	Meta struct {
+		Levenshtein int              `json:"Levenshtein,omitempty"`
+		IDNA        string           `json:"idna,omitempty"`
+		IP          []string         `json:"ip,omitempty"`
+		Redirect    string           `json:"redirect,omitempty"`
+		HTTP        httpLib.Response `json:"http,omitempty"`
+		Geo         geoLib.Country   `json:"geo,omitempty"`
+		DNS         DNS              `json:"dns,omitempty"`
+		SSDeep      string           `json:"ssdeep,omitempty"`
+		Similarity  int              `json:"similarity,omitempty"`
+		// Whois    Whois      `json:"whois,omitempty"`
 	}
 
 	// OutputResult ...
@@ -167,15 +191,15 @@ func (m *Module) Headers() []string {
 	return m.Fields
 }
 
-// SetMeta ...
-func (m *Result) SetMeta(key string, obj interface{}) {
-	m.Meta[key] = obj
-}
+// // SetMeta ...
+// func (m *Result) SetMeta(key string, obj interface{}) {
+// 	m.Meta[key] = obj
+// }
 
-// GetMeta ...
-func (m *Result) GetMeta(key string) interface{} {
-	return m.Meta[key]
-}
+// // GetMeta ...
+// func (m *Result) GetMeta(key string) interface{} {
+// 	return m.Meta[key]
+// }
 
 // SetData ...
 func (m *Result) SetData(key string, obj string) {

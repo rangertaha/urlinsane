@@ -251,20 +251,20 @@ func init() {
 func missingDotFunc(tc Result) (results []Result) {
 	for _, str := range missingCharFunc(tc.Original.String(), ".") {
 		if tc.Original.Domain != str {
-			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix, Meta{}}
-			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix, Meta{}, false}
+			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 		}
 	}
-	dm := Domain{tc.Original.Subdomain, strings.Replace(tc.Original.Domain, ".", "", -1), tc.Original.Suffix, Meta{}}
-	results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+	dm := Domain{tc.Original.Subdomain, strings.Replace(tc.Original.Domain, ".", "", -1), tc.Original.Suffix, Meta{}, false}
+	results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 	return results
 }
 
 // subdomainInsertionFunc typos are created by inserting common subdomains at the begining of the domain. wwwgoogle.com and ftpgoogle.com
 func subdomainInsertionFunc(tc Result) (results []Result) {
 	for _, str := range datasets.SUBDOMAINS {
-		dm := Domain{tc.Original.Subdomain, str + tc.Original.Domain, tc.Original.Suffix, Meta{}}
-		results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+		dm := Domain{tc.Original.Subdomain, str + tc.Original.Domain, tc.Original.Suffix, Meta{}, false}
+		results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 	}
 	return results
 }
@@ -274,12 +274,12 @@ func subdomainInsertionFunc(tc Result) (results []Result) {
 func missingDashFunc(tc Result) (results []Result) {
 	for _, str := range missingCharFunc(tc.Original.Domain, "-") {
 		if tc.Original.Domain != str {
-			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix, Meta{}}
-			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix, Meta{}, false}
+			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 		}
 	}
-	dm := Domain{tc.Original.Subdomain, strings.Replace(tc.Original.Domain, "-", "", -1), tc.Original.Suffix, Meta{}}
-	results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+	dm := Domain{tc.Original.Subdomain, strings.Replace(tc.Original.Domain, "-", "", -1), tc.Original.Suffix, Meta{}, false}
+	results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 	return results
 }
 
@@ -293,8 +293,8 @@ func characterOmissionFunc(tc Result) (results []Result) {
 				tc.Original.Domain[i+1:],
 			)
 			if tc.Original.Domain != domain {
-				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}}
-				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
+				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 
 			}
 		}
@@ -314,8 +314,8 @@ func characterSwapFunc(tc Result) (results []Result) {
 				tc.Original.Domain[i+2:],
 			)
 			if tc.Original.Domain != domain {
-				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}}
-				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
+				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 			}
 		}
 	}
@@ -330,8 +330,8 @@ func adjacentCharacterSubstitutionFunc(tc Result) (results []Result) {
 		for i, char := range tc.Original.Domain {
 			for _, key := range keyboard.Adjacent(string(char)) {
 				domain := tc.Original.Domain[:i] + string(key) + tc.Original.Domain[i+1:]
-				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}}
-				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
+				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 			}
 		}
 	}
@@ -345,12 +345,12 @@ func adjacentCharacterInsertionFunc(tc Result) (results []Result) {
 		for i, char := range tc.Original.Domain {
 			for _, key := range keyboard.Adjacent(string(char)) {
 				d1 := tc.Original.Domain[:i] + string(key) + string(char) + tc.Original.Domain[i+1:]
-				dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}}
-				results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}, false}
+				results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
 
 				d2 := tc.Original.Domain[:i] + string(char) + string(key) + tc.Original.Domain[i+1:]
-				dm2 := Domain{tc.Original.Subdomain, d2, tc.Original.Suffix, Meta{}}
-				results = append(results, Result{Original: tc.Original, Variant: dm2, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				dm2 := Domain{tc.Original.Subdomain, d2, tc.Original.Suffix, Meta{}, false}
+				results = append(results, Result{Original: tc.Original, Variant: dm2, Typo: tc.Typo, Data: tc.Data})
 			}
 		}
 	}
@@ -366,8 +366,8 @@ func hyphenInsertionFunc(tc Result) (results []Result) {
 		if i == len(tc.Original.Domain)-1 {
 			d1 = tc.Original.Domain[:i] + string(char) + "-" + tc.Original.Domain[i+1:]
 		}
-		dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}}
-		results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+		dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}, false}
+		results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
 	}
 	return
 }
@@ -386,7 +386,7 @@ func alphabetInsertionFunc(tc Result) (results []Result) {
 				d1 = tc.Original.Domain[:i] + string(char) + alp + tc.Original.Domain[i+1:]
 			}
 			dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}}
-			results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+			results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
 		}
 	}
 	return
@@ -405,12 +405,12 @@ func alphabetReplacementnFunc(tc Result) (results []Result) {
 
 			d1 := tc.Original.Domain[:i] + alp + tc.Original.Domain[i+1:]
 			dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}}
-			results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+			results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
 
 			if i == len(tc.Original.Domain)-1 {
 				d1 = tc.Original.Domain[:i] + alp + tc.Original.Domain[i+1:]
 				dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}}
-				results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
 			}
 		}
 	}
@@ -425,7 +425,7 @@ func periodInsertionFunc(tc Result) (results []Result) {
 
 		d1 := tc.Original.Domain[:i] + "." + string(char) + tc.Original.Domain[i+1:]
 		dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}}
-		results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+		results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
 	}
 
 	return
@@ -443,8 +443,8 @@ func characterRepeatFunc(tc Result) (results []Result) {
 				tc.Original.Domain[i+1:],
 			)
 			if tc.Original.Domain != domain {
-				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}}
-				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
+				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 			}
 		}
 	}
@@ -461,8 +461,8 @@ func doubleCharacterReplacementFunc(tc Result) (results []Result) {
 				if tc.Original.Domain[i] == tc.Original.Domain[i+1] {
 					for _, key := range keyboard.Adjacent(string(char)) {
 						domain := tc.Original.Domain[:i] + string(key) + string(key) + tc.Original.Domain[i+2:]
-						dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}}
-						results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+						dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
+						results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 					}
 				}
 			}
@@ -476,8 +476,8 @@ func doubleCharacterReplacementFunc(tc Result) (results []Result) {
 func stripDashesFunc(tc Result) (results []Result) {
 	for _, str := range replaceCharFunc(tc.Original.Domain, "-", "") {
 		if tc.Original.Domain != str {
-			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix, Meta{}}
-			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix, Meta{}, false}
+			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 		}
 	}
 	return
@@ -494,8 +494,8 @@ func singularPluraliseFunc(tc Result) (results []Result) {
 		} else {
 			domain = tc.Original.Domain + pchar
 		}
-		dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}}
-		results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+		dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
+		results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 	}
 	return
 }
@@ -506,8 +506,8 @@ func singularPluraliseFunc(tc Result) (results []Result) {
 func commonMisspellingsFunc(tc Result) (results []Result) {
 	for _, keyboard := range tc.Keyboards {
 		for _, word := range keyboard.Language.SimilarSpellings(tc.Original.Domain) {
-			dm := Domain{tc.Original.Subdomain, word, tc.Original.Suffix, Meta{}}
-			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+			dm := Domain{tc.Original.Subdomain, word, tc.Original.Suffix, Meta{}, false}
+			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 
 		}
 	}
@@ -523,8 +523,8 @@ func vowelSwappingFunc(tc Result) (results []Result) {
 				for _, vvchar := range keyboard.Language.Vowels {
 					new := strings.Replace(tc.Original.Domain, vchar, vvchar, -1)
 					if new != tc.Original.Domain {
-						dm := Domain{tc.Original.Subdomain, new, tc.Original.Suffix, Meta{}}
-						results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+						dm := Domain{tc.Original.Subdomain, new, tc.Original.Suffix, Meta{}, false}
+						results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 					}
 				}
 			}
@@ -538,8 +538,8 @@ func vowelSwappingFunc(tc Result) (results []Result) {
 func homophonesFunc(tc Result) (results []Result) {
 	for _, keyboard := range tc.Keyboards {
 		for _, word := range keyboard.Language.SimilarSounds(tc.Original.Domain) {
-			dm := Domain{tc.Original.Subdomain, word, tc.Original.Suffix, Meta{}}
-			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+			dm := Domain{tc.Original.Subdomain, word, tc.Original.Suffix, Meta{}, false}
+			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 		}
 	}
 	return
@@ -557,8 +557,8 @@ func homoglyphFunc(tc Result) (results []Result) {
 			for _, kchar := range keyboard.Language.SimilarChars(string(char)) {
 				domain := fmt.Sprint(tc.Original.Domain[:i], kchar, tc.Original.Domain[i+1:])
 				if tc.Original.Domain != domain {
-					dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}}
-					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+					dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
+					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 				}
 			}
 		}
@@ -567,8 +567,8 @@ func homoglyphFunc(tc Result) (results []Result) {
 			for _, lchar := range language.SimilarChars(string(char)) {
 				domain := fmt.Sprint(tc.Original.Domain[:i], lchar, tc.Original.Domain[i+1:])
 				if tc.Original.Domain != domain {
-					dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}}
-					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+					dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
+					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 				}
 			}
 		}
@@ -587,8 +587,8 @@ func wrongTopLevelDomainFunc(tc Result) (results []Result) {
 		suffixLen := len(strings.Split(suffix, "."))
 		if length == suffixLen && length == 1 {
 			if suffix != tc.Original.Suffix {
-				dm := Domain{tc.Original.Subdomain, tc.Original.Domain, suffix, Meta{}}
-				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+				dm := Domain{tc.Original.Subdomain, tc.Original.Domain, suffix, Meta{}, false}
+				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 			}
 		}
 	}
@@ -608,8 +608,8 @@ func wrongSecondLevelDomainFunc(tc Result) (results []Result) {
 		if length == suffixLen && length == 2 {
 			if suffixLbl[1] == labels[1] {
 				if suffix != tc.Original.Suffix {
-					dm := Domain{tc.Original.Subdomain, tc.Original.Domain, suffix, Meta{}}
-					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+					dm := Domain{tc.Original.Subdomain, tc.Original.Domain, suffix, Meta{}, false}
+					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 				}
 			}
 		}
@@ -627,8 +627,8 @@ func wrongThirdLevelDomainFunc(tc Result) (results []Result) {
 		if length == suffixLen && length == 3 {
 			if suffixLbl[1] == labels[1] && suffixLbl[2] == labels[2] {
 				if suffix != tc.Original.Suffix {
-					dm := Domain{tc.Original.Subdomain, tc.Original.Domain, suffix, Meta{}}
-					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+					dm := Domain{tc.Original.Subdomain, tc.Original.Domain, suffix, Meta{}, false}
+					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 				}
 			}
 		}
@@ -659,8 +659,8 @@ func bitsquattingFunc(tc Result) (results []Result) {
 		for _, char := range charset[string(dchar)] {
 
 			dnew := tc.Original.Domain[:d] + string(char) + tc.Original.Domain[d+1:]
-			dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix, Meta{}}
-			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+			dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix, Meta{}, false}
+			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 		}
 	}
 	return
@@ -673,16 +673,16 @@ func numeralSwapFunc(tc Result) (results []Result) {
 			for _, snum := range words {
 				{
 					dnew := strings.Replace(tc.Original.Domain, snum, inum, -1)
-					dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix, Meta{}}
+					dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix, Meta{}, false}
 					if dnew != tc.Original.Domain {
-						results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+						results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 					}
 				}
 				{
 					dnew := strings.Replace(tc.Original.Domain, inum, snum, -1)
-					dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix, Meta{}}
+					dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix, Meta{}, false}
 					if dnew != tc.Original.Domain {
-						results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Live: tc.Live, Data: tc.Data})
+						results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
 					}
 				}
 			}
