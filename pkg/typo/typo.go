@@ -56,7 +56,7 @@ type (
 	Typosquatting struct {
 		config Config
 		// Used to store collected data of the trget domains
-		meta map[string]interface{}
+		meta Meta
 
 		typoWG sync.WaitGroup
 		funcWG sync.WaitGroup
@@ -71,6 +71,8 @@ type (
 		Subdomain string `json:"subdomain,omitempty"`
 		Domain    string `json:"domain,omitempty"`
 		Suffix    string `json:"suffix,omitempty"`
+		Meta      Meta   `json:"meta,omitempty"`
+		Live      bool   `json:"live,omitempty"`
 	}
 
 	// Module ...
@@ -84,14 +86,12 @@ type (
 
 	// Result ...
 	Result struct {
-		Keyboards []languages.Keyboard   `json:"-"`
-		Languages []languages.Language   `json:"-"`
-		Original  Domain                 `json:"original,omitempty"`
-		Variant   Domain                 `json:"variant,omitempty"`
-		Typo      Module                 `json:"typo,omitempty"`
-		Data      map[string]string      `json:"data,omitempty"`
-		Meta      map[string]interface{} `json:"meta,omitempty"`
-		Live      bool                   `json:"live,omitempty"`
+		Keyboards []languages.Keyboard `json:"-"`
+		Languages []languages.Language `json:"-"`
+		Original  Domain               `json:"original,omitempty"`
+		Variant   Domain               `json:"variant,omitempty"`
+		Typo      Module               `json:"typo,omitempty"`
+		Data      map[string]string    `json:"data,omitempty"`
 	}
 
 	// OutputResult ...
