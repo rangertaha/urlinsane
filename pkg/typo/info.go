@@ -38,6 +38,7 @@ import (
 	dnsLib "github.com/cybint/hackingo/net/dns"
 	geoLib "github.com/cybint/hackingo/net/geoip"
 	httpLib "github.com/cybint/hackingo/net/http"
+	nlpLib "github.com/cybint/hackingo/nlp"
 
 	"github.com/cybersectech-org/urlinsane/pkg/datasets"
 )
@@ -286,8 +287,8 @@ func httpLookupFunc(tr Result) (results []Result) {
 func levenshteinDistanceFunc(tr Result) (results []Result) {
 	domain := tr.Original.String()
 	variant := tr.Variant.String()
-	tr.Data["LD"] = strconv.Itoa(Levenshtein(domain, variant))
-	tr.Variant.Meta.Levenshtein = Levenshtein(domain, variant)
+	tr.Data["LD"] = strconv.Itoa(nlpLib.Levenshtein(domain, variant))
+	tr.Variant.Meta.Levenshtein = nlpLib.Levenshtein(domain, variant)
 	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Data: tr.Data})
 	return
 }
