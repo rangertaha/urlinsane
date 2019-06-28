@@ -33,106 +33,11 @@ import (
 	"github.com/bobesa/go-domain-util/domainutil"
 	// "github.com/davecgh/go-spew/spew"
 	"github.com/glaslos/ssdeep"
-	"github.com/oschwald/geoip2-golang"
 
 	dnsLib "github.com/cybint/hackingo/net/dns"
 	geoLib "github.com/cybint/hackingo/net/geoip"
 	httpLib "github.com/cybint/hackingo/net/http"
 	nlpLib "github.com/cybint/hackingo/nlp"
-
-	"github.com/cybersectech-org/urlinsane/pkg/datasets"
-)
-
-type (
-// Continent struct {
-// 	Code      string            `json:"code,omitempty"`
-// 	GeoNameID uint              `json:"geo_name,omitempty"`
-// 	Names     map[string]string `json:"names,omitempty"`
-// }
-// Country struct {
-// 	GeoNameID         uint              `json:"code,omitempty"`
-// 	IsInEuropeanUnion bool              `json:"european,omitempty"`
-// 	IsoCode           string            `json:"iso_code,omitempty"`
-// 	Names             map[string]string `json:"names,omitempty"`
-// }
-// RegisteredCountry struct {
-// 	GeoNameID         uint              `json:"geo_name,omitempty"`
-// 	IsInEuropeanUnion bool              `json:"european,omitempty"`
-// 	IsoCode           string            `json:"iso_code,omitempty"`
-// 	Names             map[string]string `json:"names,omitempty"`
-// }
-// RepresentedCountry struct {
-// 	GeoNameID         uint              `json:"geo_name,omitempty"`
-// 	IsInEuropeanUnion bool              `json:"european,omitempty"`
-// 	IsoCode           string            `json:"iso_code,omitempty"`
-// 	Names             map[string]string `json:"names,omitempty"`
-// 	Type              string            `json:"type,omitempty"`
-// }
-// Traits struct {
-// 	IsAnonymousProxy    bool `json:"is_anonymous_proxy,omitempty"`
-// 	IsSatelliteProvider bool `json:"is_satellite_provider,omitempty"`
-// }
-// GeoCountry struct {
-// 	Continent          Continent          `json:"continent,omitempty"`
-// 	Country            Country            `json:"country,omitempty"`
-// 	RegisteredCountry  RegisteredCountry  `json:"registered_country,omitempty"`
-// 	RepresentedCountry RepresentedCountry `json:"represented_country,omitempty"`
-// 	Traits             Traits             `json:"traits,omitempty"`
-// }
-
-// ConnectionState records basic TLS details about the connection.
-// ConnectionState struct {
-// 	Version                     uint16                `json:"version,omitempty"`                      // TLS version used by the connection (e.g. VersionTLS12); added in Go 1.3
-// 	Complete                    bool                  `json:"complete,omitempty"`                     // TLS handshake is complete
-// 	DidResume                   bool                  `json:"did_resume,omitempty"`                   // connection resumes a previous TLS connection; added in Go 1.1
-// 	CipherSuite                 uint16                `json:"cipher_suite,omitempty"`                 // cipher suite in use (TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, ...)
-// 	NegotiatedProtocol          string                `json:"negotiated_protocol,omitempty"`          // negotiated next protocol (not guaranteed to be from Config.NextProtos)
-// 	NegotiatedProtocolIsMutual  bool                  `json:"negotiated_protocolIsMutual,omitempty"`  // negotiated protocol was advertised by server (client side only)
-// 	ServerName                  string                `json:"server_name,omitempty"`                  // server name requested by client, if any (server side only)
-// 	PeerCertificates            []*x509.Certificate   `json:"-"`                                      // certificate chain presented by remote peer
-// 	VerifiedChains              [][]*x509.Certificate `json:"-"`                                      // verified chains built from PeerCertificates
-// 	SignedCertificateTimestamps [][]byte              `json:"signed_certificateTimestamps,omitempty"` // SCTs from the peer, if any; added in Go 1.5
-// 	OCSPResponse                []byte                `json:"ocsp_response,omitempty"`                // stapled OCSP response from peer, if any; added in Go 1.5
-// }
-
-// // Response represents the response from an HTTP request.
-// Response struct {
-// 	Status     string `json:"status,omitempty"`      // e.g. "200 OK"
-// 	StatusCode int    `json:"status_code,omitempty"` // e.g. 200
-// 	Proto      string `json:"proto,omitempty"`       // e.g. "HTTP/1.0"
-// 	ProtoMajor int    `json:"proto_major,omitempty"`
-// 	ProtoMinor int    `json:"proto_minor,omitempty"`
-
-// 	// A Header represents the key-value pairs in an HTTP header.
-// 	Header map[string][]string `json:"header,omitempty"`
-
-// 	// Body represents the response body.
-// 	Body string `json:"body,omitempty"`
-
-// 	// Length records the length of the associated content.
-// 	Length int64 `json:"length,omitempty"`
-
-// 	SSDeep string `json:"ssdeep,omitempty"`
-
-// 	// Contains transfer encodings from outer-most to inner-most. Value is
-// 	// nil, means that "identity" encoding is used.
-// 	Encoding []string `json:"encoding,omitempty"`
-
-// 	// Uncompressed reports whether the response was sent compressed but
-// 	// was decompressed by the http package.
-// 	Uncompressed bool `json:"uncompressed,omitempty"`
-
-// 	// After the body is read, Trailer will contain any trailer values
-// 	// sent by the server.
-// 	Trailer map[string][]string `json:"trailer,omitempty"`
-
-// 	// TLS contains information about the TLS connection on which the
-// 	// response was received. It is nil for unencrypted responses.
-// 	// The pointer is shared between responses and should not be
-// 	// modified.
-// 	TLS ConnectionState `json:"tls,omitempty"`
-// }
-
 )
 
 // Extras is the registry for extra functions
@@ -362,29 +267,17 @@ func txtLookupFunc(tr Result) (results []Result) {
 func geoIPLookupFunc(tr Result) (results []Result) {
 	tr = checkIP(tr)
 	if tr.Variant.Live {
-		geolite2CityMmdb, err := datasets.Asset("GeoLite2-Country.mmdb")
-		if err != nil {
-			// Asset was not found.
-		}
-
-		db, err := geoip2.FromBytes(geolite2CityMmdb)
-		if err != nil {
-			fmt.Print(err)
-		}
-		defer db.Close()
-
 		ipv4s, ok := tr.Data["IPv4"]
 		if ok {
 			ips := strings.Split(ipv4s, "\n")
 			for _, ip4 := range ips {
-				ip := net.ParseIP(ip4)
-				if ip != nil {
-					record, err := db.Country(ip)
+				if ip4 != "" {
+					record, err := geoLib.GeoIP(ip4)
 					if err != nil {
 						fmt.Print(err)
 					}
 					tr.Data["GEO"] = fmt.Sprint(record.Country.Names["en"])
-					tr.Variant.Meta.Geo = *geoLib.NewCountry(record)
+					tr.Variant.Meta.Geo = *record
 				}
 			}
 		}
@@ -397,7 +290,6 @@ func geoIPLookupFunc(tr Result) (results []Result) {
 
 // idnaFunc
 func idnaFunc(tr Result) (results []Result) {
-
 	tr.Data["IDNA"] = tr.Variant.Idna()
 	tr.Variant.Meta.IDNA = tr.Variant.Idna()
 	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Data: tr.Data})

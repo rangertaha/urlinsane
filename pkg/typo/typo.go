@@ -96,6 +96,7 @@ type (
 		Typo      Module               `json:"typo,omitempty"`
 		Data      map[string]string    `json:"data,omitempty"`
 	}
+	// DNS ...
 	DNS struct {
 		IPv4  []string    `json:"ipv4,omitempty"`
 		IPv6  []string    `json:"ip46,omitempty"`
@@ -104,7 +105,7 @@ type (
 		CName []string    `json:"cname,omitempty"`
 		TXT   []string    `json:"txt,omitempty"`
 	}
-
+	// Meta ...
 	Meta struct {
 		Levenshtein int              `json:"Levenshtein,omitempty"`
 		IDNA        string           `json:"idna,omitempty"`
