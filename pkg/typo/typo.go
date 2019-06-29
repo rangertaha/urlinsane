@@ -23,15 +23,17 @@
 package typo
 
 import (
+	"net/http"
 	"strings"
 	"sync"
 
-	"golang.org/x/net/idna"
-
-	"github.com/cybersectech-org/urlinsane/pkg/typo/languages"
+	"github.com/bobesa/go-domain-util/domainutil"
 	dnsLib "github.com/cybint/hackingo/net/dns"
 	geoLib "github.com/cybint/hackingo/net/geoip"
 	httpLib "github.com/cybint/hackingo/net/http"
+	"golang.org/x/net/idna"
+
+	"github.com/cybersectech-org/urlinsane/pkg/typo/languages"
 )
 
 type (
@@ -212,6 +214,34 @@ func (m *Result) GetData(key string) string {
 	return m.Data[key]
 }
 
+// Start ...
+func (typ *Typosquatting) Start() <-chan Result {
+	for i, dmname := range typ.config.domains {
+		httpRes, gerr := http.Get("http://" + dmname.String())
+		if gerr == nil {
+			res := httpLib.NewResponse(httpRes)
+			// spew.Dump(res)
+			typ.config.domains[i].Meta.HTTP = res
+			typ.config.domains[i].Live = true
+			// spew.Dump(original)
+
+			str := httpRes.Request.URL.String()
+			subdomain := domainutil.Subdomain(str)
+			domain := domainutil.DomainPrefix(str)
+			suffix := domainutil.DomainSuffix(str)
+			if domain == "" {
+				domain = str
+			}
+			dm := Domain{subdomain, domain, suffix, Meta{}, true}
+			if dmname.String() != dm.String() {
+				typ.config.domains[i].Meta.Redirect = dm.String()
+			}
+		}
+	}
+
+	return typ.GenTypoConfig()
+}
+
 // GenTypoConfig ...
 func (typ *Typosquatting) GenTypoConfig() <-chan Result {
 	out := make(chan Result)
@@ -365,7 +395,7 @@ func (typ *Typosquatting) Dedup(in <-chan Result) <-chan Result {
 
 // Stream returns the results one at a time
 func (typ *Typosquatting) Stream() <-chan Result {
-	return typ.GenTypoConfig()
+	return typ.Start()
 }
 
 // Batch returns all the results at once
