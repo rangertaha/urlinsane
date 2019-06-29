@@ -1,4 +1,4 @@
-// The MIT License (MIT)
+//The MIT License (MIT)
 //
 // Copyright © 2018 Rangertaha <rangertaha@gmail.com>
 //
@@ -32,12 +32,11 @@ import (
 
 	"github.com/bobesa/go-domain-util/domainutil"
 	// "github.com/davecgh/go-spew/spew"
-	"github.com/glaslos/ssdeep"
-
 	dnsLib "github.com/cybint/hackingo/net/dns"
 	geoLib "github.com/cybint/hackingo/net/geoip"
 	httpLib "github.com/cybint/hackingo/net/http"
 	nlpLib "github.com/cybint/hackingo/nlp"
+	"github.com/glaslos/ssdeep"
 )
 
 // Extras is the registry for extra functions
@@ -163,7 +162,9 @@ func init() {
 
 // httpLookupFunc
 func httpLookupFunc(tr Result) (results []Result) {
-	tr = checkIP(tr)
+	if tr := checkIP(tr); tr.Original.Live {
+
+	}
 	if tr.Original.Live {
 		httpReq, gerr := http.Get("http://" + tr.Variant.String())
 		if gerr == nil {
@@ -272,10 +273,10 @@ func geoIPLookupFunc(tr Result) (results []Result) {
 			ips := strings.Split(ipv4s, "\n")
 			for _, ip4 := range ips {
 				if ip4 != "" {
-					record, err := geoLib.GeoIP(ip4)
-					if err != nil {
-						fmt.Print(err)
-					}
+					record, _ := geoLib.GeoIP(ip4)
+					// if err != nil {
+					// 	fmt.Print(err)
+					// }
 					tr.Data["GEO"] = fmt.Sprint(record.Country.Names["en"])
 					tr.Variant.Meta.Geo = *record
 				}
@@ -365,10 +366,10 @@ func whoisLookupFunc(tr Result) (results []Result) {
 
 func checkIP(tr Result) Result {
 	if tr.Variant.Live == false {
-		records, err := net.LookupIP(tr.Variant.String())
-		if err != nil {
-			fmt.Println(err)
-		}
+		records, _ := net.LookupIP(tr.Variant.String())
+		// if err != nil {
+		// 	fmt.Println(err)
+		// }
 		for _, record := range uniqIP(records) {
 			dotlen := strings.Count(record, ".")
 			if dotlen == 3 {
