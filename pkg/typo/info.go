@@ -24,7 +24,6 @@ package typo
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"strconv"
@@ -162,11 +161,11 @@ func init() {
 
 // httpLookupFunc
 func httpLookupFunc(tr Result) (results []Result) {
-	if tr := checkIP(tr); tr.Original.Live {
-
-	}
-	if tr.Original.Live {
-		httpReq, gerr := http.Get("http://" + tr.Variant.String())
+	if tr := checkIP(tr); tr.Variant.Live {
+		httpReq, gerr := http.Get("http://" + tr.Variant.Meta.DNS.IPv4[0])
+		if gerr != nil {
+			httpReq, gerr = http.Get("http://" + tr.Variant.Meta.DNS.IPv6[0])
+		}
 		if gerr == nil {
 			tr.Variant.Meta.HTTP = httpLib.NewResponse(httpReq)
 			// spew.Dump(original)
@@ -201,15 +200,12 @@ func levenshteinDistanceFunc(tr Result) (results []Result) {
 
 // mxLookupFunc
 func mxLookupFunc(tr Result) (results []Result) {
-	tr = checkIP(tr)
-	if tr.Original.Live {
-		records, _ := net.LookupMX(tr.Variant.String())
-		tr.Variant.Meta.DNS.MX = dnsLib.NewMX(records...)
-		for _, record := range records {
-			record := strings.TrimSuffix(record.Host, ".")
-			if !strings.Contains(tr.Data["MX"], record) {
-				tr.Data["MX"] = strings.TrimSpace(tr.Data["MX"] + "\n" + record)
-			}
+	records, _ := net.LookupMX(tr.Variant.String())
+	tr.Variant.Meta.DNS.MX = dnsLib.NewMX(records...)
+	for _, record := range records {
+		record := strings.TrimSuffix(record.Host, ".")
+		if !strings.Contains(tr.Data["MX"], record) {
+			tr.Data["MX"] = strings.TrimSpace(tr.Data["MX"] + "\n" + record)
 		}
 	}
 	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Data: tr.Data})
@@ -218,15 +214,12 @@ func mxLookupFunc(tr Result) (results []Result) {
 
 // nsLookupFunc
 func nsLookupFunc(tr Result) (results []Result) {
-	tr = checkIP(tr)
-	if tr.Original.Live {
-		records, _ := net.LookupNS(tr.Variant.String())
-		tr.Variant.Meta.DNS.NS = dnsLib.NewNS(records...)
-		for _, record := range records {
-			record := strings.TrimSuffix(record.Host, ".")
-			if !strings.Contains(tr.Data["NS"], record) {
-				tr.Data["NS"] = strings.TrimSpace(tr.Data["NS"] + "\n" + record)
-			}
+	records, _ := net.LookupNS(tr.Variant.String())
+	tr.Variant.Meta.DNS.NS = dnsLib.NewNS(records...)
+	for _, record := range records {
+		record := strings.TrimSuffix(record.Host, ".")
+		if !strings.Contains(tr.Data["NS"], record) {
+			tr.Data["NS"] = strings.TrimSpace(tr.Data["NS"] + "\n" + record)
 		}
 	}
 	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Data: tr.Data})
@@ -235,13 +228,10 @@ func nsLookupFunc(tr Result) (results []Result) {
 
 // cnameLookupFunc
 func cnameLookupFunc(tr Result) (results []Result) {
-	tr = checkIP(tr)
-	if tr.Original.Live {
-		records, _ := net.LookupCNAME(tr.Variant.String())
-		// tr.Variant.Meta.DNS.CName = records
-		for _, record := range records {
-			tr.Data["CNAME"] = strings.TrimSuffix(string(record), ".")
-		}
+	records, _ := net.LookupCNAME(tr.Variant.String())
+	// tr.Variant.Meta.DNS.CName = records
+	for _, record := range records {
+		tr.Data["CNAME"] = strings.TrimSuffix(string(record), ".")
 	}
 	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Data: tr.Data})
 	return
@@ -268,10 +258,9 @@ func txtLookupFunc(tr Result) (results []Result) {
 func geoIPLookupFunc(tr Result) (results []Result) {
 	tr = checkIP(tr)
 	if tr.Variant.Live {
-		ipv4s, ok := tr.Data["IPv4"]
+		_, ok := tr.Data["IPv4"]
 		if ok {
-			ips := strings.Split(ipv4s, "\n")
-			for _, ip4 := range ips {
+			for _, ip4 := range tr.Variant.Meta.DNS.IPv4 {
 				if ip4 != "" {
 					record, _ := geoLib.GeoIP(ip4)
 					// if err != nil {
@@ -301,71 +290,29 @@ func ssdeepFunc(tr Result) (results []Result) {
 	tr = checkIP(tr)
 	if tr.Original.Live {
 		var h1, h2 string
-		{
-			if tr.Original.Live {
-				original, gerr := http.Get("http://" + tr.Original.String())
-				tr.Original.Meta.HTTP = httpLib.NewResponse(original)
-				if gerr == nil {
-					if o, err := ioutil.ReadAll(original.Body); err == nil {
-						h1, _ = ssdeep.FuzzyBytes(o)
-						tr.Original.Meta.SSDeep = h1
-					}
-				}
-			}
+		h1, _ = ssdeep.FuzzyBytes([]byte(tr.Original.Meta.HTTP.Body))
+		tr.Original.Meta.SSDeep = h1
+
+		if tr.Variant.Live {
+			h2, _ = ssdeep.FuzzyBytes([]byte(tr.Variant.Meta.HTTP.Body))
+			tr.Variant.Meta.SSDeep = h2
 		}
 
-		{
-			variation, gerr := http.Get("http://" + tr.Variant.String())
-			if gerr == nil {
-				if v, err := ioutil.ReadAll(variation.Body); err == nil {
-					h2, _ = ssdeep.FuzzyBytes(v)
-					tr.Variant.Meta.SSDeep = h2
-				}
-			}
-		}
-		if h1 != "" && h2 != "" {
-			if compare, err := ssdeep.Distance(h1, h2); err == nil {
-				//fmt.Println(compare, h2, err)
-				tr.Data["SIM"] = fmt.Sprintf("%d%s", compare, "%")
-				tr.Variant.Meta.Similarity = compare
-			}
+		if compare, err := ssdeep.Distance(h1, h2); err == nil {
+			tr.Data["SIM"] = fmt.Sprintf("%d%s", compare, "%")
+			tr.Variant.Meta.Similarity = compare
 		}
 	}
 	results = append(results, tr)
 	return
 }
 
-// // redirectLookupFunc
-// func redirectLookupFunc(tr Result) (results []Result) {
-// 	tr = checkIP(tr)
-// 	if tr.Live {
-// 		variation, err := http.Get("http://" + tr.Variant.String())
-// 		if err == nil {
-// 			tr.Meta["Variant"] = "" //variation
-// 			str := variation.Request.URL.String()
-// 			subdomain := domainutil.Subdomain(str)
-// 			domain := domainutil.DomainPrefix(str)
-// 			suffix := domainutil.DomainSuffix(str)
-// 			if domain == "" {
-// 				domain = str
-// 			}
-// 			dm := Domain{subdomain, domain, suffix}
-// 			if tr.Original.String() != dm.String() {
-// 				tr.Data["Redirect"] = dm.String()
-// 				tr.Meta["Redirect"] = dm
-// 			}
-// 		}
-// 	}
-// 	results = append(results, tr)
-// 	return
-// }
-
 func whoisLookupFunc(tr Result) (results []Result) {
 	return
 }
 
 func checkIP(tr Result) Result {
-	if tr.Variant.Live == false {
+	if tr.Variant.Meta.DNS.ipCheck == false {
 		records, _ := net.LookupIP(tr.Variant.String())
 		// if err != nil {
 		// 	fmt.Println(err)
@@ -375,6 +322,7 @@ func checkIP(tr Result) Result {
 			if dotlen == 3 {
 				if !strings.Contains(tr.Data["IPv4"], record) {
 					tr.Data["IPv4"] = strings.TrimSpace(tr.Data["IPv4"] + "\n" + record)
+					tr.Variant.Meta.DNS.IPv4 = append(tr.Variant.Meta.DNS.IPv4, record)
 				}
 				tr.Variant.Live = true
 			}
@@ -382,12 +330,12 @@ func checkIP(tr Result) Result {
 			if clen == 5 {
 				if !strings.Contains(tr.Data["IPv6"], record) {
 					tr.Data["IPv6"] = strings.TrimSpace(tr.Data["IPv6"] + "\n" + record)
+					tr.Variant.Meta.DNS.IPv6 = append(tr.Variant.Meta.DNS.IPv6, record)
 				}
 				tr.Variant.Live = true
 			}
-
 		}
-		// tr.Variant.Meta.DNS.IPv4 = records
+		tr.Variant.Meta.DNS.ipCheck = true
 	}
 
 	return Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Data: tr.Data}
