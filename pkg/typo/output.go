@@ -94,9 +94,9 @@ func (urli *Typosquatting) stdOutput(in <-chan Result) {
 
 	live := func(l bool) string {
 		if l {
-			return "ONLINE"
+			return "\033[32mONLINE"
 		} else {
-			return " "
+			return "\033[37m"
 		}
 	}
 	for v := range in {

@@ -232,6 +232,7 @@ func cnameLookupFunc(tr Result) (results []Result) {
 	// tr.Variant.Meta.DNS.CName = records
 	for _, record := range records {
 		tr.Data["CNAME"] = strings.TrimSuffix(string(record), ".")
+		tr.Variant.Meta.DNS.CName = append(tr.Variant.Meta.DNS.CName, string(record))
 	}
 	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Data: tr.Data})
 	return
@@ -249,6 +250,7 @@ func txtLookupFunc(tr Result) (results []Result) {
 	tr.Variant.Meta.DNS.TXT = records
 	for _, record := range records {
 		tr.Data["TXT"] = strings.TrimSpace(tr.Data["TXT"] + "\n" + record)
+		tr.Variant.Meta.DNS.TXT = append(tr.Variant.Meta.DNS.TXT, record)
 	}
 	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Data: tr.Data})
 	return
