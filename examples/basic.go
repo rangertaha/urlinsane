@@ -23,6 +23,6 @@ func main() {
 	out := urli.Stream()
 
 	for r := range out {
-		fmt.Println(r.Live, r.Variant.Domain, r.Typo.Name, r.Data)
+		fmt.Println(r.Variant.Live, r.Variant.Domain, r.Typo.Name, r.Data)
 	}
 }
