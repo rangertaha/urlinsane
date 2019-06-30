@@ -162,10 +162,7 @@ func init() {
 // httpLookupFunc
 func httpLookupFunc(tr Result) (results []Result) {
 	if tr := checkIP(tr); tr.Variant.Live {
-		httpReq, gerr := http.Get("http://" + tr.Variant.Meta.DNS.IPv4[0])
-		if gerr != nil {
-			httpReq, gerr = http.Get("http://" + tr.Variant.Meta.DNS.IPv6[0])
-		}
+		httpReq, gerr := http.Get("http://" + tr.Variant.String())
 		if gerr == nil {
 			tr.Variant.Meta.HTTP = httpLib.NewResponse(httpReq)
 			// spew.Dump(original)
@@ -178,7 +175,7 @@ func httpLookupFunc(tr Result) (results []Result) {
 				domain = str
 			}
 			dm := Domain{subdomain, domain, suffix, tr.Variant.Meta, true}
-			if tr.Original.String() != dm.String() {
+			if tr.Variant.String() != dm.String() {
 				tr.Data["Redirect"] = dm.String()
 				tr.Variant.Meta.Redirect = dm.String()
 			}
