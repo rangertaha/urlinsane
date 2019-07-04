@@ -117,4 +117,5 @@ func (urli *Typosquatting) stdOutput(in <-chan Result) {
 		table.Append(data)
 	}
 	table.Render()
+	// fmt.Printf("\033[37")
 }
