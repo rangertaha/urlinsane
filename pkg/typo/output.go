@@ -52,9 +52,9 @@ func (urli *Typosquatting) csvOutput(in <-chan Result) {
 
 	live := func(l bool) string {
 		if l {
-			return "ONLINE"
+			return "\033[32mONLINE"
 		} else {
-			return " "
+			return "\033[39m"
 		}
 	}
 
@@ -94,9 +94,9 @@ func (urli *Typosquatting) stdOutput(in <-chan Result) {
 
 	live := func(l bool) string {
 		if l {
-			return "ONLINE"
+			return "\033[32mONLINE"
 		} else {
-			return " "
+			return "\033[39m"
 		}
 	}
 	for v := range in {
@@ -117,4 +117,5 @@ func (urli *Typosquatting) stdOutput(in <-chan Result) {
 		table.Append(data)
 	}
 	table.Render()
+	fmt.Println("\033[39m")
 }

@@ -26,7 +26,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cybersectech-org/urlinsane/pkg/datasets"
+	// "github.com/cybersectech-org/urlinsane/pkg/datasets"
+	"github.com/cybint/hackingo/datasets"
 )
 
 // Typos ...
