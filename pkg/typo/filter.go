@@ -45,8 +45,8 @@ func init() {
 func onlineFilterFunc(tr Result) (results []Result) {
 	_, ok := tr.Data["IPv6"]
 	if ok {
-		if tr.Live {
-			results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Live: tr.Live, Data: tr.Data})
+		if tr.Variant.Live {
+			results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Data: tr.Data})
 		}
 	}
 	return
