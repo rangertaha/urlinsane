@@ -23,6 +23,7 @@
 package typo
 
 import (
+	"net"
 	"net/http"
 	"strings"
 	"sync"
@@ -100,12 +101,13 @@ type (
 	}
 	// DNS ...
 	DNS struct {
-		IPv4  []string    `json:"ipv4,omitempty"`
-		IPv6  []string    `json:"ip46,omitempty"`
-		NS    []dnsLib.NS `json:"ns,omitempty"`
-		MX    []dnsLib.MX `json:"mx,omitempty"`
-		CName []string    `json:"cname,omitempty"`
-		TXT   []string    `json:"txt,omitempty"`
+		IPv4    []string    `json:"ipv4,omitempty"`
+		IPv6    []string    `json:"ip46,omitempty"`
+		NS      []dnsLib.NS `json:"ns,omitempty"`
+		MX      []dnsLib.MX `json:"mx,omitempty"`
+		CName   []string    `json:"cname,omitempty"`
+		TXT     []string    `json:"txt,omitempty"`
+		ipCheck bool
 	}
 	// Meta ...
 	Meta struct {
@@ -217,24 +219,46 @@ func (m *Result) GetData(key string) string {
 // Start ...
 func (typ *Typosquatting) Start() <-chan Result {
 	for i, dmname := range typ.config.domains {
-		httpRes, gerr := http.Get("http://" + dmname.String())
-		if gerr == nil {
-			res := httpLib.NewResponse(httpRes)
-			// spew.Dump(res)
-			typ.config.domains[i].Meta.HTTP = res
-			typ.config.domains[i].Live = true
-			// spew.Dump(original)
-
-			str := httpRes.Request.URL.String()
-			subdomain := domainutil.Subdomain(str)
-			domain := domainutil.DomainPrefix(str)
-			suffix := domainutil.DomainSuffix(str)
-			if domain == "" {
-				domain = str
+		records, _ := net.LookupIP(dmname.String())
+		// if err != nil {
+		// 	fmt.Println(err)
+		// }
+		for _, record := range uniqIP(records) {
+			dotlen := strings.Count(record, ".")
+			if dotlen == 3 {
+				if !stringInSlice(record, dmname.Meta.DNS.IPv4) {
+					typ.config.domains[i].Meta.DNS.IPv4 = append(dmname.Meta.DNS.IPv4, record)
+				}
+				typ.config.domains[i].Live = true
 			}
-			dm := Domain{subdomain, domain, suffix, Meta{}, true}
-			if dmname.String() != dm.String() {
-				typ.config.domains[i].Meta.Redirect = dm.String()
+			clen := strings.Count(record, ":")
+			if clen == 5 {
+				if !stringInSlice(record, dmname.Meta.DNS.IPv4) {
+					typ.config.domains[i].Meta.DNS.IPv6 = append(dmname.Meta.DNS.IPv6, record)
+				}
+				typ.config.domains[i].Live = true
+			}
+		}
+		if len(typ.config.domains[i].Meta.DNS.IPv4) > 0 {
+			httpRes, gerr := http.Get("http://" + typ.config.domains[i].Meta.DNS.IPv4[0])
+			if gerr == nil {
+				res := httpLib.NewResponse(httpRes)
+				// spew.Dump(res)
+				typ.config.domains[i].Meta.HTTP = res
+
+				// spew.Dump(original)
+
+				str := httpRes.Request.URL.String()
+				subdomain := domainutil.Subdomain(str)
+				domain := domainutil.DomainPrefix(str)
+				suffix := domainutil.DomainSuffix(str)
+				if domain == "" {
+					domain = str
+				}
+				dm := Domain{subdomain, domain, suffix, Meta{}, true}
+				if dmname.String() != dm.String() {
+					typ.config.domains[i].Meta.Redirect = dm.String()
+				}
 			}
 		}
 	}
@@ -423,4 +447,13 @@ func (typ *Typosquatting) Output(in <-chan Result) {
 	if typ.config.format == "text" {
 		typ.stdOutput(in)
 	}
+}
+
+func stringInSlice(a string, list []string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
 }
