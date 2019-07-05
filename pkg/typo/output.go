@@ -52,9 +52,9 @@ func (urli *Typosquatting) csvOutput(in <-chan Result) {
 
 	live := func(l bool) string {
 		if l {
-			return "ONLINE"
+			return "\033[32mONLINE"
 		} else {
-			return " "
+			return "\033[39m"
 		}
 	}
 
@@ -64,9 +64,9 @@ func (urli *Typosquatting) csvOutput(in <-chan Result) {
 	for v := range in {
 		var data []string
 		if urli.config.verbose {
-			data = []string{live(v.Live), v.Typo.Name, v.Variant.String(), v.Variant.Suffix}
+			data = []string{live(v.Variant.Live), v.Typo.Name, v.Variant.String(), v.Variant.Suffix}
 		} else {
-			data = []string{live(v.Live), v.Typo.Code, v.Variant.String(), v.Variant.Suffix}
+			data = []string{live(v.Variant.Live), v.Typo.Code, v.Variant.String(), v.Variant.Suffix}
 		}
 
 		// Add a column of data to the results
@@ -94,17 +94,17 @@ func (urli *Typosquatting) stdOutput(in <-chan Result) {
 
 	live := func(l bool) string {
 		if l {
-			return "ONLINE"
+			return "\033[32mONLINE"
 		} else {
-			return " "
+			return "\033[39m"
 		}
 	}
 	for v := range in {
 		var data []string
 		if urli.config.verbose {
-			data = []string{live(v.Live), v.Typo.Name, v.Variant.String(), v.Variant.Suffix}
+			data = []string{live(v.Variant.Live), v.Typo.Name, v.Variant.String(), v.Variant.Suffix}
 		} else {
-			data = []string{live(v.Live), v.Typo.Code, v.Variant.String(), v.Variant.Suffix}
+			data = []string{live(v.Variant.Live), v.Typo.Code, v.Variant.String(), v.Variant.Suffix}
 		}
 
 		// Add a column of data to the results
@@ -117,4 +117,5 @@ func (urli *Typosquatting) stdOutput(in <-chan Result) {
 		table.Append(data)
 	}
 	table.Render()
+	fmt.Println("\033[39m")
 }

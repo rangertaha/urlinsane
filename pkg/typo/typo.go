@@ -23,10 +23,16 @@
 package typo
 
 import (
+	"net"
+	"net/http"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/bobesa/go-domain-util/domainutil"
+	dnsLib "github.com/cybint/hackingo/net/dns"
+	geoLib "github.com/cybint/hackingo/net/geoip"
+	httpLib "github.com/cybint/hackingo/net/http"
 	"golang.org/x/net/idna"
 
 	"github.com/cybersectech-org/urlinsane/pkg/typo/languages"
@@ -57,7 +63,7 @@ type (
 	Typosquatting struct {
 		config Config
 		// Used to store collected data of the trget domains
-		meta map[string]interface{}
+		meta Meta
 
 		typoWG sync.WaitGroup
 		funcWG sync.WaitGroup
@@ -72,6 +78,8 @@ type (
 		Subdomain string `json:"subdomain,omitempty"`
 		Domain    string `json:"domain,omitempty"`
 		Suffix    string `json:"suffix,omitempty"`
+		Meta      Meta   `json:"meta,omitempty"`
+		Live      bool   `json:"live,omitempty"`
 	}
 
 	// Module ...
@@ -85,14 +93,35 @@ type (
 
 	// Result ...
 	Result struct {
-		Keyboards []languages.Keyboard   `json:"-"`
-		Languages []languages.Language   `json:"-"`
-		Original  Domain                 `json:"original,omitempty"`
-		Variant   Domain                 `json:"variant,omitempty"`
-		Typo      Module                 `json:"typo,omitempty"`
-		Data      map[string]string      `json:"data,omitempty"`
-		Meta      map[string]interface{} `json:"meta,omitempty"`
-		Live      bool                   `json:"live,omitempty"`
+		Keyboards []languages.Keyboard `json:"-"`
+		Languages []languages.Language `json:"-"`
+		Original  Domain               `json:"original,omitempty"`
+		Variant   Domain               `json:"variant,omitempty"`
+		Typo      Module               `json:"typo,omitempty"`
+		Data      map[string]string    `json:"data,omitempty"`
+	}
+	// DNS ...
+	DNS struct {
+		IPv4    []string    `json:"ipv4,omitempty"`
+		IPv6    []string    `json:"ip46,omitempty"`
+		NS      []dnsLib.NS `json:"ns,omitempty"`
+		MX      []dnsLib.MX `json:"mx,omitempty"`
+		CName   []string    `json:"cname,omitempty"`
+		TXT     []string    `json:"txt,omitempty"`
+		ipCheck bool
+	}
+	// Meta ...
+	Meta struct {
+		Levenshtein int              `json:"Levenshtein,omitempty"`
+		IDNA        string           `json:"idna,omitempty"`
+		IP          []string         `json:"ip,omitempty"`
+		Redirect    string           `json:"redirect,omitempty"`
+		HTTP        httpLib.Response `json:"http,omitempty"`
+		Geo         geoLib.Country   `json:"geo,omitempty"`
+		DNS         DNS              `json:"dns,omitempty"`
+		SSDeep      string           `json:"ssdeep,omitempty"`
+		Similarity  int              `json:"similarity,omitempty"`
+		// Whois    Whois      `json:"whois,omitempty"`
 	}
 
 	// OutputResult ...
@@ -168,15 +197,15 @@ func (m *Module) Headers() []string {
 	return m.Fields
 }
 
-// SetMeta ...
-func (m *Result) SetMeta(key string, obj interface{}) {
-	m.Meta[key] = obj
-}
+// // SetMeta ...
+// func (m *Result) SetMeta(key string, obj interface{}) {
+// 	m.Meta[key] = obj
+// }
 
-// GetMeta ...
-func (m *Result) GetMeta(key string) interface{} {
-	return m.Meta[key]
-}
+// // GetMeta ...
+// func (m *Result) GetMeta(key string) interface{} {
+// 	return m.Meta[key]
+// }
 
 // SetData ...
 func (m *Result) SetData(key string, obj string) {
@@ -186,6 +215,56 @@ func (m *Result) SetData(key string, obj string) {
 // GetData ...
 func (m *Result) GetData(key string) string {
 	return m.Data[key]
+}
+
+// Start ...
+func (typ *Typosquatting) Start() <-chan Result {
+	for i, dmname := range typ.config.domains {
+		records, _ := net.LookupIP(dmname.String())
+		// if err != nil {
+		// 	fmt.Println(err)
+		// }
+		for _, record := range uniqIP(records) {
+			dotlen := strings.Count(record, ".")
+			if dotlen == 3 {
+				if !stringInSlice(record, dmname.Meta.DNS.IPv4) {
+					typ.config.domains[i].Meta.DNS.IPv4 = append(dmname.Meta.DNS.IPv4, record)
+				}
+				typ.config.domains[i].Live = true
+			}
+			clen := strings.Count(record, ":")
+			if clen == 5 {
+				if !stringInSlice(record, dmname.Meta.DNS.IPv4) {
+					typ.config.domains[i].Meta.DNS.IPv6 = append(dmname.Meta.DNS.IPv6, record)
+				}
+				typ.config.domains[i].Live = true
+			}
+		}
+		if len(typ.config.domains[i].Meta.DNS.IPv4) > 0 {
+			httpRes, gerr := http.Get("http://" + typ.config.domains[i].Meta.DNS.IPv4[0])
+			if gerr == nil {
+				res := httpLib.NewResponse(httpRes)
+				// spew.Dump(res)
+				typ.config.domains[i].Meta.HTTP = res
+
+				// spew.Dump(original)
+
+				str := httpRes.Request.URL.String()
+				subdomain := domainutil.Subdomain(str)
+				domain := domainutil.DomainPrefix(str)
+				suffix := domainutil.DomainSuffix(str)
+				if domain == "" {
+					domain = str
+				}
+				dm := Domain{subdomain, domain, suffix, Meta{}, true}
+				if dmname.String() != dm.String() {
+					typ.config.domains[i].Meta.Redirect = dm.String()
+				}
+			}
+		}
+	}
+
+	return typ.GenTypoConfig()
 }
 
 // GenTypoConfig ...
@@ -242,7 +321,7 @@ func (typ *Typosquatting) Results(in <-chan Result) <-chan Result {
 			record.Data = make(map[string]string)
 
 			// Initialize a place to store meta data
-			record.Meta = make(map[string]interface{})
+			record.Variant.Meta = Meta{}
 
 			// Add record placeholder for consistent records
 			for _, name := range typ.config.headers {
@@ -342,7 +421,7 @@ func (typ *Typosquatting) Dedup(in <-chan Result) <-chan Result {
 
 // Stream returns the results one at a time
 func (typ *Typosquatting) Stream() <-chan Result {
-	return typ.GenTypoConfig()
+	return typ.Start()
 }
 
 // Batch returns all the results at once
@@ -370,4 +449,13 @@ func (typ *Typosquatting) Output(in <-chan Result) {
 	if typ.config.format == "text" {
 		typ.stdOutput(in)
 	}
+}
+
+func stringInSlice(a string, list []string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
 }
