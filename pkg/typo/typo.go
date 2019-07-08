@@ -344,7 +344,8 @@ func (typ *Typosquatting) FuncChain(funcs []Module, in <-chan Result) <-chan Res
 	xfunc, funcs = funcs[len(funcs)-1], funcs[:len(funcs)-1]
 	go func() {
 		for i := range in {
-			time.Sleep(int64(typ.config.timing.Random) * int64(typ.config.timing.Delay) * time.Millisecond)
+			time.Sleep(typ.config.timing.Random * typ.config.timing.Delay * time.Millisecond)
+			// fmt.Println(typ.config.timing.Random * typ.config.timing.Delay * time.Millisecond)
 			for _, result := range xfunc.Exec(i) {
 				out <- result
 			}
