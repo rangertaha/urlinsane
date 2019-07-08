@@ -44,7 +44,22 @@ func (urli *Typosquatting) outFile() (file *os.File) {
 }
 
 func (urli *Typosquatting) jsonOutput(in <-chan Result) {
+	// for r := range in {
+	// 	if urli.config.verbose {
+	// 		json, err := json.MarshalIndent(r, "", "  ")
+	// 		if err != nil {
+	// 			log.Fatal(err)
+	// 		}
+	// 		fmt.Println(string(json))
+	// 	} else {
+	// 		json, err := json.MarshalIndent(r, "", "  ")
+	// 		if err != nil {
+	// 			log.Fatal(err)
+	// 		}
+	// 		fmt.Println(string(json))
+	// 	}
 
+	// }
 }
 
 func (urli *Typosquatting) csvOutput(in <-chan Result) {
@@ -52,9 +67,9 @@ func (urli *Typosquatting) csvOutput(in <-chan Result) {
 
 	live := func(l bool) string {
 		if l {
-			return "\033[32mONLINE"
+			return "ONLINE"
 		} else {
-			return "\033[39m"
+			return " "
 		}
 	}
 

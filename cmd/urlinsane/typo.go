@@ -144,10 +144,10 @@ func init() {
 	typoCmd.PersistentFlags().StringArrayP("filters", "r", []string{""},
 		"Filter results to reduce the number of results")
 
-	typoCmd.PersistentFlags().Int64("delay", 0,
+	typoCmd.PersistentFlags().Int64("delay", 10,
 		"A delay between network calls")
 
-	typoCmd.PersistentFlags().Int64("random-delay", 0,
+	typoCmd.PersistentFlags().Int64("random-delay", 5,
 		"Used to randomize the delay between network calls.")
 
 	// Output options

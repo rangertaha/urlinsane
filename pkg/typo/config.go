@@ -24,6 +24,7 @@ package typo
 
 import (
 	"strings"
+	"time"
 
 	"github.com/bobesa/go-domain-util/domainutil"
 	"github.com/cybersectech-org/urlinsane/pkg/typo/languages"
@@ -46,8 +47,8 @@ type BasicConfig struct {
 
 // Timing ...
 type Timing struct {
-	Delay  int `json:"delay,omitempty"`
-	Random int `json:"random,omitempty"`
+	Delay  time.Duration `json:"delay,omitempty"`
+	Random time.Duration `json:"random,omitempty"`
 }
 
 // Config ...
@@ -92,6 +93,8 @@ func NewConfig(basic BasicConfig) (config *Config) {
 	// Requires config.GetFuncs()
 	config.GetHeaders(config.funcs)
 
+	config.GetTiming(basic.Timing.Delay, basic.Timing.Random)
+
 	return
 }
 
@@ -116,6 +119,8 @@ func (b *BasicConfig) Config() (c Config) {
 
 	// Requires c.GetFuncs()
 	c.GetHeaders(c.funcs)
+
+	c.GetTiming(c.timing.Delay, c.timing.Random)
 
 	return
 }
@@ -164,10 +169,10 @@ func (c *Config) GetFilters(filters []string) {
 	}
 }
 
-// GetTimming ...
-func (c *Config) GetTimming(delay, rand int) {
+// GetTiming ...
+func (c *Config) GetTiming(delay, random time.Duration) {
 	c.timing.Delay = delay
-	c.timing.Random = rand
+	c.timing.Random = random
 }
 
 // GetHeaders ...
@@ -269,6 +274,12 @@ func CobraConfig(cmd *cobra.Command, args []string) (c Config) {
 	verbose, err := cmd.PersistentFlags().GetBool("verbose")
 	errHandler(err)
 	c.GetVerbose(verbose)
+
+	delay, err := cmd.PersistentFlags().GetInt64("delay")
+	errHandler(err)
+	rdelay, err := cmd.PersistentFlags().GetInt64("random-delay")
+	errHandler(err)
+	c.GetTiming(time.Duration(delay), time.Duration(rdelay))
 
 	// Requires c.funcs
 	c.GetHeaders(c.funcs)
