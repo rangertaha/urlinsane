@@ -24,7 +24,9 @@ package typo
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
@@ -44,22 +46,22 @@ func (urli *Typosquatting) outFile() (file *os.File) {
 }
 
 func (urli *Typosquatting) jsonOutput(in <-chan Result) {
-	// for r := range in {
-	// 	if urli.config.verbose {
-	// 		json, err := json.MarshalIndent(r, "", "  ")
-	// 		if err != nil {
-	// 			log.Fatal(err)
-	// 		}
-	// 		fmt.Println(string(json))
-	// 	} else {
-	// 		json, err := json.MarshalIndent(r, "", "  ")
-	// 		if err != nil {
-	// 			log.Fatal(err)
-	// 		}
-	// 		fmt.Println(string(json))
-	// 	}
+	for r := range in {
+		if urli.config.verbose {
+			json, err := json.MarshalIndent(r, "", "  ")
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println(string(json))
+		} else {
+			json, err := json.MarshalIndent(r, "", "  ")
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println(string(json))
+		}
 
-	// }
+	}
 }
 
 func (urli *Typosquatting) csvOutput(in <-chan Result) {
