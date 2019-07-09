@@ -9,7 +9,6 @@ branches:
 matrix:
   include:
     - go: "1.12.x"
-      env: GO111MODULE=off
     - go: tip
 
 before_install:
