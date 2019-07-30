@@ -19,8 +19,6 @@ threat intelligence.
 
 
 
-
-
 ## Features
 
 * Binary executable, written in Go with no dependencies. 
