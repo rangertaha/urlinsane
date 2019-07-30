@@ -22,13 +22,13 @@
 package pkg
 
 const (
-	// VERSION ...
+	// VERSION format is loosely based on [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 	VERSION = "0.6.0"
 
-	// DEBUG ...
+	// DEBUG not used yet
 	DEBUG = false
 
-	// LOGO ...
+	// LOGO made as ascii graphics
 	LOGO = `
  _   _  ____   _      ___
 | | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___

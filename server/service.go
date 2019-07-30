@@ -25,7 +25,7 @@ package server
 import (
 	"encoding/json"
 
-	"github.com/cybersectech-org/urlinsane/pkg/typo"
+	"github.com/cybint/urlinsane/pkg/typo"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"golang.org/x/net/websocket"
