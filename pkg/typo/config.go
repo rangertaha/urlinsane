@@ -27,7 +27,7 @@ import (
 	"time"
 
 	"github.com/bobesa/go-domain-util/domainutil"
-	"github.com/cybersectech-org/urlinsane/pkg/typo/languages"
+	"github.com/cybint/urlinsane/pkg/typo/languages"
 	"github.com/spf13/cobra"
 )
 

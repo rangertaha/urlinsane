@@ -25,8 +25,8 @@ import (
 	"fmt"
 	"text/template"
 
-	"github.com/cybersectech-org/urlinsane/pkg/typo"
-	"github.com/cybersectech-org/urlinsane/pkg/typo/languages"
+	"github.com/cybint/urlinsane/pkg/typo"
+	"github.com/cybint/urlinsane/pkg/typo/languages"
 	"github.com/spf13/cobra"
 )
 
