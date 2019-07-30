@@ -58,41 +58,46 @@ urlinsane typo -h
 Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.
 
 USAGE:
-  urlinsane [domains] [flags]
+  urlinsane typo [domains] [flags]
 
 OPTIONS:
   -c, --concurrency int         Number of concurrent workers (default 50)
+      --delay int               A delay between network calls (default 10)
   -f, --file string             Output filename
+  -r, --filters stringArray     Filter results to reduce the number of results
   -o, --format string           Output format (csv, text) (default "text")
-  -x, --funcs stringArray       Extra functions for data or filtering (default [idna])
-  -h, --help                    help for urlinsane
-  -k, --keyboards stringArray   Keyboards/layouts ID to use (default [en1])
+  -x, --funcs stringArray       Extra functions or filters (default [ld,idna])
+  -h, --help                    help for typo
+  -k, --keyboards stringArray   Keyboards/layouts ID to use (default [en])
+      --random-delay int        Used to randomize the delay between network calls. (default 5)
   -t, --typos stringArray       Types of typos to perform (default [all])
   -v, --verbose                 Output additional details
 
 KEYBOARDS:
-  AR2	Arabic PC keyboard layout
-  RU2	Phonetic Russian keybaord layout
-  RU3	PC Russian keyboard layout
-  ES1	Spanish keyboard layout
   AR1	Arabic keyboard layout
-  EN2	English AZERTY keyboard layout
-  ES2	Spanish ISO keyboard layout
+  AR2	Arabic PC keyboard layout
   AR3	Arabic North african keyboard layout
+  AR4	Arabic keyboard layout
+  HY1	Armenian QWERTY keyboard layout
   HY2	Armenian, Western QWERTY keyboard layout
+  EN1	English QWERTY keyboard layout
+  EN2	English AZERTY keyboard layout
   EN3	English QWERTZ keyboard layout
   EN4	English DVORAK keyboard layout
   FI1	Finnish QWERTY keybaord layout
-  HY1	Armenian QWERTY keyboard layout
-  EN1	English QWERTY keyboard layout
+  FR1	French Canadian CSA keyboard layout
   IW1	Hebrew standard layout
   FA1	Persian standard layout
   RU1	Russian keyboard layout
-  AR4	Arabic keyboard layout
+  RU2	Phonetic Russian keybaord layout
+  RU3	PC Russian keyboard layout
+  ES1	Spanish keyboard layout
+  ES2	Spanish ISO keyboard layout
   ALL	Use all keyboards
 
 TYPOS: These are the types of typo/error algorithms that generate the domain variants
   MD	Missing Dot is created by omitting a dot from the domain.
+  SI	Inserting common subdomain at the beginning of the domain.
   MDS	Missing Dashes is created by stripping all dashes from the domain.
   CO	Character Omission Omitting a character from the domain.
   CS	Character Swap Swapping two consecutive characters in a domain
@@ -108,23 +113,31 @@ TYPOS: These are the types of typo/error algorithms that generate the domain var
   WTLD	Wrong Top Level Domain
   W2TLD	Wrong Second Level Domain
   W3TLD	Wrong Third Level Domain
-  HP	Homophones Typos are created from sets of words that sound the same
+  HP	Homophones Modules are created from sets of words that sound the same
   BF	Bitsquatting relies on random bit-errors to redirect connections
   NS	Numeral Swap numbers, words and vice versa
+  PI	Inserting periods in the target domain
+  HI	Inserting hyphens in the target domain
+  AI	Inserting the language specific alphabet in the target domain
+  AR	Replacing the language specific alphabet in the target domain
   ALL   Apply all typosquatting algorithms
 
 FUNCTIONS: Post processig functions that retieve aditional information on each domain variant.
-  MX	Checking for DNS's MX records
-  IP	Checking for IP address
+  LD	The Levenshtein distance is a string metric for measuring the difference between two domains
   IDNA	Show international domain name
+  IP	Checking for IP address
+  HTTP	Get http related information
+  MX	Checking for DNS's MX records
   TXT	Checking for DNS's TXT records
   NS	Checks DNS NS records
   CNAME	Checks DNS CNAME records
   SIM	Show domain content similarity
-  LIVE	Show domains with ip addresses only
-  301	Show domains redirects
   GEO	Show country location of ip address
   ALL  	Apply all post typosquating functions
+
+FILTERS: Filters to reduce the number domain variants returned.
+  LIVE	Show online/live domains only.
+  ALL  	Apply all filters
 
 EXAMPLE:
 
@@ -315,9 +328,8 @@ This table shows the list of algorithms supported for each tool.
 | JSON output                         |     X     |           |      X     |      X      |           
 | Human Readable output               |     X     |     X     |      X     |      X      | 
 | Google Popularity Estimate          |           |     X     |            |             |           
-| HTTP/SMTP Banner                    |           |           |      X     |             |           
-| WHOIS Info                          |           |           |      X     |             |           
-| Test MX email intercepts            |           |           |      X     |             |           
+| HTTP/SMTP Banner                    |     X     |           |      X     |             |           
+| WHOIS Info                          |           |           |      X     |             |                    
 | Multithreaded Extra Functions       |     X     |           |      X     |      X      |           
 
 
@@ -333,6 +345,7 @@ This table shows the list of algorithms supported for each tool.
 * Lookup whois record
 * Emoji domains
 * Grabs HTTP and SMTP service banners
+* Speed Comparison with other tools
 
 
 ## Authors
