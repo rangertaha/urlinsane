@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/cybersectech-org/urlinsane/pkg/typo"
+	"github.com/cybint/urlinsane/pkg/typo"
 )
 
 func main() {

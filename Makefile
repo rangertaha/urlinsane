@@ -8,7 +8,7 @@ GODOC=$(GOCMD)doc
 BINARY_NAME=urlinsane
 GCP_PROJECT_ID=cyberse
 GCR_HOST=gcr.io
-VERSION=$(shell grep -e 'VERSION = ".*"' pkg/typo/version.go | cut -d= -f2 | sed  s/[[:space:]]*\"//g)
+VERSION=$(shell grep -e 'VERSION = ".*"' pkg/version.go | cut -d= -f2 | sed  s/[[:space:]]*\"//g)
 
 .PHONY: help
 

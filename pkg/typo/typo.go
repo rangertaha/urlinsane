@@ -35,7 +35,7 @@ import (
 	httpLib "github.com/cybint/hackingo/net/http"
 	"golang.org/x/net/idna"
 
-	"github.com/cybersectech-org/urlinsane/pkg/typo/languages"
+	"github.com/cybint/urlinsane/pkg/typo/languages"
 )
 
 type (

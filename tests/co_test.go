@@ -25,7 +25,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/cybersectech-org/urlinsane/pkg/typo"
+	"github.com/cybint/urlinsane/pkg/typo"
 )
 
 type testpair struct {
