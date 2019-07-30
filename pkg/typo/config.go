@@ -23,10 +23,12 @@
 package typo
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
 	"github.com/bobesa/go-domain-util/domainutil"
+	"github.com/cybint/urlinsane/pkg"
 	"github.com/cybint/urlinsane/pkg/typo/languages"
 	"github.com/spf13/cobra"
 )
@@ -223,7 +225,7 @@ func errHandler(err error) {
 func CobraConfig(cmd *cobra.Command, args []string) (c Config) {
 
 	// Print logo
-	// fmt.Println(LOGO)
+	fmt.Println(pkg.LOGO)
 
 	// Basic options
 	c.GetDomains(args)
