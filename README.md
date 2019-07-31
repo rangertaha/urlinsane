@@ -294,20 +294,20 @@ This table shows the list of algorithms supported for each tool.
 | Adjacent Character Substitution |     X     |     X     |            |             |
 | Adjacent Character Insertion    |     X     |     X     |     X      |             |
 | Homoglyphs                      |     X     |     X     |     P      |             |
-| Singular Pluralise              |     X     |     X     |            |             |           
+| Singular Pluralise              |     X     |     X     |            |             |
 | Character Repeat                |     X     |     X     |     X      |             |
-| Double Character Replacement    |     X     |     X     |            |             |           
-| Common Misspellings             |     X     |     X     |            |             |           
-| Homophones                      |     X     |     X     |     P      |             |           
-| Vowel Swapping                  |     X     |     X     |            |             |           
-| Bitsquatting                    |     X     |     X     |     X      |             |           
-| Wrong Top Level Domain          |     X     |     X     |            |             |           
-| Wrong Second Level Domain       |     X     |     X     |            |             |          
-| Wrong Third Level Domain        |     X     |           |            |             |           
-| Ordinal Number Swap             |     X     |           |            |             |           
+| Double Character Replacement    |     X     |     X     |            |             |
+| Common Misspellings             |     X     |     X     |            |             |
+| Homophones                      |     X     |     X     |     P      |             |
+| Vowel Swapping                  |     X     |     X     |            |             |
+| Bitsquatting                    |     X     |     X     |     X      |             |
+| Wrong Top Level Domain          |     X     |     X     |            |             |
+| Wrong Second Level Domain       |     X     |     X     |            |             |
+| Wrong Third Level Domain        |     X     |           |            |             |
+| Ordinal Number Swap             |     X     |           |            |             |
 | Cardinal Number Swap            |     X     |           |            |             |         
-| Hyphenation                     |     X     |           |      X     |             |         
-| Combosquatting(Keywords)        |           |           |            |             |           
+| Hyphenation                     |     X     |           |      X     |             |
+| Combosquatting(Keywords)        |           |           |            |             |
 | Multithreaded Algorithms        |     X     |     ?     |      X     |             |
 | Subdomain insertion             |     X     |           |            |             |
 | Period Insertion                |     X     |           |            |             |  
@@ -316,24 +316,24 @@ This table shows the list of algorithms supported for each tool.
 
 |      **Extra Functions**            | URLInsane  | URLCrazy  | DNSTwist  | DomainFuzz  | 
 |-------------------------------------|-----------|-----------|------------|-------------|         
-| Live/Online Check                   |     X     |     X     |      X     |             |                     
-| DNS A Records                       |     X     |     X     |      X     |      X      |          
-| DNS MX Records                      |     X     |     X     |      X     |             |           
-| DNS txt Records                     |     X     |     X     |            |             |           
-| DNS AAAA Records                    |     X     |           |      X     |      X      |           
-| DNS CName Records                   |     X     |           |            |             |           
-| DNS NS Records                      |     X     |           |      X     |      X      |           
-| GeoIP Info                          |     X     |     X     |      X     |             |           
-| Domain Similarity                   |     X     |           |      X     |      X      |           
-| Domain Redirects                    |     X     |           |            |             |           
-| IDNA Format                         |     X     |           |      X     |             |           
-| CSV output                          |     X     |     X     |      X     |      X      |           
-| JSON output                         |     X     |           |      X     |      X      |           
+| Live/Online Check                   |     X     |     X     |      X     |             |
+| DNS A Records                       |     X     |     X     |      X     |      X      |
+| DNS MX Records                      |     X     |     X     |      X     |             |
+| DNS txt Records                     |     X     |     X     |            |             |
+| DNS AAAA Records                    |     X     |           |      X     |      X      |
+| DNS CName Records                   |     X     |           |            |             |
+| DNS NS Records                      |     X     |           |      X     |      X      |
+| GeoIP Info                          |     X     |     X     |      X     |             |
+| Domain Similarity                   |     X     |           |      X     |      X      |
+| Domain Redirects                    |     X     |           |            |             |
+| IDNA Format                         |     X     |           |      X     |             |
+| CSV output                          |     X     |     X     |      X     |      X      |
+| JSON output                         |     X     |           |      X     |      X      |
 | Human Readable output               |     X     |     X     |      X     |      X      | 
-| Google Popularity Estimate          |           |     X     |            |             |           
-| HTTP/SMTP Banner                    |     X     |           |      X     |             |           
-| WHOIS Info                          |           |           |      X     |             |                    
-| Multithreaded Extra Functions       |     X     |           |      X     |      X      |           
+| Google Popularity Estimate          |           |     X     |            |             |
+| HTTP/SMTP Banner                    |     X     |           |      X     |             |
+| WHOIS Info                          |           |           |      X     |             |
+| Multithreaded Extra Functions       |     X     |           |      X     |      X      |
 
 
 
