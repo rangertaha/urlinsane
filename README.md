@@ -1,29 +1,25 @@
 # URLInsane
 
-[![Build Status](https://travis-ci.org/cybersectech-org/urlinsane.svg?branch=master)](https://travis-ci.org/cybersectech-org/urlinsane) 
+[![Build Status](https://travis-ci.org/cybersectech-org/urlinsane.svg?branch=master)](https://travis-ci.org/cybersectech-org/urlinsane)
 
-Multilingual domain typo permutation engine used to perform or detect typosquatting, 
-brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and 
+Multilingual domain typo permutation engine used to perform or detect typosquatting,
+brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and
 threat intelligence.
 
 **Documentation:** [URLInsane Docs](https://cybersectech-org.github.io/urlinsane/)
 
 **Downloads:** [URLInsane Downloads](https://github.com/cybersectech-org/urlinsane/releases/tag/0.3.0)
 
-
 <div align="center">
   <a href="https://www.youtube.com/watch?v=_IU1ADTBKVU" style="float:left"><img width="350" src="https://img.youtube.com/vi/_IU1ADTBKVU/0.jpg" alt="URLInsane Demo1"></a>
    <a href="https://www.youtube.com/watch?v=HgMV0NqMCm0" style="float:left"><img width="350"  src="https://img.youtube.com/vi/HgMV0NqMCm0/0.jpg" alt="URLInsane Demo2"></a>
 </div>
 
-
-
-
 ## Features
 
-* Binary executable, written in Go with no dependencies. 
-* Will have all the functionally of URLCrazy and DNSTwist. 
-* Contains 24 typosquatting algorithms and 10 extra functions to retrieve additional data such as ip to geographic location, dns lookups and more 
+* Binary executable, written in Go with no dependencies.
+* Will have all the functionally of URLCrazy and DNSTwist.
+* Contains 24 typosquatting algorithms and 10 extra functions to retrieve additional data such as ip to geographic location, dns lookups and more
 * Modular architecture for language, keyboard, typo algorithm, and functions extensibility.
 * Supports multiple keyboard layouts found in English, Spanish, Russian, Armenian, Finish, French, Hebrew, Persian, and Arabic.
 * Supports multiple languages with the ability to add more languages with ease.
@@ -32,7 +28,7 @@ threat intelligence.
 
 ## Cli Tool
 
-```
+```bash
 Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.
 
 Usage:
@@ -51,7 +47,7 @@ Use "urlinsane [command] --help" for more information about a command.
 
 ### Squatting Options
 
-```
+```bash
 urlinsane typo -h
 
 
@@ -102,7 +98,7 @@ TYPOS: These are the types of typo/error algorithms that generate the domain var
   CO	Character Omission Omitting a character from the domain.
   CS	Character Swap Swapping two consecutive characters in a domain
   ACS	Adjacent Character Substitution replaces adjacent characters
-  ACI	Adjacent Character Insertion inserts adjacent character 
+  ACI	Adjacent Character Insertion inserts adjacent character
   CR	Character Repeat Repeats a character of the domain name twice
   DCR	Double Character Replacement repeats a character twice.
   SD	Strip Dashes is created by omitting a dash from the domain
@@ -202,7 +198,7 @@ These functions can add columns to the output. For example the following generat
 variations for **google.com** using the character omission **(CO)** algorithm
 then checks for **ip** addresses.
 
-```
+```bash
 
 urlinsane typo google.com -t co  -x geo
 
@@ -217,7 +213,7 @@ just the short name 'HG'
 * **-x idna** Shows the IDNA format
 * **-x ns** Checks for DNS NS records
 
-```
+```bash
 
 urlinsane typo google.com -t hg -v -x ip -x idna -x ns
 
@@ -244,29 +240,26 @@ The modular architecture for code extensibility allows developers to add new
 typosquatting algorithms with ease. Currently we have implements 19
 typosquatting algorithms. See [Typo Algorithms](https://cybersectech-org.github.io/urlinsane/#algorithms) for details.
 
-
 ## Extra Functions
 
-- **IDNA**  Show international domain name (Default)
-- **MX**    Checking for DNS's MX records
-- **TXT**   Checking for DNS's TXT records
-- **IP**    Checking for IP address
-- **NS**    Checks DNS NS records
-- **CNAME** Checks DNS CNAME records
-- **SIM**   Show domain similarity % using fuzzy hashing with ssdeep
-- **LIVE**	Show domains with ip addresses only
-- **301**	Show domains redirects
-- **GEO**	Show country location of ip address
-
-
+* **IDNA**  Show international domain name (Default)
+* **MX**    Checking for DNS's MX records
+* **TXT**   Checking for DNS's TXT records
+* **IP**    Checking for IP address
+* **NS**    Checks DNS NS records
+* **CNAME** Checks DNS CNAME records
+* **SIM**   Show domain similarity % using fuzzy hashing with ssdeep
+* **LIVE**  Show domains with ip addresses only
+* **301**   Show domains redirects
+* **GEO**   Show country location of ip address
 
 ## Tools Comparisons
 
 ### Language & Keyboard Comparison
 
-This table shows which tools have support for common **misspellings**, 
-**homophones**, **numerals**, **vowels**, **homoglyphs**, and the number of 
-**keyboards** that support each language's character set. 
+This table shows which tools have support for common **misspellings**,
+**homophones**, **numerals**, **vowels**, **homoglyphs**, and the number of
+**keyboards** that support each language's character set.
 
 | **Lang (# Keyboards)**   | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz |
 |--------------------------|-----------|-----------|------------|-------------|
@@ -279,10 +272,9 @@ This table shows which tools have support for common **misspellings**,
 | Hebrew (1)               |     X     |           |            |             |
 | Persian (1)              |     X     |           |            |             |  
 
+### Algorithm Comparisons
 
-### Algorithms
-
-This table shows the list of algorithms supported for each tool. 
+This table shows the list of algorithms supported for each tool.
 
 |      **Algorithms**             | URLInsane | URLCrazy  | DNSTwist   | DomainFuzz **(TODO)**  |
 |---------------------------------|-----------|-----------|------------|-------------|
@@ -305,7 +297,7 @@ This table shows the list of algorithms supported for each tool.
 | Wrong Second Level Domain       |     X     |     X     |            |             |
 | Wrong Third Level Domain        |     X     |           |            |             |
 | Ordinal Number Swap             |     X     |           |            |             |
-| Cardinal Number Swap            |     X     |           |            |             |         
+| Cardinal Number Swap            |     X     |           |            |             |
 | Hyphenation                     |     X     |           |      X     |             |
 | Combosquatting(Keywords)        |           |           |            |             |
 | Multithreaded Algorithms        |     X     |     ?     |      X     |             |
@@ -314,8 +306,8 @@ This table shows the list of algorithms supported for each tool.
 
 ## Post Typo Functions
 
-|      **Extra Functions**            | URLInsane  | URLCrazy  | DNSTwist  | DomainFuzz  | 
-|-------------------------------------|-----------|-----------|------------|-------------|         
+|      **Extra Functions**            | URLInsane  | URLCrazy  | DNSTwist  | DomainFuzz  |
+|-------------------------------------|-----------|-----------|------------|-------------|
 | Live/Online Check                   |     X     |     X     |      X     |             |
 | DNS A Records                       |     X     |     X     |      X     |      X      |
 | DNS MX Records                      |     X     |     X     |      X     |             |
@@ -329,19 +321,13 @@ This table shows the list of algorithms supported for each tool.
 | IDNA Format                         |     X     |           |      X     |             |
 | CSV output                          |     X     |     X     |      X     |      X      |
 | JSON output                         |     X     |           |      X     |      X      |
-| Human Readable output               |     X     |     X     |      X     |      X      | 
+| Human Readable output               |     X     |     X     |      X     |      X      |
 | Google Popularity Estimate          |           |     X     |            |             |
 | HTTP/SMTP Banner                    |     X     |           |      X     |             |
 | WHOIS Info                          |           |           |      X     |             |
 | Multithreaded Extra Functions       |     X     |           |      X     |      X      |
 
-
-
-
-
-
-
-### TODO 
+### TODO
 
 * Extract keywords from domains. Keywords will be used for additional algorithms
 * Estimate popularity of a domain variant via google search
@@ -350,11 +336,9 @@ This table shows the list of algorithms supported for each tool.
 * Grabs HTTP and SMTP service banners
 * Speed Comparison with other tools
 
-
 ## Authors
 
 * [Rangertaha <rangertaha@gmail.com>](https://github.com/rangertaha)
-
 
 ## License
 
