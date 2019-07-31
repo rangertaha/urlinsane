@@ -171,7 +171,7 @@ Flags:
 Generates variations for **google.com** using the character omission **(CO)**
 algorithm.
 
-```bash
+```txt
 urlinsane typo google.com -t co
 
  _   _  ____   _      ___
