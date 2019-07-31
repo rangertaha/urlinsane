@@ -198,7 +198,7 @@ These functions can add columns to the output. For example the following generat
 variations for **google.com** using the character omission **(CO)** algorithm
 then checks for **ip** addresses.
 
-```bash
+```txt
 
 urlinsane typo google.com -t co  -x geo
 
@@ -213,7 +213,7 @@ just the short name 'HG'
 * **-x idna** Shows the IDNA format
 * **-x ns** Checks for DNS NS records
 
-```bash
+```txt
 
 urlinsane typo google.com -t hg -v -x ip -x idna -x ns
 
