@@ -150,7 +150,9 @@ AUTHOR:
 ```
 
 ## Server Options
-```
+
+```bash
+
 urlinsane server -h
 
 This command starts up a REST API server to use this tool programmatically.
@@ -169,10 +171,11 @@ Flags:
 ```
 
 ## Usage
-Generates variations for **google.com** using the character omission **(CO)** 
+
+Generates variations for **google.com** using the character omission **(CO)**
 algorithm.
 
-```
+```bash
 urlinsane typo google.com -t co
 
  _   _  ____   _      ___
@@ -183,7 +186,7 @@ urlinsane typo google.com -t co
 
  Version: 0.6.0
 
-  LIVE | TYPE |   TYPO    | SUFFIX |   IDNA     
+  LIVE | TYPE |   TYPO    | SUFFIX |   IDNA
 -------+------+-----------+--------+------------
        | CO   | oogle.com | com    | oogle.com  
        | CO   | gogle.com | com    | gogle.com  
@@ -194,32 +197,32 @@ urlinsane typo google.com -t co
 
 ```
 
-Additional e**x**tra functions can be selected with the **-x, --funcs** options. 
-These functions can add columns to the output. For example the following generates 
-variations for **google.com** using the character omission **(CO)** algorithm 
-then checks for **ip** addresses. 
+Additional e**x**tra functions can be selected with the **-x, --funcs** options.
+These functions can add columns to the output. For example the following generates
+variations for **google.com** using the character omission **(CO)** algorithm
+then checks for **ip** addresses.
 
 ```
+
 urlinsane typo google.com -t co  -x geo
 
 ```
 
 Generates variations for **google.com** with the following parameters:
+
 * **-t hg** lets us use the Homoglyphs(HG) algorithm only
-* **-v** Verbose mode shows us the full name 'Homoglyphs' of the algorithm not 
+* **-v** Verbose mode shows us the full name 'Homoglyphs' of the algorithm not
 just the short name 'HG'
 * **-x ip** Check or ip address
 * **-x idna** Shows the IDNA format
 * **-x ns** Checks for DNS NS records
 
 ```
+
 urlinsane typo google.com -t hg -v -x ip -x idna -x ns
 
 
 ```
-
-
-
 
 ## Languages
 
@@ -232,13 +235,13 @@ urlinsane typo google.com -t hg -v -x ip -x idna -x ns
 
 ### Finnish, Russian, Persian, Hebrew, Arabic, Spanish
 
-See [Languages](https://cybersectech-org.github.io/urlinsane/#languages) for details 
+See [Languages](https://cybersectech-org.github.io/urlinsane/#languages) for details
 on other languages.
 
 ## Algorithms
 
-The modular architecture for code extensibility allows developers to add new 
-typosquatting algorithms with ease. Currently we have implements 19 
+The modular architecture for code extensibility allows developers to add new
+typosquatting algorithms with ease. Currently we have implements 19
 typosquatting algorithms. See [Typo Algorithms](https://cybersectech-org.github.io/urlinsane/#algorithms) for details.
 
 
@@ -265,15 +268,15 @@ This table shows which tools have support for common **misspellings**,
 **homophones**, **numerals**, **vowels**, **homoglyphs**, and the number of 
 **keyboards** that support each language's character set. 
 
-| **Lang (# Keyboards)**   | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz | 
-|--------------------------|-----------|-----------|------------|-------------|        
-| Arabic (4)               |     X     |           |            |             |           
-| Armenian (3)             |     X     |           |            |             |          
-| English (4)              |     X     |     X     |      X     |      X      |      
-| Finnish (1)              |     X     |           |            |             |           
-| Russian (3)              |     X     |           |            |             |           
-| Spanish (2)              |     X     |           |            |             |           
-| Hebrew (1)               |     X     |           |            |             |           
+| **Lang (# Keyboards)**   | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz |
+|--------------------------|-----------|-----------|------------|-------------|
+| Arabic (4)               |     X     |           |            |             |
+| Armenian (3)             |     X     |           |            |             |
+| English (4)              |     X     |     X     |      X     |      X      |
+| Finnish (1)              |     X     |           |            |             |
+| Russian (3)              |     X     |           |            |             |
+| Spanish (2)              |     X     |           |            |             |
+| Hebrew (1)               |     X     |           |            |             |
 | Persian (1)              |     X     |           |            |             |  
 
 
@@ -281,18 +284,18 @@ This table shows which tools have support for common **misspellings**,
 
 This table shows the list of algorithms supported for each tool. 
 
-|      **Algorithms**             | URLInsane | URLCrazy  | DNSTwist   | DomainFuzz **(TODO)**  |               
+|      **Algorithms**             | URLInsane | URLCrazy  | DNSTwist   | DomainFuzz **(TODO)**  |
 |---------------------------------|-----------|-----------|------------|-------------|
-| Missing Dot                     |     X     |     X     |     X      |             |          
-| Missing Dashes                  |     X     |           |            |             |          
-| Strip Dashes                    |     X     |     X     |            |             |          
-| Character Omission              |     X     |     X     |     X      |             |           
-| Character Swap                  |     X     |     X     |            |             |           
-| Adjacent Character Substitution |     X     |     X     |            |             |           
-| Adjacent Character Insertion    |     X     |     X     |     X      |             |          
-| Homoglyphs                      |     X     |     X     |     P      |             |           
+| Missing Dot                     |     X     |     X     |     X      |             |
+| Missing Dashes                  |     X     |           |            |             |
+| Strip Dashes                    |     X     |     X     |            |             |
+| Character Omission              |     X     |     X     |     X      |             |
+| Character Swap                  |     X     |     X     |            |             |
+| Adjacent Character Substitution |     X     |     X     |            |             |
+| Adjacent Character Insertion    |     X     |     X     |     X      |             |
+| Homoglyphs                      |     X     |     X     |     P      |             |
 | Singular Pluralise              |     X     |     X     |            |             |           
-| Character Repeat                |     X     |     X     |     X      |             |           
+| Character Repeat                |     X     |     X     |     X      |             |
 | Double Character Replacement    |     X     |     X     |            |             |           
 | Common Misspellings             |     X     |     X     |            |             |           
 | Homophones                      |     X     |     X     |     P      |             |           
