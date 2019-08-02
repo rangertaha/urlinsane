@@ -299,10 +299,10 @@ This table shows the list of algorithms supported for each tool.
 | Ordinal Number Swap             |     X     |           |            |             |
 | Cardinal Number Swap            |     X     |           |            |             |
 | Hyphenation                     |     X     |           |      X     |             |
-| Combosquatting(Keywords)        |           |           |            |             |
 | Multithreaded Algorithms        |     X     |     ?     |      X     |             |
 | Subdomain insertion             |     X     |           |            |             |
-| Period Insertion                |     X     |           |            |             |  
+| Period Insertion                |     X     |           |            |             |
+| Combosquatting (Keywords)       |           |           |            |             |
 
 ## Post Typo Functions
 
