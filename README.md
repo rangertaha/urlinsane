@@ -255,6 +255,16 @@ typosquatting algorithms. See [Typo Algorithms](https://cybersectech-org.github.
 
 ## Tools Comparisons
 
+### Results
+
+| **Tool**   | google.com  | facebook.com  | youtube.com   | amazon.com | amazon4you.com |
+|--------------------------|---------------|---------------|------------|----------------|
+| URLInsane  |             |               |               |            |                |
+| URLCrazy   |             |               |               |            |                |
+| DNSTwist   |             |               |               |            |                |
+| DomainFuzz |             |               |               |            |                |
+
+
 ### Language & Keyboard Comparison
 
 This table shows which tools have support for common **misspellings**,
