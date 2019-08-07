@@ -325,7 +325,7 @@ This table shows the list of algorithms supported for each tool.
 | DNS AAAA Records                    |     X     |           |      X     |      X      |
 | DNS CName Records                   |     X     |           |            |             |
 | DNS NS Records                      |     X     |           |      X     |      X      |
-| GeoIP Info                          |     X     |     X     |      X     |             |
+| Geographic Info                     |     X     |     X     |      X     |             |
 | Domain Similarity                   |     X     |           |      X     |      X      |
 | Domain Redirects                    |     X     |           |            |             |
 | IDNA Format                         |     X     |           |      X     |             |
@@ -336,6 +336,21 @@ This table shows the list of algorithms supported for each tool.
 | HTTP/SMTP Banner                    |     X     |           |      X     |             |
 | WHOIS Info                          |           |           |      X     |             |
 | Multithreaded Extra Functions       |     X     |           |      X     |      X      |
+
+
+
+### Speed
+
+| **Tool**   | google.com  | facebook.com  | youtube.com   | amazon.com | amazon4you.com |
+|------------|-------------|---------------|---------------|------------|----------------|
+| URLInsane  |             |               |               |            |                |
+| URLCrazy   |             |               |               |            |                |
+| DNSTwist   |             |               |               |            |                |
+| DomainFuzz |             |               |               |            |                |
+
+
+
+
 
 ### TODO
 
