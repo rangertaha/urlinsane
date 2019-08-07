@@ -258,11 +258,11 @@ typosquatting algorithms. See [Typo Algorithms](https://cybersectech-org.github.
 ### Results
 
 | **Tool**   | google.com  | facebook.com  | youtube.com   | amazon.com | amazon4you.com |
-|--------------------------|---------------|---------------|------------|----------------|
-| URLInsane  |             |               |               |            |                |
-| URLCrazy   |             |               |               |            |                |
-| DNSTwist   |             |               |               |            |                |
-| DomainFuzz |             |               |               |            |                |
+|------------|-------------|---------------|---------------|------------|----------------|
+| URLInsane  |    6931     |    7049       |     6996      |   6934     |     7192       |
+| URLCrazy   |    88       |    109        |     107       |   78       |     129        |
+| DNSTwist   |    1687     |    2529       |     3770      |   2262     |     5815       |
+| DomainFuzz |      ?      |     ?         |       ?       |     ?      |      ?         |
 
 
 ### Language & Keyboard Comparison
