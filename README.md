@@ -339,7 +339,7 @@ This table shows the list of algorithms supported for each tool.
 
 
 
-### Speed
+### Speed (TODO)
 
 | **Tool**   | google.com  | facebook.com  | youtube.com   | amazon.com | amazon4you.com |
 |------------|-------------|---------------|---------------|------------|----------------|
@@ -349,17 +349,6 @@ This table shows the list of algorithms supported for each tool.
 | DomainFuzz |             |               |               |            |                |
 
 
-
-
-
-### TODO
-
-* Extract keywords from domains. Keywords will be used for additional algorithms
-* Estimate popularity of a domain variant via google search
-* Lookup whois record
-* Emoji domains
-* Grabs HTTP and SMTP service banners
-* Speed Comparison with other tools
 
 ## Authors
 
