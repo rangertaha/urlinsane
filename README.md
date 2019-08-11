@@ -262,7 +262,7 @@ typosquatting algorithms. See [Typo Algorithms](https://cybersectech-org.github.
 | URLInsane  |    6931     |    7049       |     6996      |   6934     |     7192       |
 | URLCrazy   |    88       |    109        |     107       |   78       |     129        |
 | DNSTwist   |    1687     |    2529       |     3770      |   2262     |     5815       |
-| DomainFuzz |      ?      |     ?         |       ?       |     ?      |      ?         |
+
 
 
 ### Language & Keyboard Comparison
@@ -332,9 +332,7 @@ This table shows the list of algorithms supported for each tool.
 | CSV output                          |     X     |     X     |      X     |      X      |
 | JSON output                         |     X     |           |      X     |      X      |
 | Human Readable output               |     X     |     X     |      X     |      X      |
-| Google Popularity Estimate          |           |     X     |            |             |
 | HTTP/SMTP Banner                    |     X     |           |      X     |             |
-| WHOIS Info                          |           |           |      X     |             |
 | Multithreaded Extra Functions       |     X     |           |      X     |      X      |
 
 
