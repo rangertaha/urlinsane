@@ -47,7 +47,7 @@ var (
 			// Number: cardinal..,  ordinal.., other...
 			"٠":  []string{"صفر", "sifr"},
 			"١":  []string{"واحد", "أول", "wa7ed"},
-			"٢":  []string{"اتنين", "ثانيا", "etneyn"},
+			"٢":  []string{"اثنان", "اتنين", "ثانيا", "etneyn", "athnan"},
 			"٣":  []string{"تلاتة", "الثالث", "talata"},
 			"٤":  []string{"اربعة", "رابع", "arba3a"},
 			"٥":  []string{"خمسة", "خامس", "7amsa"},
