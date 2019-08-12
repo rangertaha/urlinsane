@@ -263,8 +263,6 @@ typosquatting algorithms. See [Typo Algorithms](https://cybersectech-org.github.
 | URLCrazy   |    88       |    109        |     107       |   78       |     129        |
 | DNSTwist   |    1687     |    2529       |     3770      |   2262     |     5815       |
 
-
-
 ### Language & Keyboard Comparison
 
 This table shows which tools have support for common **misspellings**,
@@ -335,8 +333,6 @@ This table shows the list of algorithms supported for each tool.
 | HTTP/SMTP Banner                    |     X     |           |      X     |             |
 | Multithreaded Extra Functions       |     X     |           |      X     |      X      |
 
-
-
 ### Speed (TODO)
 
 | **Tool**   | google.com  | facebook.com  | youtube.com   | amazon.com | amazon4you.com |
@@ -345,8 +341,6 @@ This table shows the list of algorithms supported for each tool.
 | URLCrazy   |             |               |               |            |                |
 | DNSTwist   |             |               |               |            |                |
 | DomainFuzz |             |               |               |            |                |
-
-
 
 ## Authors
 
