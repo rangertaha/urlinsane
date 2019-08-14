@@ -26,6 +26,7 @@ threat intelligence.
 * Concurrent function (**-x --funcs**) workers to retrieve additional info on each record.
 * Concurrent typo squatting workers.
 
+
 ## Cli Tool
 
 ```bash
