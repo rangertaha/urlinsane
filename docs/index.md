@@ -71,8 +71,6 @@ cd builds/
 ```
 
 
-
-
 ## Usage
 Generate variations for `google.com` using the character omission **(CO)** algorithm.
 ```
@@ -94,7 +92,6 @@ urlinsane typo google.com -t co
        | CO   | gogle.com | com    | gogle.com  
        | CO   | googe.com | com    | googe.com 
 ```
-
 
 
 Generate variations for `google.com` using the character omission **(CO)** algorithm and check for **ip** addresses. 

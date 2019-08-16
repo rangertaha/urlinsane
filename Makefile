@@ -59,3 +59,4 @@ push-gcr: login-gcr image ## Push build to Google Container Registry
 
 deploy-gc-app-engine: push-gcr ## Deploy api service to Google Cloud AppEngine
 	gcloud app deploy --quiet --image-url $(GCR_HOST)/$(GCP_PROJECT_ID)/$(BINARY_NAME)
+
