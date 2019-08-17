@@ -23,7 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added 'typo' and 'server' commands.
 - Improved structs for json output.
 
-
 ## [0.4.0] - 2019-01-17
 ### Added
 - Code cleanup
@@ -31,7 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed bug with keyboard selection
 - Added the Armenian language
 - Added French Canadian language
-
 
 ## [0.3.0] - 2018-09-10
 ### Added
@@ -42,7 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the Persian language.
 - Added the Hebrew language.
 
-
 ## [0.2.0] - 2018-08-30
 ### Added
 - Added concurrency to the extra functions
@@ -50,7 +47,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated documentation
 - Updated version and builds for windows, linux, osx
 
-
 ## [0.1.0] - 2018-08-26
 ### Added initial code
--
+
