@@ -30,7 +30,7 @@ var (
 
 	// frHomophones are words that sound alike
 	frHomophones = [][]string{
-		[]string{"", "."},
+		[]string{"point", "."},
 	}
 
 	// frAntonyms are words opposite in meaning to another (e.g. bad and good ).
@@ -93,7 +93,6 @@ var (
 			"x": []string{"х", "ҳ", "ẋ"},
 			"y": []string{"ʏ", "γ", "у", "Ү", "ý"},
 			"z": []string{"ʐ", "ż", "ź", "ʐ", "ᴢ"},
-
 			"â": []string{"à", "á", "ã", "ä", "å", "ɑ", "а", "ạ", "ǎ", "ă", "ȧ", "ӓ", "٨"},
 		},
 	}

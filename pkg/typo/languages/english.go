@@ -4773,7 +4773,7 @@ var (
 		[]string{"mary", "marry", "merry"},
 	}
 
-	// faAntonyms are words opposite in meaning to another (e.g. bad and good ).
+	// enAntonyms are words opposite in meaning to another (e.g. bad and good ).
 	enAntonyms = map[string][]string{
 		"about":         []string{"exactly"},
 		"above":         []string{"below"},
