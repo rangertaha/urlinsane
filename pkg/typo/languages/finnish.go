@@ -23,19 +23,19 @@
 package languages
 
 var (
-	// hyMisspellings are common misspellings
+	// fiMisspellings are common misspellings
 	fiMisspellings = [][]string{
 		[]string{"", ""},
 	}
 
-	// hyHomophones are words that sound alike
+	// fiHomophones are words that sound alike
 	fiHomophones = [][]string{
-		[]string{"", "."},
+		[]string{"piste", "."},
 	}
 
-	// hyAntonyms are words opposite in meaning to another (e.g. bad and good ).
+	// fiAntonyms are words opposite in meaning to another (e.g. bad and good ).
 	fiAntonyms = map[string][]string{
-		"": []string{""},
+		"hyvä": []string{"huono"},
 	}
 
 	fiLanguage = Language{
@@ -45,7 +45,7 @@ var (
 		Numerals: map[string][]string{
 			// Number: cardinal..,  ordinal.., other...
 			"0":  []string{"nolla"},
-			"1":  []string{"yksi"},
+			"1":  []string{"yksi", "ensimmäinen"},
 			"2":  []string{"kaksi"},
 			"3":  []string{"kolme"},
 			"4":  []string{"neljä"},
