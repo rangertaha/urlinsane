@@ -28,14 +28,6 @@ import (
 	"github.com/cybint/urlinsane/pkg/typo"
 )
 
-type testpair struct {
-	domains []string
-	values  map[string]bool
-	total   int
-}
-
-var languages = []string{"en", "iw", "es", "fa", "fi", "ar", "ru", "hy"}
-
 var characterOmissionCases = []testpair{
 	{[]string{"google.com"},
 		map[string]bool{

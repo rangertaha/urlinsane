@@ -22,52 +22,11 @@
 
 package tests
 
-import (
-	"testing"
 
-	"github.com/cybint/urlinsane/pkg/typo"
-)
-
-var characterSwapCases = []testpair{
-	{[]string{"google.com"},
-		map[string]bool{
-			"ogogle.com": true,
-			"googel.com": true,
-			"goolge.com": true,
-			"gogole.com": true,
-		}, 5},
+type testpair struct {
+	domains []string
+	values  map[string]bool
+	total   int
 }
 
-func TestCharacterSwap(t *testing.T) {
-	for _, lang := range languages {
-		count := 0
-		for _, tcase := range characterSwapCases {
-			conf := typo.BasicConfig{
-				Domains:     tcase.domains,
-				Keyboards:   []string{lang},
-				Typos:       []string{"cs"},
-				Funcs:       []string{""},
-				Concurrency: 50,
-				Format:      "text",
-				Verbose:     false,
-			}
-
-			urli := typo.New(conf.Config())
-
-			out := urli.Stream()
-
-			for r := range out {
-				_, ok := tcase.values[r.Variant.String()]
-				if !ok {
-					t.Errorf("Failed variant: %v for domains: %v, language: %v, algorithm %v", r.Variant.String(), tcase.domains, lang, r.Typo.Name)
-				}
-				count++
-			}
-			// TODO: Apply dup filter and uncomment
-			// if count != tcase.total {
-			// 	t.Errorf("Failed total number of records should be %v not %v", tcase.total, count)
-			// }
-			count = 0
-		}
-	}
-}
+var languages = []string{"en", "iw", "es", "fa", "fi", "ar", "ru", "hy"}
