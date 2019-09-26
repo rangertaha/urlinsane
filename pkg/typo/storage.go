@@ -24,38 +24,56 @@ package typo
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"log"
 
 	"github.com/olivere/elastic"
 )
 
 // Storager stores and queries result records
 type Storager interface {
-	Query(Result) []Result
-	Save(Result)
+	Query(Domain) []Domain
+	Save(Domain)
 }
 
 // ElasticStorage ...
 type ElasticStorage struct {
 }
 
-func init() {
-	// Create a client and connect to http://192.168.2.10:9201
-	ES, err := elastic.NewClient(elastic.SetURL("http://192.168.2.10:9201"))
+// Query ...
+func (es *ElasticStorage) Query(r Domain) (res []Domain) {
+	// Create a client and connect to http://127.0.0.1:9201
+	ES, err := elastic.NewClient(elastic.SetURL("http://127.0.0.1:9201"))
 	if err != nil {
 		// Handle error
 	}
-}
 
-// Query ...
-func (es *ElasticStorage) Query(r Result) (res []Result) {
-	searchResult, err := ES.Search().Index("twitter").Query(elastic.NewMatchAllQuery()).Do(context.Background())
+	searchResult, err := ES.Search().Index("urlinsane").Query(elastic.NewMatchAllQuery()).Do(context.Background())
 	if err != nil {
 		panic(err)
 	}
-	return res
+	fmt.Println(searchResult)
+	return
 }
 
 // Save ...
-func (es *ElasticStorage) Save(r Result) {
+func (es *ElasticStorage) Save(r Domain) {
+	json, err := json.MarshalIndent(r, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(json))
+	//fmt.Println(r)
+	// ctx := context.Background()
+	// ES, err := elastic.NewClient(elastic.SetURL("http://127.0.0.1:9201"))
+	// if err != nil {
+	// 	// Handle error
+	// }
 
+	// searchResult, err := ES.Index().Index("urlinsane").Type("domain").Id("1").BodyJson(r).Do(ctx)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Println(searchResult)
 }

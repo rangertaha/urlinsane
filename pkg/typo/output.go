@@ -54,7 +54,7 @@ func (urli *Typosquatting) jsonOutput(in <-chan Result) {
 			}
 			fmt.Println(string(json))
 		} else {
-			json, err := json.MarshalIndent(r.Data, "", "  ")
+			json, err := json.MarshalIndent(r, "", "  ")
 			if err != nil {
 				log.Fatal(err)
 			}
