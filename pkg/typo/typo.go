@@ -234,7 +234,7 @@ func (typ *Typosquatting) Start() <-chan Result {
 			}
 			clen := strings.Count(record, ":")
 			if clen == 5 {
-				if !stringInSlice(record, dmname.Meta.DNS.IPv4) {
+				if !stringInSlice(record, dmname.Meta.DNS.IPv6) {
 					typ.config.domains[i].Meta.DNS.IPv6 = append(dmname.Meta.DNS.IPv6, record)
 				}
 				typ.config.domains[i].Live = true
@@ -298,6 +298,8 @@ func (typ *Typosquatting) Typos(in <-chan Result) <-chan Result {
 				// Execute typo function returning typo results
 				for _, t := range c.Typo.Exec(c) {
 					if t.Variant.String() != t.Original.String() {
+						es := ElasticStorage{}
+						es.Save(t.Original)
 						out <- t
 					}
 				}

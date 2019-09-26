@@ -57,15 +57,18 @@ KEYBOARDS:{{range .Keyboards}}
   {{.Code}}	{{.Description}}{{end}}
   ALL	Use all keyboards
 {{end}}{{if .Typos}}
-TYPOS: These are the types of typo/error algorithms that generate the domain variants{{range .Typos}}
+TYPOS: 
+  These are the types of typo/error algorithms that generate the domain variants{{range .Typos}}
   {{.Code}}	{{.Description}}{{end}}
   ALL   Apply all typosquatting algorithms
 {{end}}{{if .Funcs}}
-FUNCTIONS: Post processig functions that retieve aditional information on each domain variant.{{range .Funcs}}
+INFORMATION: 
+  Post processig functions that retieve aditional information on each domain variant.{{range .Funcs}}
   {{.Code}}	{{.Description}}{{end}}
   ALL  	Apply all post typosquating functions
 {{end}}{{if .Filters}}
-FILTERS: Filters to reduce the number domain variants returned.{{range .Filters}}
+FILTERS: 
+  Filters to reduce the number domain variants returned.{{range .Filters}}
   {{.Code}}	{{.Description}}{{end}}
   ALL  	Apply all filters
 {{end}}
