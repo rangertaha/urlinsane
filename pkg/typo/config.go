@@ -40,6 +40,7 @@ type BasicConfig struct {
 	Filters     []string `json:"filters,omitempty"`
 	Typos       []string `json:"typos,omitempty"`
 	Funcs       []string `json:"funcs,omitempty"`
+	Storage     []string `json:"storage,omitempty"`
 	Concurrency int      `json:"concurrency,omitempty"`
 	Format      string   `json:"format,omitempty"`
 	File        string   `json:"file,omitempty"`
@@ -59,11 +60,11 @@ type Config struct {
 	keyboards []languages.Keyboard
 	languages []languages.Language
 
-	typos     []Module
-	funcs     []Module
-	filters   []Module
-	storage   []Module
-	analyzers []Module
+	typos   []Module
+	funcs   []Module
+	filters []Module
+	storage Storager
+	// analyzers []Module
 
 	headers     []string
 	format      string
