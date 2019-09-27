@@ -21,6 +21,7 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 
@@ -31,11 +32,30 @@ import (
 
 var cfgFile string
 
+const cfgFileContent = `
+
+storage:
+- elastic
+
+elastic:
+  host: 127.0.0.1
+  port: 9200
+
+typos:
+- all
+
+info:
+- all
+
+`
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "urlinsane",
 	Short: "Generates domain typos and variations",
-	Long:  `Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.`,
+	Long: `
+Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, 
+URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.`,
 	// Run: func(cmd *cobra.Command, args []string) {
 	// },
 }
@@ -44,16 +64,16 @@ var rootCmd = &cobra.Command{
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		// fmt.Println(err)
+		// os.Exit(1)
 	}
 }
 
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.urlinsane.yaml)")
-	rootCmd.PersistentFlags().StringArray("storage", []string{}, "Enable storage backends defined in the optional config file. \n  Options: elastic")
-	// viper.BindFlagValues("storage", rootCmd.Flags().Lookup("storage"))
+	initConfig()
+
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -61,23 +81,23 @@ func initConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := homedir.Dir()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		// Search config in home directory with name ".tfmod" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".urlinsane")
 	}
+	home, err := homedir.Dir()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(home)
 	viper.AddConfigPath(".")
-	viper.AutomaticEnv() // read in environment variables that match
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	viper.AutomaticEnv()
+	viper.SetConfigName(".urlinsane")
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			viper.ReadConfig(bytes.NewBuffer([]byte(cfgFileContent)))
+			viper.SafeWriteConfigAs(home + "/.urlinsane.yaml")
+		} else {
+			panic(fmt.Errorf("Fatal error config file: \n %s", err))
+		}
 	}
 }
