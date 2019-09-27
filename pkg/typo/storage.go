@@ -29,6 +29,7 @@ import (
 	"log"
 
 	"github.com/olivere/elastic"
+	"github.com/spf13/viper"
 )
 
 // Storager stores and queries result records
@@ -39,12 +40,24 @@ type Storager interface {
 
 // ElasticStorage ...
 type ElasticStorage struct {
+	host string
+	port string
+}
+
+// NewElasticsearch ...
+func NewElasticsearch() ElasticStorage {
+	host := viper.Get("elastic.host").(string)
+	port := viper.Get("elastic.port").(string)
+	return ElasticStorage{host, port}
 }
 
 // Query ...
 func (es *ElasticStorage) Query(r Domain) (res []Domain) {
-	// Create a client and connect to http://127.0.0.1:9201
-	ES, err := elastic.NewClient(elastic.SetURL("http://127.0.0.1:9201"))
+	host := viper.Get("elastic.host")
+	port := viper.Get("elastic.port")
+
+	ES, err := elastic.NewClient(elastic.SetURL(fmt.Sprintf("http://%s:%d", host, port)))
+
 	if err != nil {
 		// Handle error
 	}
@@ -59,6 +72,16 @@ func (es *ElasticStorage) Query(r Domain) (res []Domain) {
 
 // Save ...
 func (es *ElasticStorage) Save(r Domain) {
+	host := viper.Get("elastic.host")
+	port := viper.Get("elastic.port")
+
+	// ES, err := elastic.NewClient(elastic.SetURL(fmt.Sprintf("http://%s:%d", host, port)))
+
+	// if err != nil {
+	// 	// Handle error
+	// }
+
+	fmt.Println(fmt.Sprintf("http://%s:%d", host, port))
 	json, err := json.MarshalIndent(r, "", "  ")
 	if err != nil {
 		log.Fatal(err)
