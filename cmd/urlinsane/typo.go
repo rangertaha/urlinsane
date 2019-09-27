@@ -28,6 +28,7 @@ import (
 	"github.com/cybint/urlinsane/pkg/typo"
 	"github.com/cybint/urlinsane/pkg/typo/languages"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 const templateBase = `USAGE:{{if .Runnable}}
@@ -96,7 +97,9 @@ var cliOptions bytes.Buffer
 var typoCmd = &cobra.Command{
 	Use:   "typo [domains]",
 	Short: "Generates domain typos and variations",
-	Long:  `Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.`,
+	Long: `
+Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking,
+URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// Create config from cli options/arguments
 		config := typo.CobraConfig(cmd, args)
@@ -131,21 +134,25 @@ func init() {
 	// Basic options
 	typoCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"en"},
 		"Keyboards/layouts ID to use")
-	//rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"all"},
-	//	"Language ID to use for linguistic typos")
+	viper.BindPFlag("keyboards", typoCmd.PersistentFlags().Lookup("keyboards"))
 
 	// Processing
 	typoCmd.PersistentFlags().IntP("concurrency", "c", 50,
 		"Number of concurrent workers")
+	viper.BindPFlag("concurrency", typoCmd.PersistentFlags().Lookup("concurrency"))
+
 	typoCmd.PersistentFlags().StringArrayP("typos", "t", []string{"all"},
 		"Types of typos to perform")
+	viper.BindPFlag("typos", typoCmd.PersistentFlags().Lookup("typos"))
 
 	// Post Processing options for retrieving additional data
 	typoCmd.PersistentFlags().StringArrayP("funcs", "x", []string{"ld", "idna"},
 		"Extra functions or filters")
+	viper.BindPFlag("funcs", typoCmd.PersistentFlags().Lookup("funcs"))
 
 	typoCmd.PersistentFlags().StringArrayP("filters", "r", []string{""},
 		"Filter results to reduce the number of results")
+	viper.BindPFlag("filters", typoCmd.PersistentFlags().Lookup("filters"))
 
 	typoCmd.PersistentFlags().Int64("delay", 10,
 		"A delay between network calls")
@@ -157,5 +164,6 @@ func init() {
 	typoCmd.PersistentFlags().StringP("file", "f", "", "Output filename")
 	typoCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv, text)")
 	typoCmd.PersistentFlags().BoolP("verbose", "v", false, "Output additional details")
+	viper.BindPFlag("filverboseters", typoCmd.PersistentFlags().Lookup("verbose"))
 	rootCmd.AddCommand(typoCmd)
 }
