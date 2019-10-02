@@ -70,9 +70,8 @@ func (urli *Typosquatting) csvOutput(in <-chan Result) {
 	live := func(l bool) string {
 		if l {
 			return "ONLINE"
-		} else {
-			return " "
 		}
+		return " "
 	}
 
 	// CSV column headers
@@ -112,9 +111,8 @@ func (urli *Typosquatting) stdOutput(in <-chan Result) {
 	live := func(l bool) string {
 		if l {
 			return "\033[32mONLINE"
-		} else {
-			return "\033[39m"
 		}
+		return "\033[39m"
 	}
 	for v := range in {
 		var data []string
