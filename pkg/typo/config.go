@@ -63,7 +63,6 @@ type Config struct {
 	typos   []Module
 	funcs   []Module
 	filters []Module
-	storage Storager
 	// analyzers []Module
 
 	headers     []string

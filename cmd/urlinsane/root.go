@@ -39,7 +39,8 @@ storage:
 
 elastic:
   host: 127.0.0.1
-  port: 9200
+  port: 32772
+  index: urlinsane
 
 typos:
 - all
@@ -56,8 +57,12 @@ var rootCmd = &cobra.Command{
 	Long: `
 Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, 
 URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.`,
-	// Run: func(cmd *cobra.Command, args []string) {
-	// },
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			cmd.Help()
+			os.Exit(0)
+		}
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -71,7 +76,12 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.urlinsane.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Configuration file (default is $HOME/.urlinsane.yaml)")
+
+	viper.SetDefault("elastic.port", "9200")
+	viper.SetDefault("elastic.host", "127.0.0.1")
+	viper.SetDefault("elastic.index", "urlinsane")
+
 	initConfig()
 
 }

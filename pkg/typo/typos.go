@@ -401,7 +401,7 @@ func alphabetReplacementnFunc(tc Result) (results []Result) {
 	}
 
 	for i := range tc.Original.Domain {
-		for alp, _ := range alphabet {
+		for alp := range alphabet {
 			d1 := tc.Original.Domain[:i] + alp + tc.Original.Domain[i+1:]
 			dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}, false}
 			results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
