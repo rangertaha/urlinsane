@@ -23,6 +23,7 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"text/template"
 
 	"github.com/cybint/urlinsane/pkg/typo"
@@ -53,25 +54,25 @@ Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
 Use "{{.CommandPath}} [command] --help" for more information about a command.{{end}}`
 
 const helpTemplate = `
-{{if .Keyboards}}
-KEYBOARDS:{{range .Keyboards}}
-  {{.Code}}	{{.Description}}{{end}}
-  ALL	Use all keyboards
-{{end}}{{if .Typos}}
+{{if .Typos}}
 TYPOS: 
   These are the types of typo/error algorithms that generate the domain variants{{range .Typos}}
-  {{.Code}}	{{.Description}}{{end}}
-  ALL   Apply all typosquatting algorithms
+    {{.Code}}	{{.Description}}{{end}}
+    ALL	Apply all typosquatting algorithms
 {{end}}{{if .Funcs}}
 INFORMATION: 
-  Post processig functions that retieve aditional information on each domain variant.{{range .Funcs}}
-  {{.Code}}	{{.Description}}{{end}}
-  ALL  	Apply all post typosquating functions
+  Retrieve aditional information on each domain variant.{{range .Funcs}}
+    {{.Code}}    {{.Description}}{{end}}
+    ALL    Apply all post typosquating functions
 {{end}}{{if .Filters}}
 FILTERS: 
   Filters to reduce the number domain variants returned.{{range .Filters}}
-  {{.Code}}	{{.Description}}{{end}}
-  ALL  	Apply all filters
+    {{.Code}}   {{.Description}}{{end}}
+    ALL    Apply all filters
+{{end}}{{if .Keyboards}}
+KEYBOARDS:{{range .Keyboards}}
+    {{.Code}}	{{.Description}}{{end}}
+    ALL	Use all keyboards
 {{end}}
 EXAMPLE:
 
@@ -80,7 +81,7 @@ EXAMPLE:
     urlinsane google.com -t co -x ip -x idna -x ns
 
 AUTHOR:
-  Written by Rangertaha <rangertaha@gmail.com>
+    Written by Rangertaha <rangertaha@gmail.com>
 
 `
 
@@ -101,6 +102,10 @@ var typoCmd = &cobra.Command{
 Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking,
 URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			cmd.Help()
+			os.Exit(0)
+		}
 		// Create config from cli options/arguments
 		config := typo.CobraConfig(cmd, args)
 

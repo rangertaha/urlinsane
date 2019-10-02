@@ -44,7 +44,7 @@ var Extras = NewRegistry()
 var levenshteinDistance = Module{
 	Code:        "LD",
 	Name:        "Levenshtein Distance",
-	Description: "The Levenshtein distance is a string metric for measuring the difference between two domains",
+	Description: "The Levenshtein distance between strings",
 	Exe:         levenshteinDistanceFunc,
 	Fields:      []string{"LD"},
 }

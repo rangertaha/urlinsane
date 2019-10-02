@@ -24,9 +24,7 @@ package typo
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"log"
 
 	"github.com/olivere/elastic"
 	"github.com/spf13/viper"
@@ -40,31 +38,30 @@ type Storager interface {
 
 // ElasticStorage ...
 type ElasticStorage struct {
-	host string
-	port string
+	client *elastic.Client
+	index  string
 }
 
 // NewElasticsearch ...
-func NewElasticsearch() ElasticStorage {
-	host := viper.Get("elastic.host").(string)
-	port := viper.Get("elastic.port").(string)
-	return ElasticStorage{host, port}
+func NewElasticsearch() (es ElasticStorage, err error) {
+	host := viper.GetString("elastic.host")
+	port := viper.GetString("elastic.port")
+	username := viper.GetString("elastic.username")
+	password := viper.GetString("elastic.password")
+	index := viper.GetString("elastic.index")
+	client, err := elastic.NewClient(
+		elastic.SetURL(fmt.Sprintf("http://%s:%s", host, port)),
+		elastic.SetBasicAuth(username, password))
+	es.client = client
+	es.index = index
+	return es, err
 }
 
 // Query ...
 func (es *ElasticStorage) Query(r Domain) (res []Domain) {
-	host := viper.Get("elastic.host")
-	port := viper.Get("elastic.port")
-
-	ES, err := elastic.NewClient(elastic.SetURL(fmt.Sprintf("http://%s:%d", host, port)))
-
+	searchResult, err := es.client.Search().Index(es.index).Query(elastic.NewMatchAllQuery()).Do(context.Background())
 	if err != nil {
-		// Handle error
-	}
-
-	searchResult, err := ES.Search().Index("urlinsane").Query(elastic.NewMatchAllQuery()).Do(context.Background())
-	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	fmt.Println(searchResult)
 	return
@@ -72,31 +69,10 @@ func (es *ElasticStorage) Query(r Domain) (res []Domain) {
 
 // Save ...
 func (es *ElasticStorage) Save(r Domain) {
-	host := viper.Get("elastic.host")
-	port := viper.Get("elastic.port")
-
-	// ES, err := elastic.NewClient(elastic.SetURL(fmt.Sprintf("http://%s:%d", host, port)))
-
-	// if err != nil {
-	// 	// Handle error
-	// }
-
-	fmt.Println(fmt.Sprintf("http://%s:%d", host, port))
-	json, err := json.MarshalIndent(r, "", "  ")
+	ctx := context.Background()
+	index := viper.GetString("elastic.index")
+	_, err := es.client.Index().Index(index).Type("domain").Id(r.String()).BodyJson(r).Do(ctx)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
-	fmt.Println(string(json))
-	//fmt.Println(r)
-	// ctx := context.Background()
-	// ES, err := elastic.NewClient(elastic.SetURL("http://127.0.0.1:9201"))
-	// if err != nil {
-	// 	// Handle error
-	// }
-
-	// searchResult, err := ES.Index().Index("urlinsane").Type("domain").Id("1").BodyJson(r).Do(ctx)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// fmt.Println(searchResult)
 }
