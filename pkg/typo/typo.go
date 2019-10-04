@@ -71,6 +71,7 @@ type (
 
 		stats <-chan Statser
 		errs  <-chan interface{}
+		store chan Domain
 	}
 
 	// Domain ...
@@ -298,8 +299,6 @@ func (typ *Typosquatting) Typos(in <-chan Result) <-chan Result {
 				// Execute typo function returning typo results
 				for _, t := range c.Typo.Exec(c) {
 					if t.Variant.String() != t.Original.String() {
-						// es, _ := NewElasticsearch()
-						// es.Save(t.Original)
 						out <- t
 					}
 				}
