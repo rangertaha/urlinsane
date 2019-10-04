@@ -23,7 +23,7 @@ package pkg
 
 const (
 	// VERSION format is loosely based on [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-	VERSION = "0.6.0"
+	VERSION = "0.6.1"
 
 	// DEBUG not used yet
 	DEBUG = false

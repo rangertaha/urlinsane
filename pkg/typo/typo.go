@@ -71,7 +71,6 @@ type (
 
 		stats <-chan Statser
 		errs  <-chan interface{}
-		store chan Domain
 	}
 
 	// Domain ...
