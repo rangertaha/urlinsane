@@ -46,6 +46,7 @@ type BasicConfig struct {
 	File        string   `json:"file,omitempty"`
 	Verbose     bool     `json:"verbose,omitempty"`
 	Timing      Timing   `json:"timing,omitempty"`
+	Distance    int      `json:"distance,omitempty"`
 }
 
 // Timing ...
@@ -70,6 +71,7 @@ type Config struct {
 	file        string
 	verbose     bool
 	concurrency int
+	distance    int
 	timing      Timing
 }
 
@@ -96,6 +98,8 @@ func NewConfig(basic BasicConfig) (config *Config) {
 	config.GetHeaders(config.funcs)
 
 	config.GetTiming(basic.Timing.Delay, basic.Timing.Random)
+
+	config.distance = basic.Distance
 
 	return
 }
@@ -201,6 +205,11 @@ func (c *Config) GetConcurrency(concurrency int) {
 	c.concurrency = concurrency
 }
 
+// GetDistance ...
+func (c *Config) GetDistance(distance int) {
+	c.distance = distance
+}
+
 // GetFile ...
 func (c *Config) GetFile(file string) {
 	c.file = file
@@ -279,9 +288,14 @@ func CobraConfig(cmd *cobra.Command, args []string) (c Config) {
 
 	delay, err := cmd.PersistentFlags().GetInt64("delay")
 	errHandler(err)
+
 	rdelay, err := cmd.PersistentFlags().GetInt64("random-delay")
 	errHandler(err)
 	c.GetTiming(time.Duration(delay), time.Duration(rdelay))
+
+	distance, err := cmd.PersistentFlags().GetInt("distance")
+	errHandler(err)
+	c.GetDistance(distance)
 
 	// Requires c.funcs
 	c.GetHeaders(c.funcs)
