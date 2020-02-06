@@ -33,6 +33,7 @@ import (
 	dnsLib "github.com/cybint/hackingo/net/dns"
 	geoLib "github.com/cybint/hackingo/net/geoip"
 	httpLib "github.com/cybint/hackingo/net/http"
+	nlpLib "github.com/cybint/hackingo/nlp"
 	"golang.org/x/net/idna"
 
 	"github.com/cybint/urlinsane/pkg/typo/languages"
@@ -297,8 +298,11 @@ func (typ *Typosquatting) Typos(in <-chan Result) <-chan Result {
 			for c := range in {
 				// Execute typo function returning typo results
 				for _, t := range c.Typo.Exec(c) {
+					// Remove identical domains names
 					if t.Variant.String() != t.Original.String() {
-						out <- t
+						if typ.config.distance >= nlpLib.Levenshtein(t.Original.String(), t.Variant.String()) {
+							out <- t
+						}
 					}
 				}
 			}
