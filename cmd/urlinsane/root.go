@@ -1,23 +1,17 @@
-// Copyright © 2018 Rangertaha <rangertaha@gmail.com>
+// Copyright (C) 2024  Tal Hatchi (Rangertaha)
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 //
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 //
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
@@ -26,8 +20,15 @@ import (
 	"os"
 	"text/template"
 
-	"github.com/cybint/urlinsane/pkg/typo"
-	"github.com/cybint/urlinsane/pkg/typo/languages"
+	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/config"
+	"github.com/rangertaha/urlinsane/engine"
+	"github.com/rangertaha/urlinsane/plugins/algorithms"
+	_ "github.com/rangertaha/urlinsane/plugins/algorithms/all"
+	"github.com/rangertaha/urlinsane/plugins/information"
+	_ "github.com/rangertaha/urlinsane/plugins/information/all"
+	"github.com/rangertaha/urlinsane/plugins/languages"
+	_ "github.com/rangertaha/urlinsane/plugins/languages/all"
 	"github.com/spf13/cobra"
 )
 
@@ -53,10 +54,51 @@ Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
 Use "{{.CommandPath}} [command] --help" for more information about a command.{{end}}`
 
 const helpTemplate = `
-{{if .Typos}}
+
+ALGORITHMS:
+    Typosquating algorithms that generate domain names.
+
+    ID | Description
+    -----------------------------------------{{range .Algorithms}}
+    {{.Code}}	{{.Name}} {{.Description}}{{end}}
+
+INFORMATION:
+    Information gathering functions that collects information on each domain name
+
+    ID | Description
+    -----------------------------------------{{range .Information}}
+    {{.Code}}	{{.Name}} {{.Description}}{{end}}
+
+
+LANGUAGES:
+    ID | Name    | Description
+    -----------------------------------------{{range .Languages}}
+    {{.Code}}  {{.Name}}   {{end}}
+
+KEYBOARDS:
+    ID | Name     | Description
+    -----------------------------------------{{range .Languages}}{{range .Keyboards}}
+    {{.Code}}  {{.Name}}    {{.Description}}{{end}}{{end}}
+
+
+
+EXAMPLE:
+
+    urlinsane google.com
+    urlinsane -t co google.com 
+    urlinsane -t co,oi,oy -i ip,idna,ns google.com
+    urlinsane -l fr,en -k en1,en2 google.com
+
+AUTHOR:
+    Tal Hatchi (Rangertaha)
+
+`
+
+const hTemplate = `
+{{if .Algorithms}}
 TYPOS: 
-  These are the types of typo/error algorithms that generate the domain variants{{range .Typos}}
-    {{.Code}}	{{.Description}}{{end}}
+  These are the types of typo/error algorithms that generate the domain variants{{range .Algorithms}}
+    {{.Code}}	 {{.Name}}	{{.Description}}{{end}}
     ALL	Apply all typosquatting algorithms
 {{end}}{{if .Funcs}}
 INFORMATION: 
@@ -67,6 +109,7 @@ INFORMATION:
 FILTERS: 
   Filters to reduce the number domain variants returned.{{range .Filters}}
     {{.Code}}   {{.Description}}{{end}}
+    ALL    Apply all filters
 {{end}}{{if .Keyboards}}
 KEYBOARDS:{{range .Keyboards}}
     {{.Code}}	{{.Description}}{{end}}
@@ -75,62 +118,65 @@ KEYBOARDS:{{range .Keyboards}}
 EXAMPLE:
 
     urlinsane google.com
-    urlinsane google.com -t co
-    urlinsane google.com -t co -x ip -x idna -x ns
+    urlinsane -a co google.com 
+    urlinsane -a co -x ip,idna,ns google.com 
 
 AUTHOR:
-    Written by Rangertaha <rangertaha@gmail.com>
+    Tal Hatchi (Rangertaha)
 
 `
 
-// HelpOptions ...
 type HelpOptions struct {
-	Keyboards []languages.Keyboard
-	Typos     []typo.Module
-	Funcs     []typo.Module
-	Filters   []typo.Module
+	Languages   []urlinsane.Language
+	Algorithms  []urlinsane.Module
+	Information []urlinsane.Module
 }
 
 var cliOptions bytes.Buffer
 
-// rootCmd represents the base command when called without any subcommands
+// rootCmd represents the typo command
 var rootCmd = &cobra.Command{
-	Use:   "urlinsane",
-	Short: "Generates domain typos and variations",
-	Long: `
-Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, 
-URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.`,
+	Use:   "urlinsane [flags] [domains]",
+	Short: "Generates and detects possible typosquatting domains",
+	Long: `Urlinsane is used to perform or detect typosquatting, brandjacking,
+URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.
+
+Urlinsane is built around linguistic modeling, natural language processing, 
+information gathering and analysis. It's easily extensible with plugins for typo algorithms, 
+inforamtion gathering and analysis. Its linguistic models also allow it us to easily add new 
+languages and keyboard layouts. Currently it supports 9 languages, 19 keyboard layouts, 
+24 algorithms, 8 information gathering, and 2 analysis modules.
+
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			cmd.Help()
 			os.Exit(0)
 		}
-		// Create config from cli options/arguments
-		config := typo.CobraConfig(cmd, args)
 
-		// Create a new instance of urlinsane
-		typosquating := typo.New(config)
+		c, err := config.CliConfig(cmd, args)
+		if err != nil {
+			fmt.Println(err)
+			cmd.Help()
+			os.Exit(0)
+		}
 
-		// Start generating results
-		typosquating.Execute()
+		engine.New(c).Execute()
 	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 }
-
 func init() {
+	// fmt.Println(languages.Languages())
 	helpOptions := HelpOptions{
-		languages.KEYBOARDS.Keyboards("all"),
-		typo.Typos.Get("all"),
-		typo.Extras.Get("all"),
-		typo.Filters.Get("all"),
+		languages.Languages(),
+		algorithms.List(),
+		information.List(),
 	}
 
 	// Create a new template and parse the letter into it.
@@ -144,35 +190,25 @@ func init() {
 
 	rootCmd.SetUsageTemplate(templateBase + cliOptions.String())
 
-	// Basic options
-	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"en"},
-		"Keyboards/layouts ID to use")
+	// Options
+	rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"en"}, "IDs of languages to use for lingustic algorithms")
+	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"all"}, "IDs of keyboard layouts to use of the given languages")
+
+	// Plugins
+	rootCmd.PersistentFlags().StringArrayP("typos", "t", []string{"all"}, "IDs of typo algorithms to use for generating domains")
+	rootCmd.PersistentFlags().StringArrayP("info", "i", []string{"all"}, "IDs of info gathering functions to apply to each domain")
 
 	// Processing
-	rootCmd.PersistentFlags().IntP("concurrency", "c", 50,
-		"Number of concurrent workers")
+	rootCmd.PersistentFlags().BoolP("progress", "p", false, "Show progress bar")
+	rootCmd.PersistentFlags().Bool("no-cache", true, "Prevents caching of results")
+	rootCmd.PersistentFlags().Bool("online", false, "Only show domains that are online")
 
-	rootCmd.PersistentFlags().StringArrayP("typos", "t", []string{"all"},
-		"Types of typos to perform")
+	// Timing
+	rootCmd.PersistentFlags().IntP("concurrency", "c", 50, "Number of concurrent workers")
+	rootCmd.PersistentFlags().Int("delay", 10, "A delay between network calls")
 
-	// Post Processing options for retrieving additional data
-	rootCmd.PersistentFlags().StringArrayP("funcs", "x", []string{"ld", "idna"},
-		"Extra functions or filters")
-
-	rootCmd.PersistentFlags().StringArrayP("filters", "r", []string{""},
-		"Filter results to reduce the number of results")
-
-	rootCmd.PersistentFlags().Int64("delay", 10,
-		"A delay between network calls")
-
-	rootCmd.PersistentFlags().Int64("random-delay", 5,
-		"Used to randomize the delay between network calls.")
-
-	rootCmd.PersistentFlags().IntP("distance", "d", 1,
-		"The Levenshtein distance between strings")
-
-	// Output options
-	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename")
-	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv, text)")
-	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Output additional details")
+	// Outputs
+	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Show more details and remove truncated columns")
+	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename defaults to stdout")
+	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv, text, json)")
 }

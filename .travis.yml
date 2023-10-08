@@ -8,7 +8,7 @@ branches:
 
 matrix:
   include:
-    - go: "1.12.x"
+    - go: "1.22.4"
     - go: tip
 
 before_install:
