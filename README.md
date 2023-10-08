@@ -1,20 +1,32 @@
 # URLInsane
 
-[![Build Status](https://travis-ci.org/cybersectech-org/urlinsane.svg?branch=master)](https://travis-ci.org/cybersectech-org/urlinsane)
+[![Build Status](https://travis-ci.org/rangertaha/urlinsane.svg?branch=master)](https://travis-ci.org/rangertaha/urlinsane)
 
-Multilingual domain typo permutation engine used to perform or detect typosquatting,
-brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and
-threat intelligence.
+The most advacned typosquatting tools to date with the most features, the most results, and fastest performance. It build around linguistic modeling, natural language processing, information gathering and analysis. It's easily extensible with plugins for typo algorithms, inforamtion gathering and analysis. Its linguistic models also allow it us to easily add new languages and keyboard layouts. Currently it supports 9 languages, 19 keyboard layouts, 24 algorithms, 8 information gathering, and 2 analysis modules.
 
-**Documentation:** [URLInsane Docs](https://cybersectech-org.github.io/urlinsane/)
 
-**Downloads:** [URLInsane Downloads](https://github.com/cybersectech-org/urlinsane/releases/tag/0.3.0)
+| **Modules** |  count |
+|-------------|--------|
+| Languages   |    9   |
+| Keyboards   |    19  |
+| Algorithms  |    24  |
+| Information |    8   |
+| Analysis    |    2   |
+
+
+
+**Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.7.0)
 
 
 <div align="center">
   <a href="https://www.youtube.com/watch?v=_IU1ADTBKVU" style="float:left"><img width="350" src="https://img.youtube.com/vi/_IU1ADTBKVU/0.jpg" alt="URLInsane Demo1"></a>
    <a href="https://www.youtube.com/watch?v=HgMV0NqMCm0" style="float:left"><img width="350"  src="https://img.youtube.com/vi/HgMV0NqMCm0/0.jpg" alt="URLInsane Demo2"></a>
 </div>
+
+
+
+Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence. 
+
 
 ## Features
 
@@ -28,32 +40,80 @@ threat intelligence.
 * Concurrent typo squatting workers.
 
 
-## Cli Tool
+
+## Example
+
+Finds "character omission" typos for the given domain. **-t** specifies the type of typo you wan to use defaults to 
+all 24. **-x** specifies the extra information retrieval functions to use and defaults to non internet required functions. 
+ 
+```bash
+$ urlinsane typo google.com -t co -x all 
+
+ _   _  ____   _      ___
+| | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
+| | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
+| |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
+ \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
+
+ Version: 0.7.0
+
+   LIVE  | TYPE |   TYPO    | SUFFIX | LD |   IDNA    |      IPV4      |           IPV6           | SIZE |    REDIRECT    |        MX        |                                            TXT                                             |           NS           | CNAME | SIM |      GEO       
+---------+------+-----------+--------+----+-----------+----------------+--------------------------+------+----------------+------------------+--------------------------------------------------------------------------------------------+------------------------+-------+-----+----------------
+  ONLINE | CO   | googl.com | com    |  1 | googl.com | 172.217.10.228 | 2607:f8b0:4006:813::2004 |      | www.google.com |                  | v=spf1 -all                                                                                | ns3.google.com         |       |     | United States  
+         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns2.google.com         |       |     |                
+         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns4.google.com         |       |     |                
+         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns1.google.com         |       |     |                
+  ONLINE | CO   | oogle.com | com    |  1 | oogle.com | 104.28.29.162  | 2606:4700:30::681c:1da2  |      |                | mx.zoho.com      | brave-ledger-verification=2dd5f8cc6d7ac0d6d6f27de1c07629a8e329ecdebdc7303506854fc3eec20968 | gwen.ns.cloudflare.com |       |     | United States  
+         |      |           |        |    |           | 104.28.28.162  | 2606:4700:30::681c:1ca2  |      |                | mx2.zoho.com     | v=spf1 +a +mx +ip4:204.9.184.9 +include:zoho.com ~all                                      | amir.ns.cloudflare.com |       |     |                
+  ONLINE | CO   | gogle.com | com    |  1 | gogle.com | 172.217.10.132 | 2607:f8b0:4006:810::2004 |      | www.google.com |                  | v=spf1 -all                                                                                | ns4.google.com         |       |     | United States  
+         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns2.google.com         |       |     |                
+         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns1.google.com         |       |     |                
+         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns3.google.com         |       |     |                
+  ONLINE | CO   | goole.com | com    |  1 | goole.com | 217.160.0.201  |                          |      | www.goole.com  | mx00.1and1.co.uk |                                                                                            | ns1083.ui-dns.com      |       |     | Germany        
+         |      |           |        |    |           |                |                          |      |                | mx01.1and1.co.uk |                                                                                            | ns1083.ui-dns.biz      |       |     |                
+         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns1083.ui-dns.de       |       |     |                
+         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns1083.ui-dns.org      |       |     |                
+  ONLINE | CO   | googe.com | com    |  1 | googe.com | 50.63.202.32   |                          |      |                |                  | v=spf1 -all                                                                                | ns2.yourdoor.com       |       |     | United States  
+         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns1.yourdoor.com       |       |     |                
+
+
+```
+
+
+
+## Cli Commands
 
 ```bash
-Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.
+$ urlinsane 
+
+Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, 
+URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.
 
 Usage:
+  urlinsane [flags]
   urlinsane [command]
 
 Available Commands:
   help        Help about any command
-  server      Start an API server to use this tool programmatically
+  server      Start a websocket server to use this tool programmatically
   typo        Generates domain typos and variations
 
 Flags:
-  -h, --help   help for urlinsane
+      --config string   Configuration file (default is $HOME/.urlinsane.yaml)
+  -h, --help            help for urlinsane
 
 Use "urlinsane [command] --help" for more information about a command.
+
 ```
 
 ### Squatting Options
 
 ```bash
-urlinsane typo -h
+$ urlinsane typo -h
 
 
-Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.
+Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking,
+URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.
 
 USAGE:
   urlinsane typo [domains] [flags]
@@ -71,71 +131,77 @@ OPTIONS:
   -t, --typos stringArray       Types of typos to perform (default [all])
   -v, --verbose                 Output additional details
 
+GLOBAL OPTIONS:
+      --config string   Configuration file (default is $HOME/.urlinsane.yaml)
+
+TYPOS: 
+  These are the types of typo/error algorithms that generate the domain variants
+    MD	Missing Dot is created by omitting a dot from the domain.
+    SI	Inserting common subdomain at the beginning of the domain.
+    MDS	Missing Dashes is created by stripping all dashes from the domain.
+    CO	Character Omission Omitting a character from the domain.
+    CS	Character Swap Swapping two consecutive characters in a domain
+    ACS	Adjacent Character Substitution replaces adjacent characters
+    ACI	Adjacent Character Insertion inserts adjacent character 
+    CR	Character Repeat Repeats a character of the domain name twice
+    DCR	Double Character Replacement repeats a character twice.
+    SD	Strip Dashes is created by omitting a dash from the domain
+    SP	Singular Pluralise creates a singular domain plural and vice versa
+    CM	Common Misspellings are created from a dictionary of commonly misspelled words
+    VS	Vowel Swapping is created by swaps vowels
+    HG	Homoglyphs replaces characters with characters that look similar
+    WTLD	Wrong Top Level Domain
+    W2TLD	Wrong Second Level Domain
+    W3TLD	Wrong Third Level Domain
+    HP	Homophones Modules are created from sets of words that sound the same
+    BF	Bitsquatting relies on random bit-errors to redirect connections
+    NS	Numeral Swap numbers, words and vice versa
+    PI	Inserting periods in the target domain
+    HI	Inserting hyphens in the target domain
+    AI	Inserting the language specific alphabet in the target domain
+    AR	Replacing the language specific alphabet in the target domain
+    ALL	Apply all typosquatting algorithms
+
+INFORMATION: 
+  Retrieve aditional information on each domain variant.
+    LD    The Levenshtein distance between strings
+    IDNA    Show international domain name
+    IP    Checking for IP address
+    HTTP    Get http related information
+    MX    Checking for DNS's MX records
+    TXT    Checking for DNS's TXT records
+    NS    Checks DNS NS records
+    CNAME    Checks DNS CNAME records
+    SIM    Show domain content similarity
+    GEO    Show country location of ip address
+    ALL    Apply all post typosquating functions
+
+FILTERS: 
+  Filters to reduce the number domain variants returned.
+    LIVE   Show online/live domains only.
+    ALL    Apply all filters
+
 KEYBOARDS:
-  AR1	Arabic keyboard layout
-  AR2	Arabic PC keyboard layout
-  AR3	Arabic North african keyboard layout
-  AR4	Arabic keyboard layout
-  HY1	Armenian QWERTY keyboard layout
-  HY2	Armenian, Western QWERTY keyboard layout
-  EN1	English QWERTY keyboard layout
-  EN2	English AZERTY keyboard layout
-  EN3	English QWERTZ keyboard layout
-  EN4	English DVORAK keyboard layout
-  FI1	Finnish QWERTY keybaord layout
-  FR1	French Canadian CSA keyboard layout
-  IW1	Hebrew standard layout
-  FA1	Persian standard layout
-  RU1	Russian keyboard layout
-  RU2	Phonetic Russian keybaord layout
-  RU3	PC Russian keyboard layout
-  ES1	Spanish keyboard layout
-  ES2	Spanish ISO keyboard layout
-  ALL	Use all keyboards
-
-TYPOS: These are the types of typo/error algorithms that generate the domain variants
-  MD	Missing Dot is created by omitting a dot from the domain.
-  SI	Inserting common subdomain at the beginning of the domain.
-  MDS	Missing Dashes is created by stripping all dashes from the domain.
-  CO	Character Omission Omitting a character from the domain.
-  CS	Character Swap Swapping two consecutive characters in a domain
-  ACS	Adjacent Character Substitution replaces adjacent characters
-  ACI	Adjacent Character Insertion inserts adjacent character
-  CR	Character Repeat Repeats a character of the domain name twice
-  DCR	Double Character Replacement repeats a character twice.
-  SD	Strip Dashes is created by omitting a dash from the domain
-  SP	Singular Pluralise creates a singular domain plural and vice versa
-  CM	Common Misspellings are created from a dictionary of commonly misspelled words
-  VS	Vowel Swapping is created by swaps vowels
-  HG	Homoglyphs replaces characters with characters that look similar
-  WTLD	Wrong Top Level Domain
-  W2TLD	Wrong Second Level Domain
-  W3TLD	Wrong Third Level Domain
-  HP	Homophones Modules are created from sets of words that sound the same
-  BF	Bitsquatting relies on random bit-errors to redirect connections
-  NS	Numeral Swap numbers, words and vice versa
-  PI	Inserting periods in the target domain
-  HI	Inserting hyphens in the target domain
-  AI	Inserting the language specific alphabet in the target domain
-  AR	Replacing the language specific alphabet in the target domain
-  ALL   Apply all typosquatting algorithms
-
-FUNCTIONS: Post processig functions that retieve aditional information on each domain variant.
-  LD	The Levenshtein distance is a string metric for measuring the difference between two domains
-  IDNA	Show international domain name
-  IP	Checking for IP address
-  HTTP	Get http related information
-  MX	Checking for DNS's MX records
-  TXT	Checking for DNS's TXT records
-  NS	Checks DNS NS records
-  CNAME	Checks DNS CNAME records
-  SIM	Show domain content similarity
-  GEO	Show country location of ip address
-  ALL  	Apply all post typosquating functions
-
-FILTERS: Filters to reduce the number domain variants returned.
-  LIVE	Show online/live domains only.
-  ALL  	Apply all filters
+    AR1	Arabic keyboard layout
+    AR2	Arabic PC keyboard layout
+    AR3	Arabic North african keyboard layout
+    AR4	Arabic keyboard layout
+    HY1	Armenian QWERTY keyboard layout
+    HY2	Armenian, Western QWERTY keyboard layout
+    EN1	English QWERTY keyboard layout
+    EN2	English AZERTY keyboard layout
+    EN3	English QWERTZ keyboard layout
+    EN4	English DVORAK keyboard layout
+    FI1	Finnish QWERTY keybaord layout
+    FR1	French Canadian CSA keyboard layout
+    IW1	Hebrew standard layout
+    FA1	Persian standard layout
+    RU1	Russian keyboard layout
+    RU2	Phonetic Russian keybaord layout
+    RU3	PC Russian keyboard layout
+    ES1	Spanish keyboard layout
+    ES2	Spanish ISO keyboard layout
+    ALL	Use all keyboards
 
 EXAMPLE:
 
@@ -144,7 +210,9 @@ EXAMPLE:
     urlinsane google.com -t co -x ip -x idna -x ns
 
 AUTHOR:
-  Written by Rangertaha <rangertaha@gmail.com>
+    Written by Tal Hatchi (Rangertaha)
+
+
 ```
 
 ## Server Options
@@ -153,19 +221,18 @@ AUTHOR:
 
 urlinsane server -h
 
-This command starts up a REST API server to use this tool programmatically.
-
 Usage:
   urlinsane server [flags]
 
 Flags:
-  -a, --addr.host string   IP address for API server (default "127.0.0.1")
-  -p, --addr.port string   Port to use (default "8888")
-  -c, --concurrency int    Number of concurrent workers (default 50)
-  -h, --help               help for server
-      --log.file string    Filename to send logs to (default "urlinsane.log")
-      --log.level string   Logging level (default "DEBUG")
-  -s, --stream             Stream results via http2
+  -c, --concurrency int   Number of concurrent workers (default 50)
+  -h, --help              help for server
+  -a, --host string       IP address for API server (default "127.0.0.1")
+  -p, --port string       Port to use (default "8080")
+
+Global Flags:
+      --config string   Configuration file (default is $HOME/.urlinsane.yaml)
+
 ```
 
 ## Usage
@@ -346,8 +413,14 @@ This table shows the list of algorithms supported for each tool.
 
 ## Authors
 
-* [Rangertaha <rangertaha@gmail.com>](https://github.com/rangertaha)
+* [Rangertaha (rangertaha@gmail.com)](https://github.com/rangertaha)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the GPLv3 License - see the [LICENSE](LICENSE) file for details
+
+
+
+
+
+

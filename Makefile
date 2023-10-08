@@ -6,9 +6,9 @@ GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 GODOC=$(GOCMD)doc
 BINARY_NAME=urlinsane
-GCP_PROJECT_ID=cyberse
-GCR_HOST=gcr.io
-VERSION=$(shell grep -e 'VERSION = ".*"' pkg/version.go | cut -d= -f2 | sed  s/[[:space:]]*\"//g)
+# GCP_PROJECT_ID=cyberse
+# GCR_HOST=gcr.io
+VERSION=$(shell grep -e 'VERSION = ".*"' version.go | cut -d= -f2 | sed  s/[[:space:]]*\"//g)
 
 .PHONY: help
 
@@ -31,6 +31,12 @@ deps: ## Install dependencies
 	$(GOGET) github.com/inconshreveable/mousetrap
 	$(GOGET) github.com/konsorten/go-windows-terminal-sequences
 
+# docker: image ## Build docker image and upload to docker hub
+# 	docker login
+
+# image: clean ## Build docker image
+# 	docker build -t $(BINARY_NAME) .
+
 test: deps ## Run unit test
 	$(GOTEST) -v ./...
 
@@ -38,6 +44,19 @@ clean: ## Remove files created by the build
 	$(GOCLEAN)
 	rm -fr builds
 
+# run: ## Run server docker image
+# 	docker run -it --rm -p 8080:8080 urlinsane
+
 doc: ## Go documentation
 	$(GODOC) -http=:6060
+
+# login-gcr: ## docker login to GCR
+# 	docker login -u oauth2accesstoken -p "$(shell gcloud auth print-access-token)" https://$(GCR_HOST)
+
+# push-gcr: login-gcr image ## Push build to Google Container Registry
+# 	docker tag $(BINARY_NAME) $(GCR_HOST)/$(GCP_PROJECT_ID)/$(BINARY_NAME)
+# 	docker push $(GCR_HOST)/$(GCP_PROJECT_ID)/$(BINARY_NAME)
+
+# deploy-gc-app-engine: push-gcr ## Deploy api service to Google Cloud AppEngine
+# 	gcloud app deploy --quiet --image-url $(GCR_HOST)/$(GCP_PROJECT_ID)/$(BINARY_NAME)
 
