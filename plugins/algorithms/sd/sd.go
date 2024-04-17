@@ -29,6 +29,10 @@ func (n *StripDash) Fields() []string {
 	return []string{}
 }
 
+func (n *StripDash) Headers() []string {
+	return []string{}
+}
+
 func (n *StripDash) Exec(typo.Result) (results []typo.Result) {
 	return
 }

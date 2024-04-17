@@ -3,10 +3,10 @@ package information
 import (
 	"fmt"
 
-	urli "github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane"
 )
 
-type Creator func() urli.Module
+type Creator func() urlinsane.Module
 
 var Information = map[string]Creator{}
 
@@ -22,14 +22,14 @@ func Get(name string) (Creator, error) {
 	return nil, fmt.Errorf("unable to locate outputs/%s plugin", name)
 }
 
-// func All() (mods []typo.Module) {
-// 	for _, plugin := range Information {
-// 		mods = append(mods, plugin())
-// 	}
-// 	return
-// }
+func All() (mods []urlinsane.Module) {
+	for _, plugin := range Information {
+		mods = append(mods, plugin())
+	}
+	return
+}
 
-func List(IDs ...string) (infos []urli.Module) {
+func List(IDs ...string) (infos []urlinsane.Module) {
 	for id, info := range Information {
 		for _, aid := range IDs {
 			if id == aid {

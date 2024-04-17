@@ -29,6 +29,10 @@ func (n *SingularPluralize) Fields() []string {
 	return []string{}
 }
 
+func (n *SingularPluralize) Headers() []string {
+	return []string{}
+}
+
 func (n *SingularPluralize) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *SingularPluralize) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("sp", func() typo.Module {
-		return &SingularPluralize{
-
-		}
+		return &SingularPluralize{}
 	})
 }

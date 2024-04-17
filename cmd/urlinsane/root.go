@@ -20,13 +20,17 @@ import (
 	"os"
 	"text/template"
 
-	urli "github.com/rangertaha/urlinsane"
-	"github.com/rangertaha/urlinsane/languages"
+	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/config"
+	"github.com/rangertaha/urlinsane/engine"
+	"github.com/rangertaha/urlinsane/plugins/languages"
+	_ "github.com/rangertaha/urlinsane/plugins/languages/all"
 
-	// _ "github.com/rangertaha/urlinsane/plugins/algorithms/all"
+	"github.com/rangertaha/urlinsane/plugins/algorithms"
+	_ "github.com/rangertaha/urlinsane/plugins/algorithms/all"
 
-	// "github.com/rangertaha/urlinsane/plugins/information"
-	// _ "github.com/rangertaha/urlinsane/plugins/information/all"
+	"github.com/rangertaha/urlinsane/plugins/information"
+	_ "github.com/rangertaha/urlinsane/plugins/information/all"
 	"github.com/spf13/cobra"
 )
 
@@ -57,21 +61,21 @@ ALGORITHMS:
     Typosquating algorithms that generate domain names.
 
     ID | Description
-    -----------------------------------------{{range .Algos}}
+    -----------------------------------------{{range .Algorithms}}
     {{.Code}}	{{.Name}} {{.Description}}{{end}}
 
 INFORMATION:
     Information gathering functions that collects information on each domain name
 
     ID | Description
-    -----------------------------------------{{range .Infos}}
+    -----------------------------------------{{range .Information}}
     {{.Code}}	{{.Name}} {{.Description}}{{end}}
 
 
 LANGUAGES:
     ID | Name    | Description
     -----------------------------------------{{range .Languages}}
-    {{.Code}}  {{.Name}}    {{.Description}}{{end}}
+    {{.Code}}  {{.Name}}   {{end}}
 
 KEYBOARDS:
     ID | Name     | Description
@@ -93,9 +97,9 @@ AUTHOR:
 `
 
 const hTemplate = `
-{{if .Algos}}
+{{if .Algorithms}}
 TYPOS: 
-  These are the types of typo/error algorithms that generate the domain variants{{range .Algos}}
+  These are the types of typo/error algorithms that generate the domain variants{{range .Algorithms}}
     {{.Code}}	 {{.Name}}	{{.Description}}{{end}}
     ALL	Apply all typosquatting algorithms
 {{end}}{{if .Funcs}}
@@ -125,9 +129,9 @@ AUTHOR:
 `
 
 type HelpOptions struct {
-	Languages []languages.Language
-	Algos     []urli.Module
-	Infos     []urli.Module
+	Languages   []urlinsane.Language
+	Algorithms  []urlinsane.Module
+	Information []urlinsane.Module
 }
 
 var cliOptions bytes.Buffer
@@ -151,28 +155,30 @@ languages and keyboard layouts. Currently it supports 9 languages, 19 keyboard l
 			cmd.Help()
 			os.Exit(0)
 		}
-		// // Create config from cli options/arguments
-		// tool.CobraConfig(cmd, args)
 
-		// // // Create a new instance of urlinsane
-		// typosquating := tool.New(config)
+		c, err := config.CobraConfig(cmd, args)
+		if err != nil {
+			fmt.Println(err)
+			cmd.Help()
+			os.Exit(0)
+		}
 
-		// // // Start generating results
-		// typosquating.Execute()
+		engine.New(c).Execute()
 	},
 }
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		// fmt.Println(err)
-		// os.Exit(1)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }
 func init() {
+	// fmt.Println(languages.Languages())
 	helpOptions := HelpOptions{
-		Languages: languages.List(),
-		// algorithms.List(),
-		// information.List(),
+		languages.Languages(),
+		algorithms.List(),
+		information.List(),
 	}
 
 	// Create a new template and parse the letter into it.
@@ -201,7 +207,7 @@ func init() {
 
 	// Timing
 	rootCmd.PersistentFlags().IntP("concurrency", "c", 50, "Number of concurrent workers")
-	rootCmd.PersistentFlags().Int64("delay", 10, "A delay between network calls")
+	rootCmd.PersistentFlags().Int("delay", 10, "A delay between network calls")
 
 	// Outputs
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Show more details and remove truncated columns")

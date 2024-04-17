@@ -1,7 +1,7 @@
 package AdjacentCharacterInsertion
 
 import (
-	typo "github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
@@ -29,13 +29,17 @@ func (n *AdjacentCharacterInsertion) Fields() []string {
 	return []string{}
 }
 
-func (n *AdjacentCharacterInsertion) Exec(typo.Result) (results []typo.Result) {
+func (n *AdjacentCharacterInsertion) Headers() []string {
+	return []string{}
+}
+
+func (n *AdjacentCharacterInsertion) Exec(urlinsane.Result) (results []urlinsane.Result) {
 	return
 }
 
 // Register the plugin
 func init() {
-	algorithms.Add("aci", func() typo.Module {
+	algorithms.Add("aci", func() urlinsane.Module {
 		return &AdjacentCharacterInsertion{}
 	})
 }

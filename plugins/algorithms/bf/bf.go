@@ -29,6 +29,10 @@ func (n *BitFlipping) Fields() []string {
 	return []string{}
 }
 
+func (n *BitFlipping) Headers() []string {
+	return []string{}
+}
+
 func (n *BitFlipping) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *BitFlipping) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("bf", func() typo.Module {
-		return &BitFlipping{
-
-		}
+		return &BitFlipping{}
 	})
 }

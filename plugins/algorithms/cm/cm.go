@@ -29,6 +29,10 @@ func (n *CommonMisspellings) Fields() []string {
 	return []string{}
 }
 
+func (n *CommonMisspellings) Headers() []string {
+	return []string{}
+}
+
 func (n *CommonMisspellings) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *CommonMisspellings) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("cm", func() typo.Module {
-		return &CommonMisspellings{
-
-		}
+		return &CommonMisspellings{}
 	})
 }

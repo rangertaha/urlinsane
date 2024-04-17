@@ -19,6 +19,7 @@ type Module interface {
 	Name() string
 	Description() string
 	Fields() []string
+	Headers() []string
 	Exec(Result) []Result
 }
 
@@ -64,8 +65,9 @@ type Language interface {
 }
 
 type Keyboard interface {
-	Code() string
-	Name() string
-	Description() string
-	Layout() []string
+	Id() string
+	Title() string
+	Summary() string
+	Layouts() []string
+	Language() string
 }

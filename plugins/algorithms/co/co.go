@@ -29,6 +29,10 @@ func (n *CharacterOmission) Fields() []string {
 	return []string{}
 }
 
+func (n *CharacterOmission) Headers() []string {
+	return []string{}
+}
+
 func (n *CharacterOmission) Exec(typo.Result) (results []typo.Result) {
 	return
 }

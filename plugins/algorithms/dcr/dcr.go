@@ -29,6 +29,10 @@ func (n *DoubleCharacterReplacement) Fields() []string {
 	return []string{}
 }
 
+func (n *DoubleCharacterReplacement) Headers() []string {
+	return []string{}
+}
+
 func (n *DoubleCharacterReplacement) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *DoubleCharacterReplacement) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("dcr", func() typo.Module {
-		return &DoubleCharacterReplacement{
-
-		}
+		return &DoubleCharacterReplacement{}
 	})
 }

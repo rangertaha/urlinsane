@@ -29,6 +29,10 @@ func (n *AlphabetReplacement) Fields() []string {
 	return []string{}
 }
 
+func (n *AlphabetReplacement) Headers() []string {
+	return []string{}
+}
+
 func (n *AlphabetReplacement) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *AlphabetReplacement) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("ar", func() typo.Module {
-		return &AlphabetReplacement{
-
-		}
+		return &AlphabetReplacement{}
 	})
 }

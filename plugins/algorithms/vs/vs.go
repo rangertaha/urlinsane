@@ -29,6 +29,10 @@ func (n *VowelSwapping) Fields() []string {
 	return []string{}
 }
 
+func (n *VowelSwapping) Headers() []string {
+	return []string{}
+}
+
 func (n *VowelSwapping) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *VowelSwapping) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("vs", func() typo.Module {
-		return &VowelSwapping{
-
-		}
+		return &VowelSwapping{}
 	})
 }

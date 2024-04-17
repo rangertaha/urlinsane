@@ -29,6 +29,10 @@ func (n *MissingDashes) Fields() []string {
 	return []string{}
 }
 
+func (n *MissingDashes) Headers() []string {
+	return []string{}
+}
+
 func (n *MissingDashes) Exec(typo.Result) (results []typo.Result) {
 	return
 }

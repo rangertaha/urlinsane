@@ -5,7 +5,7 @@ import (
 	algorithms "github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
-type None struct {
+type MissingDot struct {
 	// Code() string
 	// Name() string
 	// Description() string
@@ -13,29 +13,33 @@ type None struct {
 	// Exec() func(Result) []Result
 }
 
-func (n *None) Code() string {
+func (n *MissingDot) Code() string {
 	return "md"
 }
 
-func (n *None) Name() string {
+func (n *MissingDot) Name() string {
 	return "Missing Dot"
 }
 
-func (n *None) Description() string {
+func (n *MissingDot) Description() string {
 	return "Missing Dot is created by omitting a dot from the domain"
 }
 
-func (n *None) Fields() []string {
+func (n *MissingDot) Fields() []string {
 	return []string{}
 }
 
-func (n *None) Exec(typo.Result) (results []typo.Result) {
+func (n *MissingDot) Headers() []string {
+	return []string{}
+}
+
+func (n *MissingDot) Exec(typo.Result) (results []typo.Result) {
 	return
 }
 
 // Register the plugin
 func init() {
 	algorithms.Add("md", func() typo.Module {
-		return &None{}
+		return &MissingDot{}
 	})
 }

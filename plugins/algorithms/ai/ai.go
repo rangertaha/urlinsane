@@ -29,6 +29,10 @@ func (n *AlphabetInsertion) Fields() []string {
 	return []string{}
 }
 
+func (n *AlphabetInsertion) Headers() []string {
+	return []string{}
+}
+
 func (n *AlphabetInsertion) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *AlphabetInsertion) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("AlphabetInsertion", func() typo.Module {
-		return &AlphabetInsertion{
-
-		}
+		return &AlphabetInsertion{}
 	})
 }

@@ -29,6 +29,10 @@ func (n *NumeralSwap) Fields() []string {
 	return []string{}
 }
 
+func (n *NumeralSwap) Headers() []string {
+	return []string{}
+}
+
 func (n *NumeralSwap) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *NumeralSwap) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("ns", func() typo.Module {
-		return &NumeralSwap{
-
-		}
+		return &NumeralSwap{}
 	})
 }
