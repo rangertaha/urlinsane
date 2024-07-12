@@ -1,14 +1,14 @@
 # URLInsane
 
-[![Build Status](https://travis-ci.org/cybersectech-org/urlinsane.svg?branch=master)](https://travis-ci.org/cybersectech-org/urlinsane)
+[![Build Status](https://travis-ci.org/rangertaha/urlinsane.svg?branch=master)](https://travis-ci.org/rangertaha/urlinsane)
 
 Multilingual domain typo permutation engine used to perform or detect typosquatting,
 brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and
 threat intelligence.
 
-**Documentation:** [URLInsane Docs](https://cybersectech-org.github.io/urlinsane/)
+**Documentation:** [URLInsane Docs](https://rangertaha.github.io/urlinsane/)
 
-**Downloads:** [URLInsane Downloads](https://github.com/cybersectech-org/urlinsane/releases/tag/0.3.0)
+**Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.7.0)
 
 
 <div align="center">
@@ -43,7 +43,7 @@ $ urlinsane typo google.com -t co -x all
 | |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
  \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
 
- Version: 0.6.0
+ Version: 0.7.0
 
    LIVE  | TYPE |   TYPO    | SUFFIX | LD |   IDNA    |      IPV4      |           IPV6           | SIZE |    REDIRECT    |        MX        |                                            TXT                                             |           NS           | CNAME | SIM |      GEO       
 ---------+------+-----------+--------+----+-----------+----------------+--------------------------+------+----------------+------------------+--------------------------------------------------------------------------------------------+------------------------+-------+-----+----------------
@@ -405,4 +405,4 @@ This table shows the list of algorithms supported for each tool.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the GPLv3 License - see the [LICENSE](LICENSE) file for details
