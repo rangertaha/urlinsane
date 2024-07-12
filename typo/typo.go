@@ -22,12 +22,13 @@ import (
 	"time"
 
 	"github.com/bobesa/go-domain-util/domainutil"
-	dnsLib "github.com/cybint/hackingo/net/dns"
-	geoLib "github.com/cybint/hackingo/net/geoip"
-	httpLib "github.com/cybint/hackingo/net/http"
+	// dnsLib "github.com/rangertaha/urlinsane/hackingo/net/dns"
+	// geoLib "github.com/rangertaha/urlinsane/hackingo/net/geoip"
+	// httpLib "github.com/rangertaha/urlinsane/hackingo/net/http"
 	"golang.org/x/net/idna"
 
-	"github.com/cybint/urlinsane/pkg/typo/languages"
+	httpLib "github.com/rangertaha/urlinsane/hackingo/net/http"
+	"github.com/rangertaha/urlinsane/typo/languages"
 )
 
 type (
@@ -94,25 +95,25 @@ type (
 	}
 	// DNS ...
 	DNS struct {
-		IPv4    []string    `json:"ipv4,omitempty"`
-		IPv6    []string    `json:"ip46,omitempty"`
-		NS      []dnsLib.NS `json:"ns,omitempty"`
-		MX      []dnsLib.MX `json:"mx,omitempty"`
-		CName   []string    `json:"cname,omitempty"`
-		TXT     []string    `json:"txt,omitempty"`
+		IPv4 []string `json:"ipv4,omitempty"`
+		IPv6 []string `json:"ip46,omitempty"`
+		// NS      []dnsLib.NS `json:"ns,omitempty"`
+		// MX      []dnsLib.MX `json:"mx,omitempty"`
+		CName   []string `json:"cname,omitempty"`
+		TXT     []string `json:"txt,omitempty"`
 		ipCheck bool
 	}
 	// Meta ...
 	Meta struct {
-		Levenshtein int              `json:"Levenshtein,omitempty"`
-		IDNA        string           `json:"idna,omitempty"`
-		IP          []string         `json:"ip,omitempty"`
-		Redirect    string           `json:"redirect,omitempty"`
-		HTTP        httpLib.Response `json:"http,omitempty"`
-		Geo         geoLib.Country   `json:"geo,omitempty"`
-		DNS         DNS              `json:"dns,omitempty"`
-		SSDeep      string           `json:"ssdeep,omitempty"`
-		Similarity  int              `json:"similarity,omitempty"`
+		Levenshtein int      `json:"Levenshtein,omitempty"`
+		IDNA        string   `json:"idna,omitempty"`
+		IP          []string `json:"ip,omitempty"`
+		Redirect    string   `json:"redirect,omitempty"`
+		// HTTP        httpLib.Response `json:"http,omitempty"`
+		// Geo         geoLib.Country   `json:"geo,omitempty"`
+		DNS        DNS    `json:"dns,omitempty"`
+		SSDeep     string `json:"ssdeep,omitempty"`
+		Similarity int    `json:"similarity,omitempty"`
 		// Whois    Whois      `json:"whois,omitempty"`
 	}
 

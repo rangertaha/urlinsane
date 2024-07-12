@@ -17,7 +17,7 @@ package cmd
 // import (
 // 	"github.com/spf13/cobra"
 
-// 	"github.com/cybint/urlinsane/server"
+// 	"github.com/rangertaha/urlinsane/server"
 // )
 
 // // serverCmd represents the server command
