@@ -12,12 +12,22 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package main
+package urlinsane
 
-import (
-	cmd "github.com/cybint/urlinsane/cmd/urlinsane"
+const (
+	// VERSION format is loosely based on [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+	VERSION = "0.7.0"
+
+	// DEBUG not used yet
+	DEBUG = false
+
+	// LOGO made as ascii graphics
+	LOGO = `
+ _   _  ____   _      ___
+| | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
+| | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
+| |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
+ \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
+
+ Version: ` + VERSION + "\n"
 )
-
-func main() {
-	cmd.Execute()
-}
