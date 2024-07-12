@@ -15,7 +15,7 @@
 package main
 
 import (
-	cmd "github.com/cybint/urlinsane/cmd/urlinsane"
+	cmd "github.com/rangertaha/urlinsane/cmd/urlinsane"
 )
 
 func main() {

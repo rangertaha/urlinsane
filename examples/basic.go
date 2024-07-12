@@ -17,7 +17,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/cybint/urlinsane/typo"
+	"github.com/rangertaha/urlinsane/typo"
 )
 
 func main() {

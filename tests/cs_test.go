@@ -18,7 +18,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/cybint/urlinsane/pkg/typo"
+	"github.com/rangertaha/urlinsane/typo"
 )
 
 var characterSwapCases = []testpair{
