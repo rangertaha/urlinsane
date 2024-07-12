@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cybint/hackingo/datasets"
+	"github.com/rangertaha/urlinsane/hackingo/datasets"
 )
 
 // Typos ...

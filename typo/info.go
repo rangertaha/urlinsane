@@ -23,11 +23,11 @@ import (
 
 	"github.com/bobesa/go-domain-util/domainutil"
 	// "github.com/davecgh/go-spew/spew"
-	dnsLib "github.com/cybint/hackingo/net/dns"
-	geoLib "github.com/cybint/hackingo/net/geoip"
-	httpLib "github.com/cybint/hackingo/net/http"
-	nlpLib "github.com/cybint/hackingo/nlp"
 	"github.com/glaslos/ssdeep"
+	dnsLib "github.com/rangertaha/urlinsane/hackingo/net/dns"
+	geoLib "github.com/rangertaha/urlinsane/hackingo/net/geoip"
+	httpLib "github.com/rangertaha/urlinsane/hackingo/net/http"
+	nlpLib "github.com/rangertaha/urlinsane/hackingo/nlp"
 )
 
 // Extras is the registry for extra functions

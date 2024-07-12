@@ -20,8 +20,8 @@ import (
 	"os"
 	"text/template"
 
-	"github.com/cybint/urlinsane/typo"
-	"github.com/cybint/urlinsane/typo/languages"
+	"github.com/rangertaha/urlinsane/typo"
+	"github.com/rangertaha/urlinsane/typo/languages"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
