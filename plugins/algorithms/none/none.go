@@ -1,46 +1,43 @@
-package influxdb
+package none
 
 import (
-	"fmt"
-
-	"github.com/cybint/athena/interfaces"
-	"github.com/cybint/athena/plugins/outputs"
+	typo "github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
 type None struct {
-	bot interfaces.Bot
+	// Code() string
+	// Name() string
+	// Description() string
+	// Fields() []string
+	// Exec() func(Result) []Result
 }
 
-func (p *None) Init(bot interfaces.Bot) error {
-	p.bot = bot
-
-	return nil
+func (n *None) Code() string {
+	return ""
 }
 
-func (p *None) Run(diss interfaces.Disseminator) error {
-	fmt.Println("output NONE")
-	for metric := range diss.Metrics() {
-		fmt.Println("OUTPUT", metric)
-		fmt.Println("PROGRESS", p.bot.Timeline().Progress())
-	}
-	return nil
+func (n *None) Name() string {
+	return "None"
 }
 
-func (p *None) Train(diss interfaces.Disseminator) error {
-	return p.Run(diss)
+func (n *None) Description() string {
+	return ""
 }
 
-func (p *None) Test(diss interfaces.Disseminator) error {
-	return p.Run(diss)
+func (n *None) Fields() []string {
+	return []string{}
 }
 
-func (p *None) Stop() {
-
+func (n *None) Exec(typo.Result) (results []typo.Result) {
+	return
 }
 
 // Register the plugin
 func init() {
-	outputs.Add("none", func() interfaces.Output {
-		return &None{}
+	algorithms.Add("none", func() typo.Module {
+		return &None{
+
+		}
 	})
 }
