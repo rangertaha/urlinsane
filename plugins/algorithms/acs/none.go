@@ -36,8 +36,6 @@ func (n *None) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("none", func() typo.Module {
-		return &None{
-
-		}
+		return &None{}
 	})
 }
