@@ -208,6 +208,13 @@ func Keyboards(IDs ...string) (keyboards []Keyboard) {
 			}
 		}
 	}
+	if len(IDs) == 0 {
+		for id, lang := range Languages {
+
+			keyboards = append(keyboards, lang.Keyboards...)
+
+		}
+	}
 
 	return
 }
