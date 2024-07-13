@@ -2,7 +2,7 @@ package none
 
 import (
 	typo "github.com/rangertaha/urlinsane"
-	"github.com/rangertaha/urlinsane/plugins/algorithms"
+	algorithms "github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
 type None struct {
@@ -36,8 +36,6 @@ func (n *None) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("md", func() typo.Module {
-		return &None{
-
-		}
+		return &None{}
 	})
 }

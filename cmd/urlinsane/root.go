@@ -24,6 +24,8 @@ import (
 	"github.com/rangertaha/urlinsane/languages"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 	_ "github.com/rangertaha/urlinsane/plugins/algorithms/all"
+		"github.com/rangertaha/urlinsane/plugins/information"
+	_ "github.com/rangertaha/urlinsane/plugins/information/all"
 	"github.com/spf13/cobra"
 )
 
@@ -60,9 +62,9 @@ ALGORITHMS:
 INFORMATION:
     Information gathering functions that collects information on each domain name
 
-    ID | Name   | Description
-    -----------------------------------------{{range .Languages}}
-    {{.Code}}  {{.Name}}	{{.Description}}{{end}}
+    ID | Description
+    -----------------------------------------{{range .Infos}}
+    {{.Code}}	{{.Name}} {{.Description}}{{end}}
 
 
 LANGUAGES:
@@ -124,8 +126,7 @@ AUTHOR:
 type HelpOptions struct {
 	Languages []languages.Language
 	Algos     []tool.Module
-	// Funcs     []typo.Module
-	// Filters   []typo.Module
+	Infos     []tool.Module
 }
 
 var cliOptions bytes.Buffer
@@ -163,6 +164,7 @@ func init() {
 	helpOptions := HelpOptions{
 		languages.All(),
 		algorithms.All(),
+		information.All(),
 		// typo.Typos.Get("all"),
 		// typo.Extras.Get("all"),
 		// typo.Filters.Get("all"),
