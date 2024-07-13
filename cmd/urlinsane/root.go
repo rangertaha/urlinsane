@@ -20,8 +20,8 @@ import (
 	"os"
 	"text/template"
 
+	"github.com/rangertaha/urlinsane/languages"
 	"github.com/rangertaha/urlinsane/typo"
-	"github.com/rangertaha/urlinsane/typo/languages"
 	"github.com/spf13/cobra"
 )
 
@@ -118,7 +118,7 @@ func Execute() {
 }
 func init() {
 	helpOptions := HelpOptions{
-		languages.KEYBOARDS.Keyboards("all"),
+		languages.Keyboards(),
 		typo.Typos.Get("all"),
 		typo.Extras.Get("all"),
 		typo.Filters.Get("all"),
