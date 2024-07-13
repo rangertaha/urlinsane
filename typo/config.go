@@ -1,4 +1,4 @@
-// Copyright (C) 2024  Rangertaha <rangertaha@gmail.com>
+// Copyright (C) 2024  Tal Hatchi (Rangertaha)
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,12 +15,11 @@
 package typo
 
 import (
-	"fmt"
 	"strings"
 	"time"
 
 	"github.com/bobesa/go-domain-util/domainutil"
-	"github.com/rangertaha/urlinsane/typo/languages"
+	"github.com/rangertaha/urlinsane/languages"
 	"github.com/spf13/cobra"
 )
 
@@ -138,7 +137,7 @@ func (c *Config) GetDomains(args []string) {
 
 // GetKeyboards retrieves a list of keyboards
 func (c *Config) GetKeyboards(keyboards []string) {
-	c.keyboards = languages.KEYBOARDS.Keyboards(keyboards...)
+	c.keyboards = languages.Keyboards(keyboards...)
 }
 
 // GetTypos ...
@@ -216,7 +215,7 @@ func errHandler(err error) {
 func CobraConfig(cmd *cobra.Command, args []string) (c Config) {
 
 	// Print logo
-	fmt.Println(LOGO)
+	// fmt.Println(LOGO)
 
 	// Basic options
 	c.GetDomains(args)
