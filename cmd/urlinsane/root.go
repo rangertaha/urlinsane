@@ -22,6 +22,8 @@ import (
 
 	tool "github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/languages"
+	"github.com/rangertaha/urlinsane/plugins/algorithms"
+	_ "github.com/rangertaha/urlinsane/plugins/algorithms/all"
 	"github.com/spf13/cobra"
 )
 
@@ -51,9 +53,9 @@ const helpTemplate = `
 ALGORITHMS:
     Typosquating algorithms that generate domain names.
 
-    ID | Name   | Description
-    -----------------------------------------{{range .Languages}}
-    {{.Code}}  {{.Name}}	{{.Description}}{{end}}
+    ID | Description
+    -----------------------------------------{{range .Algos}}
+    {{.Code}}	{{.Name}} {{.Description}}{{end}}
 
 INFORMATION:
     Information gathering functions that collects information on each domain name
@@ -88,10 +90,10 @@ AUTHOR:
 `
 
 const hTemplate = `
-{{if .Typos}}
+{{if .Algos}}
 TYPOS: 
-  These are the types of typo/error algorithms that generate the domain variants{{range .Typos}}
-    {{.Code}}	{{.Description}}{{end}}
+  These are the types of typo/error algorithms that generate the domain variants{{range .Algos}}
+    {{.Code}}	 {{.Name}}	{{.Description}}{{end}}
     ALL	Apply all typosquatting algorithms
 {{end}}{{if .Funcs}}
 INFORMATION: 
@@ -121,7 +123,7 @@ AUTHOR:
 
 type HelpOptions struct {
 	Languages []languages.Language
-	Typos     []tool.Module
+	Algos     []tool.Module
 	// Funcs     []typo.Module
 	// Filters   []typo.Module
 }
@@ -160,6 +162,7 @@ func Execute() {
 func init() {
 	helpOptions := HelpOptions{
 		languages.All(),
+		algorithms.All(),
 		// typo.Typos.Get("all"),
 		// typo.Extras.Get("all"),
 		// typo.Filters.Get("all"),
@@ -184,8 +187,10 @@ func init() {
 	rootCmd.PersistentFlags().StringArrayP("typos", "t", []string{"all"}, "IDs of typo algorithms to use for generating domains")
 	rootCmd.PersistentFlags().StringArrayP("info", "i", []string{"all"}, "IDs of info gathering functions to apply to each domain")
 
-	// Filters
-	rootCmd.PersistentFlags().Bool("online", false, "Return online domains that are being used to serve content")
+	// Processing
+	rootCmd.PersistentFlags().BoolP("progress", "p", false, "Show progress bar")
+	rootCmd.PersistentFlags().Bool("no-cache", true, "Prevents caching of results")
+	rootCmd.PersistentFlags().Bool("online", false, "Only show domains that are online")
 
 	// Timing
 	rootCmd.PersistentFlags().IntP("concurrency", "c", 50, "Number of concurrent workers")

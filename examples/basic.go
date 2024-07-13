@@ -14,29 +14,29 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package main
 
-import (
-	"fmt"
+// import (
+// 	"fmt"
 
-	"github.com/rangertaha/urlinsane/typo"
-)
+// 	"github.com/rangertaha/urlinsane"
+// )
 
-func main() {
+// func main() {
 
-	conf := typo.BasicConfig{
-		Domains:     []string{"google.com"},
-		Keyboards:   []string{"en1"},
-		Typos:       []string{"co"},
-		Funcs:       []string{"ip"},
-		Concurrency: 50,
-		Format:      "text",
-		Verbose:     false,
-	}
+// 	conf := urlinsane.BasicConfig{
+// 		Domains:     []string{"google.com"},
+// 		Keyboards:   []string{"en1"},
+// 		Typos:       []string{"co"},
+// 		Funcs:       []string{"ip"},
+// 		Concurrency: 50,
+// 		Format:      "text",
+// 		Verbose:     false,
+// 	}
 
-	urli := typo.New(conf.Config())
+// 	urli := urlinsane.New(conf.Config())
 
-	out := urli.Stream()
+// 	out := urli.Stream()
 
-	for r := range out {
-		fmt.Println(r.Variant.Live, r.Variant.Domain, r.Typo.Name, r.Data)
-	}
-}
+// 	for r := range out {
+// 		fmt.Println(r.Variant.Live, r.Variant.Domain, r.Typo.Name, r.Data)
+// 	}
+// }
