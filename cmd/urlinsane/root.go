@@ -1,4 +1,4 @@
-// Copyright (C) 2024  Rangertaha <rangertaha@gmail.com>
+// Copyright (C) 2024  Tal Hatchi (Rangertaha)
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@ import (
 	"github.com/rangertaha/urlinsane/typo"
 	"github.com/rangertaha/urlinsane/typo/languages"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 const templateBase = `USAGE:{{if .Runnable}}
@@ -71,11 +70,11 @@ KEYBOARDS:{{range .Keyboards}}
 EXAMPLE:
 
     urlinsane google.com
-    urlinsane google.com -t co
-    urlinsane google.com -t co -x ip -x idna -x ns
+    urlinsane -a co google.com 
+    urlinsane -a co -x ip,idna,ns google.com 
 
 AUTHOR:
-    Written by Rangertaha <rangertaha@gmail.com>
+    Tal Hatchi (Rangertaha)
 
 `
 
@@ -90,8 +89,8 @@ var cliOptions bytes.Buffer
 
 // rootCmd represents the typo command
 var rootCmd = &cobra.Command{
-	Use:   "urlinsane [domains]",
-	Short: "Generates domain typos and variations",
+	Use:   "urlinsane [flags] [domains]",
+	Short: "Generates and detects possible squatting domains",
 	Long: `
 Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking,
 URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.`,
@@ -100,14 +99,14 @@ URL hijacking, fraud, phishing attacks, corporate espionage and threat intellige
 			cmd.Help()
 			os.Exit(0)
 		}
-		// Create config from cli options/arguments
-		config := typo.CobraConfig(cmd, args)
+		// // Create config from cli options/arguments
+		// config := typo.CobraConfig(cmd, args)
 
-		// Create a new instance of urlinsane
-		typosquating := typo.New(config)
+		// // Create a new instance of urlinsane
+		// typosquating := typo.New(config)
 
-		// Start generating results
-		typosquating.Execute()
+		// // Start generating results
+		// typosquating.Execute()
 	},
 }
 
@@ -139,25 +138,25 @@ func init() {
 	// Basic options
 	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"en"},
 		"Keyboards/layouts ID to use")
-	viper.BindPFlag("keyboards", rootCmd.PersistentFlags().Lookup("keyboards"))
+	// viper.BindPFlag("keyboards", rootCmd.PersistentFlags().Lookup("keyboards"))
 
 	// Processing
 	rootCmd.PersistentFlags().IntP("concurrency", "c", 50,
 		"Number of concurrent workers")
-	viper.BindPFlag("concurrency", rootCmd.PersistentFlags().Lookup("concurrency"))
+	// viper.BindPFlag("concurrency", rootCmd.PersistentFlags().Lookup("concurrency"))
 
 	rootCmd.PersistentFlags().StringArrayP("typos", "t", []string{"all"},
 		"Types of typos to perform")
-	viper.BindPFlag("typos", rootCmd.PersistentFlags().Lookup("typos"))
+	// viper.BindPFlag("typos", rootCmd.PersistentFlags().Lookup("typos"))
 
 	// Post Processing options for retrieving additional data
 	rootCmd.PersistentFlags().StringArrayP("funcs", "x", []string{"ld", "idna"},
 		"Extra functions or filters")
-	viper.BindPFlag("funcs", rootCmd.PersistentFlags().Lookup("funcs"))
+	// viper.BindPFlag("funcs", rootCmd.PersistentFlags().Lookup("funcs"))
 
 	rootCmd.PersistentFlags().StringArrayP("filters", "r", []string{""},
 		"Filter results to reduce the number of results")
-	viper.BindPFlag("filters", rootCmd.PersistentFlags().Lookup("filters"))
+	// viper.BindPFlag("filters", rootCmd.PersistentFlags().Lookup("filters"))
 
 	rootCmd.PersistentFlags().Int64("delay", 10,
 		"A delay between network calls")
@@ -169,6 +168,6 @@ func init() {
 	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename")
 	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv, text)")
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Output additional details")
-	viper.BindPFlag("filverboseters", rootCmd.PersistentFlags().Lookup("verbose"))
+	// viper.BindPFlag("filverboseters", rootCmd.PersistentFlags().Lookup("verbose"))
 	rootCmd.AddCommand(rootCmd)
 }
