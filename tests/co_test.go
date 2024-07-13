@@ -18,7 +18,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/rangertaha/urlinsane/typo"
+	"github.com/rangertaha/urlinsane"
 )
 
 var characterOmissionCases = []testpair{
