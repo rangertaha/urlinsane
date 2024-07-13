@@ -33,6 +33,8 @@ var (
 	fiLanguage = Language{
 		Code: "FI",
 		Name: "Finnish",
+		Description: "Finnish is one of the two official languages of Finland",
+
 		// http://www.languagesandnumbers.com/how-to-count-in-finnish/en/fin/
 		Numerals: map[string][]string{
 			// Number: cardinal..,  ordinal.., other...
@@ -88,17 +90,17 @@ var (
 			"ä": []string{"à", "á", "â", "ã", "ä", "å", "ɑ", "а", "ạ", "ǎ", "ă", "ȧ", "ӓ"},
 			"ö": []string{"0", "Ο", "ο", "О", "о", "Օ", "ȯ", "ọ", "ỏ", "ơ", "ó", "ö", "ӧ"},
 		},
-	}
-	fiKeyboards = []Keyboard{
-		{
-			Code:        "FI1",
-			Name:        "QWERTY",
-			Description: "Finnish QWERTY keybaord layout",
-			Layout: []string{
-				"1234567890 ",
-				"qwertyuiopå",
-				"asdfghjklöä",
-				"zxcvbnm  - ",
+		Keyboards: []Keyboard{
+			{
+				Code:        "FI1",
+				Name:        "QWERTY",
+				Description: "Finnish QWERTY keybaord layout",
+				Layout: []string{
+					"1234567890 ",
+					"qwertyuiopå",
+					"asdfghjklöä",
+					"zxcvbnm  - ",
+				},
 			},
 		},
 	}

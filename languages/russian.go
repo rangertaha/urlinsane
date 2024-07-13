@@ -33,6 +33,8 @@ var (
 	ruLanguage = Language{
 		Code: "RU",
 		Name: "Russian",
+		Description: "Russian is the native language of the Russian people",
+
 		// http://www.russianlessons.net/lessons/lesson2_main.php
 		Numerals: map[string][]string{
 			// Number: cardinal..,  ordinal.., other...
@@ -135,41 +137,40 @@ var (
 			"ѭ": []string{""},
 			"ѩ": []string{""},
 		},
-	}
-
-	ruKeyboards = []Keyboard{
-		{
-			Code:        "RU1",
-			Name:        "ЙЦУКЕН",
-			Description: "Russian keyboard layout",
-			// Language:    ruLanguage,
-			Layout: []string{
-				"1234567890   ",
-				"йцукенгшщзхъё",
-				"фывапролджэ  ",
-				"ячсмитьбю    "},
-		},
-		{
-			Code:        "RU2",
-			Name:        "ЯШЕРТЫ",
-			Description: "Phonetic Russian keybaord layout",
-			// Language:    ruLanguage,
-			Layout: []string{
-				"1234567890ьъ ",
-				"яшертыуиопюжэ",
-				"асдфгчйкл    ",
-				"зхцвбнм      "},
-		},
-		{
-			Code:        "RU3",
-			Name:        "ЙЦУКЕН",
-			Description: "PC Russian keyboard layout",
-			// Language:    ruLanguage,
-			Layout: []string{
-				"1234567890- ",
-				"йцукенгшщзхъ",
-				"фывапролджэ ",
-				"ячсмитьбю   "},
+		Keyboards: []Keyboard{
+			{
+				Code:        "RU1",
+				Name:        "ЙЦУКЕН",
+				Description: "Russian keyboard layout",
+				// Language:    ruLanguage,
+				Layout: []string{
+					"1234567890   ",
+					"йцукенгшщзхъё",
+					"фывапролджэ  ",
+					"ячсмитьбю    "},
+			},
+			{
+				Code:        "RU2",
+				Name:        "ЯШЕРТЫ",
+				Description: "Phonetic Russian keybaord layout",
+				// Language:    ruLanguage,
+				Layout: []string{
+					"1234567890ьъ ",
+					"яшертыуиопюжэ",
+					"асдфгчйкл    ",
+					"зхцвбнм      "},
+			},
+			{
+				Code:        "RU3",
+				Name:        "ЙЦУКЕН",
+				Description: "PC Russian keyboard layout",
+				// Language:    ruLanguage,
+				Layout: []string{
+					"1234567890- ",
+					"йцукенгшщзхъ",
+					"фывапролджэ ",
+					"ячсмитьбю   "},
+			},
 		},
 	}
 )
