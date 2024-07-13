@@ -1,4 +1,4 @@
-// Copyright (C) 2024  Rangertaha <rangertaha@gmail.com>
+// Copyright (C) 2024  Tal Hatchi (Rangertaha)
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@ const (
 	// VERSION format is loosely based on [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 	VERSION = "0.7.0"
 
-	// DEBUG not used yet
 	DEBUG = false
 
 	// LOGO made as ascii graphics

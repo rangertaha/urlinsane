@@ -1,4 +1,4 @@
-// Copyright (C) 2024  Rangertaha <rangertaha@gmail.com>
+// Copyright (C) 2024  Tal Hatchi (Rangertaha) <rangertaha@gmail.com>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,13 +22,12 @@ import (
 	"time"
 
 	"github.com/bobesa/go-domain-util/domainutil"
-	// dnsLib "github.com/rangertaha/urlinsane/hackingo/net/dns"
-	// geoLib "github.com/rangertaha/urlinsane/hackingo/net/geoip"
-	// httpLib "github.com/rangertaha/urlinsane/hackingo/net/http"
+	dnsLib "github.com/rangertaha/urlinsane/hackingo/net/dns"
+	geoLib "github.com/rangertaha/urlinsane/hackingo/net/geoip"
+	httpLib "github.com/rangertaha/urlinsane/hackingo/net/http"
 	"golang.org/x/net/idna"
 
-	httpLib "github.com/rangertaha/urlinsane/hackingo/net/http"
-	"github.com/rangertaha/urlinsane/typo/languages"
+	"github.com/rangertaha/urlinsane/languages"
 )
 
 type (
@@ -95,25 +94,25 @@ type (
 	}
 	// DNS ...
 	DNS struct {
-		IPv4 []string `json:"ipv4,omitempty"`
-		IPv6 []string `json:"ip46,omitempty"`
-		// NS      []dnsLib.NS `json:"ns,omitempty"`
-		// MX      []dnsLib.MX `json:"mx,omitempty"`
-		CName   []string `json:"cname,omitempty"`
-		TXT     []string `json:"txt,omitempty"`
+		IPv4    []string    `json:"ipv4,omitempty"`
+		IPv6    []string    `json:"ip46,omitempty"`
+		NS      []dnsLib.NS `json:"ns,omitempty"`
+		MX      []dnsLib.MX `json:"mx,omitempty"`
+		CName   []string    `json:"cname,omitempty"`
+		TXT     []string    `json:"txt,omitempty"`
 		ipCheck bool
 	}
 	// Meta ...
 	Meta struct {
-		Levenshtein int      `json:"Levenshtein,omitempty"`
-		IDNA        string   `json:"idna,omitempty"`
-		IP          []string `json:"ip,omitempty"`
-		Redirect    string   `json:"redirect,omitempty"`
-		// HTTP        httpLib.Response `json:"http,omitempty"`
-		// Geo         geoLib.Country   `json:"geo,omitempty"`
-		DNS        DNS    `json:"dns,omitempty"`
-		SSDeep     string `json:"ssdeep,omitempty"`
-		Similarity int    `json:"similarity,omitempty"`
+		Levenshtein int              `json:"Levenshtein,omitempty"`
+		IDNA        string           `json:"idna,omitempty"`
+		IP          []string         `json:"ip,omitempty"`
+		Redirect    string           `json:"redirect,omitempty"`
+		HTTP        httpLib.Response `json:"http,omitempty"`
+		Geo         geoLib.Country   `json:"geo,omitempty"`
+		DNS         DNS              `json:"dns,omitempty"`
+		SSDeep      string           `json:"ssdeep,omitempty"`
+		Similarity  int              `json:"similarity,omitempty"`
 		// Whois    Whois      `json:"whois,omitempty"`
 	}
 

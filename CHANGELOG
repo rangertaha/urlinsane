@@ -6,9 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [0.7.0] - 2024-07-11
-### Cleanup
+### Cleanup & reorganize codebase
 - Removed the server
 - Removed the Dockerfile
+- Improved plugins
 
 ## [0.6.1] - 2019-10-03
 ### Improvements

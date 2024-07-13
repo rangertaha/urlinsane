@@ -198,7 +198,7 @@ EXAMPLE:
     urlinsane google.com -t co -x ip -x idna -x ns
 
 AUTHOR:
-    Written by Rangertaha <rangertaha@gmail.com>
+    Written by Tal Hatchi (Rangertaha)
 
 
 ```
@@ -401,7 +401,7 @@ This table shows the list of algorithms supported for each tool.
 
 ## Authors
 
-* [Rangertaha <rangertaha@gmail.com>](https://github.com/rangertaha)
+* [Tal Hatchi (Rangertaha)](https://github.com/rangertaha)
 
 ## License
 
