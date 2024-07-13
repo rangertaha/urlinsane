@@ -20,8 +20,8 @@ import (
 	"os"
 	"text/template"
 
+	tool "github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/languages"
-	"github.com/rangertaha/urlinsane/typo"
 	"github.com/spf13/cobra"
 )
 
@@ -47,6 +47,47 @@ Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
 Use "{{.CommandPath}} [command] --help" for more information about a command.{{end}}`
 
 const helpTemplate = `
+
+ALGORITHMS:
+    Typosquating algorithms that generate domain names.
+
+    ID | Name   | Description
+    -----------------------------------------{{range .Languages}}
+    {{.Code}}  {{.Name}}	{{.Description}}{{end}}
+
+INFORMATION:
+    Information gathering functions that collects information on each domain name
+
+    ID | Name   | Description
+    -----------------------------------------{{range .Languages}}
+    {{.Code}}  {{.Name}}	{{.Description}}{{end}}
+
+
+LANGUAGES:
+    ID | Name    | Description
+    -----------------------------------------{{range .Languages}}
+    {{.Code}}  {{.Name}}    {{.Description}}{{end}}
+
+KEYBOARDS:
+    ID | Name     | Description
+    -----------------------------------------{{range .Languages}}{{range .Keyboards}}
+    {{.Code}}  {{.Name}}    {{.Description}}{{end}}{{end}}
+
+
+
+EXAMPLE:
+
+    urlinsane google.com
+    urlinsane -t co google.com 
+    urlinsane -t co,oi,oy -i ip,idna,ns google.com
+    urlinsane -l fr,en -k en1,en2 google.com
+
+AUTHOR:
+    Tal Hatchi (Rangertaha)
+
+`
+
+const hTemplate = `
 {{if .Typos}}
 TYPOS: 
   These are the types of typo/error algorithms that generate the domain variants{{range .Typos}}
@@ -79,10 +120,10 @@ AUTHOR:
 `
 
 type HelpOptions struct {
-	Keyboards []languages.Keyboard
-	Typos     []typo.Module
-	Funcs     []typo.Module
-	Filters   []typo.Module
+	Languages []languages.Language
+	Typos     []tool.Module
+	// Funcs     []typo.Module
+	// Filters   []typo.Module
 }
 
 var cliOptions bytes.Buffer
@@ -118,10 +159,10 @@ func Execute() {
 }
 func init() {
 	helpOptions := HelpOptions{
-		languages.Keyboards(),
-		typo.Typos.Get("all"),
-		typo.Extras.Get("all"),
-		typo.Filters.Get("all"),
+		languages.All(),
+		// typo.Typos.Get("all"),
+		// typo.Extras.Get("all"),
+		// typo.Filters.Get("all"),
 	}
 
 	// Create a new template and parse the letter into it.
@@ -135,39 +176,22 @@ func init() {
 
 	rootCmd.SetUsageTemplate(templateBase + cliOptions.String())
 
-	// Basic options
-	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"en"},
-		"Keyboards/layouts ID to use")
-	// viper.BindPFlag("keyboards", rootCmd.PersistentFlags().Lookup("keyboards"))
+	// Options
+	rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"en"}, "IDs of languages to use for lingustic algorithms")
+	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"all"}, "IDs of keyboard layouts to use of the given languages")
 
-	// Processing
-	rootCmd.PersistentFlags().IntP("concurrency", "c", 50,
-		"Number of concurrent workers")
-	// viper.BindPFlag("concurrency", rootCmd.PersistentFlags().Lookup("concurrency"))
+	// Plugins
+	rootCmd.PersistentFlags().StringArrayP("typos", "t", []string{"all"}, "IDs of typo algorithms to use for generating domains")
+	rootCmd.PersistentFlags().StringArrayP("info", "i", []string{"all"}, "IDs of info gathering functions to apply to each domain")
 
-	rootCmd.PersistentFlags().StringArrayP("typos", "t", []string{"all"},
-		"Types of typos to perform")
-	// viper.BindPFlag("typos", rootCmd.PersistentFlags().Lookup("typos"))
+	// Filters
+	rootCmd.PersistentFlags().Bool("online", false, "Return online domains that are being used to serve content")
 
-	// Post Processing options for retrieving additional data
-	rootCmd.PersistentFlags().StringArrayP("funcs", "x", []string{"ld", "idna"},
-		"Extra functions or filters")
-	// viper.BindPFlag("funcs", rootCmd.PersistentFlags().Lookup("funcs"))
+	// Timing
+	rootCmd.PersistentFlags().IntP("concurrency", "c", 50, "Number of concurrent workers")
+	rootCmd.PersistentFlags().Int64("delay", 10, "A delay between network calls")
 
-	rootCmd.PersistentFlags().StringArrayP("filters", "r", []string{""},
-		"Filter results to reduce the number of results")
-	// viper.BindPFlag("filters", rootCmd.PersistentFlags().Lookup("filters"))
-
-	rootCmd.PersistentFlags().Int64("delay", 10,
-		"A delay between network calls")
-
-	rootCmd.PersistentFlags().Int64("random-delay", 5,
-		"Used to randomize the delay between network calls.")
-
-	// Output options
-	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename")
-	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv, text)")
-	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Output additional details")
-	// viper.BindPFlag("filverboseters", rootCmd.PersistentFlags().Lookup("verbose"))
-	rootCmd.AddCommand(rootCmd)
+	// Outputs
+	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename defaults to stdout")
+	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv, text, json)")
 }

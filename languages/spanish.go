@@ -34,6 +34,7 @@ var (
 	esLanguage = Language{
 		Code: "ES",
 		Name: "Spanish",
+		Description: "Spanish is an official language in 20 countries",
 
 		// https://www.donquijote.org/spanish-language/numbers/
 		Numerals: map[string][]string{
@@ -108,29 +109,28 @@ var (
 			"z": []string{"ʐ", "ż", "ź", "ʐ", "ᴢ"},
 			"ñ": []string{"n", "ń", "r"},
 		},
-	}
-
-	esKeyboards = []Keyboard{
-		{
-			Code:        "ES1",
-			Name:        "QWERTY",
-			Description: "Spanish keyboard layout",
-			Layout: []string{
-				"1234567890-",
-				"qwertyuiop ",
-				"asdfghjklñ ",
-				"zxcvbnm  ç ",
+		Keyboards: []Keyboard{
+			{
+				Code:        "ES1",
+				Name:        "QWERTY",
+				Description: "Spanish keyboard layout",
+				Layout: []string{
+					"1234567890-",
+					"qwertyuiop ",
+					"asdfghjklñ ",
+					"zxcvbnm  ç ",
+				},
 			},
-		},
-		{
-			Code:        "ES2",
-			Name:        "QWERTY",
-			Description: "Spanish ISO keyboard layout",
-			Layout: []string{
-				"1234567890 ¡",
-				"qwertyuiop  ",
-				"asdfghjklñ  ",
-				"zxcvbnm  -  ",
+			{
+				Code:        "ES2",
+				Name:        "QWERTY",
+				Description: "Spanish ISO keyboard layout",
+				Layout: []string{
+					"1234567890 ¡",
+					"qwertyuiop  ",
+					"asdfghjklñ  ",
+					"zxcvbnm  -  ",
+				},
 			},
 		},
 	}

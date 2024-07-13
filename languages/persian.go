@@ -34,6 +34,8 @@ var (
 	faLanguage = Language{
 		Code: "FA",
 		Name: "Persian",
+		Description: "Persian is a member of the Western Iranian group of the Iranian languages",
+
 		Numerals: map[string][]string{
 			// Number: cardinal..,  ordinal.., other...
 			"۰":  []string{"صفر"},
@@ -88,22 +90,21 @@ var (
 			"ز": []string{""},
 			"ر": []string{""},
 		},
-	}
-
-	faKeyboards = []Keyboard{
-		{
-			Code:        "FA1",
-			Name:        "Persian",
-			Description: "Persian standard layout",
-			Layout: []string{
-				"۱۲۳۴۵۶۷۸۹۰-  ",
-				" چجحخهعغفقثصض",
-				"  گکمنتالبیسش",
-				"     وپدذرزطظ"},
+		Keyboards: []Keyboard{
+			{
+				Code:        "FA1",
+				Name:        "Persian",
+				Description: "Persian standard layout",
+				Layout: []string{
+					"۱۲۳۴۵۶۷۸۹۰-  ",
+					" چجحخهعغفقثصض",
+					"  گکمنتالبیسش",
+					"     وپدذرزطظ"},
+			},
 		},
 	}
 )
 
 func init() {
-	Add("", faLanguage)
+	Add("FA", faLanguage)
 }
