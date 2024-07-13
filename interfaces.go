@@ -19,7 +19,7 @@ type Module interface {
 	Name() string
 	Description() string
 	Fields() []string
-	Exec() func(Result) []Result
+	Exec(Result) []Result
 }
 
 type Result interface {
