@@ -34,6 +34,8 @@ var (
 	arLanguage = Language{
 		Code: "AR",
 		Name: "Arabic",
+		Description: "Arabic is spoken primarily in the Arab world",
+
 		// https://www2.rocketlanguages.com/arabic/lessons/numbers-in-arabic/
 		Numerals: map[string][]string{
 			// Number: cardinal..,  ordinal.., other...
@@ -87,48 +89,47 @@ var (
 			"ز": []string{},
 			"ر": []string{},
 		},
-	}
-
-	arKeyboards = []Keyboard{
-		{
-			Code:        "AR1",
-			Name:        "غفقثصض",
-			Description: "Arabic keyboard layout",
-			Layout: []string{
-				"١٢٣٤٥٦٧٨٩٠- ",
-				"ةجحخهعغفقثصض",
-				"  كمنتالبيسش",
-				"     ورزدذطظ"},
-		},
-		{
-			Code:        "AR2",
-			Name:        "AZERTY PC",
-			Description: "Arabic PC keyboard layout",
-			Layout: []string{
-				` é   -è çà   `,
-				"ذدجحخهعغفقثصض",
-				"  طكمنتالبيسش",
-				"   ظزوةىلارؤءئ"},
-		},
-		{
-			Code:        "AR3",
-			Name:        "North Africa",
-			Description: "Arabic North african keyboard layout",
-			Layout: []string{
-				"1234567890  ",
-				"ةجحخهعغفقثصض",
-				"  كمنتالبيسش",
-				"     ورزدذطظ"},
-		},
-		{
-			Code:        "AR4",
-			Name:        "QWERTY",
-			Description: "Arabic keyboard layout",
-			Layout: []string{
-				"١٢٣٤٥٦٧٨٩٠  ",
-				"ظثةهيوطترعشق",
-				"   لكجحغفدسا",
-				"     منبذصخز"},
+		Keyboards: []Keyboard{
+			{
+				Code:        "AR1",
+				Name:        "غفقثصض",
+				Description: "Arabic keyboard layout",
+				Layout: []string{
+					"١٢٣٤٥٦٧٨٩٠- ",
+					"ةجحخهعغفقثصض",
+					"  كمنتالبيسش",
+					"     ورزدذطظ"},
+			},
+			{
+				Code:        "AR2",
+				Name:        "AZERTY",
+				Description: "Arabic PC keyboard layout",
+				Layout: []string{
+					` é   -è çà   `,
+					"ذدجحخهعغفقثصض",
+					"  طكمنتالبيسش",
+					"   ظزوةىلارؤءئ"},
+			},
+			{
+				Code:        "AR3",
+				Name:        "غفقثصض",
+				Description: "Arabic North african keyboard layout",
+				Layout: []string{
+					"1234567890  ",
+					"ةجحخهعغفقثصض",
+					"  كمنتالبيسش",
+					"     ورزدذطظ"},
+			},
+			{
+				Code:        "AR4",
+				Name:        "QWERTY",
+				Description: "Arabic keyboard layout",
+				Layout: []string{
+					"١٢٣٤٥٦٧٨٩٠  ",
+					"ظثةهيوطترعشق",
+					"   لكجحغفدسا",
+					"     منبذصخز"},
+			},
 		},
 	}
 )

@@ -39,6 +39,8 @@ var (
 	iwLanguage = Language{
 		Code: "IW",
 		Name: "Hebrew",
+		Description: "Hebrew is one of the official languages of the State of Israel",
+
 		Numerals: map[string][]string{
 			// Number: cardinal..,  ordinal.., other...
 			"0":  []string{"אפס"},
@@ -85,19 +87,18 @@ var (
 			"ש":  []string{"w"},
 			"ת":  []string{"n"},
 		},
-	}
-
-	iwKeyboards = []Keyboard{
-		{
-			Code:        "IW1",
-			Name:        "Hebrew",
-			Description: "Hebrew standard layout",
-			// Language:    iwLanguage,
-			Layout: []string{
-				"1234567890 ",
-				` פםןוטארק  `,
-				` ףךלחיעכגדש `,
-				` ץתצמנהבסז  `},
+		Keyboards: []Keyboard{
+			{
+				Code:        "IW1",
+				Name:        "Hebrew",
+				Description: "Hebrew standard layout",
+				// Language:    iwLanguage,
+				Layout: []string{
+					"1234567890 ",
+					` פםןוטארק  `,
+					` ףךלחיעכגדש `,
+					` ץתצמנהבסז  `},
+			},
 		},
 	}
 )

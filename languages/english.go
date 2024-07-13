@@ -4865,6 +4865,8 @@ var (
 	enLanguage = Language{
 		Code: "EN",
 		Name: "English",
+		Description: "English the most spoken language in the world",
+
 		Numerals: map[string][]string{
 			// Number: cardinal..,  ordinal.., other...
 			"0":  []string{"zero"},
@@ -4918,51 +4920,50 @@ var (
 			"y": []string{"ʏ", "γ", "у", "Ү", "ý"},
 			"z": []string{"ʐ", "ż", "ź", "ʐ", "ᴢ"},
 		},
-	}
-
-	enKeyboards = []Keyboard{
-		{
-			Code:        "EN1",
-			Name:        "QWERTY",
-			Description: "English QWERTY keyboard layout",
-			Layout: []string{
-				"1234567890-",
-				"qwertyuiop ",
-				"asdfghjkl  ",
-				"zxcvbnm    ",
+		Keyboards: []Keyboard{
+			{
+				Code:        "EN1",
+				Name:        "QWERTY",
+				Description: "English QWERTY keyboard layout",
+				Layout: []string{
+					"1234567890-",
+					"qwertyuiop ",
+					"asdfghjkl  ",
+					"zxcvbnm    ",
+				},
 			},
-		},
-		{
-			Code:        "EN2",
-			Name:        "AZERTY",
-			Description: "English AZERTY keyboard layout",
-			Layout: []string{
-				"1234567890",
-				"azertyuiop",
-				"qsdfghjklm",
-				"wxcvbn    ",
+			{
+				Code:        "EN2",
+				Name:        "AZERTY",
+				Description: "English AZERTY keyboard layout",
+				Layout: []string{
+					"1234567890",
+					"azertyuiop",
+					"qsdfghjklm",
+					"wxcvbn    ",
+				},
 			},
-		},
-		{
-			Code:        "EN3",
-			Name:        "QWERTZ",
-			Description: "English QWERTZ keyboard layout",
-			Layout: []string{
-				"1234567890",
-				"qwertzuiop",
-				"asdfghjkl ",
-				"yxcvbnm   ",
+			{
+				Code:        "EN3",
+				Name:        "QWERTZ",
+				Description: "English QWERTZ keyboard layout",
+				Layout: []string{
+					"1234567890",
+					"qwertzuiop",
+					"asdfghjkl ",
+					"yxcvbnm   ",
+				},
 			},
-		},
-		{
-			Code:        "EN4",
-			Name:        "DVORAK",
-			Description: "English DVORAK keyboard layout",
-			Layout: []string{
-				"1234567890",
-				"   pyfgcrl",
-				"aoeuidhtns",
-				" qjkxbmwvz",
+			{
+				Code:        "EN4",
+				Name:        "DVORAK",
+				Description: "English DVORAK keyboard layout",
+				Layout: []string{
+					"1234567890",
+					"   pyfgcrl",
+					"aoeuidhtns",
+					" qjkxbmwvz",
+				},
 			},
 		},
 	}

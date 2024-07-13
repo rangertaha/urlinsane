@@ -34,6 +34,8 @@ var (
 	frLanguage = Language{
 		Code: "FR",
 		Name: "French",
+		Description: "French is an official language in 27 countries",
+
 		Numerals: map[string][]string{
 			// Number: cardinal..,  ordinal.., other...
 			"0":  []string{"zéro"},
@@ -87,18 +89,17 @@ var (
 			"z": []string{"ʐ", "ż", "ź", "ʐ", "ᴢ"},
 			"â": []string{"à", "á", "ã", "ä", "å", "ɑ", "а", "ạ", "ǎ", "ă", "ȧ", "ӓ", "٨"},
 		},
-	}
-
-	frKeyboards = []Keyboard{
-		{
-			Code:        "FR1",
-			Name:        "French Canadian CSA",
-			Description: "French Canadian CSA keyboard layout",
-			Layout: []string{
-				"ù1234567890-  ",
-				" qwertyuiop çà",
-				" asdfghjkl è  ",
-				"  zxcvbnm  é  "},
+		Keyboards: []Keyboard{
+			{
+				Code:        "FR1",
+				Name:        "French Canadian CSA",
+				Description: "French Canadian CSA keyboard layout",
+				Layout: []string{
+					"ù1234567890-  ",
+					" qwertyuiop çà",
+					" asdfghjkl è  ",
+					"  zxcvbnm  é  "},
+			},
 		},
 	}
 )

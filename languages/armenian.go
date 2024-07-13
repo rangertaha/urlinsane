@@ -36,6 +36,8 @@ var (
 		// https://www.loc.gov/standards/iso639-2/php/code_list.php
 		Code: "HY",
 		Name: "Armenian",
+		Description: "Armenian is the native language of the Armenian people",
+
 		// http://mylanguages.org/armenian_numbers.php
 		Numerals: map[string][]string{
 			// Number: cardinal..,  ordinal.., other...
@@ -143,44 +145,43 @@ var (
 			"օ": []string{"0", "Ο", "ο", "О", "о", "Օ", "ȯ", "ọ", "ỏ", "ơ", "ó", "ö", "ӧ", "ه", "ة"},
 			"ֆ": []string{},
 		},
-	}
-
-	hyKeyboards = []Keyboard{
-		{
-			Code:        "HY1",
-			Name:        "HM QWERTY",
-			Description: "Armenian QWERTY keyboard layout",
-			Layout: []string{
-				"1234567890-",
-				"ճւերտյւիոպ ",
-				"ասդֆգհձկլ  ",
-				" զխծվբնմ   ",
+		Keyboards: []Keyboard{
+			{
+				Code:        "HY1",
+				Name:        "QWERTY",
+				Description: "Armenian QWERTY keyboard layout",
+				Layout: []string{
+					"1234567890-",
+					"ճւերտյւիոպ ",
+					"ասդֆգհձկլ  ",
+					" զխծվբնմ   ",
+				},
 			},
-		},
-		{
-			Code:        "HY2",
-			Name:        "Armenian, Western QWERTY",
-			Description: "Armenian, Western QWERTY keyboard layout",
-			Layout: []string{
-				" ձյ՛ -   օռժ",
-				"խվէրդեըիոբչջ",
-				"աստֆկհճքլթփ ",
-				" զցգւպնմշղծ ",
+			{
+				Code:        "HY2",
+				Name:        "QWERTY",
+				Description: "Armenian, Western QWERTY keyboard layout",
+				Layout: []string{
+					" ձյ՛ -   օռժ",
+					"խվէրդեըիոբչջ",
+					"աստֆկհճքլթփ ",
+					" զցգւպնմշղծ ",
+				},
 			},
+			//{
+			//	Code:        "HY3",
+			//	Name:        "Easter QWERTY",
+			//	Description: "Easter QWERTY keyboard layout",
+			//	Language:    ENGLISH,
+			//	Layout: []string{
+			//		"",
+			//		"",
+			//		"",
+			//		"",
+			//	},
+			//},
+	
 		},
-		//{
-		//	Code:        "HY3",
-		//	Name:        "Easter QWERTY",
-		//	Description: "Easter QWERTY keyboard layout",
-		//	Language:    ENGLISH,
-		//	Layout: []string{
-		//		"",
-		//		"",
-		//		"",
-		//		"",
-		//	},
-		//},
-
 	}
 )
 
