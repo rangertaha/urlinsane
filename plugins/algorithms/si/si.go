@@ -2,10 +2,10 @@ package none
 
 import (
 	typo "github.com/rangertaha/urlinsane"
-	algorithms "github.com/rangertaha/urlinsane/plugins/algorithms"
+	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
-type None struct {
+type SubdomainInsertion struct {
 	// Code() string
 	// Name() string
 	// Description() string
@@ -13,29 +13,29 @@ type None struct {
 	// Exec() func(Result) []Result
 }
 
-func (n *None) Code() string {
-	return "SI"
+func (n *SubdomainInsertion) Code() string {
+	return "si"
 }
 
-func (n *None) Name() string {
+func (n *SubdomainInsertion) Name() string {
 	return "Subdomain Insertion"
 }
 
-func (n *None) Description() string {
+func (n *SubdomainInsertion) Description() string {
 	return "inserts common subdomain at the beginning of the domain"
 }
 
-func (n *None) Fields() []string {
+func (n *SubdomainInsertion) Fields() []string {
 	return []string{}
 }
 
-func (n *None) Exec(typo.Result) (results []typo.Result) {
+func (n *SubdomainInsertion) Exec(typo.Result) (results []typo.Result) {
 	return
 }
 
 // Register the plugin
 func init() {
-	algorithms.Add("SI", func() typo.Module {
-		return &None{}
+	algorithms.Add("si", func() typo.Module {
+		return &SubdomainInsertion{}
 	})
 }

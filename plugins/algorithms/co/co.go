@@ -2,10 +2,10 @@ package none
 
 import (
 	typo "github.com/rangertaha/urlinsane"
-	algorithms "github.com/rangertaha/urlinsane/plugins/algorithms"
+	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
-type None struct {
+type CharacterOmission struct {
 	// Code() string
 	// Name() string
 	// Description() string
@@ -13,29 +13,29 @@ type None struct {
 	// Exec() func(Result) []Result
 }
 
-func (n *None) Code() string {
-	return "CO"
+func (n *CharacterOmission) Code() string {
+	return "co"
 }
 
-func (n *None) Name() string {
+func (n *CharacterOmission) Name() string {
 	return "Character Omission"
 }
 
-func (n *None) Description() string {
+func (n *CharacterOmission) Description() string {
 	return "omitting a character from the domain"
 }
 
-func (n *None) Fields() []string {
+func (n *CharacterOmission) Fields() []string {
 	return []string{}
 }
 
-func (n *None) Exec(typo.Result) (results []typo.Result) {
+func (n *CharacterOmission) Exec(typo.Result) (results []typo.Result) {
 	return
 }
 
 // Register the plugin
 func init() {
-	algorithms.Add("CO", func() typo.Module {
-		return &None{}
+	algorithms.Add("co", func() typo.Module {
+		return &CharacterOmission{}
 	})
 }

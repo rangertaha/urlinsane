@@ -20,12 +20,13 @@ import (
 	"os"
 	"text/template"
 
-	tool "github.com/rangertaha/urlinsane"
+	urli "github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/languages"
-	"github.com/rangertaha/urlinsane/plugins/algorithms"
-	_ "github.com/rangertaha/urlinsane/plugins/algorithms/all"
-		"github.com/rangertaha/urlinsane/plugins/information"
-	_ "github.com/rangertaha/urlinsane/plugins/information/all"
+
+	// _ "github.com/rangertaha/urlinsane/plugins/algorithms/all"
+
+	// "github.com/rangertaha/urlinsane/plugins/information"
+	// _ "github.com/rangertaha/urlinsane/plugins/information/all"
 	"github.com/spf13/cobra"
 )
 
@@ -125,8 +126,8 @@ AUTHOR:
 
 type HelpOptions struct {
 	Languages []languages.Language
-	Algos     []tool.Module
-	Infos     []tool.Module
+	Algos     []urli.Module
+	Infos     []urli.Module
 }
 
 var cliOptions bytes.Buffer
@@ -134,22 +135,29 @@ var cliOptions bytes.Buffer
 // rootCmd represents the typo command
 var rootCmd = &cobra.Command{
 	Use:   "urlinsane [flags] [domains]",
-	Short: "Generates and detects possible squatting domains",
-	Long: `
-Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking,
-URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.`,
+	Short: "Generates and detects possible typosquatting domains",
+	Long: `Urlinsane is used to perform or detect typosquatting, brandjacking,
+URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.
+
+Urlinsane is built around linguistic modeling, natural language processing, 
+information gathering and analysis. It's easily extensible with plugins for typo algorithms, 
+inforamtion gathering and analysis. Its linguistic models also allow it us to easily add new 
+languages and keyboard layouts. Currently it supports 9 languages, 19 keyboard layouts, 
+24 algorithms, 8 information gathering, and 2 analysis modules.
+
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			cmd.Help()
 			os.Exit(0)
 		}
 		// // Create config from cli options/arguments
-		// config := typo.CobraConfig(cmd, args)
+		// tool.CobraConfig(cmd, args)
 
-		// // Create a new instance of urlinsane
-		// typosquating := typo.New(config)
+		// // // Create a new instance of urlinsane
+		// typosquating := tool.New(config)
 
-		// // Start generating results
+		// // // Start generating results
 		// typosquating.Execute()
 	},
 }
@@ -162,12 +170,9 @@ func Execute() {
 }
 func init() {
 	helpOptions := HelpOptions{
-		languages.All(),
-		algorithms.All(),
-		information.All(),
-		// typo.Typos.Get("all"),
-		// typo.Extras.Get("all"),
-		// typo.Filters.Get("all"),
+		Languages: languages.List(),
+		// algorithms.List(),
+		// information.List(),
 	}
 
 	// Create a new template and parse the letter into it.
@@ -199,6 +204,7 @@ func init() {
 	rootCmd.PersistentFlags().Int64("delay", 10, "A delay between network calls")
 
 	// Outputs
+	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Show more details and remove truncated columns")
 	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename defaults to stdout")
 	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv, text, json)")
 }
