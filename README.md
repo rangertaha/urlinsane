@@ -2,11 +2,18 @@
 
 [![Build Status](https://travis-ci.org/rangertaha/urlinsane.svg?branch=master)](https://travis-ci.org/rangertaha/urlinsane)
 
-Multilingual domain typo permutation engine used to perform or detect typosquatting,
-brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and
-threat intelligence.
+The most advacned typosquatting tools to date with the most features, the most results, and fastest performance. It build around linguistic modeling, natural language processing, information gathering and analysis. It's easily extensible with plugins for typo algorithms, inforamtion gathering and analysis. Its linguistic models also allow it us to easily add new languages and keyboard layouts. Currently it supports 9 languages, 19 keyboard layouts, 24 algorithms, 8 information gathering, and 2 analysis modules.
 
-**Documentation:** [URLInsane Docs](https://rangertaha.github.io/urlinsane/)
+
+| **Modules** |  count |
+|-------------|--------|
+| Languages   |    9   |
+| Keyboards   |    19  |
+| Algorithms  |    24  |
+| Information |    8   |
+| Analysis    |    2   |
+
+
 
 **Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.7.0)
 
@@ -15,6 +22,11 @@ threat intelligence.
   <a href="https://www.youtube.com/watch?v=_IU1ADTBKVU" style="float:left"><img width="350" src="https://img.youtube.com/vi/_IU1ADTBKVU/0.jpg" alt="URLInsane Demo1"></a>
    <a href="https://www.youtube.com/watch?v=HgMV0NqMCm0" style="float:left"><img width="350"  src="https://img.youtube.com/vi/HgMV0NqMCm0/0.jpg" alt="URLInsane Demo2"></a>
 </div>
+
+
+
+Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence. 
+
 
 ## Features
 

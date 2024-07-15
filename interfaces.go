@@ -59,12 +59,13 @@ type Language interface {
 	Antonyms() map[string][]string
 
 	Homoglyphs() map[string][]string
+
+	Keyboards() []Keyboard
 }
 
 type Keyboard interface {
 	Code() string
 	Name() string
 	Description() string
-	Language() Language
 	Layout() []string
 }

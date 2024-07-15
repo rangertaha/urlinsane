@@ -176,5 +176,5 @@ var (
 )
 
 func init() {
-	Add("RU", ruLanguage)
+	Add("ru", ruLanguage)
 }

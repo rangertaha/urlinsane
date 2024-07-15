@@ -186,5 +186,5 @@ var (
 )
 
 func init() {
-	Add("HY", hyLanguage)
+	Add("hy", hyLanguage)
 }

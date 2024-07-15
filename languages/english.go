@@ -4970,6 +4970,6 @@ var (
 )
 
 func init() {
-	Add("EN", enLanguage)
+	Add("en", enLanguage)
 
 }

@@ -137,5 +137,5 @@ var (
 )
 
 func init() {
-	Add("ES", esLanguage)
+	Add("es", esLanguage)
 }

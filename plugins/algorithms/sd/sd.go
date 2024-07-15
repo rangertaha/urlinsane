@@ -2,10 +2,10 @@ package none
 
 import (
 	typo "github.com/rangertaha/urlinsane"
-	algorithms "github.com/rangertaha/urlinsane/plugins/algorithms"
+	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
-type None struct {
+type StripDash struct {
 	// Code() string
 	// Name() string
 	// Description() string
@@ -13,29 +13,29 @@ type None struct {
 	// Exec() func(Result) []Result
 }
 
-func (n *None) Code() string {
-	return "SD"
+func (n *StripDash) Code() string {
+	return "sd"
 }
 
-func (n *None) Name() string {
+func (n *StripDash) Name() string {
 	return "Strip Dash"
 }
 
-func (n *None) Description() string {
+func (n *StripDash) Description() string {
 	return "created by omitting a single dash from the domain"
 }
 
-func (n *None) Fields() []string {
+func (n *StripDash) Fields() []string {
 	return []string{}
 }
 
-func (n *None) Exec(typo.Result) (results []typo.Result) {
+func (n *StripDash) Exec(typo.Result) (results []typo.Result) {
 	return
 }
 
 // Register the plugin
 func init() {
-	algorithms.Add("SD", func() typo.Module {
-		return &None{}
+	algorithms.Add("sd", func() typo.Module {
+		return &StripDash{}
 	})
 }

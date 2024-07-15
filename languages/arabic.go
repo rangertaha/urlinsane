@@ -135,5 +135,5 @@ var (
 )
 
 func init() {
-	Add("AR", arLanguage)
+	Add("ar", arLanguage)
 }

@@ -104,5 +104,5 @@ var (
 )
 
 func init() {
-	Add("IW", iwLanguage)
+	Add("iw", iwLanguage)
 }
