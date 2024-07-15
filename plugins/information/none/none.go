@@ -1,7 +1,7 @@
 package none
 
 import (
-	typo "github.com/rangertaha/urlinsane"
+	urli "github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/information"
 )
 
@@ -14,7 +14,7 @@ type None struct {
 }
 
 func (n *None) Code() string {
-	return ""
+	return "none"
 }
 
 func (n *None) Name() string {
@@ -22,20 +22,20 @@ func (n *None) Name() string {
 }
 
 func (n *None) Description() string {
-	return ""
+	return "---------------------------------"
 }
 
 func (n *None) Fields() []string {
 	return []string{}
 }
 
-func (n *None) Exec(typo.Result) (results []typo.Result) {
+func (n *None) Exec(urli.Result) (results []urli.Result) {
 	return
 }
 
 // Register the plugin
 func init() {
-	information.Add("none", func() typo.Module {
+	information.Add("none", func() urli.Module {
 		return &None{}
 	})
 }

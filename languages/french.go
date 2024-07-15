@@ -105,5 +105,5 @@ var (
 )
 
 func init() {
-	Add("FR", faLanguage)
+	Add("fr", faLanguage)
 }

@@ -178,38 +178,66 @@ func (lang *Language) SimilarSounds(str string) (words []string) {
 	return
 }
 
-var Languages = map[string]Language{}
+var LANGUAGES = map[string]Language{}
 
 func Add(name string, lang Language) {
-	Languages[name] = lang
+	LANGUAGES[name] = lang
 }
 
 func Get(name string) (lang Language, err error) {
-	if lang, ok := Languages[name]; ok {
+	if lang, ok := LANGUAGES[name]; ok {
 		return lang, err
 	}
 
 	return lang, fmt.Errorf("unable to locate outputs/%s plugin", name)
 }
 
-func All() (langs []Language) {
-	for _, lang := range Languages {
-		langs = append(langs, lang)
+// func All() (langs []Language) {
+// 	for _, lang := range LANGUAGES {
+// 		langs = append(langs, lang)
+// 	}
+
+// 	return
+// }
+
+func List(IDs ...string) (langs []Language) {
+	for id, lang := range LANGUAGES {
+		for _, lid := range IDs {
+			if id == lid {
+				langs = append(langs, lang)
+			}
+		}
+	}
+	for _, lid := range IDs {
+		if lid == "all" {
+			IDs = []string{}
+		}
+	}
+
+	if len(IDs) == 0 {
+		for _, lang := range LANGUAGES {
+			langs = append(langs, lang)
+		}
 	}
 
 	return
 }
 
-func Keyboards(IDs ...string) (keyboards []Keyboard) {
-	for id, lang := range Languages {
+func KeyboardList(IDs ...string) (keyboards []Keyboard) {
+	for id, lang := range LANGUAGES {
 		for _, lid := range IDs {
 			if id == lid {
 				keyboards = append(keyboards, lang.Keyboards...)
 			}
 		}
 	}
+	for _, kid := range IDs {
+		if kid == "all" {
+			IDs = []string{}
+		}
+	}
 	if len(IDs) == 0 {
-		for _, lang := range Languages {
+		for _, lang := range LANGUAGES {
 			keyboards = append(keyboards, lang.Keyboards...)
 		}
 	}
