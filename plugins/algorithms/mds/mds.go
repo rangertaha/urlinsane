@@ -5,7 +5,7 @@ import (
 	algorithms "github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
-type None struct {
+type MissingDashes struct {
 	// Code() string
 	// Name() string
 	// Description() string
@@ -13,29 +13,29 @@ type None struct {
 	// Exec() func(Result) []Result
 }
 
-func (n *None) Code() string {
-	return "MDS"
+func (n *MissingDashes) Code() string {
+	return "mds"
 }
 
-func (n *None) Name() string {
+func (n *MissingDashes) Name() string {
 	return "Missing Dashes"
 }
 
-func (n *None) Description() string {
+func (n *MissingDashes) Description() string {
 	return "created by stripping all dashes from the domain"
 }
 
-func (n *None) Fields() []string {
+func (n *MissingDashes) Fields() []string {
 	return []string{}
 }
 
-func (n *None) Exec(typo.Result) (results []typo.Result) {
+func (n *MissingDashes) Exec(typo.Result) (results []typo.Result) {
 	return
 }
 
 // Register the plugin
 func init() {
-	algorithms.Add("MDS", func() typo.Module {
-		return &None{}
+	algorithms.Add("mds", func() typo.Module {
+		return &MissingDashes{}
 	})
 }

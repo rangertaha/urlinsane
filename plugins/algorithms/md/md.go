@@ -14,7 +14,7 @@ type None struct {
 }
 
 func (n *None) Code() string {
-	return "MD"
+	return "md"
 }
 
 func (n *None) Name() string {

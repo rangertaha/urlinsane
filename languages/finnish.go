@@ -107,5 +107,5 @@ var (
 )
 
 func init() {
-	Add("FI", fiLanguage)
+	Add("fi", fiLanguage)
 }
