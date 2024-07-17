@@ -29,6 +29,10 @@ func (n *DashInsertion) Fields() []string {
 	return []string{}
 }
 
+func (n *DashInsertion) Headers() []string {
+	return []string{}
+}
+
 func (n *DashInsertion) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *DashInsertion) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("hi", func() typo.Module {
-		return &DashInsertion{
-
-		}
+		return &DashInsertion{}
 	})
 }

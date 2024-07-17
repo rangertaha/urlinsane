@@ -29,6 +29,10 @@ func (n *Homophones) Fields() []string {
 	return []string{}
 }
 
+func (n *Homophones) Headers() []string {
+	return []string{}
+}
+
 func (n *Homophones) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *Homophones) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("hp", func() typo.Module {
-		return &Homophones{
-
-		}
+		return &Homophones{}
 	})
 }

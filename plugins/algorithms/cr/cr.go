@@ -29,6 +29,10 @@ func (n *CharacterRepeat) Fields() []string {
 	return []string{}
 }
 
+func (n *CharacterRepeat) Headers() []string {
+	return []string{}
+}
+
 func (n *CharacterRepeat) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *CharacterRepeat) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("cr", func() typo.Module {
-		return &CharacterRepeat{
-
-		}
+		return &CharacterRepeat{}
 	})
 }

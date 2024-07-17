@@ -29,6 +29,10 @@ func (n *CharacterSwap) Fields() []string {
 	return []string{}
 }
 
+func (n *CharacterSwap) Headers() []string {
+	return []string{}
+}
+
 func (n *CharacterSwap) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *CharacterSwap) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("cs", func() typo.Module {
-		return &CharacterSwap{
-
-		}
+		return &CharacterSwap{}
 	})
 }

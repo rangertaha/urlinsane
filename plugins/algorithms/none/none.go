@@ -1,8 +1,8 @@
 package none
 
 import (
-	typo "github.com/rangertaha/urlinsane"
-	algorithms "github.com/rangertaha/urlinsane/plugins/algorithms"
+	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
 type None struct {
@@ -29,13 +29,18 @@ func (n *None) Fields() []string {
 	return []string{}
 }
 
-func (n *None) Exec(typo.Result) (results []typo.Result) {
+
+func (n *None) Headers() []string {
+	return []string{}
+}
+
+func (n *None) Exec(urlinsane.Result) (results []urlinsane.Result) {
 	return
 }
 
 // Register the plugin
 func init() {
-	algorithms.Add("none", func() typo.Module {
+	algorithms.Add("none", func() urlinsane.Module {
 		return &None{}
 	})
 }

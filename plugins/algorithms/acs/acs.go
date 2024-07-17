@@ -29,6 +29,10 @@ func (n *AdjacentCharacterSubstitution) Fields() []string {
 	return []string{}
 }
 
+func (n *AdjacentCharacterSubstitution) Headers() []string {
+	return []string{}
+}
+
 func (n *AdjacentCharacterSubstitution) Exec(typo.Result) (results []typo.Result) {
 	return
 }

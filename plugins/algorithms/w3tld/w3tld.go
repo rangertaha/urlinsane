@@ -29,6 +29,10 @@ func (n *WrongThirdTLD) Fields() []string {
 	return []string{}
 }
 
+func (n *WrongThirdTLD) Headers() []string {
+	return []string{}
+}
+
 func (n *WrongThirdTLD) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *WrongThirdTLD) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("w3tld", func() typo.Module {
-		return &WrongThirdTLD{
-
-		}
+		return &WrongThirdTLD{}
 	})
 }

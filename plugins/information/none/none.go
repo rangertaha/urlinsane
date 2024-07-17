@@ -29,6 +29,10 @@ func (n *None) Fields() []string {
 	return []string{}
 }
 
+func (n *None) Headers() []string {
+	return []string{}
+}
+
 func (n *None) Exec(urli.Result) (results []urli.Result) {
 	return
 }

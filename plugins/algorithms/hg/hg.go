@@ -29,6 +29,10 @@ func (n *Homoglyphs) Fields() []string {
 	return []string{}
 }
 
+func (n *Homoglyphs) Headers() []string {
+	return []string{}
+}
+
 func (n *Homoglyphs) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *Homoglyphs) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("hg", func() typo.Module {
-		return &Homoglyphs{
-
-		}
+		return &Homoglyphs{}
 	})
 }
