@@ -29,6 +29,10 @@ func (n *PeriodInsertion) Fields() []string {
 	return []string{}
 }
 
+func (n *PeriodInsertion) Headers() []string {
+	return []string{}
+}
+
 func (n *PeriodInsertion) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *PeriodInsertion) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("pi", func() typo.Module {
-		return &PeriodInsertion{
-
-		}
+		return &PeriodInsertion{}
 	})
 }

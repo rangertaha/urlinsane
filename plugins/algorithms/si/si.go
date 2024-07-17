@@ -29,6 +29,10 @@ func (n *SubdomainInsertion) Fields() []string {
 	return []string{}
 }
 
+func (n *SubdomainInsertion) Headers() []string {
+	return []string{}
+}
+
 func (n *SubdomainInsertion) Exec(typo.Result) (results []typo.Result) {
 	return
 }

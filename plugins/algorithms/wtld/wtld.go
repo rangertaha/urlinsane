@@ -29,6 +29,10 @@ func (n *WrongTLD) Fields() []string {
 	return []string{}
 }
 
+func (n *WrongTLD) Headers() []string {
+	return []string{}
+}
+
 func (n *WrongTLD) Exec(typo.Result) (results []typo.Result) {
 	return
 }
@@ -36,8 +40,6 @@ func (n *WrongTLD) Exec(typo.Result) (results []typo.Result) {
 // Register the plugin
 func init() {
 	algorithms.Add("wtld", func() typo.Module {
-		return &WrongTLD{
-
-		}
+		return &WrongTLD{}
 	})
 }
