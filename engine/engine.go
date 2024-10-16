@@ -17,7 +17,6 @@ package engine
 import (
 	"fmt"
 
-	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/config"
 )
 
@@ -25,18 +24,7 @@ type (
 
 	// Typosquatting ...
 	Typosquatting struct {
-		Domains     []urlinsane.Domain
-		Keyboards   []urlinsane.Keyboard
-		Languages   []urlinsane.Language
-		Algorithms  []urlinsane.Module
-		Inforamtion []urlinsane.Module
-
-		Headers     []string
-		Format      string
-		File        string
-		Verbose     bool
-		Concurrency int
-		Delay       int
+		Config config.Config
 
 		// Used to store collected data of the trget domains
 		// meta Meta
