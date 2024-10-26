@@ -1,7 +1,7 @@
 package none
 
 import (
-	typo "github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
@@ -33,13 +33,13 @@ func (n *SubdomainInsertion) Headers() []string {
 	return []string{}
 }
 
-func (n *SubdomainInsertion) Exec(typo.Result) (results []typo.Result) {
+func (n *SubdomainInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 	return
 }
 
 // Register the plugin
 func init() {
-	algorithms.Add("si", func() typo.Module {
+	algorithms.Add("si", func() urlinsane.Algorithm {
 		return &SubdomainInsertion{}
 	})
 }

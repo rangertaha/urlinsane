@@ -31,8 +31,8 @@ type Config struct {
 	Domain      urlinsane.Domain
 	Keyboards   []urlinsane.Keyboard
 	Languages   []urlinsane.Language
-	Algorithms  []urlinsane.Module
-	Inforamtion []urlinsane.Module
+	Algorithms  []urlinsane.Algorithm
+	Information []urlinsane.Information
 
 	Headers     []string
 	Format      string

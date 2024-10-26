@@ -1,6 +1,7 @@
 package AlphabetInsertion
 
 import (
+	"github.com/rangertaha/urlinsane"
 	typo "github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
@@ -33,7 +34,7 @@ func (n *AlphabetInsertion) Headers() []string {
 	return []string{}
 }
 
-func (n *AlphabetInsertion) Exec(typo.Result) (results []typo.Result) {
+func (n *AlphabetInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 	return
 }
 

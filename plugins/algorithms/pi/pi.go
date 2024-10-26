@@ -1,7 +1,7 @@
 package none
 
 import (
-	typo "github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
@@ -33,13 +33,13 @@ func (n *PeriodInsertion) Headers() []string {
 	return []string{}
 }
 
-func (n *PeriodInsertion) Exec(typo.Result) (results []typo.Result) {
+func (n *PeriodInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 	return
 }
 
 // Register the plugin
 func init() {
-	algorithms.Add("pi", func() typo.Module {
+	algorithms.Add("pi", func() urlinsane.Algorithm {
 		return &PeriodInsertion{}
 	})
 }

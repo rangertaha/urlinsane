@@ -6,7 +6,7 @@ import (
 	"github.com/rangertaha/urlinsane"
 )
 
-type Creator func() urlinsane.Module
+type Creator func() urlinsane.Algorithm
 
 var Algorithms = map[string]Creator{}
 
@@ -22,14 +22,14 @@ func Get(name string) (Creator, error) {
 	return nil, fmt.Errorf("unable to locate outputs/%s plugin", name)
 }
 
-func All() (mods []urlinsane.Module) {
+func All() (mods []urlinsane.Algorithm) {
 	for _, plugin := range Algorithms {
 		mods = append(mods, plugin())
 	}
 	return
 }
 
-func List(IDs ...string) (algos []urlinsane.Module) {
+func List(IDs ...string) (algos []urlinsane.Algorithm) {
 	for id, algo := range Algorithms {
 		for _, aid := range IDs {
 			if id == aid {

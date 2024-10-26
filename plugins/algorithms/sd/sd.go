@@ -1,7 +1,7 @@
 package none
 
 import (
-	typo "github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
@@ -33,13 +33,13 @@ func (n *StripDash) Headers() []string {
 	return []string{}
 }
 
-func (n *StripDash) Exec(typo.Result) (results []typo.Result) {
+func (n *StripDash) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 	return
 }
 
 // Register the plugin
 func init() {
-	algorithms.Add("sd", func() typo.Module {
+	algorithms.Add("sd", func() urlinsane.Algorithm {
 		return &StripDash{}
 	})
 }

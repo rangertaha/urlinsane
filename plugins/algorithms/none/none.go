@@ -29,18 +29,17 @@ func (n *None) Fields() []string {
 	return []string{}
 }
 
-
 func (n *None) Headers() []string {
 	return []string{}
 }
 
-func (n *None) Exec(urlinsane.Result) (results []urlinsane.Result) {
+func (n *None) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 	return
 }
 
 // Register the plugin
 func init() {
-	algorithms.Add("none", func() urlinsane.Module {
+	algorithms.Add("none", func() urlinsane.Algorithm {
 		return &None{}
 	})
 }

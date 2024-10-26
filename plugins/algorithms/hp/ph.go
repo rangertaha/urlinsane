@@ -1,7 +1,7 @@
 package none
 
 import (
-	typo "github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
@@ -33,13 +33,13 @@ func (n *Homophones) Headers() []string {
 	return []string{}
 }
 
-func (n *Homophones) Exec(typo.Result) (results []typo.Result) {
+func (n *Homophones) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 	return
 }
 
 // Register the plugin
 func init() {
-	algorithms.Add("hp", func() typo.Module {
+	algorithms.Add("hp", func() urlinsane.Algorithm {
 		return &Homophones{}
 	})
 }
