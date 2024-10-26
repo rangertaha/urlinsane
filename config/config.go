@@ -45,7 +45,7 @@ type Config struct {
 // CliConfig creates a configuration from a cobra cli options and arguments
 func CliConfig(cmd *cobra.Command, args []string) (c Config, err error) {
 
-	if c.Domain, err = GetDomain(args); err != nil {
+	if c.Domain, err = getDomain(args); err != nil {
 		return c, err
 	}
 

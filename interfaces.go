@@ -14,29 +14,56 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package urlinsane
 
-type Module interface {
+// type Module interface {
+// 	Code() string
+// 	Name() string
+// 	Description() string
+// 	Fields() []string
+// 	Headers() []string
+// 	Exec(Typo) []Typo
+// }
+
+type Algorithm interface {
 	Code() string
 	Name() string
 	Description() string
 	Fields() []string
 	Headers() []string
-	Exec(Result) []Result
+	Exec(Typo) []Typo
 }
 
-type Result interface {
-	Keyboards() []Keyboard
-	Languages() []Language
+type Inforamtion interface {
+	Code() string
+	Name() string
+	Description() string
+	Fields() []string
+	Headers() []string
+	Exec(Typo) []Typo
+}
+
+type Typo interface {
+	Keyboard() Keyboard
+	Language() Language
+	Algorithm() Algorithm
 	Original() Domain
 	Variant() Domain
-	Algo() Module
-	Data() map[string]string
 }
+
+// type Result interface {
+// 	Keyboards() []Keyboard
+// 	Languages() []Language
+// 	Original() Domain
+// 	Variant() Domain
+// 	Algo() Module
+// 	Data() map[string]string
+// }
 
 type Domain interface {
 	Subdomain() string
 	Domain() string
 	Suffix() string
 	Live() bool
+	Meta() map[string]interface{}
 }
 
 type Language interface {
