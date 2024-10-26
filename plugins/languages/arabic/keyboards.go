@@ -1,4 +1,4 @@
-// Copyright (C) 2024  Tal Hatchi (Rangertaha)
+// Copyright (C) 2024 Rangertaha
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -93,7 +93,6 @@ func (k *arKeyboard) Layouts() []string {
 func (k *arKeyboard) Languages() []urlinsane.Language {
 	return languages.Languages(k.Lang)
 }
-
 
 func init() {
 	for _, kb := range arKeyboards {

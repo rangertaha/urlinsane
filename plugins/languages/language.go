@@ -1,4 +1,4 @@
-// Copyright (C) 2024  Tal Hatchi (Rangertaha)
+// Copyright (C) 2024 Rangertaha
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,39 +15,40 @@
 package languages
 
 type (
-	// Language type
-	// Language struct {
-	// 	code         string
-	// 	name         string
-	// 	description  string
-	// 	numerals     map[string][]string
-	// 	graphemes    []string
-	// 	vowels       []string
-	// 	misspellings [][]string
-	// 	homophones   [][]string
-	// 	antonyms     map[string][]string
-	// 	homoglyphs   map[string][]string
-	// 	keyboards    []Keyboard
-	// }
+// Language type
+// Language struct {
+// 	code         string
+// 	name         string
+// 	description  string
+// 	numerals     map[string][]string
+// 	graphemes    []string
+// 	vowels       []string
+// 	misspellings [][]string
+// 	homophones   [][]string
+// 	antonyms     map[string][]string
+// 	homoglyphs   map[string][]string
+// 	keyboards    []Keyboard
+// }
 
-	// Keyboard type
-	// Keyboard struct {
-	// 	Code        string
-	// 	Name        string
-	// 	Description string
-	// 	Layout      []string
-	// }
-	// // KeyboardGroup type
-	// KeyboardGroup struct {
-	// 	Code        string   `json:"code,omitempty"`
-	// 	Keyboards   []string `json:"keyboards,omitempty"`
-	// 	Description string   `json:"description,omitempty"`
-	// }
+// Keyboard type
+// Keyboard struct {
+// 	Code        string
+// 	Name        string
+// 	Description string
+// 	Layout      []string
+// }
+// // KeyboardGroup type
+// KeyboardGroup struct {
+// 	Code        string   `json:"code,omitempty"`
+// 	Keyboards   []string `json:"keyboards,omitempty"`
+// 	Description string   `json:"description,omitempty"`
+// }
 
-	// // KeyboardRegistry stores registered keyboards and groups
-	// KeyboardRegistry struct {
-	// 	registry map[string][]Keyboard
-	// }
+// // KeyboardRegistry stores registered keyboards and groups
+//
+//	KeyboardRegistry struct {
+//		registry map[string][]Keyboard
+//	}
 )
 
 // func (k *Keyboard) Id() string {
