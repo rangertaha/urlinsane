@@ -24,12 +24,12 @@ build: deps ## Build the binaries for Windows, OSX, and Linux
 
 install: build ## build and install the binary
 	cp builds/$(BINARY_NAME) $(GOPATH)/bin/$(BINARY_NAME)
-	md5 builds/$(BINARY_NAME) || md5sum builds/$(BINARY_NAME)
+	# md5 builds/$(BINARY_NAME) || md5sum builds/$(BINARY_NAME)
 
 deps: ## Install dependencies
 	$(GOGET) ./...
-	$(GOGET) github.com/inconshreveable/mousetrap
-	$(GOGET) github.com/konsorten/go-windows-terminal-sequences
+	# $(GOGET) github.com/inconshreveable/mousetrap
+	# $(GOGET) github.com/konsorten/go-windows-terminal-sequences
 
 # docker: image ## Build docker image and upload to docker hub
 # 	docker login
