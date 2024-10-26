@@ -50,7 +50,7 @@ package config
 // // 	Keyboards   []string
 // // 	Languages   []string
 // // 	Algorithms  []string
-// // 	Inforamtion []string
+// // 	Information []string
 
 // // 	// Headers     []string
 // // 	Format      string
@@ -65,7 +65,7 @@ package config
 // 	Keyboards   []urlinsane.Keyboard
 // 	Languages   []urlinsane.Language
 // 	Algorithms  []urlinsane.Module
-// 	Inforamtion []urlinsane.Module
+// 	Information []urlinsane.Module
 
 // 	Headers     []string
 // 	Format      string
@@ -249,10 +249,10 @@ package config
 // 	// }
 
 // 	// if infos, err := CSplit(cmd.PersistentFlags().GetStringArray("infos")); err != nil {
-// 	// 	c.inforamtion = information.List(infos...)
+// 	// 	c.Information = information.List(infos...)
 
 // 	// 	c.headers = []string{"Live", "Type", "Typo", "Suffix"}
-// 	// 	for _, fnc := range c.inforamtion {
+// 	// 	for _, fnc := range c.Information {
 // 	// 		c.headers = append(c.headers, fnc.Headers()...)
 // 	// 	}
 // 	// }
@@ -340,7 +340,7 @@ package config
 // 	// 	errHandler(err)
 // 	// }
 
-// 	// if c.Inforamtion, err = CSplit(cmd.PersistentFlags().GetStringArray("info")); err != nil {
+// 	// if c.Information, err = CSplit(cmd.PersistentFlags().GetStringArray("info")); err != nil {
 // 	// 	errHandler(err)
 
 // 	// }

@@ -32,7 +32,7 @@ type Algorithm interface {
 	Exec(Typo) []Typo
 }
 
-type Inforamtion interface {
+type Information interface {
 	Code() string
 	Name() string
 	Description() string

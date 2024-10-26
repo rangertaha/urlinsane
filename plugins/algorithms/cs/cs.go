@@ -1,6 +1,7 @@
 package none
 
 import (
+	"github.com/rangertaha/urlinsane"
 	typo "github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
@@ -33,7 +34,7 @@ func (n *CharacterSwap) Headers() []string {
 	return []string{}
 }
 
-func (n *CharacterSwap) Exec(typo.Result) (results []typo.Result) {
+func (n *CharacterSwap) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 	return
 }
 

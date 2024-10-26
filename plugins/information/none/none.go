@@ -1,7 +1,7 @@
 package none
 
 import (
-	urli "github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/information"
 )
 
@@ -33,13 +33,13 @@ func (n *None) Headers() []string {
 	return []string{}
 }
 
-func (n *None) Exec(urli.Result) (results []urli.Result) {
+func (n *None) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 	return
 }
 
 // Register the plugin
 func init() {
-	information.Add("none", func() urli.Module {
+	information.Add("none", func() urlinsane.Information {
 		return &None{}
 	})
 }

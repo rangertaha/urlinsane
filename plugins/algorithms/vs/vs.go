@@ -1,7 +1,7 @@
 package none
 
 import (
-	typo "github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
@@ -33,13 +33,13 @@ func (n *VowelSwapping) Headers() []string {
 	return []string{}
 }
 
-func (n *VowelSwapping) Exec(typo.Result) (results []typo.Result) {
+func (n *VowelSwapping) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 	return
 }
 
 // Register the plugin
 func init() {
-	algorithms.Add("vs", func() typo.Module {
+	algorithms.Add("vs", func() urlinsane.Algorithm {
 		return &VowelSwapping{}
 	})
 }

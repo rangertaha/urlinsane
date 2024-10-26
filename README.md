@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/rangertaha/urlinsane.svg?branch=master)](https://travis-ci.org/rangertaha/urlinsane)
 
-The most advacned typosquatting tools to date with the most features, the most results, and fastest performance. It build around linguistic modeling, natural language processing, information gathering and analysis. It's easily extensible with plugins for typo algorithms, inforamtion gathering and analysis. Its linguistic models also allow it us to easily add new languages and keyboard layouts. Currently it supports 9 languages, 19 keyboard layouts, 24 algorithms, 8 information gathering, and 2 analysis modules.
+The most advacned typosquatting tools to date with the most features, the most results, and fastest performance. It build around linguistic modeling, natural language processing, information gathering and analysis. It's easily extensible with plugins for typo algorithms, Information gathering and analysis. Its linguistic models also allow it us to easily add new languages and keyboard layouts. Currently it supports 9 languages, 19 keyboard layouts, 24 algorithms, 8 information gathering, and 2 analysis modules.
 
 
 | **Modules** |  count |

@@ -1,7 +1,7 @@
 package none
 
 import (
-	typo "github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
@@ -33,13 +33,13 @@ func (n *SingularPluralize) Headers() []string {
 	return []string{}
 }
 
-func (n *SingularPluralize) Exec(typo.Result) (results []typo.Result) {
+func (n *SingularPluralize) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 	return
 }
 
 // Register the plugin
 func init() {
-	algorithms.Add("sp", func() typo.Module {
+	algorithms.Add("sp", func() urlinsane.Algorithm {
 		return &SingularPluralize{}
 	})
 }

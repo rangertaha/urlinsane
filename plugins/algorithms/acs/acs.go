@@ -1,6 +1,7 @@
 package AdjacentCharacterSubstitution
 
 import (
+	"github.com/rangertaha/urlinsane"
 	typo "github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
@@ -33,7 +34,7 @@ func (n *AdjacentCharacterSubstitution) Headers() []string {
 	return []string{}
 }
 
-func (n *AdjacentCharacterSubstitution) Exec(typo.Result) (results []typo.Result) {
+func (n *AdjacentCharacterSubstitution) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 	return
 }
 

@@ -1,7 +1,7 @@
 package none
 
 import (
-	typo "github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
@@ -33,13 +33,13 @@ func (n *WrongTLD) Headers() []string {
 	return []string{}
 }
 
-func (n *WrongTLD) Exec(typo.Result) (results []typo.Result) {
+func (n *WrongTLD) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 	return
 }
 
 // Register the plugin
 func init() {
-	algorithms.Add("wtld", func() typo.Module {
+	algorithms.Add("wtld", func() urlinsane.Algorithm {
 		return &WrongTLD{}
 	})
 }

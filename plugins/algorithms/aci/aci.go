@@ -33,7 +33,7 @@ func (n *AdjacentCharacterInsertion) Headers() []string {
 	return []string{}
 }
 
-func (n *AdjacentCharacterInsertion) Exec(urlinsane.Result) (results []urlinsane.Result) {
+func (n *AdjacentCharacterInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 	return
 }
 
