@@ -6,15 +6,14 @@ import (
 )
 
 type DashInsertion struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+types []string
 }
 
 func (n *DashInsertion) Code() string {
 	return "hi"
+}
+func (n *DashInsertion) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *DashInsertion) Name() string {
@@ -40,6 +39,8 @@ func (n *DashInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("hi", func() urlinsane.Algorithm {
-		return &DashInsertion{}
+		return &DashInsertion{
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

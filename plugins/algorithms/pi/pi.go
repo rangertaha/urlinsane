@@ -1,4 +1,4 @@
-package none
+package pi
 
 import (
 	"github.com/rangertaha/urlinsane"
@@ -6,15 +6,14 @@ import (
 )
 
 type PeriodInsertion struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+	types []string
 }
 
 func (n *PeriodInsertion) Code() string {
 	return "pi"
+}
+func (n *PeriodInsertion) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *PeriodInsertion) Name() string {
@@ -40,6 +39,8 @@ func (n *PeriodInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("pi", func() urlinsane.Algorithm {
-		return &PeriodInsertion{}
+		return &PeriodInsertion{
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

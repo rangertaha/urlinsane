@@ -16,7 +16,10 @@ package engine
 
 import (
 	"fmt"
+	"sync"
+	"time"
 
+	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/config"
 )
 
@@ -25,13 +28,13 @@ type (
 	// Typosquatting ...
 	Typosquatting struct {
 		Config config.Config
+		Typos  map[string]urlinsane.Typo
 
-		// typoWG sync.WaitGroup
-		// funcWG sync.WaitGroup
-		// fltrWG sync.WaitGroup
+		typoWG sync.WaitGroup
+		funcWG sync.WaitGroup
 
 		// stats <-chan Statser
-		// errs  <-chan interface{}
+		errs <-chan interface{}
 	}
 )
 
@@ -42,93 +45,176 @@ func New(conf config.Config) Typosquatting {
 	}
 }
 
-// func NewDomains(domain ...string) (domains []urlinsane.Domain) {
-// 	// for _, dm := range domain {
-// 	// 	domains = append(domains, &Domain{Domain: dm})
-// 	// }
-// 	return
+// Generate typo config options
+func (t *Typosquatting) GenOptions() <-chan urlinsane.Typo {
+	// selects between names and domains algos
+
+	out := make(chan urlinsane.Typo)
+	go func() {
+		for _, lang := range t.Config.Languages {
+			for _, board := range t.Config.Keyboards {
+				for _, algo := range t.Config.Algorithms {
+					if algo.IsType(t.Config.Type) {
+						out <- Typo{
+							language:  lang,
+							keyboard:  board,
+							algorithm: algo,
+							name:      t.Config.Name,
+							original:  t.Config.Domain,
+						}
+					}
+				}
+			}
+		}
+		close(out)
+	}()
+	return t.Algorithms(out)
+}
+
+// Algorithms generates typos using the algorithm plugins
+func (t *Typosquatting) Algorithms(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+	out := make(chan urlinsane.Typo)
+
+	for w := 1; w <= t.Config.Concurrency; w++ {
+		t.typoWG.Add(1)
+		go func(id int, in <-chan urlinsane.Typo, out chan<- urlinsane.Typo) {
+			defer t.typoWG.Done()
+			for c := range in {
+				// Execute typo algorithm returning typos
+				for _, t := range c.Algorithm().Exec(c) {
+					out <- t
+				}
+			}
+		}(w, in, out)
+	}
+	go func() {
+		t.typoWG.Wait()
+		close(out)
+	}()
+
+	return t.Dedup(out)
+}
+
+func (t *Typosquatting) Dedup(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+	out := make(chan urlinsane.Typo)
+	go func() {
+		for typo := range in {
+			t.Typos[typo.Repr()] = typo
+		}
+		for _, typ := range t.Typos {
+			out <- typ
+		}
+		close(out)
+	}()
+
+	return t.Information(out)
+}
+
+func (t *Typosquatting) Information(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+	out := make(chan urlinsane.Typo)
+	for w := 1; w <= t.Config.Concurrency; w++ {
+		t.funcWG.Add(1)
+		go func(in <-chan urlinsane.Typo, out chan<- urlinsane.Typo) {
+			defer t.funcWG.Done()
+			output := t.InfoChain(t.Config.Information, in)
+			for c := range output {
+				out <- c
+			}
+		}(in, out)
+	}
+	go func() {
+		t.funcWG.Wait()
+		close(out)
+	}()
+	return t.Cache(out)
+}
+
+// // DistChain creates workers of chained functions
+// func (t *Typosquatting) DistChain(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+// 	out := make(chan urlinsane.Typo)
+// 	for w := 1; w <= t.Config.Concurrency; w++ {
+// 		t.funcWG.Add(1)
+// 		go func(in <-chan urlinsane.Typo, out chan<- urlinsane.Typo) {
+// 			defer t.funcWG.Done()
+// 			output := t.InfoChain(t.Config.Information, in)
+// 			for c := range output {
+// 				out <- c
+// 			}
+// 		}(in, out)
+// 	}
+// 	go func() {
+// 		t.funcWG.Wait()
+// 		close(out)
+// 	}()
+// 	return t.Information(out)
 // }
 
-func (t Typosquatting) Execute() {
+
+// FuncChain creates a chain of information gathering functions
+func (t *Typosquatting) InfoChain(funcs []urlinsane.Information, in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+	var xfunc urlinsane.Information
+	out := make(chan urlinsane.Typo)
+	xfunc, funcs = funcs[len(funcs)-1], funcs[:len(funcs)-1]
+	go func() {
+		for i := range in {
+			time.Sleep(t.Config.Random * t.Config.Delay)
+			// fmt.Println(typ.config.timing.Random * typ.config.timing.Delay * time.Millisecond)
+
+			out <- xfunc.Exec(i)
+
+		}
+		close(out)
+	}()
+
+	if len(funcs) > 0 {
+		return t.InfoChain(funcs, out)
+	}
+	return out
+}
+
+
+func (t *Typosquatting) Cache(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+	// out := make(chan urlinsane.Typo)
+	// go func() {
+	// 	for typo := range in {
+	// 		t.Typos[typo.Repr()] = typo
+	// 	}
+	// 	for _, typ := range t.Typos {
+	// 		out <- typ
+	// 	}
+	// 	close(out)
+	// }()
+
+	return in
+}
+
+
+func (t *Typosquatting) Output(in <-chan urlinsane.Typo) {
 	fmt.Println(t)
 }
 
-// // NewRegistry ...
-// func NewRegistry() Registry {
-// 	return make(Registry)
-// }
+func (t *Typosquatting) Execute() {
+	t.Output(t.GenOptions())
+}
 
-// // Get ...
-// func (reg Registry) Get(names ...string) (mods []Module) {
-// 	for _, f := range names {
-// 		value, ok := reg[strings.ToUpper(f)]
-// 		if ok {
-// 			mods = append(mods, value...)
+// // FilterChain ...
+// func (typ *Typosquatting) FilterChain(in <-chan Result) <-chan Result {
+// 	out := make(chan Result)
+// 	go func() {
+// 		for i := range in {
+// 			if len(typ.config.filters) > 0 {
+// 				for _, filter := range typ.config.filters {
+// 					for _, result := range filter.Exec(i) {
+// 						out <- result
+// 					}
+// 				}
+// 			} else {
+// 				out <- i
+// 			}
 // 		}
-// 	}
-// 	if len(names) == 0 {
-// 		return reg.Get("all")
-// 	}
-// 	return
-// }
-
-// // Set ...
-// func (reg Registry) Set(name string, mod ...Module) {
-// 	_, registered := reg[strings.ToUpper(name)]
-// 	if !registered {
-// 		reg[strings.ToUpper(name)] = mod
-// 	}
-// }
-
-// // Idna ...
-// func (d *Domain) Idna() (punycode string) {
-// 	punycode, _ = idna.Punycode.ToASCII(d.String())
-// 	return
-// }
-
-// // String ...
-// func (d *Domain) String() (domain string) {
-// 	if d.Subdomain != "" {
-// 		domain = d.Subdomain + "."
-// 	}
-// 	if d.Domain != "" {
-// 		domain = domain + d.Domain
-// 	}
-// 	if d.Suffix != "" {
-// 		domain = domain + "." + d.Suffix
-// 	}
-// 	domain = strings.TrimSpace(domain)
-// 	return
-// }
-
-// // Exec ...
-// func (m *Module) Exec(res Result) []Result {
-// 	return m.Exe(res)
-// }
-
-// // Headers ...
-// func (m *Module) Headers() []string {
-// 	return m.Fields
-// }
-
-// // SetMeta ...
-// func (m *Result) SetMeta(key string, obj interface{}) {
-// 	m.Meta[key] = obj
-// }
-
-// // GetMeta ...
-// func (m *Result) GetMeta(key string) interface{} {
-// 	return m.Meta[key]
-// }
-
-// // SetData ...
-// func (m *Result) SetData(key string, obj string) {
-// 	m.Data[key] = obj
-// }
-
-// // GetData ...
-// func (m *Result) GetData(key string) string {
-// 	return m.Data[key]
+// 		close(out)
+// 	}()
+// 	return typ.Dedup(out)
 // }
 
 // // Start ...

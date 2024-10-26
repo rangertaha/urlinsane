@@ -1,4 +1,4 @@
-package none
+package co
 
 import (
 	"github.com/rangertaha/urlinsane"
@@ -6,15 +6,14 @@ import (
 )
 
 type CharacterOmission struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+types []string
 }
 
 func (n *CharacterOmission) Code() string {
 	return "co"
+}
+func (n *CharacterOmission) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *CharacterOmission) Name() string {
@@ -40,6 +39,8 @@ func (n *CharacterOmission) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("co", func() urlinsane.Algorithm {
-		return &CharacterOmission{}
+		return &CharacterOmission{
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

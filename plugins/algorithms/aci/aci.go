@@ -1,20 +1,21 @@
-package AdjacentCharacterInsertion
+package aci
 
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
+
 type AdjacentCharacterInsertion struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+	types []string
 }
 
 func (n *AdjacentCharacterInsertion) Code() string {
 	return "aci"
+}
+
+func (n *AdjacentCharacterInsertion) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *AdjacentCharacterInsertion) Name() string {
@@ -40,6 +41,8 @@ func (n *AdjacentCharacterInsertion) Exec(urlinsane.Typo) (results []urlinsane.T
 // Register the plugin
 func init() {
 	algorithms.Add("aci", func() urlinsane.Algorithm {
-		return &AdjacentCharacterInsertion{}
+		return &AdjacentCharacterInsertion{
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

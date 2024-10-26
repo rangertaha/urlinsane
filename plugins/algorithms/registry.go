@@ -6,7 +6,15 @@ import (
 	"github.com/rangertaha/urlinsane"
 )
 
+const (
+	ENTITY = "ENTITY"
+	DOMAINS = "DOMAINS"
+)
+
+
 type Creator func() urlinsane.Algorithm
+
+var Types = []string{"ENTITY", "DOMAINS"}
 
 var Algorithms = map[string]Creator{}
 
@@ -50,4 +58,14 @@ func List(IDs ...string) (algos []urlinsane.Algorithm) {
 	}
 
 	return
+}
+
+
+func IsType(types []string, other string) bool {
+	for _, typ := range types {
+		if typ == other {
+			return true
+		}
+	}
+	return false
 }

@@ -6,15 +6,14 @@ import (
 )
 
 type MissingDot struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+types []string
 }
 
 func (n *MissingDot) Code() string {
 	return "md"
+}
+func (n *MissingDot) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *MissingDot) Name() string {
@@ -40,6 +39,8 @@ func (n *MissingDot) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("md", func() urlinsane.Algorithm {
-		return &MissingDot{}
+		return &MissingDot{
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

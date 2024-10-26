@@ -6,15 +6,14 @@ import (
 )
 
 type WrongThirdTLD struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+types []string
 }
 
 func (n *WrongThirdTLD) Code() string {
 	return "w2tld"
+}
+func (n *AdjacentCharacterInsertion) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *WrongThirdTLD) Name() string {
@@ -40,6 +39,9 @@ func (n *WrongThirdTLD) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("w2tld", func() urlinsane.Algorithm {
-		return &WrongThirdTLD{}
+		return &WrongThirdTLD{
+			types []string
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

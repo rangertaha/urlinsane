@@ -94,42 +94,10 @@ AUTHOR:
 
 `
 
-const hTemplate = `
-{{if .Algorithms}}
-TYPOS: 
-  These are the types of typo/error algorithms that generate the domain variants{{range .Algorithms}}
-    {{.Code}}	 {{.Name}}	{{.Description}}{{end}}
-    ALL	Apply all typosquatting algorithms
-{{end}}{{if .Funcs}}
-INFORMATION: 
-  Retrieve aditional information on each domain variant.{{range .Funcs}}
-    {{.Code}}    {{.Description}}{{end}}
-    ALL    Apply all post typosquating functions
-{{end}}{{if .Filters}}
-FILTERS: 
-  Filters to reduce the number domain variants returned.{{range .Filters}}
-    {{.Code}}   {{.Description}}{{end}}
-    ALL    Apply all filters
-{{end}}{{if .Keyboards}}
-KEYBOARDS:{{range .Keyboards}}
-    {{.Code}}	{{.Description}}{{end}}
-    ALL	Use all keyboards
-{{end}}
-EXAMPLE:
-
-    urlinsane google.com
-    urlinsane -a co google.com 
-    urlinsane -a co -x ip,idna,ns google.com 
-
-AUTHOR:
-   Rangertaha (rangertaha@gmail.com)
-
-`
-
 type HelpOptions struct {
 	Languages   []urlinsane.Language
-	Algorithms  []urlinsane.Module
-	Information []urlinsane.Module
+	Algorithms  []urlinsane.Algorithm
+	Information []urlinsane.Information
 }
 
 var cliOptions bytes.Buffer
@@ -137,7 +105,7 @@ var cliOptions bytes.Buffer
 // rootCmd represents the typo command
 var rootCmd = &cobra.Command{
 	Use:   "urlinsane [flags] [domains]",
-	Short: "Generates and detects possible typosquatting domains",
+	Short: "Generates and detects possible typosquatting domain names and arbitrary names",
 	Long: `Urlinsane is used to perform or detect typosquatting, brandjacking,
 URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.
 
@@ -154,14 +122,15 @@ languages and keyboard layouts. Currently it supports 9 languages, 19 keyboard l
 			os.Exit(0)
 		}
 
-		c, err := config.CliConfig(cmd, args)
+		config, err := config.CliConfig(cmd, args)
 		if err != nil {
-			fmt.Println(err)
-			cmd.Help()
+			fmt.Printf("%", err)
 			os.Exit(0)
 		}
+		fmt.Print(urlinsane.LOGO)
+		t := engine.New(config)
+		t.Execute()
 
-		engine.New(c).Execute()
 	},
 }
 
@@ -191,6 +160,7 @@ func init() {
 	rootCmd.SetUsageTemplate(templateBase + cliOptions.String())
 
 	// Options
+	rootCmd.PersistentFlags().BoolP("name", "n", false, "Target a names instead of domains for typosquatting")
 	rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"en"}, "IDs of languages to use for lingustic algorithms")
 	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"all"}, "IDs of keyboard layouts to use of the given languages")
 
@@ -205,7 +175,8 @@ func init() {
 
 	// Timing
 	rootCmd.PersistentFlags().IntP("concurrency", "c", 50, "Number of concurrent workers")
-	rootCmd.PersistentFlags().Int("delay", 10, "A delay between network calls")
+	rootCmd.PersistentFlags().Duration("random", 1, "Random delay multiplier for network calls")
+	rootCmd.PersistentFlags().Duration("delay", 1, "Duration between network calls")
 
 	// Outputs
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Show more details and remove truncated columns")

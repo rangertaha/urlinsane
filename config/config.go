@@ -16,6 +16,7 @@ package config
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
@@ -27,27 +28,32 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	ENTITY = "ENTITY"
+	DOMAIN = "DOMAIN"
+)
+
 type Config struct {
-	Domain       urlinsane.Domain
-	Keyboards    []urlinsane.Keyboard
-	Languages    []urlinsane.Language
-	Algorithms   []urlinsane.Algorithm
+	Name        string
+	Domain      urlinsane.Domain
+	Keyboards   []urlinsane.Keyboard
+	Languages   []urlinsane.Language
+	Algorithms  []urlinsane.Algorithm
 	Information []urlinsane.Information
 
 	Headers     []string
 	Format      string
 	File        string
+	Type        string
 	Verbose     bool
+	isName      bool
 	Concurrency int
-	Delay       int
+	Delay       time.Duration
+	Random      time.Duration
 }
 
 // CliConfig creates a configuration from a cobra cli options and arguments
 func CliConfig(cmd *cobra.Command, args []string) (c Config, err error) {
-
-	if c.Domain, err = getDomain(args); err != nil {
-		return c, err
-	}
 
 	if langs, err := commaSplit(cmd.PersistentFlags().GetStringArray("languages")); err == nil {
 		c.Languages = languages.Languages(langs...)
@@ -82,17 +88,43 @@ func CliConfig(cmd *cobra.Command, args []string) (c Config, err error) {
 		return c, err
 	}
 
-	if c.Delay, err = cmd.PersistentFlags().GetInt("delay"); err != nil {
+	if c.Random, err = cmd.PersistentFlags().GetDuration("random"); err != nil {
 		return c, err
 	}
 
-	// Print logo
-	fmt.Print(urlinsane.LOGO)
+	if c.Delay, err = cmd.PersistentFlags().GetDuration("delay"); err != nil {
+		return c, err
+	}
 
-	return
+	if c.isName, err = cmd.PersistentFlags().GetBool("name"); err != nil {
+		return c, err
+	}
+
+	if c.isName {
+		c.Type = ENTITY
+		c.Name, err = getName(args)
+		return c, err
+	}
+
+	c.Type = DOMAIN
+	c.Domain, err = getDomain(args)
+	return c, err
 }
 
 // commaSplit splits comma seperated values into an array
 func commaSplit(values []string, err error) ([]string, error) {
 	return values, err
+}
+
+// getDomain ...
+func getName(args []string) (name string, e error) {
+	if len(args) == 0 {
+		return name, fmt.Errorf("a name is required")
+	}
+	if len(args) > 1 {
+		return name, fmt.Errorf("only one name is allowed")
+	}
+	name = args[0]
+
+	return
 }
