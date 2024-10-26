@@ -210,7 +210,7 @@ EXAMPLE:
     urlinsane google.com -t co -x ip -x idna -x ns
 
 AUTHOR:
-    Written by Tal Hatchi (Rangertaha)
+    Written by Rangertaha
 
 
 ```

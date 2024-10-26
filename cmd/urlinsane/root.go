@@ -1,4 +1,4 @@
-// Copyright (C) 2024  Tal Hatchi (Rangertaha)
+// Copyright (C) 2024 Rangertaha
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -90,7 +90,7 @@ EXAMPLE:
     urlinsane -l fr,en -k en1,en2 google.com
 
 AUTHOR:
-    Tal Hatchi (Rangertaha)
+   Rangertaha (rangertaha@gmail.com)
 
 `
 
@@ -122,7 +122,7 @@ EXAMPLE:
     urlinsane -a co -x ip,idna,ns google.com 
 
 AUTHOR:
-    Tal Hatchi (Rangertaha)
+   Rangertaha (rangertaha@gmail.com)
 
 `
 
