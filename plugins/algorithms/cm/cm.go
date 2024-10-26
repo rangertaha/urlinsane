@@ -2,7 +2,6 @@ package none
 
 import (
 	"github.com/rangertaha/urlinsane"
-	typo "github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
@@ -40,7 +39,7 @@ func (n *CommonMisspellings) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("cm", func() typo.Module {
+	algorithms.Add("cm", func() urlinsane.Algorithm {
 		return &CommonMisspellings{}
 	})
 }

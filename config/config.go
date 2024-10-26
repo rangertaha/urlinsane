@@ -28,10 +28,10 @@ import (
 )
 
 type Config struct {
-	Domain      urlinsane.Domain
-	Keyboards   []urlinsane.Keyboard
-	Languages   []urlinsane.Language
-	Algorithms  []urlinsane.Algorithm
+	Domain       urlinsane.Domain
+	Keyboards    []urlinsane.Keyboard
+	Languages    []urlinsane.Language
+	Algorithms   []urlinsane.Algorithm
 	Information []urlinsane.Information
 
 	Headers     []string
@@ -61,8 +61,8 @@ func CliConfig(cmd *cobra.Command, args []string) (c Config, err error) {
 		c.Algorithms = algorithms.List(typos...)
 	}
 
-	if typos, err := commaSplit(cmd.PersistentFlags().GetStringArray("info")); err == nil {
-		c.Algorithms = information.List(typos...)
+	if infos, err := commaSplit(cmd.PersistentFlags().GetStringArray("info")); err == nil {
+		c.Information = information.List(infos...)
 	}
 
 	if c.Concurrency, err = cmd.PersistentFlags().GetInt("concurrency"); err != nil {

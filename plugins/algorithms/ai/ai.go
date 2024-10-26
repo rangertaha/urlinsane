@@ -2,7 +2,6 @@ package AlphabetInsertion
 
 import (
 	"github.com/rangertaha/urlinsane"
-	typo "github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
@@ -40,7 +39,7 @@ func (n *AlphabetInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("AlphabetInsertion", func() typo.Module {
+	algorithms.Add("AlphabetInsertion", func() urlinsane.Algorithm {
 		return &AlphabetInsertion{}
 	})
 }

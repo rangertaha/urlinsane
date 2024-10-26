@@ -2,7 +2,6 @@ package none
 
 import (
 	"github.com/rangertaha/urlinsane"
-	typo "github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
@@ -40,7 +39,7 @@ func (n *BitFlipping) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("bf", func() typo.Module {
+	algorithms.Add("bf", func() urlinsane.Algorithm {
 		return &BitFlipping{}
 	})
 }
