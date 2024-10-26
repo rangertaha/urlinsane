@@ -6,15 +6,14 @@ import (
 )
 
 type BitFlipping struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+types []string
 }
 
 func (n *BitFlipping) Code() string {
 	return "bf"
+}
+func (n *BitFlipping) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *BitFlipping) Name() string {
@@ -40,6 +39,9 @@ func (n *BitFlipping) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("bf", func() urlinsane.Algorithm {
-		return &BitFlipping{}
+		return &BitFlipping{
+			
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

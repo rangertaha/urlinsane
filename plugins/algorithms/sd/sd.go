@@ -6,15 +6,14 @@ import (
 )
 
 type StripDash struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+types []string
 }
 
 func (n *StripDash) Code() string {
 	return "sd"
+}
+func (n *AdjacentCharacterInsertion) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *StripDash) Name() string {
@@ -40,6 +39,9 @@ func (n *StripDash) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("sd", func() urlinsane.Algorithm {
-		return &StripDash{}
+		return &StripDash{
+			types []string
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

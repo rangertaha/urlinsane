@@ -1,4 +1,4 @@
-package none
+package cs
 
 import (
 	"github.com/rangertaha/urlinsane"
@@ -6,15 +6,14 @@ import (
 )
 
 type CharacterSwap struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+	types []string
 }
 
 func (n *CharacterSwap) Code() string {
 	return "cs"
+}
+func (n *CharacterSwap) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *CharacterSwap) Name() string {
@@ -40,6 +39,8 @@ func (n *CharacterSwap) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("cs", func() urlinsane.Algorithm {
-		return &CharacterSwap{}
+		return &CharacterSwap{
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

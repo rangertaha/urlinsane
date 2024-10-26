@@ -1,4 +1,4 @@
-package none
+package ns
 
 import (
 	"github.com/rangertaha/urlinsane"
@@ -6,15 +6,14 @@ import (
 )
 
 type NumeralSwap struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+types []string
 }
 
 func (n *NumeralSwap) Code() string {
 	return "ns"
+}
+func (n *NumeralSwap) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *NumeralSwap) Name() string {
@@ -40,6 +39,8 @@ func (n *NumeralSwap) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("ns", func() urlinsane.Algorithm {
-		return &NumeralSwap{}
+		return &NumeralSwap{
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

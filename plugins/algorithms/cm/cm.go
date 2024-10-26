@@ -6,15 +6,14 @@ import (
 )
 
 type CommonMisspellings struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+types []string
 }
 
 func (n *CommonMisspellings) Code() string {
 	return "cm"
+}
+func (n *CommonMisspellings) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *CommonMisspellings) Name() string {
@@ -40,6 +39,9 @@ func (n *CommonMisspellings) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("cm", func() urlinsane.Algorithm {
-		return &CommonMisspellings{}
+		return &CommonMisspellings{
+			
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

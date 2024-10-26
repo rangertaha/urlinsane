@@ -6,15 +6,14 @@ import (
 )
 
 type AlphabetReplacement struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+types []string
 }
 
 func (n *AlphabetReplacement) Code() string {
 	return "ar"
+}
+func (n *AlphabetReplacement) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *AlphabetReplacement) Name() string {
@@ -40,6 +39,9 @@ func (n *AlphabetReplacement) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("ar", func() urlinsane.Algorithm {
-		return &AlphabetReplacement{}
+		return &AlphabetReplacement{
+			
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

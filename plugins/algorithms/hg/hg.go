@@ -6,15 +6,14 @@ import (
 )
 
 type Homoglyphs struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+	types []string
 }
 
 func (n *Homoglyphs) Code() string {
 	return "hg"
+}
+func (n *Homoglyphs) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *Homoglyphs) Name() string {
@@ -40,6 +39,8 @@ func (n *Homoglyphs) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("hg", func() urlinsane.Algorithm {
-		return &Homoglyphs{}
+		return &Homoglyphs{
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

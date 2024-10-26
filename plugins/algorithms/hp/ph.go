@@ -1,4 +1,4 @@
-package none
+package hp
 
 import (
 	"github.com/rangertaha/urlinsane"
@@ -6,15 +6,14 @@ import (
 )
 
 type Homophones struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+types []string
 }
 
 func (n *Homophones) Code() string {
 	return "hp"
+}
+func (n *Homophones) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *Homophones) Name() string {
@@ -40,6 +39,8 @@ func (n *Homophones) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("hp", func() urlinsane.Algorithm {
-		return &Homophones{}
+		return &Homophones{
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

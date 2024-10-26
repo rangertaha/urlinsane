@@ -6,15 +6,14 @@ import (
 )
 
 type VowelSwapping struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+types []string
 }
 
 func (n *VowelSwapping) Code() string {
 	return "vs"
+}
+func (n *AdjacentCharacterInsertion) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *VowelSwapping) Name() string {
@@ -40,6 +39,9 @@ func (n *VowelSwapping) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("vs", func() urlinsane.Algorithm {
-		return &VowelSwapping{}
+		return &VowelSwapping{
+			types []string
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

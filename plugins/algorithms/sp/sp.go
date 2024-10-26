@@ -6,15 +6,14 @@ import (
 )
 
 type SingularPluralize struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+types []string
 }
 
 func (n *SingularPluralize) Code() string {
 	return "sp"
+}
+func (n *AdjacentCharacterInsertion) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *SingularPluralize) Name() string {
@@ -40,6 +39,9 @@ func (n *SingularPluralize) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("sp", func() urlinsane.Algorithm {
-		return &SingularPluralize{}
+		return &SingularPluralize{
+			types []string
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

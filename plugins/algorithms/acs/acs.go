@@ -1,4 +1,4 @@
-package AdjacentCharacterSubstitution
+package acs
 
 import (
 	"github.com/rangertaha/urlinsane"
@@ -6,15 +6,15 @@ import (
 )
 
 type AdjacentCharacterSubstitution struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+	types []string
 }
 
 func (n *AdjacentCharacterSubstitution) Code() string {
 	return "acs"
+}
+
+func (n *AdjacentCharacterSubstitution) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *AdjacentCharacterSubstitution) Name() string {
@@ -40,6 +40,8 @@ func (n *AdjacentCharacterSubstitution) Exec(urlinsane.Typo) (results []urlinsan
 // Register the plugin
 func init() {
 	algorithms.Add("acs", func() urlinsane.Algorithm {
-		return &AdjacentCharacterSubstitution{}
+		return &AdjacentCharacterSubstitution{
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

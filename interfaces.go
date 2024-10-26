@@ -30,6 +30,7 @@ type Algorithm interface {
 	Fields() []string
 	Headers() []string
 	Exec(Typo) []Typo
+	IsType(string) bool
 }
 
 type Information interface {
@@ -47,6 +48,8 @@ type Typo interface {
 	Algorithm() Algorithm
 	Original() Domain
 	Variant() Domain
+	Name() string
+	Repr() string
 }
 
 // type Result interface {
@@ -62,6 +65,7 @@ type Domain interface {
 	Subdomain() string
 	Domain() string
 	Suffix() string
+	Repr() string
 	Live() bool
 	Meta() map[string]interface{}
 }

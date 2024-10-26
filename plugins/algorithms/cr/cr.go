@@ -6,15 +6,14 @@ import (
 )
 
 type CharacterRepeat struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+types []string
 }
 
 func (n *CharacterRepeat) Code() string {
 	return "cr"
+}
+func (n *CharacterRepeat) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *CharacterRepeat) Name() string {
@@ -40,6 +39,8 @@ func (n *CharacterRepeat) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("cr", func() urlinsane.Algorithm {
-		return &CharacterRepeat{}
+		return &CharacterRepeat{
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }

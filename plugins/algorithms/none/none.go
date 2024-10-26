@@ -6,15 +6,14 @@ import (
 )
 
 type None struct {
-	// Code() string
-	// Name() string
-	// Description() string
-	// Fields() []string
-	// Exec() func(Result) []Result
+	types []string
 }
 
 func (n *None) Code() string {
 	return ""
+}
+func (n *None) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *None) Name() string {
@@ -40,6 +39,8 @@ func (n *None) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add("none", func() urlinsane.Algorithm {
-		return &None{}
+		return &None{
+			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+		}
 	})
 }
