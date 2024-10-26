@@ -2,7 +2,6 @@ package AdjacentCharacterSubstitution
 
 import (
 	"github.com/rangertaha/urlinsane"
-	typo "github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
@@ -40,7 +39,7 @@ func (n *AdjacentCharacterSubstitution) Exec(urlinsane.Typo) (results []urlinsan
 
 // Register the plugin
 func init() {
-	algorithms.Add("acs", func() typo.Module {
+	algorithms.Add("acs", func() urlinsane.Algorithm {
 		return &AdjacentCharacterSubstitution{}
 	})
 }

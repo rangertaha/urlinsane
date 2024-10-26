@@ -33,7 +33,7 @@ func (n *None) Headers() []string {
 	return []string{}
 }
 
-func (n *None) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *None) Exec(urlinsane.Typo) (results urlinsane.Typo) {
 	return
 }
 

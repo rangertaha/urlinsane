@@ -38,7 +38,7 @@ type Information interface {
 	Description() string
 	Fields() []string
 	Headers() []string
-	Exec(Typo) []Typo
+	Exec(Typo) Typo
 }
 
 type Typo interface {

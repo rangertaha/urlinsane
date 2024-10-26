@@ -39,7 +39,7 @@ func (n *AdjacentCharacterInsertion) Exec(urlinsane.Typo) (results []urlinsane.T
 
 // Register the plugin
 func init() {
-	algorithms.Add("aci", func() urlinsane.Module {
+	algorithms.Add("aci", func() urlinsane.Algorithm {
 		return &AdjacentCharacterInsertion{}
 	})
 }

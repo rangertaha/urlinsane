@@ -2,7 +2,6 @@ package AlphabetReplacement
 
 import (
 	"github.com/rangertaha/urlinsane"
-	typo "github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
@@ -40,7 +39,7 @@ func (n *AlphabetReplacement) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("ar", func() typo.Module {
+	algorithms.Add("ar", func() urlinsane.Algorithm {
 		return &AlphabetReplacement{}
 	})
 }
