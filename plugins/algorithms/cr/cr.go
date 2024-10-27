@@ -1,16 +1,18 @@
-package none
+package cr
 
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
+const CODE = "cr"
+
 type CharacterRepeat struct {
-types []string
+	types []string
 }
 
 func (n *CharacterRepeat) Code() string {
-	return "cr"
+	return CODE
 }
 func (n *CharacterRepeat) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
@@ -38,7 +40,7 @@ func (n *CharacterRepeat) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("cr", func() urlinsane.Algorithm {
+	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &CharacterRepeat{
 			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
 		}

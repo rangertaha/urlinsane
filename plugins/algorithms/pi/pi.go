@@ -5,12 +5,15 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
+const CODE = "pi"
+
+
 type PeriodInsertion struct {
 	types []string
 }
 
 func (n *PeriodInsertion) Code() string {
-	return "pi"
+	return CODE
 }
 func (n *PeriodInsertion) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
@@ -38,7 +41,7 @@ func (n *PeriodInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("pi", func() urlinsane.Algorithm {
+	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &PeriodInsertion{
 			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
 		}

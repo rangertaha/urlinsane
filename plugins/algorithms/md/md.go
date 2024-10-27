@@ -1,16 +1,18 @@
-package none
+package md
 
 import (
 	"github.com/rangertaha/urlinsane"
-	algorithms "github.com/rangertaha/urlinsane/plugins/algorithms"
+	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
+const CODE = "md"
+
 type MissingDot struct {
-types []string
+	types []string
 }
 
 func (n *MissingDot) Code() string {
-	return "md"
+	return CODE
 }
 func (n *MissingDot) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
@@ -38,7 +40,7 @@ func (n *MissingDot) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("md", func() urlinsane.Algorithm {
+	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &MissingDot{
 			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
 		}

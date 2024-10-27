@@ -5,12 +5,14 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
+const CODE = "co"
+
 type CharacterOmission struct {
-types []string
+	types []string
 }
 
 func (n *CharacterOmission) Code() string {
-	return "co"
+	return CODE
 }
 func (n *CharacterOmission) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
@@ -38,7 +40,7 @@ func (n *CharacterOmission) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("co", func() urlinsane.Algorithm {
+	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &CharacterOmission{
 			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
 		}

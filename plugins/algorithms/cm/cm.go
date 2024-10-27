@@ -1,16 +1,18 @@
-package none
+package cm
 
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
+const CODE = "cm"
+
 type CommonMisspellings struct {
-types []string
+	types []string
 }
 
 func (n *CommonMisspellings) Code() string {
-	return "cm"
+	return CODE
 }
 func (n *CommonMisspellings) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
@@ -38,9 +40,8 @@ func (n *CommonMisspellings) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("cm", func() urlinsane.Algorithm {
+	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &CommonMisspellings{
-			
 			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
 		}
 	})

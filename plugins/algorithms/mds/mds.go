@@ -2,15 +2,17 @@ package mds
 
 import (
 	"github.com/rangertaha/urlinsane"
-	algorithms "github.com/rangertaha/urlinsane/plugins/algorithms"
+	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
+
+const CODE = "mds"
 
 type MissingDashes struct {
 	types []string
 }
 
 func (n *MissingDashes) Code() string {
-	return "mds"
+	return CODE
 }
 func (n *MissingDashes) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
@@ -38,7 +40,7 @@ func (n *MissingDashes) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("mds", func() urlinsane.Algorithm {
+	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &MissingDashes{
 			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
 		}

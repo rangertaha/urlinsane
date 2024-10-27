@@ -1,16 +1,18 @@
-package AlphabetInsertion
+package ia
 
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
+const CODE = "ia"
+
 type AlphabetInsertion struct {
-types []string
+	types []string
 }
 
 func (n *AlphabetInsertion) Code() string {
-	return "ai"
+	return CODE
 }
 func (n *AlphabetInsertion) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
@@ -38,7 +40,7 @@ func (n *AlphabetInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("AlphabetInsertion", func() urlinsane.Algorithm {
+	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &AlphabetInsertion{
 			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
 		}

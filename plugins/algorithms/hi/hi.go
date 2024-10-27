@@ -1,16 +1,18 @@
-package none
+package hi
 
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
+const CODE = "hi"
+
 type DashInsertion struct {
-types []string
+	types []string
 }
 
 func (n *DashInsertion) Code() string {
-	return "hi"
+	return CODE
 }
 func (n *DashInsertion) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
@@ -38,7 +40,7 @@ func (n *DashInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("hi", func() urlinsane.Algorithm {
+	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &DashInsertion{
 			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
 		}

@@ -5,12 +5,14 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
+const CODE = "dcr"
+
 type DoubleCharacterReplacement struct {
-types []string
+	types []string
 }
 
 func (n *DoubleCharacterReplacement) Code() string {
-	return "dcr"
+	return CODE
 }
 func (n *DoubleCharacterReplacement) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
@@ -38,7 +40,7 @@ func (n *DoubleCharacterReplacement) Exec(urlinsane.Typo) (results []urlinsane.T
 
 // Register the plugin
 func init() {
-	algorithms.Add("dcr", func() urlinsane.Algorithm {
+	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &DoubleCharacterReplacement{
 			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
 		}
