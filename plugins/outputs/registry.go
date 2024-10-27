@@ -11,37 +11,37 @@ const (
 	DOMAINS = "DOMAINS"
 )
 
-type Creator func() urlinsane.Information
+type Creator func() urlinsane.Output
 
 var Types = []string{"ENTITY", "DOMAINS"}
 
 
-var Information = map[string]Creator{}
+var Outputs = map[string]Creator{}
 
 func Add(name string, creator Creator) {
-	Information[name] = creator
+	Outputs[name] = creator
 }
 
 func Get(name string) (Creator, error) {
-	if plugin, ok := Information[name]; ok {
+	if plugin, ok := Outputs[name]; ok {
 		return plugin, nil
 	}
 
 	return nil, fmt.Errorf("unable to locate outputs/%s plugin", name)
 }
 
-func All() (mods []urlinsane.Information) {
-	for _, plugin := range Information {
+func All() (mods []urlinsane.Output) {
+	for _, plugin := range Outputs {
 		mods = append(mods, plugin())
 	}
 	return
 }
 
-func List(IDs ...string) (infos []urlinsane.Information) {
-	for id, info := range Information {
+func List(IDs ...string) (outputs []urlinsane.Output) {
+	for id, output := range Outputs {
 		for _, aid := range IDs {
 			if id == aid {
-				infos = append(infos, info())
+				outputs = append(outputs, output())
 			}
 		}
 	}
@@ -52,8 +52,8 @@ func List(IDs ...string) (infos []urlinsane.Information) {
 	}
 
 	if len(IDs) == 0 {
-		for _, info := range Information {
-			infos = append(infos, info())
+		for _, output := range Outputs {
+			outputs = append(outputs, output())
 		}
 	}
 

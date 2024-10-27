@@ -27,10 +27,10 @@ type Algorithm interface {
 	Code() string
 	Name() string
 	Description() string
+	IsType(string) bool
 	Fields() []string
 	Headers() []string
 	Exec(Typo) []Typo
-	IsType(string) bool
 }
 
 type Information interface {
@@ -40,6 +40,12 @@ type Information interface {
 	Fields() []string
 	Headers() []string
 	Exec(Typo) Typo
+}
+
+type Output interface {
+	Code() string
+	Description() string
+	Process(Typo) Typo
 }
 
 type Typo interface {
