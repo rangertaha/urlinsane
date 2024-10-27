@@ -5,12 +5,14 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
+const CODE = "acs"
+
 type AdjacentCharacterSubstitution struct {
 	types []string
 }
 
 func (n *AdjacentCharacterSubstitution) Code() string {
-	return "acs"
+	return CODE
 }
 
 func (n *AdjacentCharacterSubstitution) IsType(str string) bool {
@@ -39,7 +41,7 @@ func (n *AdjacentCharacterSubstitution) Exec(urlinsane.Typo) (results []urlinsan
 
 // Register the plugin
 func init() {
-	algorithms.Add("acs", func() urlinsane.Algorithm {
+	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &AdjacentCharacterSubstitution{
 			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
 		}

@@ -1,18 +1,20 @@
-package none
+package sp
 
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
+const CODE = "sp"
+
 type SingularPluralize struct {
-types []string
+	types []string
 }
 
 func (n *SingularPluralize) Code() string {
-	return "sp"
+	return CODE
 }
-func (n *AdjacentCharacterInsertion) IsType(str string) bool {
+func (n *SingularPluralize) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
 }
 
@@ -38,9 +40,8 @@ func (n *SingularPluralize) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("sp", func() urlinsane.Algorithm {
+	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &SingularPluralize{
-			types []string
 			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
 		}
 	})

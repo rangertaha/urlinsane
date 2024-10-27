@@ -1,18 +1,20 @@
-package none
+package wtld
 
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
+const CODE = "wtld"
+
 type WrongTLD struct {
-types []string
+	types []string
 }
 
 func (n *WrongTLD) Code() string {
-	return "wtld"
+	return CODE
 }
-func (n *WrongThirdTLD) IsType(str string) bool {
+func (n *WrongTLD) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
 }
 func (n *WrongTLD) Name() string {
@@ -37,9 +39,8 @@ func (n *WrongTLD) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("wtld", func() urlinsane.Algorithm {
+	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &WrongTLD{
-			types []string
 			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
 		}
 	})

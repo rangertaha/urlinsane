@@ -5,12 +5,14 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
+const CODE = "cs"
+
 type CharacterSwap struct {
 	types []string
 }
 
 func (n *CharacterSwap) Code() string {
-	return "cs"
+	return CODE
 }
 func (n *CharacterSwap) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
@@ -38,7 +40,7 @@ func (n *CharacterSwap) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("cs", func() urlinsane.Algorithm {
+	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &CharacterSwap{
 			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
 		}

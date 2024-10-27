@@ -1,16 +1,18 @@
-package none
+package bf
 
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
+const CODE = "bf"
+
 type BitFlipping struct {
-types []string
+	types []string
 }
 
 func (n *BitFlipping) Code() string {
-	return "bf"
+	return CODE
 }
 func (n *BitFlipping) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
@@ -38,9 +40,8 @@ func (n *BitFlipping) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("bf", func() urlinsane.Algorithm {
+	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &BitFlipping{
-			
 			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
 		}
 	})

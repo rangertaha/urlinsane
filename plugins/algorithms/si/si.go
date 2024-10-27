@@ -1,18 +1,20 @@
-package none
+package si
 
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
+const CODE = "si"
+
 type SubdomainInsertion struct {
-types []string
+	types []string
 }
 
 func (n *SubdomainInsertion) Code() string {
-	return "si"
+	return CODE
 }
-func (n *AdjacentCharacterInsertion) IsType(str string) bool {
+func (n *SubdomainInsertion) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
 }
 
@@ -38,9 +40,8 @@ func (n *SubdomainInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 
 // Register the plugin
 func init() {
-	algorithms.Add("si", func() urlinsane.Algorithm {
+	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &SubdomainInsertion{
-			types []string
 			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
 		}
 	})
