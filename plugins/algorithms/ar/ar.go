@@ -34,7 +34,8 @@ func (n *AlphabetReplacement) Headers() []string {
 	return []string{}
 }
 
-func (n *AlphabetReplacement) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *AlphabetReplacement) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+	out = append(out, in)
 	return
 }
 
@@ -43,7 +44,7 @@ func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &AlphabetReplacement{
 
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
 		}
 	})
 }

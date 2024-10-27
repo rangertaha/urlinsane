@@ -34,7 +34,8 @@ func (n *CharacterOmission) Headers() []string {
 	return []string{}
 }
 
-func (n *CharacterOmission) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *CharacterOmission) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+	out = append(out, in)
 	return
 }
 
@@ -42,7 +43,7 @@ func (n *CharacterOmission) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &CharacterOmission{
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
 		}
 	})
 }

@@ -34,7 +34,8 @@ func (n *NumeralSwap) Headers() []string {
 	return []string{}
 }
 
-func (n *NumeralSwap) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *NumeralSwap) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+	out = append(out, in)
 	return
 }
 
@@ -42,7 +43,7 @@ func (n *NumeralSwap) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &NumeralSwap{
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
 		}
 	})
 }

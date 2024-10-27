@@ -34,7 +34,8 @@ func (n *Homoglyphs) Headers() []string {
 	return []string{}
 }
 
-func (n *Homoglyphs) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *Homoglyphs) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+	out = append(out, in)
 	return
 }
 
@@ -42,7 +43,7 @@ func (n *Homoglyphs) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &Homoglyphs{
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
 		}
 	})
 }

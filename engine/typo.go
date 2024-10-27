@@ -16,6 +16,7 @@ package engine
 
 import (
 	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/config"
 )
 
 type Typo struct {
@@ -27,31 +28,50 @@ type Typo struct {
 	name      string
 }
 
-func (t Typo) Keyboard() urlinsane.Keyboard {
+func NewTypo(tpy *Typo) *Typo {
+	typo := tpy
+	return typo
+}
+
+func (t *Typo) Keyboard() urlinsane.Keyboard {
 	return t.keyboard
 }
 
-func (t Typo) Language() urlinsane.Language {
+func (t *Typo) Language() urlinsane.Language {
 	return t.language
 }
 
-func (t Typo) Algorithm() urlinsane.Algorithm {
+func (t *Typo) Algorithm() urlinsane.Algorithm {
 	return t.algorithm
 }
 
-func (t Typo) Original() urlinsane.Domain {
+func (t *Typo) Original() urlinsane.Domain {
 	return t.original
 }
 
-func (t Typo) Variant() urlinsane.Domain {
+func (t *Typo) Variant() urlinsane.Domain {
 	return t.variant
 }
 
-func (t Typo) Name() string {
+func (t *Typo) SetVariant(str string) {
+	t.variant = config.NewDommain(str)
+}
+
+func (t *Typo) NewVariant(str string) urlinsane.Typo {
+	new := NewTypo(t)
+	new.variant = config.NewDommain(str)
+	return new
+}
+
+func (t *Typo) Name() string {
 	return t.name
 }
 
-func (t Typo) Repr() string {
+func (t *Typo) SetName(str string) {
+	t.name = str
+}
+
+func (t *Typo) Repr() string {
 	if t.name != "" {
 		return t.name
 	}

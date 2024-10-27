@@ -5,7 +5,7 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/information"
 )
 
-const CODE = "aci"
+const CODE = "none"
 
 type None struct {
 	types []string
@@ -20,7 +20,7 @@ func (n *None) Name() string {
 }
 
 func (n *None) Description() string {
-	return ""
+	return "Nothing"
 }
 
 func (n *None) Fields() []string {
@@ -31,8 +31,8 @@ func (n *None) Headers() []string {
 	return []string{}
 }
 
-func (n *None) Exec(urlinsane.Typo) (results urlinsane.Typo) {
-	return
+func (n *None) Exec(in urlinsane.Typo) (out urlinsane.Typo) {
+	return in
 }
 
 // Register the plugin

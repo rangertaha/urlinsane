@@ -44,8 +44,9 @@ type Information interface {
 
 type Output interface {
 	Code() string
+	Set(string, string)
 	Description() string
-	Process(Typo) Typo
+	Write(Typo)
 }
 
 type Typo interface {
@@ -54,7 +55,10 @@ type Typo interface {
 	Algorithm() Algorithm
 	Original() Domain
 	Variant() Domain
+	SetVariant(string)
+	NewVariant(string) Typo
 	Name() string
+	SetName(string)
 	Repr() string
 }
 

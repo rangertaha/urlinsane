@@ -1,4 +1,4 @@
-package information
+package outputs
 
 import (
 	"fmt"
@@ -22,9 +22,9 @@ func Add(name string, creator Creator) {
 	Outputs[name] = creator
 }
 
-func Get(name string) (Creator, error) {
+func Get(name string) (urlinsane.Output, error) {
 	if plugin, ok := Outputs[name]; ok {
-		return plugin, nil
+		return plugin(), nil
 	}
 
 	return nil, fmt.Errorf("unable to locate outputs/%s plugin", name)

@@ -34,7 +34,8 @@ func (n *VowelSwapping) Headers() []string {
 	return []string{}
 }
 
-func (n *VowelSwapping) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *VowelSwapping) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+	out = append(out, in)
 	return
 }
 
@@ -42,7 +43,7 @@ func (n *VowelSwapping) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &VowelSwapping{
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
 		}
 	})
 }

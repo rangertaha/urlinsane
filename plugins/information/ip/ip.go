@@ -36,15 +36,15 @@ func (n *Ipaddr) Headers() []string {
 	return []string{}
 }
 
-func (n *Ipaddr) Exec(urlinsane.Typo) (results urlinsane.Typo) {
-	return
+func (n *Ipaddr) Exec(in urlinsane.Typo) (out urlinsane.Typo) {
+	return in
 }
 
 // Register the plugin
 func init() {
 	information.Add(CODE, func() urlinsane.Information {
 		return &Ipaddr{
-			id: 0,
+			id:    0,
 			types: []string{information.DOMAINS},
 		}
 	})

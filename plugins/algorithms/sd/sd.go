@@ -23,7 +23,7 @@ func (n *StripDash) Name() string {
 }
 
 func (n *StripDash) Description() string {
-	return "created by omitting a single dash from the domain"
+	return "created by omitting a single dash from the name"
 }
 
 func (n *StripDash) Fields() []string {
@@ -34,7 +34,8 @@ func (n *StripDash) Headers() []string {
 	return []string{}
 }
 
-func (n *StripDash) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *StripDash) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+	out = append(out, in)
 	return
 }
 
@@ -42,7 +43,7 @@ func (n *StripDash) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &StripDash{
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
 		}
 	})
 }

@@ -1,45 +1,39 @@
 package none
 
 import (
+	"fmt"
+
 	"github.com/rangertaha/urlinsane"
-	"github.com/rangertaha/urlinsane/plugins/information"
+	"github.com/rangertaha/urlinsane/plugins/outputs"
 )
 
-const CODE = "aci"
+const CODE = "none"
 
 type None struct {
-	types []string
+	rtype string
+	file  string
 }
 
 func (n *None) Code() string {
 	return CODE
 }
 
-func (n *None) Name() string {
-	return "None"
+func (n *None) Set(typ, filepath string) {
+	n.rtype = typ
+	n.file = filepath
 }
 
 func (n *None) Description() string {
 	return ""
 }
 
-func (n *None) Fields() []string {
-	return []string{}
-}
-
-func (n *None) Headers() []string {
-	return []string{}
-}
-
-func (n *None) Exec(urlinsane.Typo) (results urlinsane.Typo) {
-	return
+func (n *None) Write(in urlinsane.Typo) {
+	fmt.Println(in)
 }
 
 // Register the plugin
 func init() {
-	information.Add(CODE, func() urlinsane.Information {
-		return &None{
-			types: []string{information.ENTITY, information.DOMAINS},
-		}
+	outputs.Add(CODE, func() urlinsane.Output {
+		return &None{}
 	})
 }

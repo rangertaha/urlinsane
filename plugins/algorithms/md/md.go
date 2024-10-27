@@ -1,6 +1,8 @@
 package md
 
 import (
+	"fmt"
+
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
@@ -23,7 +25,7 @@ func (n *MissingDot) Name() string {
 }
 
 func (n *MissingDot) Description() string {
-	return "Missing Dot is created by omitting a dot from the domain"
+	return "Created by omitting a dot from the name"
 }
 
 func (n *MissingDot) Fields() []string {
@@ -34,7 +36,17 @@ func (n *MissingDot) Headers() []string {
 	return []string{}
 }
 
-func (n *MissingDot) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *MissingDot) Exec(typo urlinsane.Typo) (typos []urlinsane.Typo) {
+	for _, variant := range missingCharFunc(typo.Repr(), ".") {
+
+		// if typo.Original().Repr() != variant {
+		// newTypo := typo.Copy()
+		newTypo := typo.NewVariant(variant)
+		fmt.Println(newTypo, variant)
+		typos = append(typos, newTypo)
+		// }
+	}
+
 	return
 }
 
@@ -42,7 +54,30 @@ func (n *MissingDot) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &MissingDot{
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.DOMAIN},
 		}
 	})
+}
+
+// func missingDotFunc(tc Result) (results []Result) {
+// 	for _, str := range missingCharFunc(tc.Original.String(), ".") {
+// 		if tc.Original.Domain != str {
+// 			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix, Meta{}, false}
+// 			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
+// 		}
+// 	}
+// 	dm := Domain{tc.Original.Subdomain, strings.Replace(tc.Original.Domain, ".", "", -1), tc.Original.Suffix, Meta{}, false}
+// 	results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
+// 	return results
+// }
+
+// missingCharFunc removes a character one at a time from the string.
+// For example, wwwgoogle.com and www.googlecom
+func missingCharFunc(str, character string) (results []string) {
+	for i, char := range str {
+		if character == string(char) {
+			results = append(results, str[:i]+str[i+1:])
+		}
+	}
+	return
 }

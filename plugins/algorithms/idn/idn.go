@@ -45,7 +45,8 @@ func (n *InternationalizedDomainName) Headers() []string {
 	return []string{}
 }
 
-func (n *InternationalizedDomainName) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *InternationalizedDomainName) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+	out = append(out, in)
 	return
 }
 
@@ -54,7 +55,7 @@ func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &InternationalizedDomainName{
 
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.DOMAIN},
 		}
 	})
 }

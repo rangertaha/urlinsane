@@ -35,7 +35,8 @@ func (n *AdjacentCharacterInsertion) Headers() []string {
 	return []string{}
 }
 
-func (n *AdjacentCharacterInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *AdjacentCharacterInsertion) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+	out = append(out, in)
 	return
 }
 
@@ -43,7 +44,7 @@ func (n *AdjacentCharacterInsertion) Exec(urlinsane.Typo) (results []urlinsane.T
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &AdjacentCharacterInsertion{
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
 		}
 	})
 }

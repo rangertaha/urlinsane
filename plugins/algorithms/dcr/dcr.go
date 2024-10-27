@@ -34,7 +34,8 @@ func (n *DoubleCharacterReplacement) Headers() []string {
 	return []string{}
 }
 
-func (n *DoubleCharacterReplacement) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *DoubleCharacterReplacement) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+	out = append(out, in)
 	return
 }
 
@@ -42,7 +43,7 @@ func (n *DoubleCharacterReplacement) Exec(urlinsane.Typo) (results []urlinsane.T
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &DoubleCharacterReplacement{
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
 		}
 	})
 }

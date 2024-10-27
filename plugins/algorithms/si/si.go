@@ -23,7 +23,7 @@ func (n *SubdomainInsertion) Name() string {
 }
 
 func (n *SubdomainInsertion) Description() string {
-	return "inserts common subdomain at the beginning of the domain"
+	return "Inserts common subdomain at the beginning of the domain"
 }
 
 func (n *SubdomainInsertion) Fields() []string {
@@ -34,7 +34,8 @@ func (n *SubdomainInsertion) Headers() []string {
 	return []string{}
 }
 
-func (n *SubdomainInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *SubdomainInsertion) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+	out = append(out, in)
 	return
 }
 
@@ -42,7 +43,7 @@ func (n *SubdomainInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &SubdomainInsertion{
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.DOMAIN},
 		}
 	})
 }
