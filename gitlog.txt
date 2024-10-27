@@ -1,0 +1,4535 @@
+commit a03828d04799b7683151929571fbeec2f472351c
+Merge: 59231c0 28ac1a6
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Oct 8 09:51:07 2023 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Oct 8 09:51:07 2023 -0400
+
+    updates
+
+commit 28ac1a627d8daaa51531ae9de6d23a015f8a75fb
+Author:    Rangertaha <rangertaha@CIO01>
+AuthorDate: Sun Feb 25 22:55:10 2024 -0400
+Commit:    Rangertaha <rangertaha@CIO01>
+CommitDate: Sun Feb 25 22:55:10 2024 -0400
+
+    updated arabic langauge pack
+
+commit 51f463a6e6346aa28d8371c908edf8f8575fe312
+Author:    Rangertaha <rangertaha@CIO001>
+AuthorDate: Sun Mar 17 11:38:14 2024 -0400
+Commit:    Rangertaha <rangertaha@CIO001>
+CommitDate: Sun Mar 17 11:38:14 2024 -0400
+
+    cleaning up code and making it simpler
+
+commit 5189cdf5798d5e651f69e62fd02634ea58d51b12
+Author:    Rangertaha <rangertaha@CIO001>
+AuthorDate: Wed Apr 17 11:38:10 2024 -0400
+Commit:    Rangertaha <rangertaha@CIO001>
+CommitDate: Wed Apr 17 11:38:10 2024 -0400
+
+    cleaning up code and making it simpler
+
+commit 2381e709a2dc0a30872f14c808642c5af9424f29
+Author:    Rangertaha <rangertaha@CIO001>
+AuthorDate: Tue May 14 21:46:24 2024 -0400
+Commit:    Rangertaha <rangertaha@CIO001>
+CommitDate: Tue May 14 21:46:24 2024 -0400
+
+    cleaning up code and making it simpler
+
+commit b0bbefff2b4b0b2eb42e863cf75a3f326dafbabb
+Author:    Rangertaha <rangertaha@CIO001>
+AuthorDate: Sun Jul 14 21:46:16 2024 -0400
+Commit:    Rangertaha <rangertaha@CIO001>
+CommitDate: Sun Jul 14 21:46:16 2024 -0400
+
+    cleaning up code and making it simpler
+
+commit 8c6a048ecbfadb8d4394f40ce23bb7233cb84175
+Author:    Rangertaha <rangertaha@CIO001>
+AuthorDate: Sat Jul 13 17:21:42 2024 -0400
+Commit:    Rangertaha <rangertaha@CIO001>
+CommitDate: Sat Jul 13 17:21:42 2024 -0400
+
+    cleaning up code and making it simpler
+
+commit 8c6401fa504bb2d1f537af0a0c57fea84c2476cf
+Author:    Rangertaha <rangertaha@CIO001>
+AuthorDate: Sat Jul 13 17:21:38 2024 -0400
+Commit:    Rangertaha <rangertaha@CIO001>
+CommitDate: Sat Jul 13 17:21:38 2024 -0400
+
+    cleaning up code and making it simpler
+
+commit 26a9bab1ebbf864fede320be79ce59e7924db5ed
+Author:    Rangertaha <rangertaha@CIO001>
+AuthorDate: Sat Jul 13 03:57:48 2024 -0400
+Commit:    Rangertaha <rangertaha@CIO001>
+CommitDate: Sat Jul 13 03:57:48 2024 -0400
+
+    cleaning up code and making it simpler
+
+commit 3b926bd47be472ed232aa6cb9b49bf7dde9868b8
+Author:    Rangertaha <rangertaha@CIO001>
+AuthorDate: Sat Jul 13 03:57:32 2024 -0400
+Commit:    Rangertaha <rangertaha@CIO001>
+CommitDate: Sat Jul 13 03:57:32 2024 -0400
+
+    cleaning up code and making it simpler
+
+commit e52c26591fb7928c5f257b132d3dc4c19298271e
+Author:    Rangertaha <rangertaha@CIO001>
+AuthorDate: Sat Jul 13 02:11:25 2024 -0400
+Commit:    Rangertaha <rangertaha@CIO001>
+CommitDate: Sat Jul 13 02:11:25 2024 -0400
+
+    cleaning up code and making it simpler
+
+commit 1493a4ea18ebc5c97fc4b6723146f3f38b364622
+Author:    Rangertaha <rangertaha@CIO001>
+AuthorDate: Fri Jul 12 20:26:48 2024 -0400
+Commit:    Rangertaha <rangertaha@CIO001>
+CommitDate: Fri Jul 12 20:26:48 2024 -0400
+
+    cleaning up code and making it simpler
+
+commit 0f9d6d7bc54803422bb958e834a11ca7db61b1d8
+Author:    Rangertaha <rangertaha@CIO001>
+AuthorDate: Fri Jul 12 20:18:43 2024 -0400
+Commit:    Rangertaha <rangertaha@CIO001>
+CommitDate: Fri Jul 12 20:18:43 2024 -0400
+
+    updates
+
+commit 13c9830698bbf2e7a4a3d48c3228c053e4d27a05
+Author:    Rangertaha <rangertaha@CIO001>
+AuthorDate: Thu Jul 11 23:15:22 2024 -0400
+Commit:    Rangertaha <rangertaha@CIO001>
+CommitDate: Thu Jul 11 23:15:22 2024 -0400
+
+    cleaning up code and making it simpler
+
+commit 3eb98370065f1bdd7b23a22c3612630ce6724c39
+Author:    Rangertaha <rangertaha@CIO001>
+AuthorDate: Thu Jul 11 22:28:02 2024 -0400
+Commit:    Rangertaha <rangertaha@CIO001>
+CommitDate: Thu Jul 11 22:28:02 2024 -0400
+
+    cleaning up code and making it simpler
+
+commit d17f3eab0c439b8854693589de5675dd2e573252
+Author:    Rangertaha <rangertaha@users.noreply.github.com>
+AuthorDate: Fri Nov 18 14:34:52 2022 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: Fri Nov 18 14:34:52 2022 -0500
+
+    Update LICENSE
+
+commit 59231c00f86311142b0cc87f4c11c0f1b713abed
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Feb 6 00:38:04 2020 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Feb 6 00:38:04 2020 -0500
+
+    Removed server, removed gcp deployment, and added distance to flags
+
+commit 603cfa4831b4a5b50bb99da4040a74e932ad02d3
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Feb 6 00:34:29 2020 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Feb 6 00:34:29 2020 -0500
+
+    Removed server, removed gcp deployment, and added distance to flags
+
+commit 8d92c4e09a449b86a62fa56ca941518425175279
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Oct 4 08:41:34 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Oct 4 08:41:34 2019 -0400
+
+    updates
+
+commit cc565944afbd1a5c675715b5765c0aa8b54b6a80
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Oct 3 21:42:56 2019 -0400
+Commit:    Rangertaha <rangertaha@users.noreply.github.com>
+CommitDate: Thu Oct 3 21:44:56 2019 -0400
+
+    updates
+
+commit bfb43b06c847b5fd03a8ce05d063a8176c905e4a
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Oct 3 20:56:39 2019 -0400
+Commit:    Rangertaha <rangertaha@users.noreply.github.com>
+CommitDate: Thu Oct 3 21:44:56 2019 -0400
+
+    updates
+
+commit c3d99107d2b1fa78153cb39bd9f51beb236b1b1f
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Oct 1 22:58:56 2019 -0400
+Commit:    Rangertaha <rangertaha@users.noreply.github.com>
+CommitDate: Thu Oct 3 21:44:56 2019 -0400
+
+    updates
+
+commit c7a8deb6d5a0627721438693166c2240a4eb66e1
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Sep 26 22:18:01 2019 -0400
+Commit:    Rangertaha <rangertaha@users.noreply.github.com>
+CommitDate: Thu Oct 3 21:44:56 2019 -0400
+
+    updates
+
+commit 03b43fd6550b08398d06d3f79aca7680a493d744
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Sep 25 23:04:46 2019 -0400
+Commit:    Rangertaha <rangertaha@users.noreply.github.com>
+CommitDate: Thu Oct 3 21:44:56 2019 -0400
+
+    updates
+
+commit 7691fa04b637802a244de55b426c0b9fdd9f1b1d
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Sep 24 22:07:07 2019 -0400
+Commit:    Rangertaha <rangertaha@users.noreply.github.com>
+CommitDate: Thu Oct 3 21:44:56 2019 -0400
+
+    updates
+
+commit 498f9afdcc840cfaafeec36c306c925d771270d1
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Oct 3 21:42:56 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Oct 3 21:42:56 2019 -0400
+
+    updates
+
+commit 948f47ff20e56eb22090372c4e5b5f9b29e57c08
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Oct 3 20:56:39 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Oct 3 20:56:39 2019 -0400
+
+    updates
+
+commit 0d1df3fe1a42c88c06cffcd789f633522db7e9c2
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Oct 1 22:58:56 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Oct 1 22:58:56 2019 -0400
+
+    updates
+
+commit 971332791dec6dbc0ec96cd0b6a0e21b0ab2eeeb
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Sep 26 22:18:01 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Sep 26 22:18:01 2019 -0400
+
+    updates
+
+commit cea075fac949ca5c783ba90bbc8645dc0a4480b2
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Sep 25 23:04:46 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Sep 25 23:04:46 2019 -0400
+
+    updates
+
+commit 0ae6d642f4ccdf495f874aeff14c820c1189d862
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Sep 24 22:07:07 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Sep 24 22:07:07 2019 -0400
+
+    updates
+
+commit dcf93ebe9a3107c68455537afdf60f43286ae82c
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Sep 1 08:41:34 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Sep 1 08:41:34 2019 -0400
+
+    Added license header
+
+commit 5c541fec008b5e8948bf010d53e8ac05c95e3706
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 21 22:25:35 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 21 22:25:35 2019 -0400
+
+    Added initial test for character swaps
+
+commit b903793118cc2a210f2f3a0cc6089564806deeff
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Aug 18 20:44:55 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Aug 18 20:44:55 2019 -0400
+
+    Starting to add testing
+
+commit cd1ec18f7d186de6f0f93ab44f9eeca4d9388b92
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Aug 17 00:08:10 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Aug 17 00:08:10 2019 -0400
+
+    updated languages
+
+commit 76cf72bc3c12fca3174942d081e9ce2319cb9ed4
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 16 23:58:24 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 16 23:58:24 2019 -0400
+
+    updates
+
+commit c2692aa236b84b5d4d6d005ee616594f89ac7afc
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 16 23:57:52 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 16 23:57:52 2019 -0400
+
+    updates
+
+commit ecde3fff97bbaf53200c637941cecac3020a9017
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 15 22:05:29 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 15 22:05:29 2019 -0400
+
+    updates
+
+commit b6bafa264766e3168cc793e4162b80c6d2ced514
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Aug 13 20:21:32 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Aug 13 20:21:32 2019 -0400
+
+    Removed unwanted lines
+
+commit 93b5f876f18e8b23aec5e6611967dee2694fb801
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 12 08:08:18 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 12 08:08:18 2019 -0400
+
+    Removed unwanted lines
+
+commit c080523c7dc91de711d24d90ecefeeda1a14b227
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Aug 11 23:42:40 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Aug 11 23:42:40 2019 -0400
+
+    Removed unwanted lines
+
+commit 09f1db1aafd97a949b0dc794ee09df9c681b8160
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Aug 10 20:12:33 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Aug 10 20:12:33 2019 -0400
+
+    Removed unwanted lines
+
+commit 8db44bdfbcaaaa585a2bb794c7da261d62de32b2
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 9 13:19:31 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 9 13:19:31 2019 -0400
+
+    Removed todo since I am using git projects to track issues
+
+commit a527aba090be997ceef9684fde210ed735d599b1
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 7 15:32:32 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 7 15:32:32 2019 -0400
+
+    Updated table for speed tests
+
+commit 8dfb0b4abe0622a4b6dd2809128df9423981e805
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 7 15:19:41 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 7 15:19:41 2019 -0400
+
+    Updated readme
+
+commit a203f96c152ac8c51ac755bf625e726cfc0e956e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Aug 6 15:09:16 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Aug 6 15:09:16 2019 -0400
+
+    Updated readme
+
+commit cfc00efca6ae2493a5a550d7380fb87b7948ab11
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 1 21:47:36 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 1 21:47:36 2019 -0400
+
+    Updated readme
+
+commit 4228e09e6ad98e775befaca8827e0172915cd497
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 1 21:44:16 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 1 21:44:16 2019 -0400
+
+    Updated readme
+
+commit c523be27288ea70dc3e1832d66d494b6176e2b33
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jul 30 21:26:18 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jul 30 21:26:18 2019 -0400
+
+    Updated readme
+
+commit 9f57e2e39fb466c0af616e419d336ee70ca86611
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jul 30 21:25:20 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jul 30 21:25:20 2019 -0400
+
+    Updated readme
+
+commit 3c3a15b6e2fe4c38126f93291813af77673ee805
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jul 30 21:23:27 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jul 30 21:23:27 2019 -0400
+
+    Updated readme
+
+commit d6874f6d8d6813ec655ee6b83be3b8a7d528c89e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jul 30 21:16:52 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jul 30 21:16:52 2019 -0400
+
+    Updated readme
+
+commit 9cccb5ed257d19b9697e9a94af64452fbcb4a77b
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jul 30 21:14:00 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jul 30 21:14:00 2019 -0400
+
+    Updated readme
+
+commit 377045b1f231f003be069821597a52f81251f70f
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jul 30 08:23:48 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jul 30 08:23:48 2019 -0400
+
+    Updated readme
+
+commit c38aad243d86012d6794cc6fff1fd1c2cbfca175
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jul 30 07:08:25 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jul 30 07:08:25 2019 -0400
+
+    Updated readme
+
+commit 6165888c974610131f6afc9adbe60812c97cff77
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jul 30 06:57:42 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jul 30 06:57:42 2019 -0400
+
+    Updated readme
+
+commit 6a7dbdb3a5123e36fc62f13cf3172527981b9be4
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jul 30 06:42:10 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jul 30 06:42:10 2019 -0400
+
+    Removed space
+
+commit d8d7c250d340cd23b1ba4ad3ce5e7cd61d5e3a0a
+Merge: 4d90acc 27c37f4
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jul 30 06:39:46 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jul 30 06:39:46 2019 -0400
+
+    Merge remote-tracking branch 'origin/master'
+
+commit 4d90acc6e19474e63d61be9cffc3d225e5401235
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jul 30 06:39:32 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jul 30 06:39:32 2019 -0400
+
+    changed back
+
+commit 27c37f4b8baccc6d1a09b5f538b14f5663094ce4
+Author:     Taha Saidi <tahasaidi@gmail.com>
+AuthorDate: Tue Jul 30 06:23:59 2019 -0400
+Commit:     Taha Saidi <tahasaidi@gmail.com>
+CommitDate: Tue Jul 30 06:23:59 2019 -0400
+
+    changed code location to be under CYBINT
+
+commit 72cf293cc8c407d2fd2037e212ee1ca7fa16e58a
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Mon Jul 8 20:59:42 2019 -0400
+Commit:     Tal Hachi <rangertaha@gmail.com>
+CommitDate: Mon Jul 8 20:59:42 2019 -0400
+
+    updated version
+
+commit b38a9e0bddf36c37b643aed3b9828fa58f86f89f
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Mon Jul 8 20:57:30 2019 -0400
+Commit:     Tal Hachi <rangertaha@gmail.com>
+CommitDate: Mon Jul 8 20:57:30 2019 -0400
+
+    updated version
+
+commit 5ca1b50ef29641a3cabd0c6e8d59e35d9fc0a0c5
+Merge: fa802bf 3f3f65e
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Mon Jul 8 07:56:18 2019 -0400
+Commit:     Tal Hachi <rangertaha@gmail.com>
+CommitDate: Mon Jul 8 07:56:18 2019 -0400
+
+    Merge remote-tracking branch 'origin/master'
+    
+    # Conflicts:
+    #       pkg/typo/output.go
+
+commit fa802bff79fb07a00a871637f6a5536bac5c21e8
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Mon Jul 8 07:53:02 2019 -0400
+Commit:     Tal Hachi <rangertaha@gmail.com>
+CommitDate: Mon Jul 8 07:53:02 2019 -0400
+
+    Added json output
+
+commit 3f3f65e0a7b3b59adce8ca8329898dd7701caa76
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Mon Jul 8 07:45:02 2019 -0400
+Commit:    Rangertaha <rangertaha@users.noreply.github.com>
+CommitDate: Mon Jul 8 07:50:27 2019 -0400
+
+    Added json output
+
+commit e2437f03819fb27ac65809c5e2b2d74aea8a2ff3
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Mon Jul 8 07:45:02 2019 -0400
+Commit:     Tal Hachi <rangertaha@gmail.com>
+CommitDate: Mon Jul 8 07:45:02 2019 -0400
+
+    Added json output
+
+commit 69d28723e41f857c6907b48d41e240e0c9c6c29c
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Mon Jul 8 07:10:46 2019 -0400
+Commit:     Tal Hachi <rangertaha@gmail.com>
+CommitDate: Mon Jul 8 07:10:46 2019 -0400
+
+    Updated timing and added meta json output
+
+commit 781328b5c093e97fa5d0b19545eebd0f7367dbb3
+Merge: ed59fd4 7f56a07
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Fri Jul 5 16:34:44 2019 -0400
+Commit:     Tal Hachi <rangertaha@gmail.com>
+CommitDate: Fri Jul 5 16:34:44 2019 -0400
+
+    Merge remote-tracking branch 'remotes/origin/improvements' into feature/timing
+
+commit 7f56a076ce184eae4acd3ba5c6f9a77e9b84312d
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Fri Jul 5 08:49:29 2019 -0400
+Commit:     Tal Hachi <rangertaha@gmail.com>
+CommitDate: Fri Jul 5 08:49:29 2019 -0400
+
+    removed datasets and moved to cybint's repoo
+
+commit 8d64be68ba7b7bf37939b2dab86cd81116ad0f77
+Merge: 7326c71 a146b63
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Fri Jul 5 08:46:48 2019 -0400
+Commit:     Tal Hachi <rangertaha@gmail.com>
+CommitDate: Fri Jul 5 08:46:48 2019 -0400
+
+    Merge branch 'improvements' of https://github.com/cybersectech-org/urlinsane into improvements
+    
+    # Conflicts:
+    #       pkg/datasets-/geolite2.go
+    #       pkg/datasets-/subdomains.go
+    #       pkg/datasets-/tld.go
+    #       pkg/typo/output.go
+    #       pkg/typo/typos.go
+
+commit 7326c71c9be17e5a9a2324757dac990196719a22
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Fri Jul 5 08:43:25 2019 -0400
+Commit:     Tal Hachi <rangertaha@gmail.com>
+CommitDate: Fri Jul 5 08:43:25 2019 -0400
+
+    Updated datasets and color output
+
+commit a146b63deec5dbed492d7060d81e062831a5070e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Jul 4 07:15:34 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Jul 4 07:15:34 2019 -0400
+
+    Updated my github link
+
+commit 23cd5da7e0b1d23f11386ed5cd251e833cc27de1
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Jul 3 23:12:15 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Jul 3 23:12:15 2019 -0400
+
+    Added color output
+
+commit 2e36fc12b5c629647ee47a6884005549d1d65880
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Jun 30 11:54:01 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Jun 30 11:54:01 2019 -0400
+
+    Fixed redirect domain value
+
+commit b1e6dfeddbf26c4b0d73d618e72f2a89e14f1f8b
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Jun 30 11:06:21 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Jun 30 11:06:21 2019 -0400
+
+    Updated tests
+
+commit 4c48f61c2a80d9992cfcddbe1de0fbc649f9b757
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Jun 30 11:03:45 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Jun 30 11:03:45 2019 -0400
+
+    Removed datasets
+
+commit 62918e030ae697034de0de496c4cf1b7fc788bbc
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Jun 30 11:02:20 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Jun 30 11:02:20 2019 -0400
+
+    Added colors to the stdout
+
+commit a3ca980b0cd5339a01ccd5695af1159bd40501c3
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Jun 30 08:29:41 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Jun 30 08:29:41 2019 -0400
+
+    using datasets from cybint
+
+commit f7feb41bdce898d45ce295b1d8fc2aad53c8bad5
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jun 29 10:34:36 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jun 29 10:34:36 2019 -0400
+
+    using datasets from cybint
+
+commit aad4ab0b7589ca8753037d9c8acc82a4976d2263
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Jun 28 22:28:14 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Jun 28 22:28:14 2019 -0400
+
+    removed unused code
+
+commit 9b68a51241efdaa6f9261e407846859ba9f30f4d
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Jun 28 08:50:19 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Jun 28 08:50:19 2019 -0400
+
+    removed unused code
+
+commit 974d5948a5b87e0be716df47e413e6353d28028e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Jun 28 07:09:24 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Jun 28 07:09:24 2019 -0400
+
+    updates
+
+commit af1a5ac16abfc352fa888c57a71f53e3d0312e38
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Thu Jun 27 00:01:40 2019 -0400
+Commit:     Tal Hachi <rangertaha@gmail.com>
+CommitDate: Thu Jun 27 00:01:40 2019 -0400
+
+    Created a single registry object for all modules
+
+commit 30d37ca7118aa51806af790784cc6afe31215579
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Wed Jun 26 23:16:22 2019 -0400
+Commit:     Tal Hachi <rangertaha@gmail.com>
+CommitDate: Wed Jun 26 23:16:22 2019 -0400
+
+    Created a single registry object for all modules
+
+commit e5a8e3396cc956305aa06dfe4cdd4d0d661f3929
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Wed Jun 26 21:28:50 2019 -0400
+Commit:     Tal Hachi <rangertaha@gmail.com>
+CommitDate: Wed Jun 26 21:28:50 2019 -0400
+
+    Created a single registry object for all modules
+
+commit 43e28c58307560401a47619ea88e1ff2a87a56d8
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Wed Jun 26 20:29:08 2019 -0400
+Commit:     Tal Hachi <rangertaha@gmail.com>
+CommitDate: Wed Jun 26 20:29:08 2019 -0400
+
+    Created a single registry object for all modules
+
+commit ed59fd4eb842825a3ac76994c6000f1dbbb6fdff
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jun 18 16:50:57 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jun 18 16:50:57 2019 -0400
+
+    updates
+
+commit b7a39e7f24619e03a03b1e13a8fb59e46c6a079e
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Tue Jun 11 22:58:10 2019 -0400
+Commit:    Rangertaha <rangertaha@users.noreply.github.com>
+CommitDate: Wed Jun 12 14:08:19 2019 -0400
+
+    Created a single registry object for all modules
+
+commit eee208b97bfceb4e0aef61b5ba1efbef4c1cafb8
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Tue Jun 11 22:52:12 2019 -0400
+Commit:    Rangertaha <rangertaha@users.noreply.github.com>
+CommitDate: Wed Jun 12 14:08:19 2019 -0400
+
+    Created a single registry object for all modules
+
+commit f743a7cecc975c17defabbd8d984cc185d413f6f
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Mon Jun 10 23:21:18 2019 -0400
+Commit:    Rangertaha <rangertaha@users.noreply.github.com>
+CommitDate: Wed Jun 12 14:08:19 2019 -0400
+
+    Created a single registry object for all modules
+
+commit 9aa56785c4023b3a06051e0c3e19420db1e3a7e2
+Merge: 280745a 93e0d65
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Mon Jun 10 05:42:39 2019 -0400
+Commit:     Tal Hachi <talhachi2019@gmail.com>
+CommitDate: Mon Jun 10 05:42:39 2019 -0400
+
+    Merge remote-tracking branch 'remotes/origin/master' into improvement/interface
+    
+    # Conflicts:
+    #       Makefile
+
+commit 280745afe6e5509c916a2cc910dff87e370ead36
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Mon Jun 10 05:12:59 2019 -0400
+Commit:     Tal Hachi <talhachi2019@gmail.com>
+CommitDate: Mon Jun 10 05:12:59 2019 -0400
+
+    Updated the file structure to support adding new commands and functionality, added a meta field, moved data files to its own directory, and consolidated Typo, Extra, Info objects into a single 'Module' struct reducing the amount of code.
+
+commit 93e0d650e4cac4d5dc636d4b6017e59f3d316eae
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Sun Jun 9 21:05:28 2019 -0400
+Commit:     Jubair Saidi <jubair.saidi@gmail.com>
+CommitDate: Sun Jun 9 21:41:10 2019 -0400
+
+    Adds AppEngine config due to limitations in Google Cloud Run websocket support.
+
+commit d9b59d30f9405b2e6bfb5e99523e00d1535be4ee
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Thu Jun 6 23:39:50 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Sun Jun 9 20:54:50 2019 -0400
+
+    adds make commands and updated for deployment workflow
+
+commit f0275bd0143bd9f48a6af794c1d3e0f39733d191
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Fri Jun 7 20:46:51 2019 -0400
+Commit:     Tal Hachi <talhachi2019@gmail.com>
+CommitDate: Fri Jun 7 20:46:51 2019 -0400
+
+    Changed author back to rangertaha
+
+commit 37ca41f028221673bf3f378d6760ff955bc96613
+Merge: 135d99a 6b92402
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Fri Jun 7 20:40:11 2019 -0400
+Commit:     Tal Hachi <talhachi2019@gmail.com>
+CommitDate: Fri Jun 7 20:40:11 2019 -0400
+
+    Merge remote-tracking branch 'remotes/origin/master' into feature/tcp_server
+    
+    # Conflicts:
+    #       cmd/urlinsane/typo.go
+    #       server/service.go
+
+commit 6b9240280c3ff36a18c35d78411c4f6c31fdfcc2
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Thu Jun 6 21:12:44 2019 -0400
+Commit:     Jubair Saidi <jubair.saidi@gmail.com>
+CommitDate: Thu Jun 6 21:14:08 2019 -0400
+
+    renames cloudbuild.push to cloudbuild.deploy and adds deployment flow
+
+commit ac01f1da13b92c49b7345855799c4b71b93b8cfa
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Thu Jun 6 20:05:39 2019 -0400
+Commit:     Jubair Saidi <jubair.saidi@gmail.com>
+CommitDate: Thu Jun 6 20:07:53 2019 -0400
+
+    updates Dockerfile to launch websocket service as default
+
+commit 312c9ba93ff7463e642fd8a67eabd34cfe9c7541
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Tue Jun 4 08:09:43 2019 -0400
+Commit:     Tal Hachi <talhachi2019@gmail.com>
+CommitDate: Tue Jun 4 08:09:43 2019 -0400
+
+    Fixed tests
+
+commit 134414ee7b80993859dfcb60694e7c8a2eb83d72
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Tue Jun 4 07:51:00 2019 -0400
+Commit:     Tal Hachi <talhachi2019@gmail.com>
+CommitDate: Tue Jun 4 07:51:00 2019 -0400
+
+    Updates
+
+commit 575a797123a8f9eeee13c1a032467b13a4d89b2c
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Sun Jun 2 21:08:26 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Sun Jun 2 21:09:30 2019 -0400
+
+    Updates
+
+commit c55f7de29af7594bcae9a106ec62022251b95c5c
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Sun Jun 2 21:03:53 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Sun Jun 2 21:09:30 2019 -0400
+
+    Updates
+
+commit 22e5d745b9ccf02aa6772fd02dcc3b65c7deedba
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Sun Jun 2 20:55:58 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Sun Jun 2 21:09:30 2019 -0400
+
+    Added levenshtein distance
+
+commit 3013ce3d8a17ae56596de7658e085721e21c06c3
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Sun Jun 2 12:44:29 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Sun Jun 2 21:09:30 2019 -0400
+
+    Added levenshtein distance
+
+commit 1d7464f0fabda5cdb2190cdd4df9569c267e1353
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Sun Jun 2 09:20:14 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Sun Jun 2 21:09:30 2019 -0400
+
+    Updates
+
+commit 116599be427917a8a4d950bc461a522812fcafa4
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Sun Jun 2 03:40:05 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Sun Jun 2 21:09:30 2019 -0400
+
+    Updates
+
+commit b05a81ffd390f990c05e763356e77f0c18304c00
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Sun Jun 2 03:25:09 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Sun Jun 2 21:09:30 2019 -0400
+
+    Updates
+
+commit dab855819bcb521b05a340159c48546769759d24
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Sun Jun 2 01:22:16 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Sun Jun 2 21:09:30 2019 -0400
+
+    Updates
+
+commit 000530c582a9bf60ee4e13f730612c5b0fec0680
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Wed May 29 22:21:49 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Sun Jun 2 21:09:30 2019 -0400
+
+    Updates
+
+commit 6d3c5d173fbf9223d6c502567a5224a1be989546
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Wed May 29 22:21:17 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Sun Jun 2 21:09:30 2019 -0400
+
+    Updates
+
+commit 135d99add42365d7ed84d4fc987b8993908d4ca0
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Wed May 29 20:12:07 2019 -0400
+Commit:     Tal Hachi <talhachi2019@gmail.com>
+CommitDate: Wed May 29 20:12:07 2019 -0400
+
+    Updates
+
+commit 8bcd6baa54d7c96be4e36db6d563054f57ef56f8
+Merge: c4a745d 7d4e2dc
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Wed May 29 20:00:01 2019 -0400
+Commit:     Tal Hachi <talhachi2019@gmail.com>
+CommitDate: Wed May 29 20:00:01 2019 -0400
+
+    Merge remote-tracking branch 'remotes/origin/master' into feature/tcp_server
+
+commit 7d4e2dcb1643fb7f23ab6865f1a6799c70326f6c
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Wed May 29 19:55:42 2019 -0400
+Commit:     Tal Hachi <talhachi2019@gmail.com>
+CommitDate: Wed May 29 19:55:42 2019 -0400
+
+    Updates
+
+commit f1e7f84dc71c25dd01004720363f5437f2f06227
+Merge: c11b4cc a4d9ccc
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Wed May 29 17:16:36 2019 -0400
+Commit:     Tal Hachi <talhachi2019@gmail.com>
+CommitDate: Wed May 29 17:16:36 2019 -0400
+
+    Merge branches 'feature/alphabet-replacement' and 'master' of github.com:cybersectech-org/urlinsane into feature/alphabet-replacement
+
+commit c4a745d55e0c0aca0cdcc887b20da242496aa32b
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Mon May 27 10:06:15 2019 -0400
+Commit:     Jubair Saidi <jubair.saidi@gmail.com>
+CommitDate: Tue May 28 23:54:32 2019 -0400
+
+    Removed go version control
+
+commit e48248858a56fdef659fbaa6ad36541a18d4aae1
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Sun May 26 23:07:21 2019 -0400
+Commit:     Jubair Saidi <jubair.saidi@gmail.com>
+CommitDate: Tue May 28 23:54:32 2019 -0400
+
+    Add websocket
+
+commit efbc733957012d1af76d7910536417c69f3878dc
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Sun May 26 21:46:26 2019 -0400
+Commit:     Jubair Saidi <jubair.saidi@gmail.com>
+CommitDate: Tue May 28 23:54:07 2019 -0400
+
+    Add websocket
+
+commit 817ad210b8cf2b5dfdf40e37afd4ee59448878af
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Sat May 25 11:45:16 2019 -0400
+Commit:     Jubair Saidi <jubair.saidi@gmail.com>
+CommitDate: Tue May 28 23:54:07 2019 -0400
+
+    updates
+
+commit a4d9ccc0b78462ed493c53cbe49071454e8b9c45
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Tue May 28 07:54:16 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Tue May 28 07:55:17 2019 -0400
+
+    Updates
+
+commit 4cbc8d3691e42bcbf9a754a8a3e8d0484b517690
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Tue May 21 05:37:14 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Tue May 28 07:55:17 2019 -0400
+
+    Updated version number
+
+commit a1fc6d78bbd88ae083db3385f584253939f57b4d
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Sun May 19 17:59:15 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Tue May 28 07:55:17 2019 -0400
+
+    Added filters
+
+commit c11b4cc993470adb0c1eb807ae016512d8053573
+Merge: 8c53f95 a1c78d3
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Tue May 28 03:08:58 2019 -0400
+Commit:     Tal Hachi <talhachi2019@gmail.com>
+CommitDate: Tue May 28 03:08:58 2019 -0400
+
+    Merge remote-tracking branch 'remotes/origin/master' into feature/alphabet-replacement
+    
+    # Conflicts:
+    #       typos.go
+
+commit 8c53f95865c6d06674a7ef129732570e722eec6a
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Tue May 28 03:05:32 2019 -0400
+Commit:     Tal Hachi <talhachi2019@gmail.com>
+CommitDate: Tue May 28 03:05:32 2019 -0400
+
+    Added alphabet replacement typo
+
+commit a1c78d3cde15ba657b409d09407bfe6bfd66d126
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Tue May 28 02:40:47 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Tue May 28 02:44:17 2019 -0400
+
+    Added alphabet insertion typo
+
+commit bd89dee50386c579c6151508da3002342ea3bcc7
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Mon May 27 14:19:23 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Mon May 27 14:20:05 2019 -0400
+
+    Updated docs
+
+commit 7c74cbd2313f384a1d771f90a1c224ab0e9bfb87
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Mon May 27 03:15:36 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Mon May 27 14:11:10 2019 -0400
+
+    Added subdomain insertion typo function
+
+commit 4fa4dbeb8999e3bc030ca2e3ed4dc2cb431e30af
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Mon May 27 13:43:45 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Mon May 27 13:59:24 2019 -0400
+
+    Added hyphen insertion
+
+commit da006b8e036882478016da9acb6b3f71cc0ca17f
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Mon May 27 13:40:53 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Mon May 27 13:59:24 2019 -0400
+
+    Added hyphen insertion
+
+commit e9354d888b07795dd54e3f219414cf521448feb4
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Mon May 27 09:53:05 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Mon May 27 09:54:36 2019 -0400
+
+    I quick fix for the make command
+
+commit 684454900da919167049efe4376a482b0564067b
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Mon May 27 03:47:41 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Mon May 27 09:21:14 2019 -0400
+
+    Improved pluralization function
+
+commit f01cd31d7d414cfa1749a17ebe4a68d87d54db01
+Author:     Tal Hachi <talhachi2019@gmail.com>
+AuthorDate: Mon May 27 03:15:36 2019 -0400
+Commit:     Tal Hachi <50995668+talhachi@users.noreply.github.com>
+CommitDate: Mon May 27 09:20:31 2019 -0400
+
+    Added subdomain insertion typo function
+
+commit 299a68da33423582993c333ebc9e4cd152fb206f
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Fri May 24 20:59:28 2019 -0400
+Commit:     Tal Hachi <rangertaha@gmail.com>
+CommitDate: Fri May 24 21:06:36 2019 -0400
+
+    Fixed issue with md5 hash function and deps
+
+commit a302670fdf644c8f2c82a3de915f398deda977ed
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Fri May 24 20:45:58 2019 -0400
+Commit:     Tal Hachi <rangertaha@users.noreply.github.com>
+CommitDate: Fri May 24 20:49:41 2019 -0400
+
+    changed deploy config to only push to gcr
+
+commit 6bef8accf0910a5b810153a795d0510589cb5d30
+Author:     Tal Hachi <rangertaha@gmail.com>
+AuthorDate: Fri May 24 20:28:07 2019 -0400
+Commit:     Tal Hachi <rangertaha@users.noreply.github.com>
+CommitDate: Fri May 24 20:48:50 2019 -0400
+
+    Added new import path and added the name in a few other places
+
+commit 87da88ebcc17e95df9b9fe561197105692801ff6
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Fri May 24 00:40:18 2019 -0400
+Commit:     Tal Hachi <rangertaha@users.noreply.github.com>
+CommitDate: Fri May 24 20:34:58 2019 -0400
+
+    adds make install command
+
+commit 55903b655642e8c667e36ed8b10a2bf27eae896f
+Merge: a771bbc 076fd14
+Author:     Tal Hachi <rangertaha@users.noreply.github.com>
+AuthorDate: Fri May 17 17:54:11 2019 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Fri May 17 17:54:11 2019 -0400
+
+    Merge pull request #29 from jubairsaidi/develop
+    
+    Fixes cloudbuild.yaml to properly run tests
+
+commit 076fd14059c9044e67dd778f4e2a5979a7cc58b5
+Author:     Jubair Saidi <jubair@schireson.com>
+AuthorDate: Fri May 17 13:27:26 2019 -0400
+Commit:     Jubair Saidi <jubair@schireson.com>
+CommitDate: Fri May 17 13:27:26 2019 -0400
+
+    Fixes cloudbuild.yaml to properly run tests
+
+commit a771bbc288c9b3cb479234be9148ea023b1a5c7c
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri May 17 06:47:28 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri May 17 06:47:28 2019 -0400
+
+    reordered imports
+
+commit cfb8738f82cfb14ccd8dd111e78634acb339ef36
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri May 17 06:39:28 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri May 17 06:39:28 2019 -0400
+
+    Updated docs
+
+commit 203d713d2335c13597910a010c4550e4f0ad39be
+Merge: 510020c 2e30611
+Author:     Tal Hachi <rangertaha@users.noreply.github.com>
+AuthorDate: Fri May 17 06:13:22 2019 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Fri May 17 06:13:22 2019 -0400
+
+    Merge pull request #28 from jubairsaidi/develop
+    
+    fixes docker container and server routes
+
+commit 2e30611c49baaf6223a40f79113e1401e08e2680
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Fri May 17 01:46:02 2019 -0400
+Commit:     Jubair Saidi <jubair.saidi@gmail.com>
+CommitDate: Fri May 17 01:46:08 2019 -0400
+
+    Fixes routes.
+    
+    cleans up make file
+
+commit b31328d06a295d9db6cc88c2bf97d3cd63bea787
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Fri May 17 01:43:02 2019 -0400
+Commit:     Jubair Saidi <jubair.saidi@gmail.com>
+CommitDate: Fri May 17 01:43:02 2019 -0400
+
+    Updated Dockerfile to build smaller container.
+    Added cloudbuild files for GCP CICD
+
+commit bb8deaa701021de876f2f5fb78e2cf8bb4d9c964
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu May 16 07:26:13 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu May 16 07:26:13 2019 -0400
+
+    Updated docs
+
+commit 510020c12476b8a9be76bde282c48854d5b20654
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed May 15 06:24:26 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed May 15 06:24:26 2019 -0400
+
+    Updated docs
+
+commit 995dd8ae71897b5490f8ab7c9e4483d97a6f674e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue May 14 21:53:10 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue May 14 21:53:10 2019 -0400
+
+    Updated docs
+
+commit 57b91d3a097e86595c129fdc65bdd8993f122af4
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon May 13 05:38:20 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon May 13 05:38:20 2019 -0400
+
+    Updated docs
+
+commit 498730fedca6b2897e8852d3cd3bc7a831ef0ca4
+Merge: 287fea2 3a2f34a
+Author:     Tal Hachi <rangertaha@users.noreply.github.com>
+AuthorDate: Mon May 13 05:35:19 2019 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Mon May 13 05:35:19 2019 -0400
+
+    Merge pull request #24 from rangertaha/develop
+    
+    Develop
+
+commit 3a2f34a53d6444e7dd605953845f814845a0b30f
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat May 11 22:14:57 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat May 11 22:14:57 2019 -0400
+
+    updated the server endpoint
+
+commit be5cba6047eeb82d6ebe45dc8a54306151237997
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat May 11 19:39:32 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat May 11 19:39:32 2019 -0400
+
+    getting the version from the code
+
+commit b308325610395436f92add1f43caf2195205e095
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat May 11 10:18:56 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat May 11 10:18:56 2019 -0400
+
+    getting the version from the code
+
+commit d8e46e84604afcb800e50fef69cdc2d486423058
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat May 11 09:56:16 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat May 11 09:56:16 2019 -0400
+
+    Added docker image and started to work tests
+
+commit 3c2ad9865a0df712dd966a6ad26a8911f7d43c5e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri May 10 08:02:34 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri May 10 08:02:34 2019 -0400
+
+    fix issue missing language characters
+
+commit 13a8a43d8b9906cd0ef0955012a6c4be4381b34b
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri May 10 07:59:24 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri May 10 07:59:24 2019 -0400
+
+    fix issue missing language characters
+
+commit 426b0a164096382be62edc211e7c9884aefa80d1
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri May 10 07:35:44 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri May 10 07:35:44 2019 -0400
+
+    fix issue with server null values
+
+commit e03f5cb5dc75f8733df38f4d092b5ead29e801d9
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu May 9 23:15:29 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu May 9 23:15:29 2019 -0400
+
+    updates
+
+commit 29ad669df11fac6bd13093d693721bc9b63b2701
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed May 8 21:36:21 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed May 8 21:36:21 2019 -0400
+
+    updates
+
+commit 51e2c55f698d9c38ed6ddd152855509ca52ca63e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed May 8 21:28:20 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed May 8 21:28:20 2019 -0400
+
+    updates
+
+commit 44db2f576a0828b72098f96efdb1ca1e11511084
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue May 7 23:34:57 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue May 7 23:34:57 2019 -0400
+
+    updates to version 0.5.1
+
+commit 6334e5ccc9236a0e1d977ab9f36de56e87a4c62c
+Merge: 7afd3b8 2cb2b04
+Author:     Tal Hachi <rangertaha@users.noreply.github.com>
+AuthorDate: Tue May 7 23:25:49 2019 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue May 7 23:25:49 2019 -0400
+
+    Merge pull request #26 from jubairsaidi/update-options-route
+    
+    moves OPTIONS / to GET /options
+
+commit 2cb2b043a675d0c9f7d313839201497e7be11471
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Tue May 7 21:30:57 2019 -0400
+Commit:     Jubair Saidi <jubair.saidi@gmail.com>
+CommitDate: Tue May 7 21:30:57 2019 -0400
+
+    moves OPTIONS / to GET /options
+
+commit 7afd3b88e029151b0c5ad09aa7d9a65c17708350
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun May 5 22:18:31 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun May 5 22:18:31 2019 -0400
+
+    updates server requirements file
+
+commit 8eacc60c59d003a904dfdc93a8370b933ea17833
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun May 5 12:35:48 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun May 5 12:35:48 2019 -0400
+
+    updates server requirements file
+
+commit a6e6e841455dc9c3b756737e7baaaec564de99a3
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun May 5 12:10:43 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun May 5 12:10:43 2019 -0400
+
+    updates server requirements file
+
+commit fcc4949d8e921b416022b394ca72f5b893beb68e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun May 5 12:08:37 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun May 5 12:08:37 2019 -0400
+
+    updates server requirements file
+
+commit 773ef75149cef78e9a26db64f0919c2eb636742e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun May 5 11:46:03 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun May 5 11:46:03 2019 -0400
+
+    updated api server
+
+commit 52bc76300fcca9e9da916f6ae9145510fd6e3876
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun May 5 11:32:53 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun May 5 11:32:53 2019 -0400
+
+    updated api server
+
+commit e94fa77ae4b06aad24e052a993739b7107ed28c5
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun May 5 09:21:46 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun May 5 09:21:46 2019 -0400
+
+    updated api server
+
+commit 8f476c95ce29f33b9fd0224f9137acdadf52ed98
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun May 5 02:15:09 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun May 5 02:15:09 2019 -0400
+
+    updated api server
+
+commit 2cbca2d9730d51fac5bc9f1d74e834ea440a0855
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun May 5 02:13:19 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun May 5 02:13:19 2019 -0400
+
+    updated api server
+
+commit 858b71f8e87d3e7ebfe90c906887c57e6d3cded8
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun May 5 00:19:09 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun May 5 00:19:09 2019 -0400
+
+    updated api server
+
+commit 13f38046282c8fd245225307194a65a461d8b133
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat May 4 14:40:36 2019 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat May 4 14:40:36 2019 -0400
+
+    updated struct tags
+
+commit 287fea297b0c1e51a7eefb82d49c948d6b5ac39d
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Feb 2 06:59:47 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Feb 2 06:59:47 2019 -0500
+
+    Updated the arabic and russian numerals
+
+commit 8c490fe19eb03973a0ac7fc50fc974055ddd08e5
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Jan 30 07:36:55 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Jan 30 07:36:55 2019 -0500
+
+    Updated the languages
+
+commit 0c1b565b569b3237fe6a8104721418e3bd7a9136
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 22 22:23:26 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 22 22:23:26 2019 -0500
+
+    Added space
+
+commit f5ee7c05b593c38305516e7bce1055ccdbc7fd51
+Merge: d763272 d990614
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 22 22:21:03 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 22 22:21:03 2019 -0500
+
+    Merge branch 'master' of github.com:rangertaha/urlinsane
+    
+    # Conflicts:
+    #       CHANGELOG
+
+commit d763272f5b3d30fe26e63cb915ce23786accb7ad
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 22 22:19:26 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 22 22:19:26 2019 -0500
+
+    Added space
+
+commit d990614dac04114a7224aca36757011d17d32f83
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 21 22:01:38 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 21 22:01:38 2019 -0500
+
+    Updated format
+
+commit 0dfe937c81831b691728a962c3f952e388798570
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Jan 20 01:08:30 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Jan 20 01:08:31 2019 -0500
+
+    Removed vendor folder
+
+commit 8d49d2c756356f0aa110f07cf25cb5c823b2dd29
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Jan 20 00:58:26 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Jan 20 00:58:26 2019 -0500
+
+    Added vendor folder
+
+commit da6eb122864a3125f20baa9e3d67ec2a924eaef4
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Jan 20 00:39:17 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Jan 20 00:39:17 2019 -0500
+
+    Added vendor folder
+
+commit 7db2f74077db056634b92e7ccf61edf08ed29e09
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Jan 20 00:04:33 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Jan 20 00:04:33 2019 -0500
+
+    added code coverage file
+
+commit 973212d5b275932333b5fdb35fe469c3928dcb27
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Jan 20 00:03:15 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Jan 20 00:03:15 2019 -0500
+
+    updates travis ci
+
+commit 867d3dc58dd9810e685a0f7bf07f6409c909f1da
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 23:51:38 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 23:51:38 2019 -0500
+
+    updates travis ci
+
+commit 0bdc99559d8df2f79cf9fc3ce1fc1fe0dd3bd008
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 23:44:28 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 23:44:28 2019 -0500
+
+    updates travis ci
+
+commit 905968f59f4ed9df00a9a2e06b18fd8e5c3e38ff
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 23:43:41 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 23:43:41 2019 -0500
+
+    updates travis ci
+
+commit 3f19bec748638de8557f37277d4bd0d360d0adda
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 23:36:24 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 23:36:24 2019 -0500
+
+    updates travis ci
+
+commit aae47102e1df631a53f1128c3ac21f0965d26463
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 23:27:56 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 23:27:56 2019 -0500
+
+    Fixed travis ci in readme
+
+commit 838eea6b09e83b8fb1d561fec5cc97b5eb65819e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 22:07:31 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 22:07:31 2019 -0500
+
+    Fixed travis ci in readme
+
+commit 05f660f04701e561c03261d09a89a8ecd048e4f1
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 22:05:36 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 22:05:36 2019 -0500
+
+    Fixed travis ci script
+
+commit 053af9729acaf041c2d31a6f10d7dabccd58a423
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 21:52:16 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 21:52:16 2019 -0500
+
+    Added self documenting targets
+
+commit b4815d8f07cd1d5d69edb1db40b020505acee85c
+Merge: 9249be1 7f570df
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 21:40:15 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 21:40:15 2019 -0500
+
+    Merge branch 'develop' of github.com:rangertaha/urlinsane
+    
+    # Conflicts:
+    #       CHANGELOG
+    #       Makefile
+    #       README.md
+    #       config.go
+    #       examples/basic.go
+    #       languages/arabic.go
+    #       languages/armenian.go
+    #       languages/english.go
+    #       languages/finnish.go
+    #       languages/hebrew.go
+    #       languages/language.go
+    #       languages/persian.go
+    #       languages/russian.go
+    #       languages/spanish.go
+    #       output.go
+    #       tld.go
+    #       typos.go
+    #       urlinsane.go
+
+commit 7f570df6cbec97527e5bee90936165532db32f65
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 20:59:31 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 20:59:31 2019 -0500
+
+    updated make file
+
+commit 1b36f6e26649b25e162f4e5b02ce05c818488404
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 20:52:19 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 20:52:19 2019 -0500
+
+    updated travis ci file
+
+commit eeac073ad8a738ed901c845ef0855542fb3b2f97
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 20:38:32 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 20:38:32 2019 -0500
+
+    Added travis ci
+
+commit 861df211338ec301425466320430fb081a003859
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 20:31:53 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 20:31:53 2019 -0500
+
+    Added travis ci
+
+commit 63c2dfba3c088f1b7760cabce5534b47173bd953
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 20:21:39 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 20:21:39 2019 -0500
+
+    updated tests
+
+commit ba386e4bb132adb36558951de6d1b7753d95efe1
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 20:07:21 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 20:07:21 2019 -0500
+
+    updates
+
+commit 2be0f859aca0b8dcfe1169d7d9bcc32684ba54e8
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 20:07:01 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 20:07:01 2019 -0500
+
+    added one test to start
+
+commit 43095ffd8c45a0e86ee05e813a1c9d09298cc67f
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 17:20:31 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 17:20:31 2019 -0500
+
+    updated license
+
+commit 36df609b26edebb34eef2f50fc7f4b6e9192bde7
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 17:20:21 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 17:20:21 2019 -0500
+
+    updated license
+
+commit 5f29fa678c23480e6d9657e235cab58818a9b05f
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 17:20:11 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 17:20:11 2019 -0500
+
+    updated license
+
+commit 26ca05c01cd0db9252a9c1c611b8b31672d348a7
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 17:19:58 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 17:19:58 2019 -0500
+
+    updated license
+
+commit 16dc65bd2aaa764ff42ee9dce4eff1f9d5def2a7
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 16:27:48 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 16:27:48 2019 -0500
+
+    updated language definitions
+
+commit fb0e67a5619b816b46386f60f930af4477be4b54
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 19 16:27:20 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 19 16:27:20 2019 -0500
+
+    updated language definitions
+
+commit f21ea772642d31ee8b232c7d63a98d815111fff8
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Jan 18 20:11:29 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Jan 18 20:11:29 2019 -0500
+
+    updated language definitions
+
+commit 9249be10c9cf7cdec80a1872ea6d40770e375f25
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Jan 18 19:04:22 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Jan 18 19:04:22 2019 -0500
+
+    updated language definitions
+
+commit 60cc649064fb85b97c3963334a4acce5dd0ca7eb
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Jan 17 22:49:33 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Jan 17 22:49:33 2019 -0500
+
+    Added french canadian
+
+commit dfb07a20cfd1119f9b11c3b48a036e637366541d
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Jan 17 17:40:26 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Jan 17 17:40:26 2019 -0500
+
+    Added cli options to the output to help with bugging
+
+commit d8ef2c18eecd731d2edb3bfd5b6c8e2615ad1248
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Jan 17 16:33:29 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Jan 17 16:33:29 2019 -0500
+
+    Updated Arabic language
+
+commit 60c866498d4cb0b0356e013354fc760b88c38fec
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Jan 17 16:33:29 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Jan 17 16:33:29 2019 -0500
+
+    Updated Arabic language
+
+commit 9e581828b351fc913ad94adb177f26787a0e54a4
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Jan 17 16:08:47 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Jan 17 16:08:47 2019 -0500
+
+    Fixed merge
+
+commit 6db3d706425dc51a4df646f728448ee091484cc5
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Jan 17 16:08:47 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Jan 17 16:08:47 2019 -0500
+
+    Fixed merge
+
+commit c9eea7e6a0a14297cd73ffb1872255457ae2c276
+Merge: f1fdae4 fe3d076
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Jan 17 16:07:03 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Jan 17 16:07:03 2019 -0500
+
+    Merge branch 'fix/keyboards'
+
+commit 84a7c85a46350436fd394e957730dc7cd47e79ae
+Merge: b70ccd3 acc04fa
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Jan 17 16:07:03 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Jan 17 16:07:03 2019 -0500
+
+    Merge branch 'fix/keyboards'
+
+commit fe3d076569a5a9160258a6dd0dfe635c72f5df67
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Jan 17 16:06:17 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Jan 17 16:06:17 2019 -0500
+
+    Code clean up
+
+commit acc04fac561142ae35a6c7b5d430d4a55f1bc39b
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Jan 17 16:06:17 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Jan 17 16:06:17 2019 -0500
+
+    Code clean up
+
+commit 903d723cfbcdb3f818edecf2759b43604ce08cb8
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Jan 17 15:16:11 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Jan 17 15:16:11 2019 -0500
+
+    Fixed keyboard lookup issue
+
+commit d0b7e9368606f911e39ac9b785c90bd30e3572e1
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Jan 17 15:16:11 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Jan 17 15:16:11 2019 -0500
+
+    Fixed keyboard lookup issue
+
+commit f1fdae48ff6f66413ad46ee5d7e059cdf4da4bb8
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Jan 16 10:51:36 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Jan 16 10:51:36 2019 -0500
+
+    Updated tool comparison
+
+commit b70ccd31afef206f6c4240aee756e5c61af1cb31
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Jan 16 10:51:36 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Jan 16 10:51:36 2019 -0500
+
+    Updated tool comparison
+
+commit 5d22fe3887e27769d774637d993c5a4e456f35c7
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Jan 16 09:42:43 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Jan 16 09:42:43 2019 -0500
+
+    Updated -x description
+
+commit fbea99911513a51ae3013110bcc93198baff81f9
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Jan 16 09:42:43 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Jan 16 09:42:43 2019 -0500
+
+    Updated -x description
+
+commit e1f46799fb63d95cbbb1cf91b3bcb56c58b46730
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Jan 16 09:15:24 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Jan 16 09:15:24 2019 -0500
+
+    Updated docs
+
+commit 5d38f4940db55ab1221b089076e2155436066999
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Jan 16 09:15:24 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Jan 16 09:15:24 2019 -0500
+
+    Updated docs
+
+commit 6174d020d0b4bcee61a278405577f3af337d8c73
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Jan 16 09:12:19 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Jan 16 09:12:19 2019 -0500
+
+    Updated docs
+
+commit f16775351b5073b08cd44d1767c222d86443770b
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Jan 16 09:12:19 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Jan 16 09:12:19 2019 -0500
+
+    Updated docs
+
+commit 78face8fe68f4d3340dd85113156c222e01170b5
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 23:20:57 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 23:20:57 2019 -0500
+
+    Updated docs
+
+commit aca759dffcbecc602abe366e94fdab7f578e46c7
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 23:20:57 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 23:20:57 2019 -0500
+
+    Updated docs
+
+commit fd5d5b6cc63d9a90b5895457314cd5838f50f0c6
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 23:19:13 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 23:19:13 2019 -0500
+
+    Updated docs
+
+commit a0adcae0fc381e375f3c521e532cd9602a933eab
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 23:19:13 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 23:19:13 2019 -0500
+
+    Updated docs
+
+commit 2ec5c96b01f64f17e057490464a8acde488ee25a
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 23:18:37 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 23:18:37 2019 -0500
+
+    Updated docs
+
+commit 2692be2c770e33323d52beb670231d92a8d8d138
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 23:18:37 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 23:18:37 2019 -0500
+
+    Updated docs
+
+commit bddf1247d8efb47fece7699999d43446bd696815
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 22:48:20 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 22:48:20 2019 -0500
+
+    Updated docs
+
+commit aa92dc870cc1e8b5371f73e8e6d5430c814f09d1
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 22:48:20 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 22:48:20 2019 -0500
+
+    Updated docs
+
+commit c94c720765a14ed7dc13dd126ab50819742e15ef
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 21:26:08 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 21:26:08 2019 -0500
+
+    Updated tool comparison docs
+
+commit 7520741a49c809cfecf5dba85b3cf332e889b113
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 21:26:08 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 21:26:08 2019 -0500
+
+    Updated tool comparison docs
+
+commit 506f9e1be96cca303b5e5625654b48f8b3686be2
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 14:09:39 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 14:09:39 2019 -0500
+
+    Updated tool comparison docs
+
+commit 7df24534e7e6c8fea7170757e3eb3022bddd1454
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 14:09:39 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 14:09:39 2019 -0500
+
+    Updated tool comparison docs
+
+commit 17bd25d353d1b9c1e8c29b4ba434603ac0c3cab5
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 12:49:35 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 12:49:35 2019 -0500
+
+    Updated tool comparison docs
+
+commit ba422bfd19246ad632b186e7c19a80c45151dee0
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 12:49:35 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 12:49:35 2019 -0500
+
+    Updated tool comparison docs
+
+commit adb05702537074088f68e73fe8d0ecb05b83e187
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:28:31 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:28:31 2019 -0500
+
+    Updated changelog with latest features
+
+commit e155f9a84e7546af2e126d37883d985a889e7efc
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:28:31 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:28:31 2019 -0500
+
+    Updated changelog with latest features
+
+commit 65794ec6910574acf738f0dbe592dae7604abe70
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:24:55 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:24:55 2019 -0500
+
+    Updated changelog with latest features
+
+commit ff004e627cdeae53f2773d292891bd25cf3276a6
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:24:55 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:24:55 2019 -0500
+
+    Updated changelog with latest features
+
+commit 3c0267bd9b1957013fd2f3b4d98ceb57feca2bd5
+Merge: 7051d92 1b1798a
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:21:15 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:21:15 2019 -0500
+
+    Merge remote-tracking branch 'origin/master'
+
+commit eb7234655692324031f782f6b233732b9ce850f1
+Merge: 0360375 f467ef7
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:21:15 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:21:15 2019 -0500
+
+    Merge remote-tracking branch 'origin/master'
+
+commit 7051d92057e27bbaea817d7d2e72d2b6d950755a
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:20:07 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:20:07 2019 -0500
+
+    Updated docs
+
+commit 0360375f3d21b0cc9f295e705d9b80c6f35e3c70
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:20:07 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:20:07 2019 -0500
+
+    Updated docs
+
+commit 23e87ff6d242f2a8706d3dac0cb2d6cbb49636eb
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:19:27 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:19:27 2019 -0500
+
+    Updated copyright date
+
+commit 98a319f563a86a09adf2aa851f5fc75fbbe1eae6
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:19:27 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:19:27 2019 -0500
+
+    Updated copyright date
+
+commit 45c9e99263cc4fab99f5e365ec509b4a7fb6157a
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:19:14 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:19:14 2019 -0500
+
+    Updated copyright date
+
+commit 491fc1ba413772ef430db53906eecc59e6717eec
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:19:14 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:19:14 2019 -0500
+
+    Updated copyright date
+
+commit aaf43c38507a753848c00dd0863626f6aa574184
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:19:06 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:19:06 2019 -0500
+
+    Updated copyright date
+
+commit da0d0bfef1a63fc14d120988040211664a38bb54
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:19:06 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:19:06 2019 -0500
+
+    Updated copyright date
+
+commit e54ca1d71125674389415058a44a8ce83dd3d04f
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:18:49 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:18:49 2019 -0500
+
+    Updated copyright date
+
+commit d868e7ced1722a26ee7afba7eaea04476fb488e6
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:18:49 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:18:49 2019 -0500
+
+    Updated copyright date
+
+commit 109311a8ec286aab7319de83ffd1f9787639f65b
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:18:39 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:18:39 2019 -0500
+
+    Updated copyright date
+
+commit 21aa6fa9db17f56bd15f1850a6e41ba7fce49a39
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:18:39 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:18:39 2019 -0500
+
+    Updated copyright date
+
+commit 719b55e75dbc6e83535e473de5c88aaeb55f0e87
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:18:24 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:18:24 2019 -0500
+
+    Updated copyright date
+
+commit 6d7ce5b9f9878cb3c60130158815d466257927ee
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:18:24 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:18:24 2019 -0500
+
+    Updated copyright date
+
+commit 93b8aedc1aa5f5452fb149e5b08f42098d9938ca
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:18:12 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:18:12 2019 -0500
+
+    Updated copyright date
+
+commit eb00bdd3deb8507b6c858a20c47d4b6591953739
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:18:12 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:18:12 2019 -0500
+
+    Updated copyright date
+
+commit afd20613177a1a95e8a5305a14395a1b85f418fb
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:17:55 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:17:55 2019 -0500
+
+    Updated copyright date
+
+commit edc3fff3e8500ae69877fe516554bc61d3055c18
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:17:55 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:17:55 2019 -0500
+
+    Updated copyright date
+
+commit d06af0d763466aeaf30e60fdc54c5ecf869f09f4
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:17:41 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:17:41 2019 -0500
+
+    Updated copyright date
+
+commit b6764b97d7babd3ee7c59bf73521fe0794a2590c
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:17:41 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:17:41 2019 -0500
+
+    Updated copyright date
+
+commit 48eae8863ba4a96389ef8c3a6b8198881f91a9dc
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:16:59 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:16:59 2019 -0500
+
+    Fixed typo with the DNS NS records
+
+commit 77c7373e4dccce0c159f6b5641ee4d6f11ecf917
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:16:59 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:16:59 2019 -0500
+
+    Fixed typo with the DNS NS records
+
+commit 061c2ebe8935b83245ebb5b7a278caf98caa7120
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:16:11 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:16:11 2019 -0500
+
+    Fixed typo
+
+commit 6cf7ee93939e5bdc1effacc206f876a2e8661111
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:16:11 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:16:11 2019 -0500
+
+    Fixed typo
+
+commit 8520c1fdf393650900587d3199b74dd055856d2b
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:09:03 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:09:03 2019 -0500
+
+    Updated docs
+
+commit db6fe61343318191c6a17323be630fa68f7df6bb
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:09:03 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:09:03 2019 -0500
+
+    Updated docs
+
+commit 0bdfeb3a592c8651757728d94232eaaddfb7b31e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:08:31 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:08:31 2019 -0500
+
+    Updated docs
+
+commit 824fb700d1269e678bdfa232f9f19ffec3c9f749
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:08:31 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:08:31 2019 -0500
+
+    Updated docs
+
+commit 7b9fe6eea2037fe0929a37990df1e8a6177d8369
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:07:32 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:07:32 2019 -0500
+
+    Updated docs
+
+commit c57568c69bc49d33bb397f5e90a968ec532daf53
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:07:32 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:07:32 2019 -0500
+
+    Updated docs
+
+commit 01966ba2a6f36eb1d6c75d2f7e12a4661285624e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:05:07 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:05:07 2019 -0500
+
+    Updated docs
+
+commit 1877264675caffb7a74e7e659fab36c54b904535
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:05:07 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:05:07 2019 -0500
+
+    Updated docs
+
+commit 9fcd75cb6a37265c96d650c40efaf6bc6202ddd3
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:04:43 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:04:43 2019 -0500
+
+    Updated docs
+
+commit 4b017943b8732dd13a7677f65e91e694ddfdda0c
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:04:43 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:04:43 2019 -0500
+
+    Updated docs
+
+commit d5a46d910cbfd6bf1869166b2fde7c9611cd1029
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:03:30 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:03:30 2019 -0500
+
+    Updated docs
+
+commit 460cd341ebd8c938cb29bb76e2a42dc8cc1eeff9
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Jan 15 00:03:30 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Jan 15 00:03:30 2019 -0500
+
+    Updated docs
+
+commit 77c7e37cd9b308e9333c25b5a4c08f0aa4797e30
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:56:37 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:56:37 2019 -0500
+
+    Updated docs
+
+commit f0a40d21d3fc977778ba4a74a38af01b795d67f2
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:56:37 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:56:37 2019 -0500
+
+    Updated docs
+
+commit f99276a0ef06e215b25d13e189460f70f08ddc28
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:55:04 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:55:04 2019 -0500
+
+    Updated docs
+
+commit d6e7195e219e4e6f76da80e0c7dfcac0d45c0c9b
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:55:04 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:55:04 2019 -0500
+
+    Updated docs
+
+commit dc58f90f0f3d7fedacef8b1cf042f928e35059a1
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:53:46 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:53:46 2019 -0500
+
+    Updated docs
+
+commit a6db989a95cf7680ecdd28d9b6cdec6a81ae3dd1
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:53:46 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:53:46 2019 -0500
+
+    Updated docs
+
+commit 1cab283525cb14c467b0ed091d5cc565a9d430c4
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:51:33 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:51:33 2019 -0500
+
+    Updated docs
+
+commit 682a20a94d9bc2e97c8b9131d46d6a2387f6fe14
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:51:33 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:51:33 2019 -0500
+
+    Updated docs
+
+commit 73a64e5c4aeed979603ceb99bd87fa97e6a4a0ef
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:49:02 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:49:02 2019 -0500
+
+    Updated docs
+
+commit 9b780c1105df484fbd84a40bd2f3a9d4a43a22ab
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:49:02 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:49:02 2019 -0500
+
+    Updated docs
+
+commit 6fb4598c5bf8891f11134a01acc336041ed3483a
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:47:54 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:47:54 2019 -0500
+
+    Updated docs
+
+commit 8486a5e2f6610c5ba405aa70308c350dfad30aeb
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:47:54 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:47:54 2019 -0500
+
+    Updated docs
+
+commit fad373910352391aed04708078176e842bc9780b
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:37:55 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:37:55 2019 -0500
+
+    Updated docs
+
+commit 6465e90c2a8b42cc248eaf21a80a9aaa6fe1cbe4
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:37:55 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:37:55 2019 -0500
+
+    Updated docs
+
+commit 1c233654c7d78f7b0e62597efd681100f61c68cb
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:34:16 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:34:16 2019 -0500
+
+    Updated docs
+
+commit 1b5aadc8207bd3fa71bb37e865a8a45f05eeb08a
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:34:16 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:34:16 2019 -0500
+
+    Updated docs
+
+commit 1c443a858a7d598736f845a76d952cfbb9771ad2
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:32:58 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:32:58 2019 -0500
+
+    Updated docs
+
+commit fbb06174212fc93e49ceaa48db072e4ab92a8c99
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:32:58 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:32:58 2019 -0500
+
+    Updated docs
+
+commit 128d31af7eebf6c6e3c8e913ef806b87a2903d65
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:31:34 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:31:34 2019 -0500
+
+    Updated docs
+
+commit f1c1242a71f212429e6ddadac2afa423a7c55bb3
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:31:34 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:31:34 2019 -0500
+
+    Updated docs
+
+commit f5caefab227c891a27e2fee64f0793c8e49fa117
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:28:04 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:28:04 2019 -0500
+
+    Updated docs
+
+commit 4356140130628c91340c2b8417a8a2d8f8696b28
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:28:04 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:28:04 2019 -0500
+
+    Updated docs
+
+commit 4dbed8be48ee344f82c4d8c0588c398387ea45cd
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:26:51 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:26:51 2019 -0500
+
+    Updated docs
+
+commit c8bcef03ce68b6202d60cf9fda7a9a21b7531a29
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 21:26:51 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 21:26:51 2019 -0500
+
+    Updated docs
+
+commit 1b1798a59f281af3225b04e43e5d059776feca92
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 20:54:05 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 20:54:05 2019 -0500
+
+    Fixed ns lookup function
+
+commit f467ef716c354f4fdd354a8e925434160b2acba5
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 20:54:05 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 20:54:05 2019 -0500
+
+    Fixed ns lookup function
+
+commit eab31711aa8da1b2d27d9251967ffc964e2a8d01
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 20:48:16 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 20:48:16 2019 -0500
+
+    Updated changelog
+
+commit b1899b330eba23a994b2ab157b9b016f82761f63
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 20:48:16 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 20:48:16 2019 -0500
+
+    Updated changelog
+
+commit 7cb5ae191d7d815294edb26659fb71ae9758752b
+Merge: 1a1bc3f 9a76467
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 20:34:50 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 20:34:50 2019 -0500
+
+    Merge remote-tracking branch 'origin/master'
+
+commit cc88665176fcfae308f9d5598b1a1ac1c7dd4f1f
+Merge: 353678f 4114dc0
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 20:34:50 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 20:34:50 2019 -0500
+
+    Merge remote-tracking branch 'origin/master'
+
+commit 1a1bc3f024ab7096e60813febbc6f976628bff1a
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 20:34:25 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 20:34:25 2019 -0500
+
+    Updated year
+
+commit 353678f1746fa1d42e600da49e7ea76beecf5950
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 20:34:25 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 20:34:25 2019 -0500
+
+    Updated year
+
+commit 735083827720755afb4fff6c37efa69a81175e59
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 17:08:17 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 17:08:17 2019 -0500
+
+    Updated ignoring personal dev files
+
+commit 4cfb4b95201fd7208a2b9b0f5a184ed0bd93bb53
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 17:08:17 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 17:08:17 2019 -0500
+
+    Updated ignoring personal dev files
+
+commit 9a7646707f0864ba2c3870856e438edc28037566
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 13:57:34 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 13:57:34 2019 -0500
+
+    Ignore personal dev files
+
+commit 4114dc0e44ed1185587d85eae6f1acdfe55a724f
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 13:57:34 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 13:57:34 2019 -0500
+
+    Ignore personal dev files
+
+commit 44beebb10db8246e11738d5b9bd649c142f06082
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 13:56:57 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 13:56:57 2019 -0500
+
+    Ignore personal dev files
+
+commit 15e3b04a03832ebf8fe88412810fea182b911a02
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 13:56:57 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 13:56:57 2019 -0500
+
+    Ignore personal dev files
+
+commit 3dd7fbf0a577b673c624a297bb7ef5871855ea19
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 13:28:20 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 13:28:20 2019 -0500
+
+    Updated arabic homoglyphs
+
+commit 9dcd0e060314b8e53ba158ed29c081bd59f9e0b6
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 13:28:20 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 13:28:20 2019 -0500
+
+    Updated arabic homoglyphs
+
+commit 668614f19c39446170455fa0104207fc76a7949b
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 13:20:15 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 13:20:15 2019 -0500
+
+    Updated documentation
+
+commit 412b7a47b265c6022aa8beb6e2467653cc3f67de
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 13:20:15 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 13:20:15 2019 -0500
+
+    Updated documentation
+
+commit 5dd38cb6a9910f41b009ff4b1f211d1d0ab140de
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 13:19:07 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 13:19:07 2019 -0500
+
+    Updated documentation
+
+commit 9ae92e5642b0eb9b50c787ee0a1a2bb7e2cbae77
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 13:19:07 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 13:19:07 2019 -0500
+
+    Updated documentation
+
+commit 4769ad551b0f323ef1074156f892b61527a76470
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 12:36:47 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 12:36:47 2019 -0500
+
+    Updated language documentation
+
+commit 406d17ad908cfab8bb3acf64fcfb5ef7045961d5
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 12:36:47 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 12:36:47 2019 -0500
+
+    Updated language documentation
+
+commit 3bb6cb120966664eeafb97f8913c9a407d4fd3aa
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 12:36:27 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 12:36:27 2019 -0500
+
+    Updated todo list
+
+commit 95fb23586d556830f5b18aa0dfb8a3c70330fc23
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 12:36:27 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 12:36:27 2019 -0500
+
+    Updated todo list
+
+commit a8cbe784c8bbefea06aa1f00c0ad98d28dbecb09
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 12:30:15 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 12:30:15 2019 -0500
+
+    Updated language documentation
+
+commit 55171a29223dd589399bc3e373704a65cbe5c913
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 12:30:15 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 12:30:15 2019 -0500
+
+    Updated language documentation
+
+commit 56caad6f930dda603da161312d1a2fe15c2fcc33
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 12:05:37 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 12:05:37 2019 -0500
+
+    Added hebrew language
+
+commit c94675cd01de131f2bd0b6dffaf94bc51ca4976d
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 12:05:37 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 12:05:37 2019 -0500
+
+    Added hebrew language
+
+commit 1eff8d7da4694bb74b24360584c90673a13cc9d0
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 11:06:24 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 11:06:24 2019 -0500
+
+    Added persian language
+
+commit d0edfe7829f93d9eb92d3b7bb71d770bfa087a7a
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jan 14 11:06:24 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jan 14 11:06:24 2019 -0500
+
+    Added persian language
+
+commit a5bd90dd3dcb08584c033bab440dc78a41ccfa88
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 12 05:32:46 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 12 05:32:46 2019 -0500
+
+    Added documentation
+
+commit 4f215fc46c814c4b94175c4d09bda259174e7c6f
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sat Jan 12 05:32:46 2019 -0500
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sat Jan 12 05:32:46 2019 -0500
+
+    Added documentation
+
+commit 3da23d7959fad40bcbf560943694e2acb7335739
+Author:    Rangertaha <rangertaha@localhost.localdomain>
+AuthorDate: Sat Jan 12 05:25:51 2019 -0500
+Commit:    Rangertaha <rangertaha@localhost.localdomain>
+CommitDate: Sat Jan 12 05:25:51 2019 -0500
+
+    Updated documentation
+
+commit 152f96dbc26950c21a0612cae21cd6913b0bd290
+Author:    Rangertaha <rangertaha@localhost.localdomain>
+AuthorDate: Sat Jan 12 05:25:51 2019 -0500
+Commit:    Rangertaha <rangertaha@localhost.localdomain>
+CommitDate: Sat Jan 12 05:25:51 2019 -0500
+
+    Updated documentation
+
+commit 54b734af7cc2a5b55c27b6614000884b5ca3c975
+Author:    Rangertaha <rangertaha@localhost.localdomain>
+AuthorDate: Sat Jan 12 05:07:31 2019 -0500
+Commit:    Rangertaha <rangertaha@localhost.localdomain>
+CommitDate: Sat Jan 12 05:07:31 2019 -0500
+
+    Documentation updates
+
+commit 9680f10fab2320d2477f691c65d4a2c02f616342
+Author:    Rangertaha <rangertaha@localhost.localdomain>
+AuthorDate: Sat Jan 12 05:07:31 2019 -0500
+Commit:    Rangertaha <rangertaha@localhost.localdomain>
+CommitDate: Sat Jan 12 05:07:31 2019 -0500
+
+    Documentation updates
+
+commit 5b64d5efd50df592d651aa6ba4c14cccc3c4dfe3
+Author:    Rangertaha <rangertaha@localhost.localdomain>
+AuthorDate: Fri Jan 11 17:28:40 2019 -0500
+Commit:    Rangertaha <rangertaha@localhost.localdomain>
+CommitDate: Fri Jan 11 17:28:40 2019 -0500
+
+    Updated the README
+
+commit 2c610d830fee3b9d84de9346eaf111fa46f4bca3
+Author:    Rangertaha <rangertaha@localhost.localdomain>
+AuthorDate: Fri Jan 11 17:28:40 2019 -0500
+Commit:    Rangertaha <rangertaha@localhost.localdomain>
+CommitDate: Fri Jan 11 17:28:40 2019 -0500
+
+    Updated the README
+
+commit 3b7a45d629a66eed0d6cc84e699c94785e13a775
+Author:    Rangertaha <rangertaha@localhost.localdomain>
+AuthorDate: Fri Jan 11 16:30:43 2019 -0500
+Commit:    Rangertaha <rangertaha@localhost.localdomain>
+CommitDate: Fri Jan 11 16:30:43 2019 -0500
+
+    Updated documentation
+
+commit e918666bd38dc650357108f4947788ad2e5db746
+Author:    Rangertaha <rangertaha@localhost.localdomain>
+AuthorDate: Fri Jan 11 16:30:43 2019 -0500
+Commit:    Rangertaha <rangertaha@localhost.localdomain>
+CommitDate: Fri Jan 11 16:30:43 2019 -0500
+
+    Updated documentation
+
+commit 2d2fc83a98e16167b799fc5281c3d79782ba2464
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Sep 14 14:21:34 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Sep 14 14:21:34 2018 -0400
+
+    Updated docs
+
+commit 3f358b9150438ed2b443e405b256fc72e53d3bc6
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Sep 14 14:21:34 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Sep 14 14:21:34 2018 -0400
+
+    Updated docs
+
+commit a2dfc5d7f86d2a13e8827b7e04ff6fce62b94fa7
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Sep 14 14:18:10 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Sep 14 14:18:10 2018 -0400
+
+    Updated docs
+
+commit 7edc524c9908df15ede8b8de63edea3ada56984d
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Sep 14 14:18:10 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Sep 14 14:18:10 2018 -0400
+
+    Updated docs
+
+commit c419310059d9f73633cb2ee7602ee87be50f644d
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Sep 14 14:13:02 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Sep 14 14:13:02 2018 -0400
+
+    Updated docs
+
+commit cd0f9f143d3180caf44d088f41ad681967e01221
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Sep 14 14:13:02 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Sep 14 14:13:02 2018 -0400
+
+    Updated docs
+
+commit a5b2f9e3c31e4b0fa30e82ac9154b4158ee0f303
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Sep 14 14:11:06 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Sep 14 14:11:06 2018 -0400
+
+    Updated docs
+
+commit 804a9315013b56f933b254f774122d3fd8ff6975
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Sep 14 14:11:06 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Sep 14 14:11:06 2018 -0400
+
+    Updated docs
+
+commit 4b9abb773ee90ed9524405f8acfd519867e8d847
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Sep 14 14:10:12 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Sep 14 14:10:12 2018 -0400
+
+    Updated docs
+
+commit 9f6daee46ddea401632c5b32c8e80186c2e9ea8e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Sep 14 14:10:12 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Sep 14 14:10:12 2018 -0400
+
+    Updated docs
+
+commit 1d97555c15a30408bf4b489b31cd58dff8743a37
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Sep 14 09:15:44 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Sep 14 09:15:44 2018 -0400
+
+    Updated docs
+
+commit 5b5dd1222ea5a15d11d62ef702020b550537a4f0
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Sep 14 09:15:44 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Sep 14 09:15:44 2018 -0400
+
+    Updated docs
+
+commit 8bd67856180b13c0234ec2b43b41b09b849af879
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Sep 13 20:14:08 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Sep 13 20:14:08 2018 -0400
+
+    Updated docs
+
+commit f509a082d36b1b23908dccb245bd0ed3e2667796
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Sep 13 20:14:08 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Sep 13 20:14:08 2018 -0400
+
+    Updated docs
+
+commit c5e2ad825e0a1bcc1ce56bbb562a8eb3f444ce1e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Sep 13 20:12:06 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Sep 13 20:12:06 2018 -0400
+
+    Updated docs
+
+commit 0aa53e094d8416a6379a68fbb06e46c76eed81c9
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Sep 13 20:12:06 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Sep 13 20:12:06 2018 -0400
+
+    Updated docs
+
+commit 3d46ba976f6557f16d94ba792d4aca16a20a13d8
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Sep 13 20:09:15 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Sep 13 20:09:15 2018 -0400
+
+    Updated docs
+
+commit c70539b6a36099b7f60247f57f4000941dc27bb0
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Sep 13 20:09:15 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Sep 13 20:09:15 2018 -0400
+
+    Updated docs
+
+commit f9bb67ffd96fe24f1c6c88d7dc617b7a1d8866e7
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Sep 11 22:32:09 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Sep 11 22:32:09 2018 -0400
+
+    Updated docs
+
+commit fd786fb44639b47040e5c796e4ce60a756c4d95e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Sep 11 22:32:09 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Sep 11 22:32:09 2018 -0400
+
+    Updated docs
+
+commit 9ca1b09ce096a8f18db9e5795bc84f29302bb95a
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Sep 11 22:30:12 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Sep 11 22:30:12 2018 -0400
+
+    Updated docs
+
+commit add4057e6b90cd23b77ecbdaf0017b796076b974
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Sep 11 22:30:12 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Sep 11 22:30:12 2018 -0400
+
+    Updated docs
+
+commit e660a6911252aca41b90e6fe7813be65e8708851
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Sep 11 01:06:49 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Sep 11 01:06:49 2018 -0400
+
+    Updated docs
+
+commit 125dc78191aa298393d9bf7722c262508cfdbca6
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Sep 11 01:06:49 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Sep 11 01:06:49 2018 -0400
+
+    Updated docs
+
+commit bbed6894f301c960a226ef00140bf48c5af33959
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Sep 10 23:53:12 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Sep 10 23:53:12 2018 -0400
+
+    Updated  docs
+
+commit a297b6c8142d275e651f9a88fbba1224a2279900
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Sep 10 23:53:12 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Sep 10 23:53:12 2018 -0400
+
+    Updated  docs
+
+commit 9e94da2583c3a3831505656a1602565b4c3131cc
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Sep 10 23:49:14 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Sep 10 23:49:14 2018 -0400
+
+    Updated version and docs
+
+commit 7546f365595656fb0487f2bbf52608724c763e2d
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Sep 10 23:49:14 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Sep 10 23:49:14 2018 -0400
+
+    Updated version and docs
+
+commit baab370236acd8bbba3db8439ed562c4ed8f31f3
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Sep 10 23:39:48 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Sep 10 23:39:48 2018 -0400
+
+    Added geoip function
+
+commit f849c09969320f234a4e16c58632c2232bb1e7ff
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Sep 10 23:39:48 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Sep 10 23:39:48 2018 -0400
+
+    Added geoip function
+
+commit 6f31b64dff31abc2e23009c59682ecee34d220fb
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Sep 10 23:35:15 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Sep 10 23:35:15 2018 -0400
+
+    Added geoip function
+
+commit 28e0fe2430c15b53eaae0e86a7dd154d6794ea70
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Sep 10 23:35:15 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Sep 10 23:35:15 2018 -0400
+
+    Added geoip function
+
+commit ffc4324a4a76d3961cd988d1ed81c766b0d32d08
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Sep 5 16:03:47 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Sep 5 16:03:47 2018 -0400
+
+    updated docs
+
+commit cc002fed32055c5ad6a2939c7523f8cbb60ad8f4
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Sep 5 16:03:47 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Sep 5 16:03:47 2018 -0400
+
+    updated docs
+
+commit b98177b9b4e1c72ac447344ba5d9c437430be5e2
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Sep 5 15:55:36 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Sep 5 15:55:36 2018 -0400
+
+    updated docs
+
+commit a9f8549ae3aad24089b66e8a5491591e39aa43d3
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Sep 5 15:55:36 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Sep 5 15:55:36 2018 -0400
+
+    updated docs
+
+commit 2a945c4e973f882dedee590c2d640cb083b630f6
+Merge: 2c00381 40b6b31
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Sep 5 14:50:19 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Sep 5 14:50:19 2018 -0400
+
+    Merge remote-tracking branch 'origin/master'
+
+commit cfe5c0d6dd898f712519a0b904418f92b2d357f4
+Merge: e1885d9 8bfc487
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Sep 5 14:50:19 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Sep 5 14:50:19 2018 -0400
+
+    Merge remote-tracking branch 'origin/master'
+
+commit 2c00381782c831b28c369e9554aa7ec9b42e4ed7
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Sep 5 14:50:03 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Sep 5 14:50:03 2018 -0400
+
+    updated help string
+
+commit e1885d966c5ededabdea008fd4830077bffa68aa
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Sep 5 14:50:03 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Sep 5 14:50:03 2018 -0400
+
+    updated help string
+
+commit 40b6b31ea3abc4192e88a3d6f5a0d9047ea6e97f
+Merge: 1ef090c 19bddcf
+Author:    Rangertaha <rangertaha@users.noreply.github.com>
+AuthorDate: Tue Sep 4 15:00:22 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 15:00:22 2018 -0400
+
+    Merge pull request #9 from jubairsaidi/patch-1
+    
+    Create bug_report.md
+
+commit 8bfc487d09aaa0f70736b62ab3897edfd1bfa23f
+Merge: e84c617 131c55c
+Author:    Rangertaha <rangertaha@users.noreply.github.com>
+AuthorDate: Tue Sep 4 15:00:22 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 15:00:22 2018 -0400
+
+    Merge pull request #9 from jubairsaidi/patch-1
+    
+    Create bug_report.md
+
+commit 1ef090cb3e2b9ebc37117a40510eac8936ba9fd5
+Merge: 4f1e057 9fcadf7
+Author:    Rangertaha <rangertaha@users.noreply.github.com>
+AuthorDate: Tue Sep 4 14:59:45 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 14:59:45 2018 -0400
+
+    Merge pull request #10 from jubairsaidi/patch-2
+    
+    Create feature_request.md
+
+commit e84c6175cd3e556c327ff32679861511a250f8f7
+Merge: d5c30a8 4fd2c4f
+Author:    Rangertaha <rangertaha@users.noreply.github.com>
+AuthorDate: Tue Sep 4 14:59:45 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 14:59:45 2018 -0400
+
+    Merge pull request #10 from jubairsaidi/patch-2
+    
+    Create feature_request.md
+
+commit 4f1e057fca8e3f08f6a176ba5df36992b600a2ff
+Merge: 6002890 017a839
+Author:    Rangertaha <rangertaha@users.noreply.github.com>
+AuthorDate: Tue Sep 4 14:59:29 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 14:59:29 2018 -0400
+
+    Merge pull request #11 from jubairsaidi/patch-3
+    
+    Create PULL_REQUEST_TEMPLATE.md
+
+commit d5c30a88cc130f34a8cfddbac3f13c76dec74b14
+Merge: 12784ac 7538053
+Author:    Rangertaha <rangertaha@users.noreply.github.com>
+AuthorDate: Tue Sep 4 14:59:29 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 14:59:29 2018 -0400
+
+    Merge pull request #11 from jubairsaidi/patch-3
+    
+    Create PULL_REQUEST_TEMPLATE.md
+
+commit 60028903f1fdf2087ec566192768edda1bffe192
+Merge: 80a2842 8b7468c
+Author:    Rangertaha <rangertaha@users.noreply.github.com>
+AuthorDate: Tue Sep 4 14:49:47 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 14:49:47 2018 -0400
+
+    Merge pull request #12 from jubairsaidi/patch-4
+    
+    Create CONTRIBUTING.md
+
+commit 12784acd6862db5b4fe5bfaa2846f42835a2419e
+Merge: 0aaa0a4 4432d06
+Author:    Rangertaha <rangertaha@users.noreply.github.com>
+AuthorDate: Tue Sep 4 14:49:47 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 14:49:47 2018 -0400
+
+    Merge pull request #12 from jubairsaidi/patch-4
+    
+    Create CONTRIBUTING.md
+
+commit 8b7468c951473d0e2cdeac165d1b5f77ccff6c35
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Tue Sep 4 07:46:52 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 07:46:52 2018 -0400
+
+    Create CONTRIBUTING.md
+
+commit 4432d064d4a4c6815496b94a61c9b5711b35858a
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Tue Sep 4 07:46:52 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 07:46:52 2018 -0400
+
+    Create CONTRIBUTING.md
+
+commit 017a83925a57553497763c90f97dc56a16e8c759
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Tue Sep 4 07:44:19 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 07:44:19 2018 -0400
+
+    Create PULL_REQUEST_TEMPLATE.md
+
+commit 7538053d6422d28834e5260f75d834eb983aae9e
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Tue Sep 4 07:44:19 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 07:44:19 2018 -0400
+
+    Create PULL_REQUEST_TEMPLATE.md
+
+commit 9fcadf7989ca95456918e997e45fd34551e9b6a3
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Tue Sep 4 07:14:51 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 07:14:51 2018 -0400
+
+    Create feature_request.md
+
+commit 4fd2c4fe771c63bc67f3b6104d9222d55d31d5b7
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Tue Sep 4 07:14:51 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 07:14:51 2018 -0400
+
+    Create feature_request.md
+
+commit 19bddcfdee2060b216b87177cac8cf07daf3ee24
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Tue Sep 4 07:12:21 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 07:12:21 2018 -0400
+
+    Create bug_report.md
+
+commit 131c55c65f6c931187c40d4c6f1cd7e8b38a66f1
+Author:     Jubair Saidi <jubair.saidi@gmail.com>
+AuthorDate: Tue Sep 4 07:12:21 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Tue Sep 4 07:12:21 2018 -0400
+
+    Create bug_report.md
+
+commit 80a284292ad569b43370879d03cba50282878bb2
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Sep 2 06:19:31 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Sep 2 06:19:31 2018 -0400
+
+    updated help string
+
+commit 0aaa0a474076e82bb04bee1d298cbcc4f18e6023
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Sep 2 06:19:31 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Sep 2 06:19:31 2018 -0400
+
+    updated help string
+
+commit a131379fee472dca4834ce807699eaac81b8157a
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Sep 2 06:17:11 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Sep 2 06:17:11 2018 -0400
+
+    placeholder for whois lookup.
+
+commit e595e7046ab434b6880384f89f7c7e54fa8bd473
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Sep 2 06:17:11 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Sep 2 06:17:11 2018 -0400
+
+    placeholder for whois lookup.
+
+commit 137be64c4355e85c44f1710bbd92cb6dd6b59163
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Sep 2 06:12:08 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Sep 2 06:12:08 2018 -0400
+
+    Upated docs
+
+commit c67e065d953602aa8b96dbdd250f4f2149f8e281
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Sep 2 06:12:08 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Sep 2 06:12:08 2018 -0400
+
+    Upated docs
+
+commit b2475c020678ecd22b2c65c44e1ea98c788fef95
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 22:25:02 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 22:25:02 2018 -0400
+
+    Added redirect domain
+
+commit 57e6fe1bee3995db6f21db10e5e2b394e4598166
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 22:25:02 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 22:25:02 2018 -0400
+
+    Added redirect domain
+
+commit 878d06da47a0f1c5aca5f0502df1b19e5adbd0e5
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 16:40:00 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 16:40:00 2018 -0400
+
+    Updating docs
+
+commit a7dbf5354ac83bbf4e8e5354cedd8287150fb864
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 16:40:00 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 16:40:00 2018 -0400
+
+    Updating docs
+
+commit a90eee866dff6df4d63822fe45b00197f1553f48
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 16:36:29 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 16:36:29 2018 -0400
+
+    Updating docs
+
+commit b6c22658f184bd52427f7145ad8b6af1aa41b019
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 16:36:29 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 16:36:29 2018 -0400
+
+    Updating docs
+
+commit 22d66a78498ad024cafcc314d4f9c233a97befd0
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 16:33:47 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 16:33:47 2018 -0400
+
+    Updating docs
+
+commit d0e5f0afdf54f02fcb39a91edbc161f90b695220
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 16:33:47 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 16:33:47 2018 -0400
+
+    Updating docs
+
+commit 4a5b7bfa2190349281c4475abea246e0f3e92ca1
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 14:01:05 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 14:01:05 2018 -0400
+
+    Added live filter for domains with ip addresses.
+
+commit 0e19686e6fd6dd0cd3842ebe5499aee6790ab494
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 14:01:05 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 14:01:05 2018 -0400
+
+    Added live filter for domains with ip addresses.
+
+commit d9ccfeb9e5202c6e93f2a247bdbc25db22ef9a88
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 13:05:55 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 13:05:55 2018 -0400
+
+    Updated docs
+
+commit bc429c4b78babeda076b5f396b7f5d84c6b61342
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 13:05:55 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 13:05:55 2018 -0400
+
+    Updated docs
+
+commit 7ab7bbe53be7ac6f7feba9d83a0ad0f3ca31aae1
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 12:25:22 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 12:25:22 2018 -0400
+
+    Updated docs
+
+commit 712b9c53cd98de70fac78bed9428326adcd820d2
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 12:25:22 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 12:25:22 2018 -0400
+
+    Updated docs
+
+commit 8b4c51e169629872f7668f431c2ba320329858ce
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 12:24:55 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 12:24:55 2018 -0400
+
+    Updated docs
+
+commit de34e849b29a822dd5a44b442998f59dda47e1bb
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 12:24:55 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 12:24:55 2018 -0400
+
+    Updated docs
+
+commit 34590811eda408a708d70c71c2a76337b631dcc8
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 12:20:46 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 12:20:46 2018 -0400
+
+    typo
+
+commit 238d2718308a36e2f8df25d29036c0d4320ef826
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 12:20:46 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 12:20:46 2018 -0400
+
+    typo
+
+commit 84a1bac22a0f242429d2d873da54a3563a4ca264
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 12:13:47 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 12:13:47 2018 -0400
+
+    Updated version and builds for windows, linux, osx
+
+commit 9a077d44099c6c1c127f56295f52af641dcd588b
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 12:13:47 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 12:13:47 2018 -0400
+
+    Updated version and builds for windows, linux, osx
+
+commit 89836ff8a5f9d0200878c898c43734bfe38f63d3
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 09:13:46 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 09:13:46 2018 -0400
+
+    updated docs
+
+commit 1a7523f4689d8ab6ceacf6daf5353e93bdec4f3c
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 09:13:46 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 09:13:46 2018 -0400
+
+    updated docs
+
+commit 8edd043498b330d1e9eba6ffadcfb070096b43ab
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 08:39:04 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 08:39:04 2018 -0400
+
+    updated docs
+
+commit f51813d02df0b0f783afdb1ea2238529f19f66b2
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 08:39:04 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 08:39:04 2018 -0400
+
+    updated docs
+
+commit 24695184ac6e950dbfcc69b9ae3f93bab80a82bf
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 01:13:10 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 01:13:10 2018 -0400
+
+    updated docs
+
+commit 7a9593feb7ad23a127bfa0ea1de00e12d4740c72
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 01:13:10 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 01:13:10 2018 -0400
+
+    updated docs
+
+commit b715ac5f01c394a34184312c99c5c99b4dc48ecf
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 01:11:43 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 01:11:43 2018 -0400
+
+    updated docs
+
+commit a010c7558160b7cc4ccce3d135043fdeee7e3c39
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 01:11:43 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 01:11:43 2018 -0400
+
+    updated docs
+
+commit 0e36a5e15ce9da5847721c020a0cfa6c8c505faf
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 00:58:10 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 00:58:10 2018 -0400
+
+    updated docs
+
+commit d2c700ca9ac089fd5ffcd49f105023f19c0b1acf
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 00:58:10 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 00:58:10 2018 -0400
+
+    updated docs
+
+commit db1d5845705ace4e5b8a771b7356a6aa0d2bc0c4
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 00:22:48 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 00:22:48 2018 -0400
+
+    Fixed typo
+
+commit c4106375d812bf276825bd67e56bb7ff8559da85
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 31 00:22:48 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 31 00:22:48 2018 -0400
+
+    Fixed typo
+
+commit 689cb003eda4b4ae4fb29d201144e352028dedc7
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 30 23:53:38 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 30 23:53:38 2018 -0400
+
+    Fixed typo
+
+commit cabd049d4bac52e44804c1102716e07f29f8dc6e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 30 23:53:38 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 30 23:53:38 2018 -0400
+
+    Fixed typo
+
+commit 0c5a1875d66d06b342d404237407ddd70151d72d
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 30 23:50:26 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 30 23:50:26 2018 -0400
+
+    Added ssdeep page similarity function
+
+commit c48707e08373badbd5f25e6feec53717f1b0c678
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 30 23:50:26 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 30 23:50:26 2018 -0400
+
+    Added ssdeep page similarity function
+
+commit f1ba2542229f6d2bce582fceba5985a96c3de996
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 30 14:41:00 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 30 14:41:00 2018 -0400
+
+    Updated docs
+
+commit dae8f1aff7c1625d9f91cbc750f0bc5f26776c46
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 30 14:41:00 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 30 14:41:00 2018 -0400
+
+    Updated docs
+
+commit b9312b89af054fe08e14dd11676c1bd052033298
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 30 13:28:30 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 30 13:28:30 2018 -0400
+
+    Added concurrency to the extra functions
+
+commit b146f8fd3a35d482579818af7bd367de806284f0
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 30 13:28:30 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 30 13:28:30 2018 -0400
+
+    Added concurrency to the extra functions
+
+commit 8dbfdbb51340ceab403e8a0a3898e88942a7c9fd
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 30 13:13:04 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 30 13:13:04 2018 -0400
+
+    Changed import order
+
+commit 12d1358f431f9c467b1f56d00fb2ff00b3bf0888
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 30 13:13:04 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 30 13:13:04 2018 -0400
+
+    Changed import order
+
+commit 554cdd1d64509ff8b13c7eef03f3335967c786d9
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 30 13:12:00 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 30 13:12:00 2018 -0400
+
+    Removed unwanted code
+
+commit f10900ca7e66e7a4081e14b0e88b32f6926547b4
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 30 13:12:00 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 30 13:12:00 2018 -0400
+
+    Removed unwanted code
+
+commit 7e4772255da11d2ba2d192ff348600e3d5927bb2
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 30 13:11:10 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 30 13:11:10 2018 -0400
+
+    Added default -x --func value
+
+commit fda347605fd280e6ca52c9f28f6e70d9af1bb264
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Thu Aug 30 13:11:10 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Thu Aug 30 13:11:10 2018 -0400
+
+    Added default -x --func value
+
+commit dd69ea4833c6f74f4825ebbafc135cc8d66a7589
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Wed Aug 29 20:01:39 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Wed Aug 29 20:01:39 2018 -0400
+
+    Updates
+
+commit 2d6a3fd9b1369a5f5f7e1250431cc3f687287dfd
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 29 20:01:39 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 29 20:01:39 2018 -0400
+
+    Updates
+
+commit 4deb1ebb13ac85bc3936f7451fe235965ec020b5
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Wed Aug 29 19:38:10 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Wed Aug 29 19:38:10 2018 -0400
+
+    Fixed csv output
+
+commit 773f46e3a1baa19d5c1e423f87dba92de6823e56
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 29 19:38:10 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 29 19:38:10 2018 -0400
+
+    Fixed csv output
+
+commit 8258c5d52381e551fb0bca4fa38a1893fac95564
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Wed Aug 29 19:36:48 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Wed Aug 29 19:36:48 2018 -0400
+
+    Fixed csv output
+
+commit a16b686f5e964a995df40ac44bb48fee2d24e465
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 29 19:36:48 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 29 19:36:48 2018 -0400
+
+    Fixed csv output
+
+commit 8ebe937609a2c46d198ee5a6e6d3d0ee7f31a72b
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Wed Aug 29 17:52:49 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Wed Aug 29 17:52:49 2018 -0400
+
+    Updated help text
+
+commit 1a7051e6a30e3f33536e43ca0226c953a3c44cd7
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 29 17:52:49 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 29 17:52:49 2018 -0400
+
+    Updated help text
+
+commit 4220df4a60be58e0ec7bf09cbee861a42fba3b85
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Wed Aug 29 17:51:45 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Wed Aug 29 17:51:45 2018 -0400
+
+    Updated help text
+
+commit 41195b2c6321a14e677a6cf72ac995cfdedc17d2
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 29 17:51:45 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 29 17:51:45 2018 -0400
+
+    Updated help text
+
+commit 531279fb51f744c4743680de409708c5a0ae84ea
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Wed Aug 29 17:45:52 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Wed Aug 29 17:45:52 2018 -0400
+
+    Updated languages and docs
+
+commit 1aa36b92803e1ef6459ef48958fbf14f06fd8e43
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 29 17:45:52 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 29 17:45:52 2018 -0400
+
+    Updated languages and docs
+
+commit 2110ede4e1d61bd4c466f146d1f24851208b4669
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Wed Aug 29 17:33:00 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Wed Aug 29 17:33:00 2018 -0400
+
+    Updated languages and docs
+
+commit 7d019cae39a6dc8b0fbcc135619c43763f22e0c0
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 29 17:33:00 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 29 17:33:00 2018 -0400
+
+    Updated languages and docs
+
+commit 7be9cf46aa14b5602c23690922a64e6fc0453808
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Wed Aug 29 17:05:48 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Wed Aug 29 17:05:48 2018 -0400
+
+    Updated languages and docs
+
+commit 2262933b32b47bd0de861b93c591bdb701cd9661
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 29 17:05:48 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 29 17:05:48 2018 -0400
+
+    Updated languages and docs
+
+commit 1921a20916ecbdf95c834aace28f29b50132736e
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Wed Aug 29 13:15:03 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Wed Aug 29 13:15:03 2018 -0400
+
+    fmt fixes
+
+commit 85e8d66a7fe1fc9571140ec03f22cccfa959005b
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 29 13:15:03 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 29 13:15:03 2018 -0400
+
+    fmt fixes
+
+commit 83abc0e696e53dd5ef8502abbf57d490864ee1d8
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Wed Aug 29 13:14:49 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Wed Aug 29 13:14:49 2018 -0400
+
+    Updated docs
+
+commit f60c0c2040c285d18cf016ecf8101095b80f1766
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 29 13:14:49 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 29 13:14:49 2018 -0400
+
+    Updated docs
+
+commit 8e6b67008074f67bb95e5563bf7a119eecc199f8
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Wed Aug 29 13:06:05 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Wed Aug 29 13:06:05 2018 -0400
+
+    Implemented TLD typos
+
+commit 43dd7fa63cb7da8fee5c38d82950e4fd1860d16e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 29 13:06:05 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 29 13:06:05 2018 -0400
+
+    Implemented TLD typos
+
+commit dfa23ee89666c3db449e8ba42f4a7d6a1c48d83d
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Tue Aug 28 16:29:02 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Tue Aug 28 16:29:02 2018 -0400
+
+    Fixed documentation
+
+commit a94d523a9873b687d1d80994e63bc9224de6ef34
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Aug 28 16:29:02 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Aug 28 16:29:02 2018 -0400
+
+    Fixed documentation
+
+commit 12118270a4e5e870605694ce66209d41e94f1d3b
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Tue Aug 28 07:39:58 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Tue Aug 28 07:39:58 2018 -0400
+
+    Fixed typo
+
+commit 60e6395d1183593ab24a4befdc58f1c919de2a9b
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Aug 28 07:39:58 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Aug 28 07:39:58 2018 -0400
+
+    Fixed typo
+
+commit 0c3e3c667299ba3d4ada43f0c5f597d5b5ef3b09
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Tue Aug 28 07:38:33 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Tue Aug 28 07:38:33 2018 -0400
+
+    Updated formatting
+
+commit 77fc583b8a33133e158524b235be1ad46f95b497
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Aug 28 07:38:33 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Aug 28 07:38:33 2018 -0400
+
+    Updated formatting
+
+commit 15a1c88585d46476e528f7f269bfbf048c38f568
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Tue Aug 28 07:32:32 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Tue Aug 28 07:32:32 2018 -0400
+
+    Updated documentation
+
+commit b954c318089d9b1b2b376aaeec02d91f1b0330dd
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Tue Aug 28 07:32:32 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Tue Aug 28 07:32:32 2018 -0400
+
+    Updated documentation
+
+commit ef898ff13c856419f3cc980ae81223e0046d2e93
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 21:09:57 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 21:09:57 2018 -0400
+
+    Added table of contents to the URLInsane docs page
+
+commit ca9483241802a6f82daf93efb173c9299b213b9c
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 21:09:57 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 21:09:57 2018 -0400
+
+    Added table of contents to the URLInsane docs page
+
+commit aa1bcb31f11be74d9c44bc50c413f4a06707ab1f
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 21:08:35 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 21:08:35 2018 -0400
+
+    Added table of contents to the URLInsane docs page
+
+commit e2e7933d1af06acd8d4aa72a8250860729d94f6d
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 21:08:35 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 21:08:35 2018 -0400
+
+    Added table of contents to the URLInsane docs page
+
+commit 20d5133016518092eaca5aa715b797654c39df9b
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 21:06:36 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 21:06:36 2018 -0400
+
+    Added table of contents to the URLInsane docs page
+
+commit 258b618a38ba519f872a0623ef522abc5b012b29
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 21:06:36 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 21:06:36 2018 -0400
+
+    Added table of contents to the URLInsane docs page
+
+commit 1170419582ee687f8dce38f5802e7361b6e1aff0
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 21:03:54 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 21:03:54 2018 -0400
+
+    Added table of contents to the URLInsane docs page
+
+commit 26a8388e7676f13ccb436de86d00042d56b72f28
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 21:03:54 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 21:03:54 2018 -0400
+
+    Added table of contents to the URLInsane docs page
+
+commit 8813f9c1b319beb8267e43a1f570afe99c9fd579
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 21:02:16 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 21:02:16 2018 -0400
+
+    Added table of contents to the URLInsane docs page
+
+commit fe5f05bd5fe74485749352c7ade11906a8c59196
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 21:02:16 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 21:02:16 2018 -0400
+
+    Added table of contents to the URLInsane docs page
+
+commit 4f65f879321f88d4901f5147f0b5dece8df804b9
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 20:30:17 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 20:30:17 2018 -0400
+
+    Fixed typo
+
+commit a02ef3794b41a5a362a4c4b1b07fa50db371cae9
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 20:30:17 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 20:30:17 2018 -0400
+
+    Fixed typo
+
+commit 3258d6f824bed188157341d9b48df7c22dcc70ed
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 20:27:30 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 20:27:30 2018 -0400
+
+    Updated documentation
+
+commit 12558dace34aff1b9127fe349eeedf11a8520d04
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 20:27:30 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 20:27:30 2018 -0400
+
+    Updated documentation
+
+commit d60712fdcb55d06a250c57877bb498e925fa39ea
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 20:24:09 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 20:24:09 2018 -0400
+
+    Updated documentation
+
+commit af262d9b783f155c16f46dc3c2e14f84adae7a40
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 20:24:09 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 20:24:09 2018 -0400
+
+    Updated documentation
+
+commit 15ddd085fa5a5d35688047565eeb799c3bb2c884
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 20:19:19 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 20:19:19 2018 -0400
+
+    Updated documentation
+
+commit 8150865167e555bd844e11355e593f95b7b4a407
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 20:19:19 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 20:19:19 2018 -0400
+
+    Updated documentation
+
+commit b4b6c3133347c1eda34ccd1cb975553cb74708c4
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 20:16:31 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 20:16:31 2018 -0400
+
+    Updated documentation
+
+commit 3d05eb4eab8798fa6219f3a5a1bc089d695f6c90
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 20:16:31 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 20:16:31 2018 -0400
+
+    Updated documentation
+
+commit 6727d76f435b80514d1687decd8fb71f9fb455e9
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 20:10:53 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 20:10:53 2018 -0400
+
+    Updated documentation
+
+commit 66dbcfb0089019ae66724e1a4cacf596d7f003ef
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 20:10:53 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 20:10:53 2018 -0400
+
+    Updated documentation
+
+commit 4689318dbf11539ffe17fb60c836d41678e8f739
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 20:09:57 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 20:09:57 2018 -0400
+
+    Updated documentation
+
+commit 14572f97d4dfd885d5857a39b9366fec157e317a
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 20:09:57 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 20:09:57 2018 -0400
+
+    Updated documentation
+
+commit 9685d8cf21bff252e1e01225f573771466cec94f
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 20:08:00 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 20:08:00 2018 -0400
+
+    Updated documentation
+
+commit 71bca853408af32c0bd7aadf6f729efd54af03bf
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 20:08:00 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 20:08:00 2018 -0400
+
+    Updated documentation
+
+commit 5ae2fc63002fd9b57ceb9a4e48fd1225c4dddf44
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 19:54:05 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 19:54:05 2018 -0400
+
+    Updated documentation
+
+commit 64bec535d9015b2f9a36c35a3cf170aa4aaa4418
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 19:54:05 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 19:54:05 2018 -0400
+
+    Updated documentation
+
+commit 3f5a3c8a1155b718e2be69fce86b426cbfef64a8
+Merge: 6c8bd77 130811d
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 19:48:06 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 19:48:06 2018 -0400
+
+    Merge remote-tracking branch 'origin/master'
+
+commit 1ba97e00f559d2c9be9414970f59a3c27bb4f612
+Merge: 1a5206e 5bbcde8
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 19:48:06 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 19:48:06 2018 -0400
+
+    Merge remote-tracking branch 'origin/master'
+
+commit 6c8bd7788859471abdc7e8066bba3ef936ea67fc
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 19:47:51 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 19:47:51 2018 -0400
+
+    Updated documentation
+
+commit 1a5206e1ea82286f2b468a921de4ab79b4978eb2
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 19:47:51 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 19:47:51 2018 -0400
+
+    Updated documentation
+
+commit 130811d9af5f20aa47b4b07806657bcd67858333
+Author:    Rangertaha <rangertaha@users.noreply.github.com>
+AuthorDate: Mon Aug 27 19:43:38 2018 -0400
+Commit:    Rangertaha <rangertaha@users.noreply.github.com>
+CommitDate: Mon Aug 27 19:43:38 2018 -0400
+
+    Set theme jekyll-theme-cayman
+
+commit 5bbcde817b76c177bf004af25c4d1b86e3fd777f
+Author:    Rangertaha <rangertaha@users.noreply.github.com>
+AuthorDate: Mon Aug 27 19:43:38 2018 -0400
+Commit:    Rangertaha <rangertaha@users.noreply.github.com>
+CommitDate: Mon Aug 27 19:43:38 2018 -0400
+
+    Set theme jekyll-theme-cayman
+
+commit ca6553dfec847af549b74c221b71c5481f919ea5
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 19:41:31 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 19:41:31 2018 -0400
+
+    Updated documentation
+
+commit bfa8b109b3efc08d79f0c8565d823dd29b7ec2ed
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 19:41:31 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 19:41:31 2018 -0400
+
+    Updated documentation
+
+commit cbe66670b0c43a9425e68c283b67c7f4301dc19b
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 19:39:33 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 19:39:33 2018 -0400
+
+    Updated documentation
+
+commit 85751069c716de246388dff95c309528177823fd
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 19:39:33 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 19:39:33 2018 -0400
+
+    Updated documentation
+
+commit d8cba380587fbb863c07a64d181a494731ebf2c6
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 18:07:52 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 18:07:52 2018 -0400
+
+    Updated documentation
+
+commit e4482c0927b65521e1598277915b86eb13b9a48b
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 18:07:52 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 18:07:52 2018 -0400
+
+    Updated documentation
+
+commit 2caa045f75de7edcd4cb1a7d6ade08c6e7890606
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 17:59:29 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 17:59:29 2018 -0400
+
+    Updated documentation
+
+commit 3cb7f9146ab568f2160b52e0dfd7388e8896ed28
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 17:59:29 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 17:59:29 2018 -0400
+
+    Updated documentation
+
+commit 5a99c4eee6d23c1dc8096909dd9ea0f97542dd79
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 17:46:40 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 17:46:40 2018 -0400
+
+    Added numeral swapping algorithm
+
+commit d455e08744690699874a2b77f4e3c6b4f3c87535
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 17:46:40 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 17:46:40 2018 -0400
+
+    Added numeral swapping algorithm
+
+commit 583c5e877a71aeca86adc53d53729711f628ed8d
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 16:41:47 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 16:41:47 2018 -0400
+
+    Improved domain parsing
+
+commit 9ddc11d7309aa22d1727cf9de797a38211cf6a30
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 16:41:47 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 16:41:47 2018 -0400
+
+    Improved domain parsing
+
+commit 2b547fecd36e0a1976ff242665f0e0817cf197b6
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 16:32:06 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 16:32:06 2018 -0400
+
+    Improved domain parsing
+
+commit 04f431fd3bdb685df7e1e83e1aacaa2179d20b01
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 16:32:06 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 16:32:06 2018 -0400
+
+    Improved domain parsing
+
+commit 7a433adb9e6a5f060050ec338368e5af4a535e84
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Aug 27 11:27:08 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Aug 27 11:27:08 2018 -0400
+
+    Updates
+
+commit 09805de86d21982976954be7dcf4df3515e893a5
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Aug 27 11:27:08 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Aug 27 11:27:08 2018 -0400
+
+    Updates
+
+commit 585155c12254ec4d6ccd8d2aa3c4f2945ba4bb25
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Sun Aug 26 23:11:39 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Sun Aug 26 23:11:39 2018 -0400
+
+    Updates
+
+commit 3513d7e3908a4de28ffd3657e221b955d33e9f44
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Aug 26 23:11:39 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Aug 26 23:11:39 2018 -0400
+
+    Updates
+
+commit beac30f0670daf2cda791a15fc6a7d4c4efb52c5
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Sun Aug 26 22:56:14 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Sun Aug 26 22:56:14 2018 -0400
+
+    Updates
+
+commit bb4293baed632fcb02290c4224c7f703f0e2ac4e
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Sun Aug 26 22:56:14 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Sun Aug 26 22:56:14 2018 -0400
+
+    Updates
+
+commit a2839a474d82e5bf8e7b5613e3d0d6218dc915c5
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Fri Aug 17 06:46:12 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Fri Aug 17 06:46:12 2018 -0400
+
+    Updates
+
+commit 5ed7bcf8ea34494f09f7f31e717949e5de2ab0d3
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Fri Aug 17 06:46:12 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Fri Aug 17 06:46:12 2018 -0400
+
+    Updates
+
+commit 68a34cbafc2df0db3c85d7ef3a9da4774147fa0f
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Wed Aug 15 00:20:15 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Wed Aug 15 00:20:15 2018 -0400
+
+    Added md5 hashing of the binary
+
+commit fef5bba0de67530cba04f3667610ca6ee4e7bced
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 15 00:20:15 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 15 00:20:15 2018 -0400
+
+    Added md5 hashing of the binary
+
+commit 963ce9b82629d543a6f94ebeb62a3aca27996639
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Wed Aug 15 00:07:22 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Wed Aug 15 00:07:22 2018 -0400
+
+    Initial commit
+
+commit ec2efaa1125e7f9402d7f2671130c2e3ee1bf8e9
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Wed Aug 15 00:07:22 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Wed Aug 15 00:07:22 2018 -0400
+
+    Initial commit
+
+commit 8119a11f1a5d7e03123696d59d317fe09d22681b
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Jul 30 08:02:41 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Jul 30 08:02:41 2018 -0400
+
+    Updated description
+
+commit c54e290496af777380778ba4ad2a51227589244c
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jul 30 08:02:41 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jul 30 08:02:41 2018 -0400
+
+    Updated description
+
+commit e7be027372e6d53c5eaab0623635f03b3362b2a5
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Jul 30 08:00:01 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Jul 30 08:00:01 2018 -0400
+
+    Updated description
+
+commit d38a2025b9e7ce37d8fa980028f69a1ff8485dec
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jul 30 08:00:01 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jul 30 08:00:01 2018 -0400
+
+    Updated description
+
+commit 729f8836ddfd2d7151bf5341bf486a80c4ff278e
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Jul 30 07:45:28 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Jul 30 07:45:28 2018 -0400
+
+    added cobra cli interface
+
+commit e81714cf2736c8789a45eb173975c83ca14f2a80
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jul 30 07:45:28 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jul 30 07:45:28 2018 -0400
+
+    added cobra cli interface
+
+commit 284f7005464195119b8f48cee4730d9fb5917e6d
+Author:     Tom Lee <tom@cybint.io>
+AuthorDate: Mon Jul 30 07:32:15 2018 -0400
+Commit:     Tom Lee <tom@cybint.io>
+CommitDate: Mon Jul 30 07:32:15 2018 -0400
+
+    ignore editor meta folder
+
+commit ac327995d2826b47959825460ba766eff9359dfd
+Author:    Rangertaha <rangertaha@gmail.com>
+AuthorDate: Mon Jul 30 07:32:15 2018 -0400
+Commit:    Rangertaha <rangertaha@gmail.com>
+CommitDate: Mon Jul 30 07:32:15 2018 -0400
+
+    ignore editor meta folder
+
+commit b622a6f38a4aa9d3049f27ae0f84de6858c8a1aa
+Author:    Rangertaha <rangertaha@users.noreply.github.com>
+AuthorDate: Sat Jul 28 14:47:24 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Sat Jul 28 14:47:24 2018 -0400
+
+    Initial commit
+
+commit 72f2cb184264b85b89ecf1e353ab5a3dfdb9510a
+Author:    Rangertaha <rangertaha@users.noreply.github.com>
+AuthorDate: Sat Jul 28 14:47:24 2018 -0400
+Commit:     GitHub <noreply@github.com>
+CommitDate: Sat Jul 28 14:47:24 2018 -0400
+
+    Initial commit
