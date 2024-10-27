@@ -1,3 +1,3 @@
 package all
 
-import _ "github.com/rangertaha/urlinsane/plugins/algorithms/hp" // register plugin
+// import _ "github.com/rangertaha/urlinsane/plugins/algorithms/hp" // register plugin

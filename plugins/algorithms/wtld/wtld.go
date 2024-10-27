@@ -22,7 +22,7 @@ func (n *WrongTLD) Name() string {
 }
 
 func (n *WrongTLD) Description() string {
-	return "Wrong Top Level Domain"
+	return "Wrong top level domain (TLD)"
 }
 
 func (n *WrongTLD) Fields() []string {
@@ -33,7 +33,8 @@ func (n *WrongTLD) Headers() []string {
 	return []string{}
 }
 
-func (n *WrongTLD) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *WrongTLD) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+	out = append(out, in)
 	return
 }
 
@@ -41,7 +42,7 @@ func (n *WrongTLD) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &WrongTLD{
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.DOMAIN},
 		}
 	})
 }

@@ -30,6 +30,11 @@ type Domain struct {
 	live      bool
 }
 
+func NewDommain(str string) (domain Domain) {
+	domain, _ = getDomain([]string{str})
+	return
+}
+
 func (d Domain) Subdomain() string {
 	return d.subdomain
 }

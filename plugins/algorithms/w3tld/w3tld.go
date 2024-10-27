@@ -19,11 +19,11 @@ func (n *WrongThirdTLD) IsType(str string) bool {
 }
 
 func (n *WrongThirdTLD) Name() string {
-	return "Wrong 3rd TLD"
+	return "Wrong TLD3"
 }
 
 func (n *WrongThirdTLD) Description() string {
-	return "Wrong Third Level Domain"
+	return "Wrong third level domain (TLD3)"
 }
 
 func (n *WrongThirdTLD) Fields() []string {
@@ -34,7 +34,8 @@ func (n *WrongThirdTLD) Headers() []string {
 	return []string{}
 }
 
-func (n *WrongThirdTLD) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *WrongThirdTLD) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+	out = append(out, in)
 	return
 }
 
@@ -42,7 +43,7 @@ func (n *WrongThirdTLD) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &WrongThirdTLD{
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.DOMAIN},
 		}
 	})
 }

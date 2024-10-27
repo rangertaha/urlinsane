@@ -1,45 +1,40 @@
 package text
 
 import (
+	"fmt"
+
 	"github.com/rangertaha/urlinsane"
-	"github.com/rangertaha/urlinsane/plugins/information"
+	"github.com/rangertaha/urlinsane/plugins/outputs"
 )
 
-const CODE = "aci"
+const CODE = "text"
 
-type None struct {
-	types []string
+type Text struct {
+	rtype string
+	file  string
 }
 
-func (n *None) Code() string {
+func (n *Text) Code() string {
 	return CODE
 }
 
-func (n *None) Name() string {
-	return "None"
+func (n *Text) Set(typ string, filepath string) {
+	n.rtype = typ
+	n.file = filepath
+
 }
 
-func (n *None) Description() string {
-	return ""
+func (n *Text) Description() string {
+	return "Text outputs one record per line and is the default"
 }
 
-func (n *None) Fields() []string {
-	return []string{}
-}
-
-func (n *None) Headers() []string {
-	return []string{}
-}
-
-func (n *None) Exec(urlinsane.Typo) (results urlinsane.Typo) {
-	return
+func (n *Text) Write(in urlinsane.Typo) {
+	fmt.Println(in)
 }
 
 // Register the plugin
 func init() {
-	information.Add(CODE, func() urlinsane.Information {
-		return &None{
-			types: []string{information.ENTITY, information.DOMAINS},
-		}
+	outputs.Add(CODE, func() urlinsane.Output {
+		return &Text{}
 	})
 }

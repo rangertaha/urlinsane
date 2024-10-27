@@ -23,7 +23,7 @@ func (n *SingularPluralize) Name() string {
 }
 
 func (n *SingularPluralize) Description() string {
-	return "Singular Pluralise creates a singular domain plural and vice versa"
+	return "Creates singular and plural names"
 }
 
 func (n *SingularPluralize) Fields() []string {
@@ -34,7 +34,8 @@ func (n *SingularPluralize) Headers() []string {
 	return []string{}
 }
 
-func (n *SingularPluralize) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *SingularPluralize) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+	out = append(out, in)
 	return
 }
 
@@ -42,7 +43,7 @@ func (n *SingularPluralize) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &SingularPluralize{
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
 		}
 	})
 }

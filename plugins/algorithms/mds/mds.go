@@ -23,7 +23,7 @@ func (n *MissingDashes) Name() string {
 }
 
 func (n *MissingDashes) Description() string {
-	return "created by stripping all dashes from the domain"
+	return "created by stripping all dashes from the name"
 }
 
 func (n *MissingDashes) Fields() []string {
@@ -34,7 +34,8 @@ func (n *MissingDashes) Headers() []string {
 	return []string{}
 }
 
-func (n *MissingDashes) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *MissingDashes) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+	out = append(out, in)
 	return
 }
 
@@ -42,7 +43,7 @@ func (n *MissingDashes) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &MissingDashes{
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
 		}
 	})
 }

@@ -15,7 +15,6 @@ type Creator func() urlinsane.Information
 
 var Types = []string{"ENTITY", "DOMAINS"}
 
-
 var Information = map[string]Creator{}
 
 func Add(name string, creator Creator) {
@@ -27,7 +26,7 @@ func Get(name string) (Creator, error) {
 		return plugin, nil
 	}
 
-	return nil, fmt.Errorf("unable to locate outputs/%s plugin", name)
+	return nil, fmt.Errorf("unable to locate information/%s plugin", name)
 }
 
 func All() (mods []urlinsane.Information) {

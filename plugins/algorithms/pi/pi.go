@@ -7,7 +7,6 @@ import (
 
 const CODE = "pi"
 
-
 type PeriodInsertion struct {
 	types []string
 }
@@ -24,7 +23,7 @@ func (n *PeriodInsertion) Name() string {
 }
 
 func (n *PeriodInsertion) Description() string {
-	return "Inserting periods in the target domain"
+	return "Inserting periods in the target name"
 }
 
 func (n *PeriodInsertion) Fields() []string {
@@ -35,7 +34,8 @@ func (n *PeriodInsertion) Headers() []string {
 	return []string{}
 }
 
-func (n *PeriodInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
+func (n *PeriodInsertion) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+	out = append(out, in)
 	return
 }
 
@@ -43,7 +43,7 @@ func (n *PeriodInsertion) Exec(urlinsane.Typo) (results []urlinsane.Typo) {
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
 		return &PeriodInsertion{
-			types: []string{algorithms.ENTITY, algorithms.DOMAINS},
+			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
 		}
 	})
 }

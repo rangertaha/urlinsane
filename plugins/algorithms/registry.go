@@ -8,12 +8,12 @@ import (
 
 const (
 	ENTITY  = "ENTITY"
-	DOMAINS = "DOMAINS"
+	DOMAIN = "DOMAIN"
 )
 
 type Creator func() urlinsane.Algorithm
 
-var Types = []string{"ENTITY", "DOMAINS"}
+var Types = []string{ENTITY, DOMAIN}
 
 var Algorithms = map[string]Creator{}
 
@@ -26,7 +26,7 @@ func Get(name string) (Creator, error) {
 		return plugin, nil
 	}
 
-	return nil, fmt.Errorf("unable to locate outputs/%s plugin", name)
+	return nil, fmt.Errorf("unable to locate algorithms/%s plugin", name)
 }
 
 func All() (mods []urlinsane.Algorithm) {

@@ -15,7 +15,6 @@
 package engine
 
 import (
-	"fmt"
 	"sync"
 	"time"
 
@@ -52,62 +51,78 @@ func (t *Typosquatting) GenOptions() <-chan urlinsane.Typo {
 	out := make(chan urlinsane.Typo)
 	go func() {
 		for _, lang := range t.Config.Languages {
+			// fmt.Println(lang)
 			for _, board := range t.Config.Keyboards {
+				// fmt.Println(board)
 				for _, algo := range t.Config.Algorithms {
+					// fmt.Println(t.Config.Type)
+					// fmt.Println(algo)
 					if algo.IsType(t.Config.Type) {
-						out <- Typo{
+						// fmt.Println(t.Config.Type)
+
+						typo := &Typo{
 							language:  lang,
 							keyboard:  board,
 							algorithm: algo,
 							name:      t.Config.Name,
 							original:  t.Config.Domain,
+							variant:   t.Config.Domain,
 						}
+						// fmt.Println(typo.Repr(), lang.Name(), board.Id() ,typo.algorithm.Name())
+						out <- typo
 					}
 				}
 			}
 		}
 		close(out)
 	}()
-	return t.Algorithms(out)
+	return out
 }
 
 // Algorithms generates typos using the algorithm plugins
-func (t *Typosquatting) Algorithms(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+func (ts *Typosquatting) Algorithms(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 	out := make(chan urlinsane.Typo)
 
-	for w := 1; w <= t.Config.Concurrency; w++ {
-		t.typoWG.Add(1)
+	for w := 1; w <= ts.Config.Concurrency; w++ {
+		ts.typoWG.Add(1)
 		go func(id int, in <-chan urlinsane.Typo, out chan<- urlinsane.Typo) {
-			defer t.typoWG.Done()
-			for c := range in {
+			defer ts.typoWG.Done()
+			for typo := range in {
 				// Execute typo algorithm returning typos
-				for _, t := range c.Algorithm().Exec(c) {
-					out <- t
+				for _, typ := range typo.Algorithm().Exec(typo) {
+					if typ.Variant() != nil {
+						// fmt.Println(typ)
+						out <- typ
+					}
 				}
 			}
 		}(w, in, out)
 	}
 	go func() {
-		t.typoWG.Wait()
+		ts.typoWG.Wait()
 		close(out)
 	}()
 
-	return t.Dedup(out)
+	return ts.Dedup(out)
 }
 
-func (t *Typosquatting) Dedup(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+func (ts *Typosquatting) Dedup(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 	out := make(chan urlinsane.Typo)
+	ts.Typos = make(map[string]urlinsane.Typo)
+
 	go func() {
 		for typo := range in {
-			t.Typos[typo.Repr()] = typo
+			ts.Typos[typo.Variant().Repr()] = typo
+			// fmt.Println(typo)
 		}
-		for _, typ := range t.Typos {
+		for _, typ := range ts.Typos {
 			out <- typ
+
 		}
 		close(out)
 	}()
 
-	return t.Information(out)
+	return out
 }
 
 func (t *Typosquatting) Information(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
@@ -126,7 +141,7 @@ func (t *Typosquatting) Information(in <-chan urlinsane.Typo) <-chan urlinsane.T
 		t.funcWG.Wait()
 		close(out)
 	}()
-	return t.Cache(out)
+	return out
 }
 
 // // DistChain creates workers of chained functions
@@ -148,7 +163,6 @@ func (t *Typosquatting) Information(in <-chan urlinsane.Typo) <-chan urlinsane.T
 // 	}()
 // 	return t.Information(out)
 // }
-
 
 // FuncChain creates a chain of information gathering functions
 func (t *Typosquatting) InfoChain(funcs []urlinsane.Information, in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
@@ -172,8 +186,7 @@ func (t *Typosquatting) InfoChain(funcs []urlinsane.Information, in <-chan urlin
 	return out
 }
 
-
-func (t *Typosquatting) Cache(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+func (t *Typosquatting) Storage(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 	// out := make(chan urlinsane.Typo)
 	// go func() {
 	// 	for typo := range in {
@@ -188,13 +201,21 @@ func (t *Typosquatting) Cache(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 	return in
 }
 
-
 func (t *Typosquatting) Output(in <-chan urlinsane.Typo) {
-	fmt.Println(t)
+	for c := range in {
+		// Write output
+		if c != nil {
+			t.Config.Output.Write(c)
+		}
+	}
 }
 
 func (t *Typosquatting) Execute() {
-	t.Output(t.GenOptions())
+	typos := t.GenOptions()
+	typos = t.Algorithms(typos)
+	typos = t.Information(typos)
+	typos = t.Storage(typos)
+	t.Output(typos)
 }
 
 // // FilterChain ...

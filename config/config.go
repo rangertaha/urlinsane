@@ -25,6 +25,8 @@ import (
 	_ "github.com/rangertaha/urlinsane/plugins/information/all"
 	"github.com/rangertaha/urlinsane/plugins/languages"
 	_ "github.com/rangertaha/urlinsane/plugins/languages/all"
+	"github.com/rangertaha/urlinsane/plugins/outputs"
+	_ "github.com/rangertaha/urlinsane/plugins/outputs/all"
 	"github.com/spf13/cobra"
 )
 
@@ -34,12 +36,16 @@ const (
 )
 
 type Config struct {
-	Name        string
-	Domain      urlinsane.Domain
+	// Types of targets for typosquattting
+	Name   string
+	Domain urlinsane.Domain
+
+	// Plugins
 	Keyboards   []urlinsane.Keyboard
 	Languages   []urlinsane.Language
 	Algorithms  []urlinsane.Algorithm
 	Information []urlinsane.Information
+	Output      urlinsane.Output
 
 	Headers     []string
 	Format      string
@@ -69,6 +75,12 @@ func CliConfig(cmd *cobra.Command, args []string) (c Config, err error) {
 
 	if infos, err := commaSplit(cmd.PersistentFlags().GetStringArray("info")); err == nil {
 		c.Information = information.List(infos...)
+	}
+
+	if c.Format, err = cmd.PersistentFlags().GetString("format"); err == nil {
+		if c.Output, err = outputs.Get(c.Format); err != nil {
+			return c, err
+		}
 	}
 
 	if c.Concurrency, err = cmd.PersistentFlags().GetInt("concurrency"); err != nil {
