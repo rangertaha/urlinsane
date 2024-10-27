@@ -12,7 +12,68 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package languages
+package russian
+
+import (
+	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/plugins/languages"
+)
+
+const LANGUAGE string = "ru"
+
+type Russian struct {
+	code         string
+	name         string
+	description  string
+	numerals     map[string][]string
+	graphemes    []string
+	vowels       []string
+	misspellings [][]string
+	homophones   [][]string
+	antonyms     map[string][]string
+	homoglyphs   map[string][]string
+}
+
+func (l *Russian) Code() string {
+	return l.code
+}
+func (l *Russian) Name() string {
+	return l.name
+}
+func (l *Russian) Description() string {
+	return l.description
+}
+func (l *Russian) Numerals() map[string][]string {
+	return l.numerals
+}
+
+func (l *Russian) Graphemes() []string {
+	return l.graphemes
+}
+
+func (l *Russian) Vowels() []string {
+	return l.vowels
+}
+
+func (l *Russian) Misspellings() [][]string {
+	return l.misspellings
+}
+
+func (l *Russian) Homophones() [][]string {
+	return l.homophones
+}
+
+func (l *Russian) Antonyms() map[string][]string {
+	return l.antonyms
+}
+
+func (l *Russian) Homoglyphs() map[string][]string {
+	return l.homoglyphs
+}
+
+func (l *Russian) Keyboards() []urlinsane.Keyboard {
+	return languages.Keyboards()
+}
 
 var (
 	// ruMisspellings are common misspellings
@@ -30,8 +91,8 @@ var (
 		"хорошо": []string{"плохой"},
 	}
 
-	ruLanguage = Language{
-		code:        "RU",
+	Language = Russian{
+		code:        LANGUAGE,
 		name:        "Russian",
 		description: "Russian is the native language of the Russian people",
 
@@ -137,44 +198,11 @@ var (
 			"ѭ": []string{""},
 			"ѩ": []string{""},
 		},
-		keyboards: []Keyboard{
-			{
-				code:        "RU1",
-				name:        "ЙЦУКЕН",
-				description: "Russian keyboard layout",
-				// Language:    ruLanguage,
-				layout: []string{
-					"1234567890   ",
-					"йцукенгшщзхъё",
-					"фывапролджэ  ",
-					"ячсмитьбю    "},
-			},
-			{
-				code:        "RU2",
-				name:        "ЯШЕРТЫ",
-				description: "Phonetic Russian keybaord layout",
-				// Language:    ruLanguage,
-				layout: []string{
-					"1234567890ьъ ",
-					"яшертыуиопюжэ",
-					"асдфгчйкл    ",
-					"зхцвбнм      "},
-			},
-			{
-				code:        "RU3",
-				name:        "ЙЦУКЕН",
-				description: "PC Russian keyboard layout",
-				// Language:    ruLanguage,
-				layout: []string{
-					"1234567890- ",
-					"йцукенгшщзхъ",
-					"фывапролджэ ",
-					"ячсмитьбю   "},
-			},
-		},
 	}
 )
 
 func init() {
-	Add("ru", ruLanguage)
+	languages.AddLanguage(LANGUAGE, func() urlinsane.Language {
+		return &Language
+	})
 }

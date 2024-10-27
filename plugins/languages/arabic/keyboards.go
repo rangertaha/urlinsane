@@ -19,7 +19,7 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/languages"
 )
 
-type arKeyboard struct {
+type Keyboard struct {
 	Lang        string
 	Code        string
 	Name        string
@@ -27,7 +27,7 @@ type arKeyboard struct {
 	Layout      []string
 }
 
-var arKeyboards = []arKeyboard{
+var Keyboards = []Keyboard{
 	{
 		Lang:        LANGUAGE,
 		Code:        "ar1",
@@ -74,28 +74,28 @@ var arKeyboards = []arKeyboard{
 	},
 }
 
-func (k *arKeyboard) Id() string {
+func (k *Keyboard) Id() string {
 	return k.Code
 }
-func (k *arKeyboard) Language() string {
+func (k *Keyboard) Language() string {
 	return k.Lang
 }
-func (k *arKeyboard) Title() string {
+func (k *Keyboard) Title() string {
 	return k.Name
 }
-func (k *arKeyboard) Summary() string {
+func (k *Keyboard) Summary() string {
 	return k.Description
 }
-func (k *arKeyboard) Layouts() []string {
+func (k *Keyboard) Layouts() []string {
 	return k.Layout
 }
 
-func (k *arKeyboard) Languages() []urlinsane.Language {
+func (k *Keyboard) Languages() []urlinsane.Language {
 	return languages.Languages(k.Lang)
 }
 
 func init() {
-	for _, kb := range arKeyboards {
+	for _, kb := range Keyboards {
 		languages.AddKeyboard(kb.Code, func() urlinsane.Keyboard {
 			return &kb
 		})

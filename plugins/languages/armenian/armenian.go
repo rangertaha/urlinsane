@@ -12,9 +12,70 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package languages
+package armenian
+
+import (
+	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/plugins/languages"
+)
 
 // https://en.wikipedia.org/wiki/Armenian_alphabet
+
+const LANGUAGE string = "hy"
+
+type Armenian struct {
+	code         string
+	name         string
+	description  string
+	numerals     map[string][]string
+	graphemes    []string
+	vowels       []string
+	misspellings [][]string
+	homophones   [][]string
+	antonyms     map[string][]string
+	homoglyphs   map[string][]string
+}
+
+func (l *Armenian) Code() string {
+	return l.code
+}
+func (l *Armenian) Name() string {
+	return l.name
+}
+func (l *Armenian) Description() string {
+	return l.description
+}
+func (l *Armenian) Numerals() map[string][]string {
+	return l.numerals
+}
+
+func (l *Armenian) Graphemes() []string {
+	return l.graphemes
+}
+
+func (l *Armenian) Vowels() []string {
+	return l.vowels
+}
+
+func (l *Armenian) Misspellings() [][]string {
+	return l.misspellings
+}
+
+func (l *Armenian) Homophones() [][]string {
+	return l.homophones
+}
+
+func (l *Armenian) Antonyms() map[string][]string {
+	return l.antonyms
+}
+
+func (l *Armenian) Homoglyphs() map[string][]string {
+	return l.homoglyphs
+}
+
+func (l *Armenian) Keyboards() []urlinsane.Keyboard {
+	return languages.Keyboards()
+}
 
 var (
 	// hyMisspellings are common misspellings
@@ -32,9 +93,9 @@ var (
 		"լավ": []string{"վատը"},
 	}
 
-	hyLanguage = Language{
+	hyLanguage = Armenian{
 		// https://www.loc.gov/standards/iso639-2/php/code_list.php
-		code:        "HY",
+		code:        LANGUAGE,
 		name:        "Armenian",
 		description: "Armenian is the native language of the Armenian people",
 
@@ -145,46 +206,11 @@ var (
 			"օ": []string{"0", "Ο", "ο", "О", "о", "Օ", "ȯ", "ọ", "ỏ", "ơ", "ó", "ö", "ӧ", "ه", "ة"},
 			"ֆ": []string{},
 		},
-		keyboards: []Keyboard{
-			{
-				code:        "HY1",
-				name:        "QWERTY",
-				description: "Armenian QWERTY keyboard layout",
-				layout: []string{
-					"1234567890-",
-					"ճւերտյւիոպ ",
-					"ասդֆգհձկլ  ",
-					" զխծվբնմ   ",
-				},
-			},
-			{
-				code:        "HY2",
-				name:        "QWERTY",
-				description: "Armenian, Western QWERTY keyboard layout",
-				layout: []string{
-					" ձյ՛ -   օռժ",
-					"խվէրդեըիոբչջ",
-					"աստֆկհճքլթփ ",
-					" զցգւպնմշղծ ",
-				},
-			},
-			//{
-			//	code:        "HY3",
-			//	name:        "Easter QWERTY",
-			//	description: "Easter QWERTY keyboard layout",
-			//	Language:    ENGLISH,
-			//	layout: []string{
-			//		"",
-			//		"",
-			//		"",
-			//		"",
-			//	},
-			//},
-
-		},
 	}
 )
 
 func init() {
-	Add("hy", hyLanguage)
+	languages.AddLanguage(LANGUAGE, func() urlinsane.Language {
+		return &hyLanguage
+	})
 }

@@ -12,7 +12,68 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package languages
+package spanish
+
+import (
+	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/plugins/languages"
+)
+
+const LANGUAGE string = "es"
+
+type Spanish struct {
+	code         string
+	name         string
+	description  string
+	numerals     map[string][]string
+	graphemes    []string
+	vowels       []string
+	misspellings [][]string
+	homophones   [][]string
+	antonyms     map[string][]string
+	homoglyphs   map[string][]string
+}
+
+func (l *Spanish) Code() string {
+	return l.code
+}
+func (l *Spanish) Name() string {
+	return l.name
+}
+func (l *Spanish) Description() string {
+	return l.description
+}
+func (l *Spanish) Numerals() map[string][]string {
+	return l.numerals
+}
+
+func (l *Spanish) Graphemes() []string {
+	return l.graphemes
+}
+
+func (l *Spanish) Vowels() []string {
+	return l.vowels
+}
+
+func (l *Spanish) Misspellings() [][]string {
+	return l.misspellings
+}
+
+func (l *Spanish) Homophones() [][]string {
+	return l.homophones
+}
+
+func (l *Spanish) Antonyms() map[string][]string {
+	return l.antonyms
+}
+
+func (l *Spanish) Homoglyphs() map[string][]string {
+	return l.homoglyphs
+}
+
+func (l *Spanish) Keyboards() []urlinsane.Keyboard {
+	return languages.Keyboards()
+}
 
 var (
 	// esMisspellings are common misspellings
@@ -31,8 +92,8 @@ var (
 	}
 
 	// SPANISH Language
-	esLanguage = Language{
-		code:        "ES",
+	Language = Spanish{
+		code:        LANGUAGE,
 		name:        "Spanish",
 		description: "Spanish is an official language in 20 countries",
 
@@ -109,33 +170,11 @@ var (
 			"z": []string{"ʐ", "ż", "ź", "ʐ", "ᴢ"},
 			"ñ": []string{"n", "ń", "r"},
 		},
-		keyboards: []Keyboard{
-			{
-				code:        "ES1",
-				name:        "QWERTY",
-				description: "Spanish keyboard layout",
-				layout: []string{
-					"1234567890-",
-					"qwertyuiop ",
-					"asdfghjklñ ",
-					"zxcvbnm  ç ",
-				},
-			},
-			{
-				code:        "ES2",
-				name:        "QWERTY",
-				description: "Spanish ISO keyboard layout",
-				layout: []string{
-					"1234567890 ¡",
-					"qwertyuiop  ",
-					"asdfghjklñ  ",
-					"zxcvbnm  -  ",
-				},
-			},
-		},
 	}
 )
 
 func init() {
-	Add("es", esLanguage)
+	languages.AddLanguage(LANGUAGE, func() urlinsane.Language {
+		return &Language
+	})
 }

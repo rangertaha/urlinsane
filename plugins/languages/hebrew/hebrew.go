@@ -12,7 +12,68 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package languages
+package hebrew
+
+import (
+	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/plugins/languages"
+)
+
+const LANGUAGE string = "iw"
+
+type Hebrew struct {
+	code         string
+	name         string
+	description  string
+	numerals     map[string][]string
+	graphemes    []string
+	vowels       []string
+	misspellings [][]string
+	homophones   [][]string
+	antonyms     map[string][]string
+	homoglyphs   map[string][]string
+}
+
+func (l *Hebrew) Code() string {
+	return l.code
+}
+func (l *Hebrew) Name() string {
+	return l.name
+}
+func (l *Hebrew) Description() string {
+	return l.description
+}
+func (l *Hebrew) Numerals() map[string][]string {
+	return l.numerals
+}
+
+func (l *Hebrew) Graphemes() []string {
+	return l.graphemes
+}
+
+func (l *Hebrew) Vowels() []string {
+	return l.vowels
+}
+
+func (l *Hebrew) Misspellings() [][]string {
+	return l.misspellings
+}
+
+func (l *Hebrew) Homophones() [][]string {
+	return l.homophones
+}
+
+func (l *Hebrew) Antonyms() map[string][]string {
+	return l.antonyms
+}
+
+func (l *Hebrew) Homoglyphs() map[string][]string {
+	return l.homoglyphs
+}
+
+func (l *Hebrew) Keyboards() []urlinsane.Keyboard {
+	return languages.Keyboards()
+}
 
 var (
 	// iwMisspellings are common misspellings
@@ -36,8 +97,8 @@ var (
 	}
 
 	// Hebrew language
-	iwLanguage = Language{
-		code:        "IW",
+	Language = Hebrew{
+		code:        LANGUAGE,
 		name:        "Hebrew",
 		description: "Hebrew is one of the official languages of the State of Israel",
 
@@ -87,22 +148,11 @@ var (
 			"ש":  []string{"w"},
 			"ת":  []string{"n"},
 		},
-		keyboards: []Keyboard{
-			{
-				code:        "IW1",
-				name:        "Hebrew",
-				description: "Hebrew standard layout",
-				// Language:    iwLanguage,
-				layout: []string{
-					"1234567890 ",
-					` פםןוטארק  `,
-					` ףךלחיעכגדש `,
-					` ץתצמנהבסז  `},
-			},
-		},
 	}
 )
 
 func init() {
-	Add("iw", iwLanguage)
+	languages.AddLanguage(LANGUAGE, func() urlinsane.Language {
+		return &Language
+	})
 }

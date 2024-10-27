@@ -12,7 +12,68 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package languages
+package french
+
+import (
+	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/plugins/languages"
+)
+
+const LANGUAGE string = "fr"
+
+type French struct {
+	code         string
+	name         string
+	description  string
+	numerals     map[string][]string
+	graphemes    []string
+	vowels       []string
+	misspellings [][]string
+	homophones   [][]string
+	antonyms     map[string][]string
+	homoglyphs   map[string][]string
+}
+
+func (l *French) Code() string {
+	return l.code
+}
+func (l *French) Name() string {
+	return l.name
+}
+func (l *French) Description() string {
+	return l.description
+}
+func (l *French) Numerals() map[string][]string {
+	return l.numerals
+}
+
+func (l *French) Graphemes() []string {
+	return l.graphemes
+}
+
+func (l *French) Vowels() []string {
+	return l.vowels
+}
+
+func (l *French) Misspellings() [][]string {
+	return l.misspellings
+}
+
+func (l *French) Homophones() [][]string {
+	return l.homophones
+}
+
+func (l *French) Antonyms() map[string][]string {
+	return l.antonyms
+}
+
+func (l *French) Homoglyphs() map[string][]string {
+	return l.homoglyphs
+}
+
+func (l *French) Keyboards() []urlinsane.Keyboard {
+	return languages.Keyboards()
+}
 
 var (
 	// frMisspellings are common misspellings
@@ -31,8 +92,8 @@ var (
 	}
 
 	// French language
-	frLanguage = Language{
-		code:        "FR",
+	Language = French{
+		code:        LANGUAGE,
 		name:        "French",
 		description: "French is an official language in 27 countries",
 
@@ -89,21 +150,11 @@ var (
 			"z": []string{"ʐ", "ż", "ź", "ʐ", "ᴢ"},
 			"â": []string{"à", "á", "ã", "ä", "å", "ɑ", "а", "ạ", "ǎ", "ă", "ȧ", "ӓ", "٨"},
 		},
-		keyboards: []Keyboard{
-			{
-				code:        "FR1",
-				name:        "French Canadian CSA",
-				description: "French Canadian CSA keyboard layout",
-				layout: []string{
-					"ù1234567890-  ",
-					" qwertyuiop çà",
-					" asdfghjkl è  ",
-					"  zxcvbnm  é  "},
-			},
-		},
 	}
 )
 
 func init() {
-	Add("fr", faLanguage)
+	languages.AddLanguage(LANGUAGE, func() urlinsane.Language {
+		return &Language
+	})
 }

@@ -21,6 +21,61 @@ import (
 
 const LANGUAGE string = "ar"
 
+type Arabic struct {
+	code         string
+	name         string
+	description  string
+	numerals     map[string][]string
+	graphemes    []string
+	vowels       []string
+	misspellings [][]string
+	homophones   [][]string
+	antonyms     map[string][]string
+	homoglyphs   map[string][]string
+}
+
+func (l *Arabic) Code() string {
+	return l.code
+}
+func (l *Arabic) Name() string {
+	return l.name
+}
+func (l *Arabic) Description() string {
+	return l.description
+}
+func (l *Arabic) Numerals() map[string][]string {
+	return l.numerals
+}
+
+func (l *Arabic) Graphemes() []string {
+	return l.graphemes
+}
+
+func (l *Arabic) Vowels() []string {
+	return l.vowels
+}
+
+func (l *Arabic) Misspellings() [][]string {
+	return l.misspellings
+}
+
+func (l *Arabic) Homophones() [][]string {
+	return l.homophones
+}
+
+func (l *Arabic) Antonyms() map[string][]string {
+	return l.antonyms
+}
+
+func (l *Arabic) Homoglyphs() map[string][]string {
+	return l.homoglyphs
+}
+
+func (l *Arabic) Keyboards() []urlinsane.Keyboard {
+	return languages.Keyboards()
+}
+
+
 var (
 	// arMisspellings are common misspellings
 	arMisspellings = [][]string{
@@ -99,60 +154,9 @@ var (
 	}
 )
 
-type Arabic struct {
-	code         string
-	name         string
-	description  string
-	numerals     map[string][]string
-	graphemes    []string
-	vowels       []string
-	misspellings [][]string
-	homophones   [][]string
-	antonyms     map[string][]string
-	homoglyphs   map[string][]string
-}
-
-func (l *Arabic) Code() string {
-	return l.code
-}
-func (l *Arabic) Name() string {
-	return l.name
-}
-
-func (l *Arabic) Numerals() map[string][]string {
-	return l.numerals
-}
-
-func (l *Arabic) Graphemes() []string {
-	return l.graphemes
-}
-
-func (l *Arabic) Vowels() []string {
-	return l.vowels
-}
-
-func (l *Arabic) Misspellings() [][]string {
-	return l.misspellings
-}
-
-func (l *Arabic) Homophones() [][]string {
-	return l.homophones
-}
-
-func (l *Arabic) Antonyms() map[string][]string {
-	return l.antonyms
-}
-
-func (l *Arabic) Homoglyphs() map[string][]string {
-	return l.homoglyphs
-}
-
-func (l *Arabic) Keyboards() []urlinsane.Keyboard {
-	return languages.Keyboards()
-}
 
 func init() {
 	languages.AddLanguage(LANGUAGE, func() urlinsane.Language {
-		return &Arabic{}
+		return &arLanguage
 	})
 }
