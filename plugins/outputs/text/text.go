@@ -1,4 +1,4 @@
-package none
+package text
 
 import (
 	"github.com/rangertaha/urlinsane"

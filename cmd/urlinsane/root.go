@@ -124,7 +124,7 @@ languages and keyboard layouts. Currently it supports 9 languages, 19 keyboard l
 
 		config, err := config.CliConfig(cmd, args)
 		if err != nil {
-			fmt.Printf("%", err)
+			fmt.Printf("%s", err)
 			os.Exit(0)
 		}
 		fmt.Print(urlinsane.LOGO)
