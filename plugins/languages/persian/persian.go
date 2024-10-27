@@ -12,7 +12,68 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package languages
+package persian
+
+import (
+	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/plugins/languages"
+)
+
+const LANGUAGE string = "fa"
+
+type Persian struct {
+	code         string
+	name         string
+	description  string
+	numerals     map[string][]string
+	graphemes    []string
+	vowels       []string
+	misspellings [][]string
+	homophones   [][]string
+	antonyms     map[string][]string
+	homoglyphs   map[string][]string
+}
+
+func (l *Persian) Code() string {
+	return l.code
+}
+func (l *Persian) Name() string {
+	return l.name
+}
+func (l *Persian) Description() string {
+	return l.description
+}
+func (l *Persian) Numerals() map[string][]string {
+	return l.numerals
+}
+
+func (l *Persian) Graphemes() []string {
+	return l.graphemes
+}
+
+func (l *Persian) Vowels() []string {
+	return l.vowels
+}
+
+func (l *Persian) Misspellings() [][]string {
+	return l.misspellings
+}
+
+func (l *Persian) Homophones() [][]string {
+	return l.homophones
+}
+
+func (l *Persian) Antonyms() map[string][]string {
+	return l.antonyms
+}
+
+func (l *Persian) Homoglyphs() map[string][]string {
+	return l.homoglyphs
+}
+
+func (l *Persian) Keyboards() []urlinsane.Keyboard {
+	return languages.Keyboards()
+}
 
 var (
 	// faMisspellings are common misspellings
@@ -31,8 +92,8 @@ var (
 	}
 
 	// Persian language
-	faLanguage = Language{
-		code:        "FA",
+	Language = Persian{
+		code:        LANGUAGE,
 		name:        "Persian",
 		description: "Persian is a member of the Western Iranian group of the Iranian languages",
 
@@ -90,21 +151,11 @@ var (
 			"ز": []string{""},
 			"ر": []string{""},
 		},
-		keyboards: []Keyboard{
-			{
-				code:        "FA1",
-				name:        "Persian",
-				description: "Persian standard layout",
-				layout: []string{
-					"۱۲۳۴۵۶۷۸۹۰-  ",
-					" چجحخهعغفقثصض",
-					"  گکمنتالبیسش",
-					"     وپدذرزطظ"},
-			},
-		},
 	}
 )
 
 func init() {
-	Add("fa", faLanguage)
+	languages.AddLanguage(LANGUAGE, func() urlinsane.Language {
+		return &Language
+	})
 }

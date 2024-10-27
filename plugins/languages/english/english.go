@@ -12,7 +12,69 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package languages
+package english
+
+import (
+	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/plugins/languages"
+)
+
+const LANGUAGE string = "en"
+
+type English struct {
+	code         string
+	name         string
+	description  string
+	numerals     map[string][]string
+	graphemes    []string
+	vowels       []string
+	misspellings [][]string
+	homophones   [][]string
+	antonyms     map[string][]string
+	homoglyphs   map[string][]string
+}
+
+func (l *English) Code() string {
+	return l.code
+}
+func (l *English) Name() string {
+	return l.name
+}
+func (l *English) Description() string {
+	return l.description
+}
+func (l *English) Numerals() map[string][]string {
+	return l.numerals
+}
+
+func (l *English) Graphemes() []string {
+	return l.graphemes
+}
+
+func (l *English) Vowels() []string {
+	return l.vowels
+}
+
+func (l *English) Misspellings() [][]string {
+	return l.misspellings
+}
+
+func (l *English) Homophones() [][]string {
+	return l.homophones
+}
+
+func (l *English) Antonyms() map[string][]string {
+	return l.antonyms
+}
+
+func (l *English) Homoglyphs() map[string][]string {
+	return l.homoglyphs
+}
+
+func (l *English) Keyboards() []urlinsane.Keyboard {
+	return languages.Keyboards()
+}
+
 
 var (
 	// Common misspellings from https://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines
@@ -4862,8 +4924,8 @@ var (
 		"cloudy":        []string{"clear", "sunny", "bright"},
 	}
 
-	enLanguage = Language{
-		code:        "EN",
+	Language = English{
+		code:        LANGUAGE,
 		name:        "English",
 		description: "English the most spoken language in the world",
 
@@ -4920,56 +4982,58 @@ var (
 			"y": []string{"ʏ", "γ", "у", "Ү", "ý"},
 			"z": []string{"ʐ", "ż", "ź", "ʐ", "ᴢ"},
 		},
-		keyboards: []Keyboard{
-			{
-				code:        "EN1",
-				name:        "QWERTY",
-				description: "English QWERTY keyboard layout",
-				layout: []string{
-					"1234567890-",
-					"qwertyuiop ",
-					"asdfghjkl  ",
-					"zxcvbnm    ",
-				},
-			},
-			{
-				code:        "EN2",
-				name:        "AZERTY",
-				description: "English AZERTY keyboard layout",
-				layout: []string{
-					"1234567890",
-					"azertyuiop",
-					"qsdfghjklm",
-					"wxcvbn    ",
-				},
-			},
-			{
-				code:        "EN3",
-				name:        "QWERTZ",
-				description: "English QWERTZ keyboard layout",
-				layout: []string{
-					"1234567890",
-					"qwertzuiop",
-					"asdfghjkl ",
-					"yxcvbnm   ",
-				},
-			},
-			{
-				code:        "EN4",
-				name:        "DVORAK",
-				description: "English DVORAK keyboard layout",
-				layout: []string{
-					"1234567890",
-					"   pyfgcrl",
-					"aoeuidhtns",
-					" qjkxbmwvz",
-				},
-			},
-		},
+		// keyboards: []Keyboard{
+		// 	{
+		// 		code:        "en1",
+		// 		name:        "QWERTY",
+		// 		description: "English QWERTY keyboard layout",
+		// 		layout: []string{
+		// 			"1234567890-",
+		// 			"qwertyuiop ",
+		// 			"asdfghjkl  ",
+		// 			"zxcvbnm    ",
+		// 		},
+		// 	},
+		// 	{
+		// 		code:        "en2",
+		// 		name:        "AZERTY",
+		// 		description: "English AZERTY keyboard layout",
+		// 		layout: []string{
+		// 			"1234567890",
+		// 			"azertyuiop",
+		// 			"qsdfghjklm",
+		// 			"wxcvbn    ",
+		// 		},
+		// 	},
+		// 	{
+		// 		code:        "en3",
+		// 		name:        "QWERTZ",
+		// 		description: "English QWERTZ keyboard layout",
+		// 		layout: []string{
+		// 			"1234567890",
+		// 			"qwertzuiop",
+		// 			"asdfghjkl ",
+		// 			"yxcvbnm   ",
+		// 		},
+		// 	},
+		// 	{
+		// 		code:        "en4",
+		// 		name:        "DVORAK",
+		// 		description: "English DVORAK keyboard layout",
+		// 		layout: []string{
+		// 			"1234567890",
+		// 			"   pyfgcrl",
+		// 			"aoeuidhtns",
+		// 			" qjkxbmwvz",
+		// 		},
+		// 	},
+		// },
 	}
 )
 
-func init() {
-	Add("en", enLanguage)
 
+func init() {
+	languages.AddLanguage(LANGUAGE, func() urlinsane.Language {
+		return &Language
+	})
 }

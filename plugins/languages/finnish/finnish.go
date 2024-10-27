@@ -12,7 +12,68 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package languages
+package finnish
+
+import (
+	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/plugins/languages"
+)
+
+const LANGUAGE string = "fi"
+
+type Finnish struct {
+	code         string
+	name         string
+	description  string
+	numerals     map[string][]string
+	graphemes    []string
+	vowels       []string
+	misspellings [][]string
+	homophones   [][]string
+	antonyms     map[string][]string
+	homoglyphs   map[string][]string
+}
+
+func (l *Finnish) Code() string {
+	return l.code
+}
+func (l *Finnish) Name() string {
+	return l.name
+}
+func (l *Finnish) Description() string {
+	return l.description
+}
+func (l *Finnish) Numerals() map[string][]string {
+	return l.numerals
+}
+
+func (l *Finnish) Graphemes() []string {
+	return l.graphemes
+}
+
+func (l *Finnish) Vowels() []string {
+	return l.vowels
+}
+
+func (l *Finnish) Misspellings() [][]string {
+	return l.misspellings
+}
+
+func (l *Finnish) Homophones() [][]string {
+	return l.homophones
+}
+
+func (l *Finnish) Antonyms() map[string][]string {
+	return l.antonyms
+}
+
+func (l *Finnish) Homoglyphs() map[string][]string {
+	return l.homoglyphs
+}
+
+func (l *Finnish) Keyboards() []urlinsane.Keyboard {
+	return languages.Keyboards()
+}
 
 var (
 	// fiMisspellings are common misspellings
@@ -30,8 +91,8 @@ var (
 		"hyvä": []string{"huono"},
 	}
 
-	fiLanguage = Language{
-		code:        "FI",
+	Language = Finnish{
+		code:        LANGUAGE,
 		name:        "Finnish",
 		description: "Finnish is one of the two official languages of Finland",
 
@@ -90,22 +151,10 @@ var (
 			"ä": []string{"à", "á", "â", "ã", "ä", "å", "ɑ", "а", "ạ", "ǎ", "ă", "ȧ", "ӓ"},
 			"ö": []string{"0", "Ο", "ο", "О", "о", "Օ", "ȯ", "ọ", "ỏ", "ơ", "ó", "ö", "ӧ"},
 		},
-		keyboards: []Keyboard{
-			{
-				code:        "FI1",
-				name:        "QWERTY",
-				description: "Finnish QWERTY keybaord layout",
-				layout: []string{
-					"1234567890 ",
-					"qwertyuiopå",
-					"asdfghjklöä",
-					"zxcvbnm  - ",
-				},
-			},
-		},
 	}
 )
-
 func init() {
-	Add("fi", fiLanguage)
+	languages.AddLanguage(LANGUAGE, func() urlinsane.Language {
+		return &Language
+	})
 }
