@@ -11,7 +11,7 @@ type None struct {
 	types []string
 }
 
-func (n *None) Code() string {
+func (n *None) Id() string {
 	return CODE
 }
 func (n *None) IsType(str string) bool {

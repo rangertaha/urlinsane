@@ -34,7 +34,7 @@ type Finnish struct {
 	homoglyphs   map[string][]string
 }
 
-func (l *Finnish) Code() string {
+func (l *Finnish) Id() string {
 	return l.code
 }
 func (l *Finnish) Name() string {
@@ -153,6 +153,7 @@ var (
 		},
 	}
 )
+
 func init() {
 	languages.AddLanguage(LANGUAGE, func() urlinsane.Language {
 		return &Language

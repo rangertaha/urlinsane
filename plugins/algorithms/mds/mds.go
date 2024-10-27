@@ -11,7 +11,7 @@ type MissingDashes struct {
 	types []string
 }
 
-func (n *MissingDashes) Code() string {
+func (n *MissingDashes) Id() string {
 	return CODE
 }
 func (n *MissingDashes) IsType(str string) bool {

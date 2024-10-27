@@ -11,7 +11,7 @@ type AlphabetInsertion struct {
 	types []string
 }
 
-func (n *AlphabetInsertion) Code() string {
+func (n *AlphabetInsertion) Id() string {
 	return CODE
 }
 func (n *AlphabetInsertion) IsType(str string) bool {

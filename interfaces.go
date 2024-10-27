@@ -14,51 +14,73 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package urlinsane
 
-// type Module interface {
-// 	Code() string
-// 	Name() string
-// 	Description() string
-// 	Fields() []string
-// 	Headers() []string
-// 	Exec(Typo) []Typo
-// }
+import "time"
+
+const (
+	ENTITY = "ENTITY"
+	DOMAIN = "DOMAIN"
+)
+
+type Config interface {
+	Target() string
+	Keyboards() []Keyboard
+	Languages() []Language
+	Algorithms() []Algorithm
+	Information() []Information
+	Output() Output
+	Concurrency() int
+	Delay() time.Duration
+	Random() time.Duration
+	Verbose() bool
+	Format() string
+	File() string
+	Count(...int64) int64
+}
 
 type Algorithm interface {
-	Code() string
+	Id() string
 	Name() string
-	Description() string
 	IsType(string) bool
-	Fields() []string
-	Headers() []string
+	Description() string
+	// Fields() []string
+	// Headers() []string
 	Exec(Typo) []Typo
 }
 
 type Information interface {
-	Code() string
+	Id() string
 	Name() string
+	IsType(string) bool
 	Description() string
-	Fields() []string
+	// Fields() []string
 	Headers() []string
 	Exec(Typo) Typo
 }
 
 type Output interface {
-	Code() string
-	Set(string, string)
+	Id() string
+	Init(Config)
 	Description() string
-	Write(Typo)
+	Write(Typo) // Write(interface{})
+	Save()
+}
+
+type Target interface {
+	Repr() string
+	Live(...bool) bool
+	Meta() map[string]interface{}
+	Add(string, interface{})
 }
 
 type Typo interface {
+	Id(...int64) string
 	Keyboard() Keyboard
 	Language() Language
 	Algorithm() Algorithm
 	Original() Domain
 	Variant() Domain
-	SetVariant(string)
-	NewVariant(string) Typo
-	Name() string
-	SetName(string)
+	Active(...bool) bool
+	New(string) Typo
 	Repr() string
 }
 
@@ -78,10 +100,11 @@ type Domain interface {
 	Repr() string
 	Live() bool
 	Meta() map[string]interface{}
+	Add(string, interface{})
 }
 
 type Language interface {
-	Code() string
+	Id() string
 	Name() string
 
 	// Numerals in the broadest sense is a word or phrase that

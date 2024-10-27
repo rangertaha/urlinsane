@@ -34,7 +34,7 @@ type Persian struct {
 	homoglyphs   map[string][]string
 }
 
-func (l *Persian) Code() string {
+func (l *Persian) Id() string {
 	return l.code
 }
 func (l *Persian) Name() string {

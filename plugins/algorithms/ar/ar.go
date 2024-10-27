@@ -11,7 +11,7 @@ type AlphabetReplacement struct {
 	types []string
 }
 
-func (n *AlphabetReplacement) Code() string {
+func (n *AlphabetReplacement) Id() string {
 	return CODE
 }
 func (n *AlphabetReplacement) IsType(str string) bool {

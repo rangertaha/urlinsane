@@ -34,7 +34,7 @@ type Russian struct {
 	homoglyphs   map[string][]string
 }
 
-func (l *Russian) Code() string {
+func (l *Russian) Id() string {
 	return l.code
 }
 func (l *Russian) Name() string {

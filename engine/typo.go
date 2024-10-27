@@ -15,8 +15,9 @@
 package engine
 
 import (
+	"fmt"
+
 	"github.com/rangertaha/urlinsane"
-	"github.com/rangertaha/urlinsane/config"
 )
 
 type Typo struct {
@@ -25,12 +26,41 @@ type Typo struct {
 	algorithm urlinsane.Algorithm
 	original  urlinsane.Domain
 	variant   urlinsane.Domain
-	name      string
+	active    bool
+	id        int64
 }
 
 func NewTypo(tpy *Typo) *Typo {
 	typo := tpy
 	return typo
+}
+
+func (t *Typo) Id(num ...int64) (id string) {
+	if len(num) > 0 {
+		t.id = num[0]
+	}
+
+	if t.id > 0 {
+		return fmt.Sprintf("%v", t.id)
+	}
+
+	if t.keyboard != nil {
+		id = fmt.Sprintf("%s%s", id, t.keyboard.Id())
+	}
+	if t.language != nil {
+		id = fmt.Sprintf("%s%s", id, t.language.Id())
+	}
+	if t.algorithm != nil {
+		id = fmt.Sprintf("%s%s", id, t.algorithm.Id())
+	}
+	if t.original != nil {
+		id = fmt.Sprintf("%s%s", id, t.original.Repr())
+	}
+	if t.variant != nil {
+		id = fmt.Sprintf("%s%s", id, t.variant.Repr())
+	}
+
+	return
 }
 
 func (t *Typo) Keyboard() urlinsane.Keyboard {
@@ -53,28 +83,27 @@ func (t *Typo) Variant() urlinsane.Domain {
 	return t.variant
 }
 
-func (t *Typo) SetVariant(str string) {
-	t.variant = config.NewDommain(str)
+func (t *Typo) Active(a ...bool) bool {
+	if len(a) > 0 {
+		t.active = a[0]
+	}
+	return t.active
 }
 
-func (t *Typo) NewVariant(str string) urlinsane.Typo {
-	new := NewTypo(t)
-	new.variant = config.NewDommain(str)
-	return new
-}
-
-func (t *Typo) Name() string {
-	return t.name
-}
-
-func (t *Typo) SetName(str string) {
-	t.name = str
+func (t *Typo) New(str string) urlinsane.Typo {
+	return &Typo{
+		language:  t.language,
+		keyboard:  t.keyboard,
+		algorithm: t.algorithm,
+		original:  t.original,
+		variant:   NewDomain(str),
+	}
 }
 
 func (t *Typo) Repr() string {
-	if t.name != "" {
-		return t.name
+	if t.variant != nil {
+		return t.variant.Repr()
 	}
 
-	return t.variant.Repr()
+	return t.original.Repr()
 }

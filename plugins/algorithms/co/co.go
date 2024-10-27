@@ -11,7 +11,7 @@ type CharacterOmission struct {
 	types []string
 }
 
-func (n *CharacterOmission) Code() string {
+func (n *CharacterOmission) Id() string {
 	return CODE
 }
 func (n *CharacterOmission) IsType(str string) bool {

@@ -11,7 +11,7 @@ type WrongTLD struct {
 	types []string
 }
 
-func (n *WrongTLD) Code() string {
+func (n *WrongTLD) Id() string {
 	return CODE
 }
 func (n *WrongTLD) IsType(str string) bool {

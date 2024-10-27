@@ -34,7 +34,7 @@ type French struct {
 	homoglyphs   map[string][]string
 }
 
-func (l *French) Code() string {
+func (l *French) Id() string {
 	return l.code
 }
 func (l *French) Name() string {

@@ -11,7 +11,7 @@ type Homophones struct {
 	types []string
 }
 
-func (n *Homophones) Code() string {
+func (n *Homophones) Id() string {
 	return CODE
 }
 func (n *Homophones) IsType(str string) bool {

@@ -16,6 +16,7 @@ package config
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/rangertaha/urlinsane"
@@ -30,113 +31,136 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	ENTITY = "ENTITY"
-	DOMAIN = "DOMAIN"
-)
-
 type Config struct {
 	// Types of targets for typosquattting
-	Name   string
-	Domain urlinsane.Domain
+	// Domain urlinsane.Domain
+	target string
 
 	// Plugins
-	Keyboards   []urlinsane.Keyboard
-	Languages   []urlinsane.Language
-	Algorithms  []urlinsane.Algorithm
-	Information []urlinsane.Information
-	Output      urlinsane.Output
+	keyboards   []urlinsane.Keyboard
+	languages   []urlinsane.Language
+	algorithms  []urlinsane.Algorithm
+	information []urlinsane.Information
+	output      urlinsane.Output
 
-	Headers     []string
-	Format      string
-	File        string
-	Type        string
-	Verbose     bool
-	isName      bool
-	Concurrency int
-	Delay       time.Duration
-	Random      time.Duration
+	// Performance
+	concurrency int
+	delay       time.Duration
+	random      time.Duration
+
+	// Output
+	verbose bool
+	format  string
+	file    string
+	count   int64
 }
 
-// CliConfig creates a configuration from a cobra cli options and arguments
-func CliConfig(cmd *cobra.Command, args []string) (c Config, err error) {
+func (c *Config) Target() string {
+	return c.target
+}
+func (c *Config) Keyboards() []urlinsane.Keyboard {
+	return c.keyboards
+}
+func (c *Config) Languages() []urlinsane.Language {
+	return c.languages
+}
+func (c *Config) Algorithms() []urlinsane.Algorithm {
+	return c.algorithms
+}
+func (c *Config) Information() []urlinsane.Information {
+	return c.information
+}
+func (c *Config) Output() urlinsane.Output {
+	return c.output
+}
+func (c *Config) Concurrency() int {
+	return c.concurrency
+}
+func (c *Config) Delay() time.Duration {
+	return c.delay
+}
+func (c *Config) Random() time.Duration {
+	return c.random
+}
+func (c *Config) Verbose() bool {
+	return c.verbose
+}
+func (c *Config) Format() string {
+	return c.format
+}
+func (c *Config) File() string {
+	return c.file
+}
+func (c *Config) Count(n ...int64) int64 {
+	if len(n) > 0 {
+		c.count = n[0]
+	}
+	return c.count
+}
+
+// CliDomainConfig creates a configuration from a cobra cli options and arguments
+func CobraConfig(cmd *cobra.Command, args []string) (c Config, err error) {
+
+	if len(args) == 0 {
+		return c, fmt.Errorf("at least one argument required")
+	}
+	if len(args) > 1 {
+		return c, fmt.Errorf("only one argument is allowed")
+	}
+	c.target = strings.TrimSpace(args[0])
 
 	if langs, err := commaSplit(cmd.PersistentFlags().GetStringArray("languages")); err == nil {
-		c.Languages = languages.Languages(langs...)
+		c.languages = languages.Languages(langs...)
 	}
 
 	if keybs, err := commaSplit(cmd.PersistentFlags().GetStringArray("keyboards")); err == nil {
-		c.Keyboards = languages.Keyboards(keybs...)
+		c.keyboards = languages.Keyboards(keybs...)
 	}
 
 	if typos, err := commaSplit(cmd.PersistentFlags().GetStringArray("typos")); err == nil {
-		c.Algorithms = algorithms.List(typos...)
+		c.algorithms = algorithms.List(typos...)
 	}
 
 	if infos, err := commaSplit(cmd.PersistentFlags().GetStringArray("info")); err == nil {
-		c.Information = information.List(infos...)
+		c.information = information.List(infos...)
 	}
 
-	if c.Format, err = cmd.PersistentFlags().GetString("format"); err == nil {
-		if c.Output, err = outputs.Get(c.Format); err != nil {
+	if c.format, err = cmd.PersistentFlags().GetString("format"); err == nil {
+		if c.output, err = outputs.Get(c.format); err != nil {
 			return c, err
 		}
 	}
 
-	if c.Concurrency, err = cmd.PersistentFlags().GetInt("concurrency"); err != nil {
+	if c.concurrency, err = cmd.PersistentFlags().GetInt("concurrency"); err != nil {
 		return c, err
 	}
 
 	// Output options
-	if c.File, err = cmd.PersistentFlags().GetString("file"); err != nil {
+	if c.file, err = cmd.PersistentFlags().GetString("file"); err != nil {
 		return c, err
 	}
 
-	if c.Format, err = cmd.PersistentFlags().GetString("format"); err != nil {
+	if c.format, err = cmd.PersistentFlags().GetString("format"); err != nil {
 		return c, err
 	}
 
-	if c.Verbose, err = cmd.PersistentFlags().GetBool("verbose"); err != nil {
+	if c.verbose, err = cmd.PersistentFlags().GetBool("verbose"); err != nil {
 		return c, err
 	}
 
-	if c.Random, err = cmd.PersistentFlags().GetDuration("random"); err != nil {
+	if c.random, err = cmd.PersistentFlags().GetDuration("random"); err != nil {
 		return c, err
 	}
 
-	if c.Delay, err = cmd.PersistentFlags().GetDuration("delay"); err != nil {
+	if c.delay, err = cmd.PersistentFlags().GetDuration("delay"); err != nil {
 		return c, err
 	}
+	c.count = 1
 
-	if c.isName, err = cmd.PersistentFlags().GetBool("name"); err != nil {
-		return c, err
-	}
-
-	if c.isName {
-		c.Type = ENTITY
-		c.Name, err = getName(args)
-		return c, err
-	}
-
-	c.Type = DOMAIN
-	c.Domain, err = getDomain(args)
 	return c, err
 }
 
 // commaSplit splits comma seperated values into an array
 func commaSplit(values []string, err error) ([]string, error) {
 	return values, err
-}
-
-// getDomain ...
-func getName(args []string) (name string, e error) {
-	if len(args) == 0 {
-		return name, fmt.Errorf("a name is required")
-	}
-	if len(args) > 1 {
-		return name, fmt.Errorf("only one name is allowed")
-	}
-	name = args[0]
-
-	return
 }

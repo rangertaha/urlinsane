@@ -11,7 +11,7 @@ type SingularPluralize struct {
 	types []string
 }
 
-func (n *SingularPluralize) Code() string {
+func (n *SingularPluralize) Id() string {
 	return CODE
 }
 func (n *SingularPluralize) IsType(str string) bool {

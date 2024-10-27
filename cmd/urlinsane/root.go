@@ -60,25 +60,25 @@ ALGORITHMS:
 
     ID | Description
     -----------------------------------------{{range .Algorithms}}
-    {{.Code}}	{{.Name}} {{.Description}}{{end}}
+    {{.Id}}	{{.Name}} {{.Description}}{{end}}
 
 INFORMATION:
     Information gathering functions that collects information on each domain name
 
     ID | Description
     -----------------------------------------{{range .Information}}
-    {{.Code}}	{{.Name}} {{.Description}}{{end}}
+    {{.Id}}	{{.Name}} {{.Description}}{{end}}
 
 
 LANGUAGES:
     ID | Name    | Description
     -----------------------------------------{{range .Languages}}
-    {{.Code}}  {{.Name}}   {{end}}
+    {{.Id}}  {{.Name}}   {{end}}
 
 KEYBOARDS:
     ID | Name     | Description
     -----------------------------------------{{range .Languages}}{{range .Keyboards}}
-    {{.Code}}  {{.Name}}    {{.Description}}{{end}}{{end}}
+    {{.Id}}  {{.Name}}    {{.Description}}{{end}}{{end}}
 
 
 
@@ -122,13 +122,13 @@ languages and keyboard layouts. Currently it supports 9 languages, 19 keyboard l
 			os.Exit(0)
 		}
 
-		config, err := config.CliConfig(cmd, args)
+		config, err := config.CobraConfig(cmd, args)
 		if err != nil {
 			fmt.Printf("%s", err)
 			os.Exit(0)
 		}
 		fmt.Print(urlinsane.LOGO)
-		t := engine.New(config)
+		t := engine.NewDomainTypos(config)
 		t.Execute()
 
 	},
@@ -160,7 +160,6 @@ func init() {
 	rootCmd.SetUsageTemplate(templateBase + cliOptions.String())
 
 	// Options
-	rootCmd.PersistentFlags().BoolP("name", "n", false, "Target a names instead of domains for typosquatting")
 	rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"en"}, "IDs of languages to use for lingustic algorithms")
 	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"all"}, "IDs of keyboard layouts to use of the given languages")
 

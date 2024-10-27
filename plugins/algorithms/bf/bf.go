@@ -11,7 +11,7 @@ type BitFlipping struct {
 	types []string
 }
 
-func (n *BitFlipping) Code() string {
+func (n *BitFlipping) Id() string {
 	return CODE
 }
 func (n *BitFlipping) IsType(str string) bool {

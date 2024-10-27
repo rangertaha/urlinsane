@@ -11,7 +11,7 @@ type CommonMisspellings struct {
 	types []string
 }
 
-func (n *CommonMisspellings) Code() string {
+func (n *CommonMisspellings) Id() string {
 	return CODE
 }
 func (n *CommonMisspellings) IsType(str string) bool {
