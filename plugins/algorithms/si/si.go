@@ -11,7 +11,7 @@ type SubdomainInsertion struct {
 	types []string
 }
 
-func (n *SubdomainInsertion) Code() string {
+func (n *SubdomainInsertion) Id() string {
 	return CODE
 }
 func (n *SubdomainInsertion) IsType(str string) bool {

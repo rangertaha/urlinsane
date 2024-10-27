@@ -34,7 +34,7 @@ type English struct {
 	homoglyphs   map[string][]string
 }
 
-func (l *English) Code() string {
+func (l *English) Id() string {
 	return l.code
 }
 func (l *English) Name() string {
@@ -74,7 +74,6 @@ func (l *English) Homoglyphs() map[string][]string {
 func (l *English) Keyboards() []urlinsane.Keyboard {
 	return languages.Keyboards()
 }
-
 
 var (
 	// Common misspellings from https://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines
@@ -5030,7 +5029,6 @@ var (
 		// },
 	}
 )
-
 
 func init() {
 	languages.AddLanguage(LANGUAGE, func() urlinsane.Language {

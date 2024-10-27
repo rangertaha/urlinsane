@@ -64,7 +64,7 @@ type (
 // 	return k.Layout
 // }
 
-// func (l *Language) Code() string {
+// func (l *Language) Id() string {
 // 	return l.code
 // }
 // func (l *Language) Name() string {
@@ -107,7 +107,7 @@ type (
 // 	return l.keyboards
 // }
 
-// func (k *Keyboard) Code() string {
+// func (k *Keyboard) Id() string {
 // 	return k.code
 // }
 // func (k *Keyboard) Name() string {

@@ -11,7 +11,7 @@ type VowelSwapping struct {
 	types []string
 }
 
-func (n *VowelSwapping) Code() string {
+func (n *VowelSwapping) Id() string {
 	return CODE
 }
 func (n *VowelSwapping) IsType(str string) bool {

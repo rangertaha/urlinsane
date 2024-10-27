@@ -11,7 +11,7 @@ type AdjacentCharacterSubstitution struct {
 	types []string
 }
 
-func (n *AdjacentCharacterSubstitution) Code() string {
+func (n *AdjacentCharacterSubstitution) Id() string {
 	return CODE
 }
 

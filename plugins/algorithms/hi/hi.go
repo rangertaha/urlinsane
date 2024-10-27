@@ -11,7 +11,7 @@ type DashInsertion struct {
 	types []string
 }
 
-func (n *DashInsertion) Code() string {
+func (n *DashInsertion) Id() string {
 	return CODE
 }
 func (n *DashInsertion) IsType(str string) bool {

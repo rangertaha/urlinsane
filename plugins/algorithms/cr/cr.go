@@ -11,7 +11,7 @@ type CharacterRepeat struct {
 	types []string
 }
 
-func (n *CharacterRepeat) Code() string {
+func (n *CharacterRepeat) Id() string {
 	return CODE
 }
 func (n *CharacterRepeat) IsType(str string) bool {

@@ -11,7 +11,7 @@ type CharacterSwap struct {
 	types []string
 }
 
-func (n *CharacterSwap) Code() string {
+func (n *CharacterSwap) Id() string {
 	return CODE
 }
 func (n *CharacterSwap) IsType(str string) bool {

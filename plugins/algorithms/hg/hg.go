@@ -11,7 +11,7 @@ type Homoglyphs struct {
 	types []string
 }
 
-func (n *Homoglyphs) Code() string {
+func (n *Homoglyphs) Id() string {
 	return CODE
 }
 func (n *Homoglyphs) IsType(str string) bool {

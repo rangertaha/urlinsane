@@ -34,7 +34,7 @@ type Hebrew struct {
 	homoglyphs   map[string][]string
 }
 
-func (l *Hebrew) Code() string {
+func (l *Hebrew) Id() string {
 	return l.code
 }
 func (l *Hebrew) Name() string {

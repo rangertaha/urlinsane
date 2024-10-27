@@ -2,22 +2,22 @@ package ip
 
 import (
 	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/plugins/algorithms"
 	"github.com/rangertaha/urlinsane/plugins/information"
 )
 
 const CODE = "ip"
 
 type Ipaddr struct {
-	id    int
 	types []string
 }
 
-func (n *Ipaddr) Id() int {
-	return n.id
+func (n *Ipaddr) Id() string {
+	return CODE
 }
 
-func (n *Ipaddr) Code() string {
-	return CODE
+func (n *Ipaddr) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
 }
 
 func (n *Ipaddr) Name() string {
@@ -28,15 +28,20 @@ func (n *Ipaddr) Description() string {
 	return "Domain IP addresses"
 }
 
-func (n *Ipaddr) Fields() []string {
-	return []string{}
-}
+// func (n *Ipaddr) Fields() []string {
+// 	return []string{}
+// }
 
 func (n *Ipaddr) Headers() []string {
-	return []string{}
+	return []string{"Online", "IPv4", "IPv6"}
 }
 
 func (n *Ipaddr) Exec(in urlinsane.Typo) (out urlinsane.Typo) {
+
+	in.Variant().Add("Online", true)
+	in.Variant().Add("IPv4", "100.0.0.0")
+	in.Variant().Add("IPv6", "100.0.0.0")
+	in.Variant().Add("JSON", "{}")
 	return in
 }
 
@@ -44,8 +49,7 @@ func (n *Ipaddr) Exec(in urlinsane.Typo) (out urlinsane.Typo) {
 func init() {
 	information.Add(CODE, func() urlinsane.Information {
 		return &Ipaddr{
-			id:    0,
-			types: []string{information.DOMAINS},
+			types: []string{urlinsane.DOMAIN},
 		}
 	})
 }

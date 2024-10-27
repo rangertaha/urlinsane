@@ -11,7 +11,7 @@ type PeriodInsertion struct {
 	types []string
 }
 
-func (n *PeriodInsertion) Code() string {
+func (n *PeriodInsertion) Id() string {
 	return CODE
 }
 func (n *PeriodInsertion) IsType(str string) bool {

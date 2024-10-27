@@ -11,7 +11,7 @@ type StripDash struct {
 	types []string
 }
 
-func (n *StripDash) Code() string {
+func (n *StripDash) Id() string {
 	return CODE
 }
 func (n *StripDash) IsType(str string) bool {

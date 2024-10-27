@@ -24,53 +24,53 @@ import (
 
 type (
 
-	// Typosquatting ...
-	Typosquatting struct {
+	// DomainTypos ...
+	DomainTypos struct {
 		Config config.Config
 		Typos  map[string]urlinsane.Typo
+		Count  int64
 
 		typoWG sync.WaitGroup
 		funcWG sync.WaitGroup
 
 		// stats <-chan Statser
-		errs <-chan interface{}
+		// errs <-chan interface{}
 	}
 )
 
 // New ...
-func New(conf config.Config) Typosquatting {
-	return Typosquatting{
+func NewDomainTypos(conf config.Config) DomainTypos {
+	return DomainTypos{
 		Config: conf,
 	}
 }
 
 // Generate typo config options
-func (t *Typosquatting) GenOptions() <-chan urlinsane.Typo {
-	// selects between names and domains algos
-
+func (t *DomainTypos) GenOptions() <-chan urlinsane.Typo {
 	out := make(chan urlinsane.Typo)
 	go func() {
-		for _, lang := range t.Config.Languages {
+		for _, lang := range t.Config.Languages() {
 			// fmt.Println(lang)
-			for _, board := range t.Config.Keyboards {
+			for _, board := range t.Config.Keyboards() {
 				// fmt.Println(board)
-				for _, algo := range t.Config.Algorithms {
+				for _, algo := range t.Config.Algorithms() {
 					// fmt.Println(t.Config.Type)
 					// fmt.Println(algo)
-					if algo.IsType(t.Config.Type) {
-						// fmt.Println(t.Config.Type)
+					// if algo.IsType(urlinsane.DOMAIN) {
+					// fmt.Println(t.Config.Type)
 
-						typo := &Typo{
-							language:  lang,
-							keyboard:  board,
-							algorithm: algo,
-							name:      t.Config.Name,
-							original:  t.Config.Domain,
-							variant:   t.Config.Domain,
-						}
-						// fmt.Println(typo.Repr(), lang.Name(), board.Id() ,typo.algorithm.Name())
-						out <- typo
+					domain := NewDomain(t.Config.Target())
+
+					typo := &Typo{
+						language:  lang,
+						keyboard:  board,
+						algorithm: algo,
+						original:  domain,
+						// variant:   t.Config.Domain,
 					}
+					// fmt.Println(id)
+					out <- typo
+					// }
 				}
 			}
 		}
@@ -80,14 +80,15 @@ func (t *Typosquatting) GenOptions() <-chan urlinsane.Typo {
 }
 
 // Algorithms generates typos using the algorithm plugins
-func (ts *Typosquatting) Algorithms(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+func (ts *DomainTypos) Algorithms(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 	out := make(chan urlinsane.Typo)
 
-	for w := 1; w <= ts.Config.Concurrency; w++ {
+	for w := 1; w <= ts.Config.Concurrency(); w++ {
 		ts.typoWG.Add(1)
 		go func(id int, in <-chan urlinsane.Typo, out chan<- urlinsane.Typo) {
 			defer ts.typoWG.Done()
 			for typo := range in {
+				// fmt.Println(typo)
 				// Execute typo algorithm returning typos
 				for _, typ := range typo.Algorithm().Exec(typo) {
 					if typ.Variant() != nil {
@@ -106,18 +107,27 @@ func (ts *Typosquatting) Algorithms(in <-chan urlinsane.Typo) <-chan urlinsane.T
 	return ts.Dedup(out)
 }
 
-func (ts *Typosquatting) Dedup(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+func (ts *DomainTypos) Dedup(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 	out := make(chan urlinsane.Typo)
-	ts.Typos = make(map[string]urlinsane.Typo)
+	var typos = make(map[string]urlinsane.Typo)
 
 	go func() {
-		for typo := range in {
-			ts.Typos[typo.Variant().Repr()] = typo
-			// fmt.Println(typo)
-		}
-		for _, typ := range ts.Typos {
-			out <- typ
 
+		// Create map of unique domains
+		for typo := range in {
+			typos[typo.Variant().Repr()] = typo
+		}
+		var count int64 = 0
+		for _, typ := range typos {
+			count++
+			typ.Id(count) // Set typo record number
+		}
+		// Save the total count in the config for output plugins to use
+		ts.Config.Count(count)
+
+		// Return all typos via channels
+		for _, typ := range typos {
+			out <- typ
 		}
 		close(out)
 	}()
@@ -125,13 +135,13 @@ func (ts *Typosquatting) Dedup(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 	return out
 }
 
-func (t *Typosquatting) Information(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+func (t *DomainTypos) Information(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 	out := make(chan urlinsane.Typo)
-	for w := 1; w <= t.Config.Concurrency; w++ {
+	for w := 1; w <= t.Config.Concurrency(); w++ {
 		t.funcWG.Add(1)
 		go func(in <-chan urlinsane.Typo, out chan<- urlinsane.Typo) {
 			defer t.funcWG.Done()
-			output := t.InfoChain(t.Config.Information, in)
+			output := t.InfoChain(t.Config.Information(), in)
 			for c := range output {
 				out <- c
 			}
@@ -145,7 +155,7 @@ func (t *Typosquatting) Information(in <-chan urlinsane.Typo) <-chan urlinsane.T
 }
 
 // // DistChain creates workers of chained functions
-// func (t *Typosquatting) DistChain(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+// func (t *DomainTypos) DistChain(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 // 	out := make(chan urlinsane.Typo)
 // 	for w := 1; w <= t.Config.Concurrency; w++ {
 // 		t.funcWG.Add(1)
@@ -165,13 +175,13 @@ func (t *Typosquatting) Information(in <-chan urlinsane.Typo) <-chan urlinsane.T
 // }
 
 // FuncChain creates a chain of information gathering functions
-func (t *Typosquatting) InfoChain(funcs []urlinsane.Information, in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+func (t *DomainTypos) InfoChain(funcs []urlinsane.Information, in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 	var xfunc urlinsane.Information
 	out := make(chan urlinsane.Typo)
 	xfunc, funcs = funcs[len(funcs)-1], funcs[:len(funcs)-1]
 	go func() {
 		for i := range in {
-			time.Sleep(t.Config.Random * t.Config.Delay)
+			time.Sleep(t.Config.Random() * t.Config.Delay())
 			// fmt.Println(typ.config.timing.Random * typ.config.timing.Delay * time.Millisecond)
 
 			out <- xfunc.Exec(i)
@@ -186,7 +196,7 @@ func (t *Typosquatting) InfoChain(funcs []urlinsane.Information, in <-chan urlin
 	return out
 }
 
-func (t *Typosquatting) Storage(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+func (t *DomainTypos) Storage(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 	// out := make(chan urlinsane.Typo)
 	// go func() {
 	// 	for typo := range in {
@@ -201,16 +211,18 @@ func (t *Typosquatting) Storage(in <-chan urlinsane.Typo) <-chan urlinsane.Typo 
 	return in
 }
 
-func (t *Typosquatting) Output(in <-chan urlinsane.Typo) {
+func (t *DomainTypos) Output(in <-chan urlinsane.Typo) {
+	t.Config.Output().Init(&t.Config)
 	for c := range in {
 		// Write output
 		if c != nil {
-			t.Config.Output.Write(c)
+			t.Config.Output().Write(c)
 		}
 	}
+	t.Config.Output().Save()
 }
 
-func (t *Typosquatting) Execute() {
+func (t *DomainTypos) Execute() {
 	typos := t.GenOptions()
 	typos = t.Algorithms(typos)
 	typos = t.Information(typos)
@@ -219,7 +231,7 @@ func (t *Typosquatting) Execute() {
 }
 
 // // FilterChain ...
-// func (typ *Typosquatting) FilterChain(in <-chan Result) <-chan Result {
+// func (typ *DomainTypos) FilterChain(in <-chan Result) <-chan Result {
 // 	out := make(chan Result)
 // 	go func() {
 // 		for i := range in {
@@ -239,7 +251,7 @@ func (t *Typosquatting) Execute() {
 // }
 
 // // Start ...
-// func (typ *Typosquatting) Start() <-chan Result {
+// func (typ *DomainTypos) Start() <-chan Result {
 // 	for i, dmname := range typ.config.domains {
 // 		records, _ := net.LookupIP(dmname.String())
 // 		// if err != nil {
@@ -289,7 +301,7 @@ func (t *Typosquatting) Execute() {
 // }
 
 // // GenTypoConfig ...
-// func (typ *Typosquatting) GenTypoConfig() <-chan Result {
+// func (typ *DomainTypos) GenTypoConfig() <-chan Result {
 // 	out := make(chan Result)
 // 	go func() {
 // 		for _, domain := range typ.config.domains {
@@ -309,7 +321,7 @@ func (t *Typosquatting) Execute() {
 // }
 
 // // Typos gives typo options to a pool of workers
-// func (typ *Typosquatting) Typos(in <-chan Result) <-chan Result {
+// func (typ *DomainTypos) Typos(in <-chan Result) <-chan Result {
 // 	out := make(chan Result)
 // 	for w := 1; w <= typ.config.concurrency; w++ {
 // 		typ.typoWG.Add(1)
@@ -333,7 +345,7 @@ func (t *Typosquatting) Execute() {
 // }
 
 // // Results ...
-// func (typ *Typosquatting) Results(in <-chan Result) <-chan Result {
+// func (typ *DomainTypos) Results(in <-chan Result) <-chan Result {
 // 	out := make(chan Result)
 // 	go func() {
 // 		for r := range in {
@@ -359,7 +371,7 @@ func (t *Typosquatting) Execute() {
 // }
 
 // // FuncChain creates a chain of information gathering functions
-// func (typ *Typosquatting) FuncChain(funcs []Module, in <-chan Result) <-chan Result {
+// func (typ *DomainTypos) FuncChain(funcs []Module, in <-chan Result) <-chan Result {
 // 	var xfunc Module
 // 	out := make(chan Result)
 // 	xfunc, funcs = funcs[len(funcs)-1], funcs[:len(funcs)-1]
@@ -381,7 +393,7 @@ func (t *Typosquatting) Execute() {
 // }
 
 // // DistChain creates workers of chained functions
-// func (typ *Typosquatting) DistChain(in <-chan Result) <-chan Result {
+// func (typ *DomainTypos) DistChain(in <-chan Result) <-chan Result {
 // 	out := make(chan Result)
 // 	for w := 1; w <= typ.config.concurrency; w++ {
 // 		typ.funcWG.Add(1)
@@ -401,7 +413,7 @@ func (t *Typosquatting) Execute() {
 // }
 
 // // FilterChain ...
-// func (typ *Typosquatting) FilterChain(in <-chan Result) <-chan Result {
+// func (typ *DomainTypos) FilterChain(in <-chan Result) <-chan Result {
 // 	out := make(chan Result)
 // 	go func() {
 // 		for i := range in {
@@ -421,7 +433,7 @@ func (t *Typosquatting) Execute() {
 // }
 
 // // Dedup filters the results for unique variations of domains
-// func (typ *Typosquatting) Dedup(in <-chan Result) <-chan Result {
+// func (typ *DomainTypos) Dedup(in <-chan Result) <-chan Result {
 // 	duplicates := make(map[string]int)
 // 	out := make(chan Result)
 // 	go func(in <-chan Result, out chan<- Result) {
@@ -442,12 +454,12 @@ func (t *Typosquatting) Execute() {
 // }
 
 // // Stream returns the results one at a time
-// func (typ *Typosquatting) Stream() <-chan Result {
+// func (typ *DomainTypos) Stream() <-chan Result {
 // 	return typ.Start()
 // }
 
 // // Batch returns all the results at once
-// func (typ *Typosquatting) Batch() (res []Result) {
+// func (typ *DomainTypos) Batch() (res []Result) {
 // 	for r := range typ.Stream() {
 // 		res = append(res, r)
 // 	}
@@ -455,13 +467,13 @@ func (t *Typosquatting) Execute() {
 // }
 
 // // Execute starts the program and outputs results. Primarily used for CLI tools
-// func (typ *Typosquatting) Execute() {
+// func (typ *DomainTypos) Execute() {
 // 	// Output results based on config
 // 	typ.Output(typ.Stream())
 // }
 
 // // Output ...
-// func (typ *Typosquatting) Output(in <-chan Result) {
+// func (typ *DomainTypos) Output(in <-chan Result) {
 // 	if typ.config.format == "json" {
 // 		typ.jsonOutput(in)
 // 	}

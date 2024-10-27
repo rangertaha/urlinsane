@@ -36,7 +36,7 @@ type Armenian struct {
 	homoglyphs   map[string][]string
 }
 
-func (l *Armenian) Code() string {
+func (l *Armenian) Id() string {
 	return l.code
 }
 func (l *Armenian) Name() string {

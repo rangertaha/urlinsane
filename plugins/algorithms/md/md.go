@@ -1,8 +1,6 @@
 package md
 
 import (
-	"fmt"
-
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
@@ -13,7 +11,7 @@ type MissingDot struct {
 	types []string
 }
 
-func (n *MissingDot) Code() string {
+func (n *MissingDot) Id() string {
 	return CODE
 }
 func (n *MissingDot) IsType(str string) bool {
@@ -37,15 +35,20 @@ func (n *MissingDot) Headers() []string {
 }
 
 func (n *MissingDot) Exec(typo urlinsane.Typo) (typos []urlinsane.Typo) {
-	for _, variant := range missingCharFunc(typo.Repr(), ".") {
+	// fmt.Println("Pre:", typo)
+	for _, variant := range missingCharFunc(typo.Original().Repr(), ".") {
+		// fmt.Println("Variant:", variant)
 
-		// if typo.Original().Repr() != variant {
-		// newTypo := typo.Copy()
-		newTypo := typo.NewVariant(variant)
-		fmt.Println(newTypo, variant)
-		typos = append(typos, newTypo)
-		// }
+		if typo.Original().Repr() != variant {
+			// newTypo := typo.Copy()
+			// newTypo := typo.NewVariant(variant)
+			// fmt.Println(variant)
+			typos = append(typos, typo.New(variant))
+		}
 	}
+	// fmt.Println("Post:", typo)
+
+	// typos = append(typos, typo)
 
 	return
 }

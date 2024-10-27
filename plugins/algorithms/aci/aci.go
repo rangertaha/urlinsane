@@ -11,7 +11,7 @@ type AdjacentCharacterInsertion struct {
 	types []string
 }
 
-func (n *AdjacentCharacterInsertion) Code() string {
+func (n *AdjacentCharacterInsertion) Id() string {
 	return CODE
 }
 

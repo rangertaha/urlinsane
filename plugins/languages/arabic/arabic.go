@@ -34,7 +34,7 @@ type Arabic struct {
 	homoglyphs   map[string][]string
 }
 
-func (l *Arabic) Code() string {
+func (l *Arabic) Id() string {
 	return l.code
 }
 func (l *Arabic) Name() string {
@@ -74,7 +74,6 @@ func (l *Arabic) Homoglyphs() map[string][]string {
 func (l *Arabic) Keyboards() []urlinsane.Keyboard {
 	return languages.Keyboards()
 }
-
 
 var (
 	// arMisspellings are common misspellings
@@ -153,7 +152,6 @@ var (
 		},
 	}
 )
-
 
 func init() {
 	languages.AddLanguage(LANGUAGE, func() urlinsane.Language {

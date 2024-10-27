@@ -11,7 +11,7 @@ type DoubleCharacterReplacement struct {
 	types []string
 }
 
-func (n *DoubleCharacterReplacement) Code() string {
+func (n *DoubleCharacterReplacement) Id() string {
 	return CODE
 }
 func (n *DoubleCharacterReplacement) IsType(str string) bool {

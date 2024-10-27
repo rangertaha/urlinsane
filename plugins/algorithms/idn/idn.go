@@ -22,7 +22,7 @@ type InternationalizedDomainName struct {
 	types []string
 }
 
-func (n *InternationalizedDomainName) Code() string {
+func (n *InternationalizedDomainName) Id() string {
 	return CODE
 }
 func (n *InternationalizedDomainName) IsType(str string) bool {

@@ -4,23 +4,22 @@ import (
 	"fmt"
 
 	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/config"
 	"github.com/rangertaha/urlinsane/plugins/outputs"
 )
 
 const CODE = "none"
 
 type None struct {
-	rtype string
-	file  string
+	file string
 }
 
-func (n *None) Code() string {
+func (n *None) Init(conf config.Config) {
+	n.file = conf.File
+}
+
+func (n *None) Id() string {
 	return CODE
-}
-
-func (n *None) Set(typ, filepath string) {
-	n.rtype = typ
-	n.file = filepath
 }
 
 func (n *None) Description() string {
