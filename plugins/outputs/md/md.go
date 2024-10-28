@@ -17,14 +17,13 @@ package text
 import (
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/outputs"
 )
 
-const CODE = "text"
+const CODE = "md"
 
 type Text struct {
 	table  table.Writer
@@ -68,21 +67,16 @@ func (n *Text) getRow(typo urlinsane.Typo) (row table.Row) {
 }
 
 func (n *Text) Description() string {
-	return "Text outputs one record per line and is the default"
+	return "Markdown formatted output"
 }
 
 func (n *Text) Write(in urlinsane.Typo) {
 	n.table.AppendRow(n.getRow(in))
-
-	// n.progress.Add(1)
-	time.Sleep(time.Second * 1)
 }
 
 func (n *Text) Save() {
 	n.table.AppendFooter(table.Row{"Total", n.config.Count()})
-	n.table.SetStyle(StyleDefault)
-	output := n.table.Render()
-	// output := n.table.
+	output := n.table.RenderMarkdown()
 
 	if n.config.File() != "" {
 		results := []byte(output)

@@ -164,11 +164,11 @@ func init() {
 	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"all"}, "IDs of keyboard layouts to use of the given languages")
 
 	// Plugins
-	rootCmd.PersistentFlags().StringArrayP("typos", "t", []string{"all"}, "IDs of typo algorithms to use for generating domains")
-	rootCmd.PersistentFlags().StringArrayP("info", "i", []string{"all"}, "IDs of info gathering functions to apply to each domain")
+	rootCmd.PersistentFlags().StringArrayP("typos", "t", []string{"all"}, "IDs of typo algorithms to use for generating typos")
+	rootCmd.PersistentFlags().StringArrayP("info", "i", []string{"all"}, "IDs of info gathering functions to apply")
 
 	// Processing
-	rootCmd.PersistentFlags().BoolP("progress", "p", false, "Show progress bar")
+	rootCmd.PersistentFlags().BoolP("progress", "p", true, "Show progress bar")
 	rootCmd.PersistentFlags().Bool("no-cache", true, "Prevents caching of results")
 	rootCmd.PersistentFlags().Bool("online", false, "Only show domains that are online")
 
@@ -180,5 +180,5 @@ func init() {
 	// Outputs
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Show more details and remove truncated columns")
 	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename defaults to stdout")
-	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv, text, json)")
+	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv, text, html, md)")
 }

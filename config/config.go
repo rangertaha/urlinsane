@@ -49,10 +49,11 @@ type Config struct {
 	random      time.Duration
 
 	// Output
-	verbose bool
-	format  string
-	file    string
-	count   int64
+	verbose  bool
+	format   string
+	file     string
+	count    int64
+	progress bool
 }
 
 func (c *Config) Target() string {
@@ -84,6 +85,9 @@ func (c *Config) Random() time.Duration {
 }
 func (c *Config) Verbose() bool {
 	return c.verbose
+}
+func (c *Config) Progress() bool {
+	return c.progress
 }
 func (c *Config) Format() string {
 	return c.format
@@ -145,6 +149,10 @@ func CobraConfig(cmd *cobra.Command, args []string) (c Config, err error) {
 	}
 
 	if c.verbose, err = cmd.PersistentFlags().GetBool("verbose"); err != nil {
+		return c, err
+	}
+
+	if c.progress, err = cmd.PersistentFlags().GetBool("progress"); err != nil {
 		return c, err
 	}
 

@@ -47,3 +47,13 @@ func init() {
 		}
 	})
 }
+
+
+// // subdomainInsertionFunc typos are created by inserting common subdomains at the begining of the domain. wwwgoogle.com and ftpgoogle.com
+// func subdomainInsertionFunc(tc Result) (results []Result) {
+// 	for _, str := range datasets.SUBDOMAINS {
+// 		dm := Domain{tc.Original.Subdomain, str + tc.Original.Domain, tc.Original.Suffix, Meta{}, false}
+// 		results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
+// 	}
+// 	return results
+// }
