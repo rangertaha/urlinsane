@@ -2,6 +2,7 @@
 
 [![Build Status](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml/badge.svg)](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml)
 
+Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage, and threat intelligence.
 
 This is the most advanced and full-featured typosquatting tool.  It supports more algorithms(24), information gathering(8), keyboard layouts(19), and written languages(9) than any other typosquatting tool. It generates more results per domain in less time, see [`Speed`](#Speed). Originally, I wrote similar tools in Python but was not happy with the performance. This tool was built in Golang to take advantage of its speed, concurrency, and portability.  It builds around linguistic modeling, natural language processing (NLP), concurrency, and plugin architecture. It's easily extensible with plugins for typo-generation algorithms, information gathering, analysis, languages, keyboard layouts, and output formats. 
 
@@ -16,26 +17,16 @@ This is the most advanced and full-featured typosquatting tool.  It supports mor
 
 
 
-**Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/1.0.0)
-
-
-<div align="center">
-  <a href="https://www.youtube.com/watch?v=_IU1ADTBKVU" style="float:left"><img width="350" src="https://img.youtube.com/vi/_IU1ADTBKVU/0.jpg" alt="URLInsane Demo1"></a>
-   <a href="https://www.youtube.com/watch?v=HgMV0NqMCm0" style="float:left"><img width="350"  src="https://img.youtube.com/vi/HgMV0NqMCm0/0.jpg" alt="URLInsane Demo2"></a>
-</div>
-
-
-
-Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence. 
+ 
 
 
 ## Features
 
 * Binary executable, written in Go with no dependencies.
-* Will have all the functionally of URLCrazy and DNSTwist.
-* Contains 24 typosquatting algorithms and 10 extra functions to retrieve additional data such as ip to geographic location, dns lookups and more
+* Will have all the functionality of URLCrazy and DNSTwist.
+* Contains 24 typosquatting algorithms and 10 extra functions to retrieve additional data such as IP to geographic location, DNS lookups and more
 * Modular architecture for language, keyboard, typo algorithm, and functions extensibility.
-* Supports multiple keyboard layouts found in English, Spanish, Russian, Armenian, Finish, French, Hebrew, Persian, and Arabic.
+* Supports multiple keyboard layouts found in English, Spanish, Russian, Armenian, Finnish, French, Hebrew, Persian, and Arabic.
 * Supports multiple languages with the ability to add more languages with ease.
 * Concurrent function (**-x --funcs**) workers to retrieve additional info on each record.
 * Concurrent typo squatting workers.
@@ -44,8 +35,8 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 
 ## Example
 
-Finds "character omission" typos for the given domain. **-t** specifies the type of typo you wan to use defaults to 
-all 24. **-x** specifies the extra information retrieval functions to use and defaults to non internet required functions. 
+Finds "character omission" typos for the given domain. **-t** specifies the type of typo you want to use and defaults to 
+all 24. **-x** specifies the extra information retrieval functions to use and defaults to non-internet required functions. 
  
 ```bash
 $ urlinsane typo google.com -t co -x all 
@@ -174,11 +165,11 @@ INFORMATION:
     NS    Checks DNS NS records
     CNAME    Checks DNS CNAME records
     SIM    Show domain content similarity
-    GEO    Show country location of ip address
-    ALL    Apply all post typosquating functions
+    GEO    Show country location of IP address
+    ALL    Apply all post typosquatting functions
 
 FILTERS: 
-  Filters to reduce the number domain variants returned.
+  Filters to reduce the number of domain variants returned.
     LIVE   Show online/live domains only.
     ALL    Apply all filters
 
@@ -264,7 +255,7 @@ urlinsane typo google.com -t co
 ```
 
 Additional e**x**tra functions can be selected with the **-x, --funcs** options.
-These functions can add columns to the output. For example the following generates
+These functions can add columns to the output. For example, the following generates
 variations for **google.com** using the character omission **(CO)** algorithm
 then checks for **ip** addresses.
 
@@ -279,7 +270,7 @@ Generates variations for **google.com** with the following parameters:
 * **-t hg** lets us use the Homoglyphs(HG) algorithm only
 * **-v** Verbose mode shows us the full name 'Homoglyphs' of the algorithm not
 just the short name 'HG'
-* **-x ip** Check or ip address
+* **-x ip** Check or IP address
 * **-x idna** Shows the IDNA format
 * **-x ns** Checks for DNS NS records
 
@@ -307,7 +298,7 @@ on other languages.
 ## Algorithms
 
 The modular architecture for code extensibility allows developers to add new
-typosquatting algorithms with ease. Currently we have implements 19
+typosquatting algorithms with ease. Currently, we have implemented 19
 typosquatting algorithms. See [Typo Algorithms](https://cybersectech-org.github.io/urlinsane/#algorithms) for details.
 
 ## Extra Functions
@@ -319,9 +310,9 @@ typosquatting algorithms. See [Typo Algorithms](https://cybersectech-org.github.
 * **NS**    Checks DNS NS records
 * **CNAME** Checks DNS CNAME records
 * **SIM**   Show domain similarity % using fuzzy hashing with ssdeep
-* **LIVE**  Show domains with ip addresses only
+* **LIVE**  Show domains with IP addresses only
 * **301**   Show domains redirects
-* **GEO**   Show country location of ip address
+* **GEO**   Show country location of IP address
 
 ## Tools Comparisons
 
