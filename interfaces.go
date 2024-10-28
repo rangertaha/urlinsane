@@ -107,14 +107,14 @@ type Language interface {
 	Id() string
 	Name() string
 
-	// Numerals in the broadest sense is a word or phrase that
+	// Numerals in the broadest sense a word or phrase that
 	// describes a numerical quantity.
 	Numerals() map[string][]string
 
 	// Graphemes is the smallest functional unit of a writing system.
 	Graphemes() []string
 
-	// Vowels are syllabic speech sound pronounced without any stricture in the vocal tract.
+	// Vowels are syllabic speech sounds pronounced without any stricture in the vocal tract.
 	Vowels() []string
 
 	Misspellings() [][]string
