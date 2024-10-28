@@ -2,10 +2,10 @@
 
 [![Build Status](https://travis-ci.org/rangertaha/urlinsane.svg?branch=master)](https://travis-ci.org/rangertaha/urlinsane)
 
-The most advacned typosquatting tools to date with the most features, the most results, and fastest performance. It build around linguistic modeling, natural language processing, information gathering and analysis. It's easily extensible with plugins for typo algorithms, Information gathering and analysis. Its linguistic models also allow it us to easily add new languages and keyboard layouts. Currently it supports 9 languages, 19 keyboard layouts, 24 algorithms, 8 information gathering, and 2 analysis modules.
+This is the most advanced and full-featured typosquatting tool.  It supports more algorithms(24), information gathering(8), keyboard layouts(19), and written languages(9) than any other typosquatting tool. It generates more results per domain in less time, see [`Speed`](#Speed). Originally, I wrote similar tools in Python but was not happy with the performance. This tool was built in Golang to take advantage of its speed, concurrency, and portability.  It builds around linguistic modeling, natural language processing (NLP), concurrency, and plugin architecture. It's easily extensible with plugins for typo-generation algorithms, information gathering, analysis, languages, keyboard layouts, and output formats. 
 
 
-| **Modules** |  count |
+| **Plugins** |  count |
 |-------------|--------|
 | Languages   |    9   |
 | Keyboards   |    19  |
@@ -15,7 +15,7 @@ The most advacned typosquatting tools to date with the most features, the most r
 
 
 
-**Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/0.7.0)
+**Downloads:** [URLInsane Downloads](https://github.com/rangertaha/urlinsane/releases/tag/1.0.0)
 
 
 <div align="center">
@@ -402,7 +402,7 @@ This table shows the list of algorithms supported for each tool.
 | HTTP/SMTP Banner                    |     X     |           |      X     |             |
 | Multithreaded Extra Functions       |     X     |           |      X     |      X      |
 
-### Speed (TODO)
+### Speed
 
 | **Tool**   | google.com  | facebook.com  | youtube.com   | amazon.com | amazon4you.com |
 |------------|-------------|---------------|---------------|------------|----------------|
