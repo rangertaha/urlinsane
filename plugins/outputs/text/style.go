@@ -104,7 +104,7 @@ var (
 	}
 
 	// StyleColoredBlackOnBlueWhite renders a Table without any borders or
-	// separators, and with Black text on Blue background for Header/Footer and
+	// separators, and with Black text on a Blue background for Header/Footer and
 	// White background for other rows.
 	StyleColoredBlackOnBlueWhite = table.Style{
 		Name:    "StyleColoredBlackOnBlueWhite",
@@ -118,7 +118,7 @@ var (
 	}
 
 	// StyleColoredBlackOnCyanWhite renders a Table without any borders or
-	// separators, and with Black text on Cyan background for Header/Footer and
+	// separators, and with Black text on a Cyan background for Header/Footer and
 	// White background for other rows.
 	StyleColoredBlackOnCyanWhite = table.Style{
 		Name:    "StyleColoredBlackOnCyanWhite",
@@ -132,7 +132,7 @@ var (
 	}
 
 	// StyleColoredBlackOnGreenWhite renders a Table without any borders or
-	// separators, and with Black text on Green background for Header/Footer and
+	// separators, and with Black text on a Green background for Header/Footer and
 	// White background for other rows.
 	StyleColoredBlackOnGreenWhite = table.Style{
 		Name:    "StyleColoredBlackOnGreenWhite",
@@ -146,7 +146,7 @@ var (
 	}
 
 	// StyleColoredBlackOnMagentaWhite renders a Table without any borders or
-	// separators, and with Black text on Magenta background for Header/Footer and
+	// separators, and with Black text on a Magenta background for the Header/Footer and
 	// White background for other rows.
 	StyleColoredBlackOnMagentaWhite = table.Style{
 		Name:    "StyleColoredBlackOnMagentaWhite",
@@ -160,7 +160,7 @@ var (
 	}
 
 	// StyleColoredBlackOnYellowWhite renders a Table without any borders or
-	// separators, and with Black text on Yellow background for Header/Footer and
+	// separators, and with Black text on a Yellow background for Header/Footer and
 	// White background for other rows.
 	StyleColoredBlackOnYellowWhite = table.Style{
 		Name:    "StyleColoredBlackOnYellowWhite",
@@ -174,7 +174,7 @@ var (
 	}
 
 	// StyleColoredBlackOnRedWhite renders a Table without any borders or
-	// separators, and with Black text on Red background for Header/Footer and
+	// separators, and with Black text on a Red background for Header/Footer and
 	// White background for other rows.
 	StyleColoredBlackOnRedWhite = table.Style{
 		Name:    "StyleColoredBlackOnRedWhite",
@@ -189,7 +189,7 @@ var (
 
 	// StyleColoredBlueWhiteOnBlack renders a Table without any borders or
 	// separators, and with Header/Footer in Blue text and other rows with
-	// White text, all on Black background.
+	// White text, all on a Black background.
 	StyleColoredBlueWhiteOnBlack = table.Style{
 		Name:    "StyleColoredBlueWhiteOnBlack",
 		Box:     StyleBoxDefault,
@@ -203,7 +203,7 @@ var (
 
 	// StyleColoredCyanWhiteOnBlack renders a Table without any borders or
 	// separators, and with Header/Footer in Cyan text and other rows with
-	// White text, all on Black background.
+	// White text, all on a Black background.
 	StyleColoredCyanWhiteOnBlack = table.Style{
 		Name:    "StyleColoredCyanWhiteOnBlack",
 		Box:     StyleBoxDefault,
@@ -231,7 +231,7 @@ var (
 
 	// StyleColoredMagentaWhiteOnBlack renders a Table without any borders or
 	// separators, and with Header/Footer in Magenta text and other rows with
-	// White text, all on Black background.
+	// White text, all on a Black background.
 	StyleColoredMagentaWhiteOnBlack = table.Style{
 		Name:    "StyleColoredMagentaWhiteOnBlack",
 		Box:     StyleBoxDefault,
@@ -245,7 +245,7 @@ var (
 
 	// StyleColoredRedWhiteOnBlack renders a Table without any borders or
 	// separators, and with Header/Footer in Red text and other rows with
-	// White text, all on Black background.
+	// White text, all on a Black background.
 	StyleColoredRedWhiteOnBlack = table.Style{
 		Name:    "StyleColoredRedWhiteOnBlack",
 		Box:     StyleBoxDefault,
@@ -259,7 +259,7 @@ var (
 
 	// StyleColoredYellowWhiteOnBlack renders a Table without any borders or
 	// separators, and with Header/Footer in Yellow text and other rows with
-	// White text, all on Black background.
+	// White text, all on a Black background.
 	StyleColoredYellowWhiteOnBlack = table.Style{
 		Name:    "StyleColoredYellowWhiteOnBlack",
 		Box:     StyleBoxDefault,
@@ -672,7 +672,7 @@ var (
 		RowAlternate: txt.Colors{txt.FgWhite, txt.BgBlack},
 	}
 
-	// ColorOptionsRedWhiteOnBlack renders Red/White text on Black background.
+	// ColorOptionsRedWhiteOnBlack renders Red/White text on a Black background.
 	ColorOptionsRedWhiteOnBlack = table.ColorOptions{
 		Footer:       txt.Colors{txt.FgRed, txt.BgHiBlack},
 		Header:       txt.Colors{txt.FgHiRed, txt.BgHiBlack},
@@ -725,7 +725,7 @@ type Options struct {
 	//       │            │ TOTAL     │  10000 │
 	DrawBorder bool
 
-	// SeparateColumns enables or disable drawing border between columns.
+	// SeparateColumns enables or disables drawing borders between columns.
 	// Example of a table where it is disabled:
 	//  ┌─────────────────────────────────────────────────────────────────┐
 	//  │   #  FIRST NAME  LAST NAME  SALARY                              │
@@ -737,7 +737,7 @@ type Options struct {
 	//  └─────────────────────────────────────────────────────────────────┘
 	SeparateColumns bool
 
-	// SeparateFooter enables or disable drawing border between the footer and
+	// SeparateFooter enables or disables drawing the border between the footer and
 	// the rows. Example of a table where it is disabled:
 	//  ┌─────┬────────────┬───────────┬────────┬─────────────────────────────┐
 	//  │   # │ FIRST NAME │ LAST NAME │ SALARY │                             │
@@ -749,7 +749,7 @@ type Options struct {
 	//  └─────┴────────────┴───────────┴────────┴─────────────────────────────┘
 	SeparateFooter bool
 
-	// SeparateHeader enables or disable drawing border between the header and
+	// SeparateHeader enables or disables drawing the border between the header and
 	// the rows. Example of a table where it is disabled:
 	//  ┌─────┬────────────┬───────────┬────────┬─────────────────────────────┐
 	//  │   # │ FIRST NAME │ LAST NAME │ SALARY │                             │
@@ -832,68 +832,68 @@ var (
 	// TitleOptionsDefault defines sensible title options - basically NONE.
 	TitleOptionsDefault = table.TitleOptions{}
 
-	// TitleOptionsBright renders Bright Bold text on Dark background.
+	// TitleOptionsBright renders Bright Bold text on a Dark background.
 	TitleOptionsBright = TitleOptionsBlackOnCyan
 
-	// TitleOptionsDark renders Dark Bold text on Bright background.
+	// TitleOptionsDark renders Dark Bold text on the Bright background.
 	TitleOptionsDark = TitleOptionsCyanOnBlack
 
-	// TitleOptionsBlackOnBlue renders Black text on Blue background.
+	// TitleOptionsBlackOnBlue renders Black text on a Blue background.
 	TitleOptionsBlackOnBlue = table.TitleOptions{
 		Colors: append(ColorOptionsBlackOnBlueWhite.Header, txt.Bold),
 	}
 
-	// TitleOptionsBlackOnCyan renders Black Bold text on Cyan background.
+	// TitleOptionsBlackOnCyan renders Black Bold text on a Cyan background.
 	TitleOptionsBlackOnCyan = table.TitleOptions{
 		Colors: append(ColorOptionsBlackOnCyanWhite.Header, txt.Bold),
 	}
 
-	// TitleOptionsBlackOnGreen renders Black Bold text onGreen background.
+	// TitleOptionsBlackOnGreen renders Black Bold text on Green background.
 	TitleOptionsBlackOnGreen = table.TitleOptions{
 		Colors: append(ColorOptionsBlackOnGreenWhite.Header, txt.Bold),
 	}
 
-	// TitleOptionsBlackOnMagenta renders Black Bold text on Magenta background.
+	// TitleOptionsBlackOnMagenta renders Black Bold text on a Magenta background.
 	TitleOptionsBlackOnMagenta = table.TitleOptions{
 		Colors: append(ColorOptionsBlackOnMagentaWhite.Header, txt.Bold),
 	}
 
-	// TitleOptionsBlackOnRed renders Black Bold text on Red background.
+	// TitleOptionsBlackOnRed renders Black Bold text on a Red background.
 	TitleOptionsBlackOnRed = table.TitleOptions{
 		Colors: append(ColorOptionsBlackOnRedWhite.Header, txt.Bold),
 	}
 
-	// TitleOptionsBlackOnYellow renders Black Bold text on Yellow background.
+	// TitleOptionsBlackOnYellow renders Black Bold text on a Yellow background.
 	TitleOptionsBlackOnYellow = table.TitleOptions{
 		Colors: append(ColorOptionsBlackOnYellowWhite.Header, txt.Bold),
 	}
 
-	// TitleOptionsBlueOnBlack renders Blue Bold text on Black background.
+	// TitleOptionsBlueOnBlack renders Blue Bold text on a Black background.
 	TitleOptionsBlueOnBlack = table.TitleOptions{
 		Colors: append(ColorOptionsBlueWhiteOnBlack.Header, txt.Bold),
 	}
 
-	// TitleOptionsCyanOnBlack renders Cyan Bold text on Black background.
+	// TitleOptionsCyanOnBlack renders Cyan Bold text on a Black background.
 	TitleOptionsCyanOnBlack = table.TitleOptions{
 		Colors: append(ColorOptionsCyanWhiteOnBlack.Header, txt.Bold),
 	}
 
-	// TitleOptionsGreenOnBlack renders Green Bold text on Black background.
+	// TitleOptionsGreenOnBlack renders Green Bold text on a Black background.
 	TitleOptionsGreenOnBlack = table.TitleOptions{
 		Colors: append(ColorOptionsGreenWhiteOnBlack.Header, txt.Bold),
 	}
 
-	// TitleOptionsMagentaOnBlack renders Magenta Bold text on Black background.
+	// TitleOptionsMagentaOnBlack renders Magenta Bold text on a Black background.
 	TitleOptionsMagentaOnBlack = table.TitleOptions{
 		Colors: append(ColorOptionsMagentaWhiteOnBlack.Header, txt.Bold),
 	}
 
-	// TitleOptionsRedOnBlack renders Red Bold text on Black background.
+	// TitleOptionsRedOnBlack renders Red Bold text on a Black background.
 	TitleOptionsRedOnBlack = table.TitleOptions{
 		Colors: append(ColorOptionsRedWhiteOnBlack.Header, txt.Bold),
 	}
 
-	// TitleOptionsYellowOnBlack renders Yellow Bold text on Black background.
+	// TitleOptionsYellowOnBlack renders Yellow Bold text on a Black background.
 	TitleOptionsYellowOnBlack = table.TitleOptions{
 		Colors: append(ColorOptionsYellowWhiteOnBlack.Header, txt.Bold),
 	}
