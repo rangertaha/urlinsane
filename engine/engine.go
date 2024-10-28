@@ -69,7 +69,7 @@ func (t *DomainTypos) GenOptions() <-chan urlinsane.Typo {
 	return out
 }
 
-// Algorithms generates typos using the algorithm plugins
+// Algorithms generate typos using the algorithm plugins
 func (ts *DomainTypos) Algorithms(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 	out := make(chan urlinsane.Typo)
 
@@ -142,7 +142,7 @@ func (t *DomainTypos) Information(in <-chan urlinsane.Typo) <-chan urlinsane.Typ
 	return out
 }
 
-// InfoChain creates a chain of information gathering functions
+// InfoChain creates a chain of information-gathering functions
 func (t *DomainTypos) InfoChain(funcs []urlinsane.Information, in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 	var xfunc urlinsane.Information
 	out := make(chan urlinsane.Typo)
