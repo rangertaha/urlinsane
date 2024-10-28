@@ -1,7 +1,7 @@
 # URLInsane
 
 Generates domain typos and variations used to detect and perform typo squatting, 
-URL hijacking, phishing, and corporate espionage.  Inpired by URLCrazy I wanted 
+URL hijacking, phishing, and corporate espionage.  Inspired by URLCrazy I wanted 
 to create a better version that supported multiple languages and linguistic typos.
 I also wanted it to be a binary with fast execution time.
 
@@ -38,9 +38,9 @@ Table of contents
 ## Introduction
 Generate and test domain typos and variations to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.
 
-The engine is designed to execute concurrent typo algorithms then additional 
+The engine is designed to execute concurrent typo algorithms and then additional 
 concurrent functions for each domain variation. The additional functions can 
-check DNS records and much more. Its also designed for extensibility, allowing 
+check DNS records and much more. It's also designed for extensibility, allowing 
 developers to add functionality and support for additional languages. See 
 [URLInsane](https://rangertaha.github.io/urlinsane/) for more details.
 
@@ -176,10 +176,10 @@ OPTIONS:
 
 * Open Source
 * Binary executable, written in Go with no dependencies. 
-* Will have all the functionally of URLCrazy and DNSTwist. 
+* Will have all the functionality of URLCrazy and DNSTwist. 
 * Contains 19 typosquatting algorithms and 7 extra functions to retrieve additional data
 * Modular architecture for language, keyboard, typo algorithm, and functions extensibility.
-* Supports multiple keyboard layouts found in English, Spanish, Russian, Finish, and Arabic.
+* Supports multiple keyboard layouts found in English, Spanish, Russian, Finnish, and Arabic.
 * Supports multiple languages with the ability to add more languages with ease.
 * Concurrent function (**-x --funcs**) workers to retrieve additional info on each record.
 * Concurrent typo squatting workers.
@@ -187,14 +187,14 @@ OPTIONS:
 
 ## Keyboards
 
-  AR3	Arabic North african keyboard layout
+  AR3	Arabic North African keyboard layout
   EN1	English QWERTY keyboard layout
   EN4	English DVORAK keyboard layout
   AR1	Arabic keyboard layout
   EN2	English AZERTY keyboard layout
   EN3	English QWERTZ keyboard layout
-  FI1	Finnish QWERTY keybaord layout
-  RU2	Phonetic Russian keybaord layout
+  FI1	Finnish QWERTY keyboard layout
+  RU2	Phonetic Russian keyboard layout
   RU3	PC Russian keyboard layout
   ES1	Spanish keyboard layout
   ES2	Spanish ISO keyboard layout
@@ -207,8 +207,8 @@ OPTIONS:
 
 URLInsane supports multiple languages with the ability to add more languages 
 with ease. If you know where I can find a list of commonly misspelled words or 
-homophones for languages other then English please send the info to 
-rangertaha@gmail.com or add it your self and submit a pull request. 
+homophones for languages other than English please send the info to 
+rangertaha@gmail.com or add it yourself and submit a pull request. 
 
 
 ### English
@@ -241,13 +241,13 @@ rangertaha@gmail.com or add it your self and submit a pull request.
 ### Persian
 
 * Persian alphabet and numerals
-* One Common keyboard layouts
+* One Common keyboard layout
 
 
 ### Hebrew
 
 * Hebrew alphabet
-* One Common keyboard layouts
+* One Common keyboard layout
 
 ### Armenian
 
@@ -258,7 +258,7 @@ rangertaha@gmail.com or add it your self and submit a pull request.
 ## Algorithms
 
 The modular architecture for code extensibility allows developers to add new typosquatting
-algorithms with ease. Currently, we have implements 19 
+algorithms with ease. Currently, we have implemented 19 
 typosquatting algorithms. 
 
 1. **Missing Dot(MD)** is created by omitting a dot from the domain.
