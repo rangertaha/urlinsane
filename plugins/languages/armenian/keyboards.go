@@ -20,40 +20,40 @@ import (
 )
 
 type Keyboard struct {
-	Lang        string
-	Code        string
-	Name        string
-	Description string
-	Layout      []string
+	lang        string
+	code        string
+	name        string
+	description string
+	layout      []string
 }
 
 func (k *Keyboard) Id() string {
-	return k.Code
+	return k.code
 }
 func (k *Keyboard) Language() string {
-	return k.Lang
+	return k.lang
 }
-func (k *Keyboard) Title() string {
-	return k.Name
+func (k *Keyboard) Name() string {
+	return k.name
 }
-func (k *Keyboard) Summary() string {
-	return k.Description
+func (k *Keyboard) Description() string {
+	return k.description
 }
 func (k *Keyboard) Layouts() []string {
-	return k.Layout
+	return k.layout
 }
 
 func (k *Keyboard) Languages() []urlinsane.Language {
-	return languages.Languages(k.Lang)
+	return languages.Languages(k.lang)
 }
 
 var Keyboards = []Keyboard{
 	{
-		Lang:        LANGUAGE,
-		Code:        "hy1",
-		Name:        "QWERTY",
-		Description: "Armenian QWERTY keyboard layout",
-		Layout: []string{
+		lang:        LANGUAGE,
+		code:        "hy1",
+		name:        "QWERTY",
+		description: "Armenian QWERTY keyboard layout",
+		layout: []string{
 			"1234567890-",
 			"ճւերտյւիոպ ",
 			"ասդֆգհձկլ  ",
@@ -61,11 +61,11 @@ var Keyboards = []Keyboard{
 		},
 	},
 	{
-		Lang:        LANGUAGE,
-		Code:        "hy2",
-		Name:        "QWERTY",
-		Description: "Armenian, Western QWERTY keyboard layout",
-		Layout: []string{
+		lang:        LANGUAGE,
+		code:        "hy2",
+		name:        "QWERTY",
+		description: "Armenian, Western QWERTY keyboard layout",
+		layout: []string{
 			" ձյ՛ -   օռժ",
 			"խվէրդեըիոբչջ",
 			"աստֆկհճքլթփ ",
@@ -76,7 +76,7 @@ var Keyboards = []Keyboard{
 
 func init() {
 	for _, kb := range Keyboards {
-		languages.AddKeyboard(kb.Code, func() urlinsane.Keyboard {
+		languages.AddKeyboard(kb.code, func() urlinsane.Keyboard {
 			return &kb
 		})
 	}

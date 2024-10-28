@@ -106,6 +106,7 @@ type Domain interface {
 type Language interface {
 	Id() string
 	Name() string
+	Description() string
 
 	// Numerals in the broadest sense a word or phrase that
 	// describes a numerical quantity.
@@ -130,8 +131,8 @@ type Language interface {
 
 type Keyboard interface {
 	Id() string
-	Title() string
-	Summary() string
+	Name() string
+	Description() string
 	Layouts() []string
 	Language() string
 }

@@ -32,16 +32,16 @@ type (
 
 // Keyboard type
 // Keyboard struct {
-// 	Code        string
-// 	Name        string
-// 	Description string
-// 	Layout      []string
+// 	code        string
+// 	name        string
+// 	description string
+// 	layout      []string
 // }
 // // KeyboardGroup type
 // KeyboardGroup struct {
-// 	Code        string   `json:"code,omitempty"`
+// 	code        string   `json:"code,omitempty"`
 // 	Keyboards   []string `json:"keyboards,omitempty"`
-// 	Description string   `json:"description,omitempty"`
+// 	description string   `json:"description,omitempty"`
 // }
 
 // // KeyboardRegistry stores registered keyboards and groups
@@ -52,16 +52,16 @@ type (
 )
 
 // func (k *Keyboard) Id() string {
-// 	return k.Code
+// 	return k.code
 // }
-// func (k *Keyboard) Title() string {
-// 	return k.Name
+// func (k *Keyboard) Name() string {
+// 	return k.name
 // }
-// func (k *Keyboard) Summary() string {
-// 	return k.Description
+// func (k *Keyboard) Description() string {
+// 	return k.description
 // }
 // func (k *Keyboard) Layouts() []string {
-// 	return k.Layout
+// 	return k.layout
 // }
 
 // func (l *Language) Id() string {
@@ -133,7 +133,7 @@ type (
 // // Add allows you to add keyboards to the registry
 // func (kb *KeyboardRegistry) Add(keyboards []Keyboard) {
 // 	for _, board := range keyboards {
-// 		kb.registry[strings.ToUpper(board.Code)] = []Keyboard{board}
+// 		kb.registry[strings.ToUpper(board.code)] = []Keyboard{board}
 // 	}
 // }
 

@@ -58,27 +58,27 @@ const helpTemplate = `
 ALGORITHMS:
     Typosquatting algorithm plugins that generate typos.
 
-    ID | Description
+    ID | Name    | Description
     -----------------------------------------{{range .Algorithms}}
-    {{.Id}}	{{.Name}} {{.Description}}{{end}}
+    {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
 
 INFORMATION:
     Information-gathering plugins that collect information on each typo 
 
-    ID | Description
+    ID | Name    | Description
     -----------------------------------------{{range .Information}}
-    {{.Id}}	{{.Name}} {{.Description}}{{end}}
+    {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
 
 
 LANGUAGES:
     ID | Name    | Description
     -----------------------------------------{{range .Languages}}
-    {{.Id}}  {{.Name}}   {{end}}
+    {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
 
 KEYBOARDS:
-    ID | Name     | Description
-    -----------------------------------------{{range .Languages}}{{range .Keyboards}}
-    {{.Id}}  {{.Name}}    {{.Description}}{{end}}{{end}}
+    ID | Name    | Description
+    -----------------------------------------{{range .Keyboards}}
+    {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
 
 
 
@@ -96,6 +96,7 @@ AUTHOR:
 
 type HelpOptions struct {
 	Languages   []urlinsane.Language
+	Keyboards   []urlinsane.Keyboard
 	Algorithms  []urlinsane.Algorithm
 	Information []urlinsane.Information
 }
@@ -144,6 +145,7 @@ func init() {
 	// fmt.Println(languages.Languages())
 	helpOptions := HelpOptions{
 		languages.Languages(),
+		languages.Keyboards(),
 		algorithms.List(),
 		information.List(),
 	}

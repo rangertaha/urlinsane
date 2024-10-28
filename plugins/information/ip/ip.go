@@ -1,5 +1,12 @@
 package ip
 
+// // ipLookupFunc
+// func ipLookupFunc(tr Result) (results []Result) {
+// 	results = append(results, checkIP(tr))
+// 	return
+// }
+
+
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
@@ -21,7 +28,7 @@ func (n *Ipaddr) IsType(str string) bool {
 }
 
 func (n *Ipaddr) Name() string {
-	return "IP Address"
+	return "Ip Address"
 }
 
 func (n *Ipaddr) Description() string {
