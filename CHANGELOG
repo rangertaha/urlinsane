@@ -31,9 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.5.0] - 2019-05-04
 ### Added API server
-- Added api server
+- Added API server
 - Added 'typo' and 'server' commands.
-- Improved structs for json output.
+- Improved structs for JSON output.
 
 ## [0.4.0] - 2019-01-17
 ### Added
@@ -45,9 +45,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.0] - 2018-09-10
 ### Added
-- Added geoip function
+- Added GeoIP function
 - Updated help string
-- Added live filter for domains with ip addresses.
+- Added live filter for domains with IP addresses.
 - Added the Armenian language.
 - Added the Persian language.
 - Added the Hebrew language.
@@ -57,7 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added concurrency to the extra functions
 - Added ssdeep page similarity function
 - Updated documentation
-- Updated version and builds for windows, linux, osx
+- Updated version and builds for Windows, Linux, osx
 
 ## [0.1.0] - 2018-08-26
 ### Added initial code
