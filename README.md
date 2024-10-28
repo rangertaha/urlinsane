@@ -1,6 +1,9 @@
 # URLInsane
 
-[![Build Status](https://travis-ci.org/rangertaha/urlinsane.svg?branch=master)](https://travis-ci.org/rangertaha/urlinsane)
+[![Build Status](https://app.travis-ci.com/rangertaha/urlinsane.svg?token=HztkB8fbGuKAztqay7MN&branch=develop)](https://app.travis-ci.com/rangertaha/urlinsane)
+
+
+
 
 This is the most advanced and full-featured typosquatting tool.  It supports more algorithms(24), information gathering(8), keyboard layouts(19), and written languages(9) than any other typosquatting tool. It generates more results per domain in less time, see [`Speed`](#Speed). Originally, I wrote similar tools in Python but was not happy with the performance. This tool was built in Golang to take advantage of its speed, concurrency, and portability.  It builds around linguistic modeling, natural language processing (NLP), concurrency, and plugin architecture. It's easily extensible with plugins for typo-generation algorithms, information gathering, analysis, languages, keyboard layouts, and output formats. 
 
