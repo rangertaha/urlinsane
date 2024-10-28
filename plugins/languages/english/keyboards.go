@@ -20,40 +20,40 @@ import (
 )
 
 type Keyboard struct {
-	Lang        string
-	Code        string
-	Name        string
-	Description string
-	Layout      []string
+	lang        string
+	code        string
+	name        string
+	description string
+	layout      []string
 }
 
 func (k *Keyboard) Id() string {
-	return k.Code
+	return k.code
 }
 func (k *Keyboard) Language() string {
-	return k.Lang
+	return k.lang
 }
-func (k *Keyboard) Title() string {
-	return k.Name
+func (k *Keyboard) Name() string {
+	return k.name
 }
-func (k *Keyboard) Summary() string {
-	return k.Description
+func (k *Keyboard) Description() string {
+	return k.description
 }
 func (k *Keyboard) Layouts() []string {
-	return k.Layout
+	return k.layout
 }
 
 func (k *Keyboard) Languages() []urlinsane.Language {
-	return languages.Languages(k.Lang)
+	return languages.Languages(k.lang)
 }
 
 var Keyboards = []Keyboard{
 	{
-		Lang:        LANGUAGE,
-		Code:        "en1",
-		Name:        "QWERTY",
-		Description: "English QWERTY keyboard layout",
-		Layout: []string{
+		lang:        LANGUAGE,
+		code:        "en1",
+		name:        "QWERTY",
+		description: "English QWERTY keyboard layout",
+		layout: []string{
 			"1234567890-",
 			"qwertyuiop ",
 			"asdfghjkl  ",
@@ -61,11 +61,11 @@ var Keyboards = []Keyboard{
 		},
 	},
 	{
-		Lang:        LANGUAGE,
-		Code:        "en2",
-		Name:        "AZERTY",
-		Description: "English AZERTY keyboard layout",
-		Layout: []string{
+		lang:        LANGUAGE,
+		code:        "en2",
+		name:        "AZERTY",
+		description: "English AZERTY keyboard layout",
+		layout: []string{
 			"1234567890",
 			"azertyuiop",
 			"qsdfghjklm",
@@ -73,11 +73,11 @@ var Keyboards = []Keyboard{
 		},
 	},
 	{
-		Lang:        LANGUAGE,
-		Code:        "en3",
-		Name:        "QWERTZ",
-		Description: "English QWERTZ keyboard layout",
-		Layout: []string{
+		lang:        LANGUAGE,
+		code:        "en3",
+		name:        "QWERTZ",
+		description: "English QWERTZ keyboard layout",
+		layout: []string{
 			"1234567890",
 			"qwertzuiop",
 			"asdfghjkl ",
@@ -85,11 +85,11 @@ var Keyboards = []Keyboard{
 		},
 	},
 	{
-		Lang:        LANGUAGE,
-		Code:        "en4",
-		Name:        "DVORAK",
-		Description: "English DVORAK keyboard layout",
-		Layout: []string{
+		lang:        LANGUAGE,
+		code:        "en4",
+		name:        "DVORAK",
+		description: "English DVORAK keyboard layout",
+		layout: []string{
 			"1234567890",
 			"   pyfgcrl",
 			"aoeuidhtns",
@@ -100,7 +100,7 @@ var Keyboards = []Keyboard{
 
 func init() {
 	for _, kb := range Keyboards {
-		languages.AddKeyboard(kb.Code, func() urlinsane.Keyboard {
+		languages.AddKeyboard(kb.code, func() urlinsane.Keyboard {
 			return &kb
 		})
 	}

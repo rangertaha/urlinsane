@@ -50,3 +50,46 @@ func NewNS(ns ...*net.NS) (nns []NS) {
 	}
 	return
 }
+
+
+
+// func checkIP(tr Result) Result {
+// 	if tr.Variant.Meta.DNS.ipCheck == false {
+// 		records, _ := net.LookupIP(tr.Variant.String())
+// 		// if err != nil {
+// 		// 	fmt.Println(err)
+// 		// }
+// 		for _, record := range uniqIP(records) {
+// 			dotlen := strings.Count(record, ".")
+// 			if dotlen == 3 {
+// 				if !strings.Contains(tr.Data["IPv4"], record) {
+// 					tr.Data["IPv4"] = strings.TrimSpace(tr.Data["IPv4"] + "\n" + record)
+// 					tr.Variant.Meta.DNS.IPv4 = append(tr.Variant.Meta.DNS.IPv4, record)
+// 				}
+// 				tr.Variant.Live = true
+// 			}
+// 			clen := strings.Count(record, ":")
+// 			if clen == 5 {
+// 				if !strings.Contains(tr.Data["IPv6"], record) {
+// 					tr.Data["IPv6"] = strings.TrimSpace(tr.Data["IPv6"] + "\n" + record)
+// 					tr.Variant.Meta.DNS.IPv6 = append(tr.Variant.Meta.DNS.IPv6, record)
+// 				}
+// 				tr.Variant.Live = true
+// 			}
+// 		}
+// 		tr.Variant.Meta.DNS.ipCheck = true
+// 	}
+
+// 	return Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Data: tr.Data}
+// }
+
+// func uniqIP(list []net.IP) (ulist []string) {
+// 	uinq := map[string]bool{}
+// 	for _, l := range list {
+// 		uinq[l.String()] = true
+// 	}
+// 	for k := range uinq {
+// 		ulist = append(ulist, k)
+// 	}
+// 	return
+// }

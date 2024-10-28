@@ -1,5 +1,19 @@
 package cm
 
+// CcommonMisspellingsFunc are created with common misspellings in the given
+// language. For example, www.youtube.com becomes www.youtub.com and
+// www.abseil.com becomes www.absail.com
+// func commonMisspellingsFunc(tc Result) (results []Result) {
+// 	for _, keyboard := range tc.Keyboards {
+// 		for _, word := range keyboard.Language.SimilarSpellings(tc.Original.Domain) {
+// 			dm := Domain{tc.Original.Subdomain, word, tc.Original.Suffix, Meta{}, false}
+// 			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
+
+// 		}
+// 	}
+// 	return
+// }
+
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"

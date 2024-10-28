@@ -1,5 +1,17 @@
 package sd
 
+// stripDashesFunc typos are created by omitting a dot from the domain.
+// For example, www.a-b-c.com becomes www.abc.com
+// func stripDashesFunc(tc Result) (results []Result) {
+// 	for _, str := range replaceCharFunc(tc.Original.Domain, "-", "") {
+// 		if tc.Original.Domain != str {
+// 			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix, Meta{}, false}
+// 			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
+// 		}
+// 	}
+// 	return
+// }
+
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"

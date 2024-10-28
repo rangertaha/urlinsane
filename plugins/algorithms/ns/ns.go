@@ -1,5 +1,31 @@
 package ns
 
+// // numeralSwapFunc are created by swapping numbers and corresponding words
+// func numeralSwapFunc(tc Result) (results []Result) {
+// 	for _, keyboard := range tc.Keyboards {
+// 		for inum, words := range keyboard.Language.Numerals {
+// 			for _, snum := range words {
+// 				{
+// 					dnew := strings.Replace(tc.Original.Domain, snum, inum, -1)
+// 					dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix, Meta{}, false}
+// 					if dnew != tc.Original.Domain {
+// 						results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
+// 					}
+// 				}
+// 				{
+// 					dnew := strings.Replace(tc.Original.Domain, inum, snum, -1)
+// 					dm := Domain{tc.Original.Subdomain, dnew, tc.Original.Suffix, Meta{}, false}
+// 					if dnew != tc.Original.Domain {
+// 						results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+// 	return
+// }
+
+
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"

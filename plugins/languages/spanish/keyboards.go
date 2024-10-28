@@ -20,40 +20,40 @@ import (
 )
 
 type Keyboard struct {
-	Lang        string
-	Code        string
-	Name        string
-	Description string
-	Layout      []string
+	lang        string
+	code        string
+	name        string
+	description string
+	layout      []string
 }
 
 func (k *Keyboard) Id() string {
-	return k.Code
+	return k.code
 }
 func (k *Keyboard) Language() string {
-	return k.Lang
+	return k.lang
 }
-func (k *Keyboard) Title() string {
-	return k.Name
+func (k *Keyboard) Name() string {
+	return k.name
 }
-func (k *Keyboard) Summary() string {
-	return k.Description
+func (k *Keyboard) Description() string {
+	return k.description
 }
 func (k *Keyboard) Layouts() []string {
-	return k.Layout
+	return k.layout
 }
 
 func (k *Keyboard) Languages() []urlinsane.Language {
-	return languages.Languages(k.Lang)
+	return languages.Languages(k.lang)
 }
 
 var Keyboards = []Keyboard{
 	{
-		Lang:        LANGUAGE,
-		Code:        "es1",
-		Name:        "QWERTY",
-		Description: "Spanish keyboard layout",
-		Layout: []string{
+		lang:        LANGUAGE,
+		code:        "es1",
+		name:        "QWERTY",
+		description: "Spanish keyboard layout",
+		layout: []string{
 			"1234567890-",
 			"qwertyuiop ",
 			"asdfghjklñ ",
@@ -61,11 +61,11 @@ var Keyboards = []Keyboard{
 		},
 	},
 	{
-		Lang:        LANGUAGE,
-		Code:        "es2",
-		Name:        "QWERTY",
-		Description: "Spanish ISO keyboard layout",
-		Layout: []string{
+		lang:        LANGUAGE,
+		code:        "es2",
+		name:        "QWERTY",
+		description: "Spanish ISO keyboard layout",
+		layout: []string{
 			"1234567890 ¡",
 			"qwertyuiop  ",
 			"asdfghjklñ  ",
@@ -76,7 +76,7 @@ var Keyboards = []Keyboard{
 
 func init() {
 	for _, kb := range Keyboards {
-		languages.AddKeyboard(kb.Code, func() urlinsane.Keyboard {
+		languages.AddKeyboard(kb.code, func() urlinsane.Keyboard {
 			return &kb
 		})
 	}

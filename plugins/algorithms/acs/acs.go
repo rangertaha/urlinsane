@@ -1,5 +1,22 @@
 package acs
 
+// adjacentCharacterSubstitutionFunc typos are when characters are replaced in the original domain name by their
+// adjacent ones on a specific keyboard layout, e.g., www.ezample.com, where “x” was replaced by the adjacent
+// character “z” in a the QWERTY keyboard layout.
+// func adjacentCharacterSubstitutionFunc(tc Result) (results []Result) {
+// 	for _, keyboard := range tc.Keyboards {
+// 		for i, char := range tc.Original.Domain {
+// 			for _, key := range keyboard.Adjacent(string(char)) {
+// 				domain := tc.Original.Domain[:i] + string(key) + tc.Original.Domain[i+1:]
+// 				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
+// 				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
+// 			}
+// 		}
+// 	}
+// 	return
+// }
+
+
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
