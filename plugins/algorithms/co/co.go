@@ -1,5 +1,25 @@
 package co
 
+// characterOmissionFunc typos are when one character in the original domain name is omitted.
+// For example: www.exmple.com
+// func characterOmissionFunc(tc Result) (results []Result) {
+// 	for i := range tc.Original.Domain {
+// 		if i <= len(tc.Original.Domain)-1 {
+// 			domain := fmt.Sprint(
+// 				tc.Original.Domain[:i],
+// 				tc.Original.Domain[i+1:],
+// 			)
+// 			if tc.Original.Domain != domain {
+// 				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
+// 				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
+
+// 			}
+// 		}
+// 	}
+// 	return results
+// }
+
+
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"

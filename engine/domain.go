@@ -30,15 +30,7 @@ type Domain struct {
 }
 
 func NewDomain(str string) (d *Domain) {
-	// meta := make(map[string]interface{})
 	str = strings.TrimSpace(str)
-
-	// d.subdomain = domainutil.Subdomain(str)
-	// d.domain = domainutil.DomainPrefix(str)
-	// d.suffix = domainutil.DomainSuffix(str)
-	// if d.domain == "" {
-	// 	d.domain = str
-	// }
 	d = &Domain{
 		meta:      make(map[string]interface{}),
 		subdomain: domainutil.Subdomain(str),

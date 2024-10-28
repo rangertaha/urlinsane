@@ -20,6 +20,7 @@ import (
 
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/config"
+	"github.com/schollz/progressbar/v3"
 )
 
 type (
@@ -30,47 +31,36 @@ type (
 		Typos  map[string]urlinsane.Typo
 		Count  int64
 
-		typoWG sync.WaitGroup
-		funcWG sync.WaitGroup
+		algoWG sync.WaitGroup
+		infoWG sync.WaitGroup
 
+		progress *progressbar.ProgressBar
 		// stats <-chan Statser
 		// errs <-chan interface{}
 	}
 )
 
-// New ...
+// NewDomainTypos ...
 func NewDomainTypos(conf config.Config) DomainTypos {
 	return DomainTypos{
 		Config: conf,
 	}
 }
 
-// Generate typo config options
+// GenOptions typo config options
 func (t *DomainTypos) GenOptions() <-chan urlinsane.Typo {
 	out := make(chan urlinsane.Typo)
 	go func() {
 		for _, lang := range t.Config.Languages() {
-			// fmt.Println(lang)
 			for _, board := range t.Config.Keyboards() {
-				// fmt.Println(board)
 				for _, algo := range t.Config.Algorithms() {
-					// fmt.Println(t.Config.Type)
-					// fmt.Println(algo)
-					// if algo.IsType(urlinsane.DOMAIN) {
-					// fmt.Println(t.Config.Type)
-
 					domain := NewDomain(t.Config.Target())
-
-					typo := &Typo{
+					out <- &Typo{
 						language:  lang,
 						keyboard:  board,
 						algorithm: algo,
 						original:  domain,
-						// variant:   t.Config.Domain,
 					}
-					// fmt.Println(id)
-					out <- typo
-					// }
 				}
 			}
 		}
@@ -84,15 +74,13 @@ func (ts *DomainTypos) Algorithms(in <-chan urlinsane.Typo) <-chan urlinsane.Typ
 	out := make(chan urlinsane.Typo)
 
 	for w := 1; w <= ts.Config.Concurrency(); w++ {
-		ts.typoWG.Add(1)
+		ts.algoWG.Add(1)
 		go func(id int, in <-chan urlinsane.Typo, out chan<- urlinsane.Typo) {
-			defer ts.typoWG.Done()
+			defer ts.algoWG.Done()
 			for typo := range in {
-				// fmt.Println(typo)
 				// Execute typo algorithm returning typos
 				for _, typ := range typo.Algorithm().Exec(typo) {
 					if typ.Variant() != nil {
-						// fmt.Println(typ)
 						out <- typ
 					}
 				}
@@ -100,7 +88,7 @@ func (ts *DomainTypos) Algorithms(in <-chan urlinsane.Typo) <-chan urlinsane.Typ
 		}(w, in, out)
 	}
 	go func() {
-		ts.typoWG.Wait()
+		ts.algoWG.Wait()
 		close(out)
 	}()
 
@@ -138,9 +126,9 @@ func (ts *DomainTypos) Dedup(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 func (t *DomainTypos) Information(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 	out := make(chan urlinsane.Typo)
 	for w := 1; w <= t.Config.Concurrency(); w++ {
-		t.funcWG.Add(1)
+		t.infoWG.Add(1)
 		go func(in <-chan urlinsane.Typo, out chan<- urlinsane.Typo) {
-			defer t.funcWG.Done()
+			defer t.infoWG.Done()
 			output := t.InfoChain(t.Config.Information(), in)
 			for c := range output {
 				out <- c
@@ -148,33 +136,13 @@ func (t *DomainTypos) Information(in <-chan urlinsane.Typo) <-chan urlinsane.Typ
 		}(in, out)
 	}
 	go func() {
-		t.funcWG.Wait()
+		t.infoWG.Wait()
 		close(out)
 	}()
 	return out
 }
 
-// // DistChain creates workers of chained functions
-// func (t *DomainTypos) DistChain(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
-// 	out := make(chan urlinsane.Typo)
-// 	for w := 1; w <= t.Config.Concurrency; w++ {
-// 		t.funcWG.Add(1)
-// 		go func(in <-chan urlinsane.Typo, out chan<- urlinsane.Typo) {
-// 			defer t.funcWG.Done()
-// 			output := t.InfoChain(t.Config.Information, in)
-// 			for c := range output {
-// 				out <- c
-// 			}
-// 		}(in, out)
-// 	}
-// 	go func() {
-// 		t.funcWG.Wait()
-// 		close(out)
-// 	}()
-// 	return t.Information(out)
-// }
-
-// FuncChain creates a chain of information gathering functions
+// InfoChain creates a chain of information gathering functions
 func (t *DomainTypos) InfoChain(funcs []urlinsane.Information, in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 	var xfunc urlinsane.Information
 	out := make(chan urlinsane.Typo)
@@ -182,10 +150,7 @@ func (t *DomainTypos) InfoChain(funcs []urlinsane.Information, in <-chan urlinsa
 	go func() {
 		for i := range in {
 			time.Sleep(t.Config.Random() * t.Config.Delay())
-			// fmt.Println(typ.config.timing.Random * typ.config.timing.Delay * time.Millisecond)
-
 			out <- xfunc.Exec(i)
-
 		}
 		close(out)
 	}()
@@ -197,16 +162,31 @@ func (t *DomainTypos) InfoChain(funcs []urlinsane.Information, in <-chan urlinsa
 }
 
 func (t *DomainTypos) Storage(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
-	// out := make(chan urlinsane.Typo)
-	// go func() {
-	// 	for typo := range in {
-	// 		t.Typos[typo.Repr()] = typo
-	// 	}
-	// 	for _, typ := range t.Typos {
-	// 		out <- typ
-	// 	}
-	// 	close(out)
-	// }()
+
+
+	return in
+}
+
+func (t *DomainTypos) Progress(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+	if t.Config.Progress() {
+		out := make(chan urlinsane.Typo)
+		go func(in <-chan urlinsane.Typo, out chan<- urlinsane.Typo) {
+			for c := range in {
+				if t.Config.Count() != 0 && t.progress == nil {
+					t.progress = progressbar.Default(t.Config.Count())
+				}
+				out <- c
+				t.progress.Add(1)
+			}
+			close(out)
+		}(in, out)
+		return out
+	}
+	return in
+}
+
+func (t *DomainTypos) Filter(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+
 
 	return in
 }
@@ -227,269 +207,7 @@ func (t *DomainTypos) Execute() {
 	typos = t.Algorithms(typos)
 	typos = t.Information(typos)
 	typos = t.Storage(typos)
+	typos = t.Progress(typos)
+	typos = t.Filter(typos)
 	t.Output(typos)
 }
-
-// // FilterChain ...
-// func (typ *DomainTypos) FilterChain(in <-chan Result) <-chan Result {
-// 	out := make(chan Result)
-// 	go func() {
-// 		for i := range in {
-// 			if len(typ.config.filters) > 0 {
-// 				for _, filter := range typ.config.filters {
-// 					for _, result := range filter.Exec(i) {
-// 						out <- result
-// 					}
-// 				}
-// 			} else {
-// 				out <- i
-// 			}
-// 		}
-// 		close(out)
-// 	}()
-// 	return typ.Dedup(out)
-// }
-
-// // Start ...
-// func (typ *DomainTypos) Start() <-chan Result {
-// 	for i, dmname := range typ.config.domains {
-// 		records, _ := net.LookupIP(dmname.String())
-// 		// if err != nil {
-// 		// 	fmt.Println(err)
-// 		// }
-// 		for _, record := range uniqIP(records) {
-// 			dotlen := strings.Count(record, ".")
-// 			if dotlen == 3 {
-// 				if !stringInSlice(record, dmname.Meta.DNS.IPv4) {
-// 					typ.config.domains[i].Meta.DNS.IPv4 = append(dmname.Meta.DNS.IPv4, record)
-// 				}
-// 				typ.config.domains[i].Live = true
-// 			}
-// 			clen := strings.Count(record, ":")
-// 			if clen == 5 {
-// 				if !stringInSlice(record, dmname.Meta.DNS.IPv6) {
-// 					typ.config.domains[i].Meta.DNS.IPv6 = append(dmname.Meta.DNS.IPv6, record)
-// 				}
-// 				typ.config.domains[i].Live = true
-// 			}
-// 		}
-// 		if len(typ.config.domains[i].Meta.DNS.IPv4) > 0 {
-// 			httpRes, gerr := http.Get("http://" + typ.config.domains[i].Meta.DNS.IPv4[0])
-// 			if gerr == nil {
-// 				res := httpLib.NewResponse(httpRes)
-// 				// spew.Dump(res)
-// 				typ.config.domains[i].Meta.HTTP = res
-
-// 				// spew.Dump(original)
-
-// 				str := httpRes.Request.URL.String()
-// 				subdomain := domainutil.Subdomain(str)
-// 				domain := domainutil.DomainPrefix(str)
-// 				suffix := domainutil.DomainSuffix(str)
-// 				if domain == "" {
-// 					domain = str
-// 				}
-// 				dm := Domain{subdomain, domain, suffix, Meta{}, true}
-// 				if dmname.String() != dm.String() {
-// 					typ.config.domains[i].Meta.Redirect = dm.String()
-// 				}
-// 			}
-// 		}
-// 	}
-
-// 	return typ.GenTypoConfig()
-// }
-
-// // GenTypoConfig ...
-// func (typ *DomainTypos) GenTypoConfig() <-chan Result {
-// 	out := make(chan Result)
-// 	go func() {
-// 		for _, domain := range typ.config.domains {
-// 			for _, typo := range typ.config.typos {
-// 				out <- Result{
-// 					Original:  domain,
-// 					Variant:   Domain{},
-// 					Typo:      typo,
-// 					Keyboards: typ.config.keyboards,
-// 					Languages: typ.config.languages,
-// 				}
-// 			}
-// 		}
-// 		close(out)
-// 	}()
-// 	return typ.Typos(out)
-// }
-
-// // Typos gives typo options to a pool of workers
-// func (typ *DomainTypos) Typos(in <-chan Result) <-chan Result {
-// 	out := make(chan Result)
-// 	for w := 1; w <= typ.config.concurrency; w++ {
-// 		typ.typoWG.Add(1)
-// 		go func(id int, in <-chan Result, out chan<- Result) {
-// 			defer typ.typoWG.Done()
-// 			for c := range in {
-// 				// Execute typo function returning typo results
-// 				for _, t := range c.Typo.Exec(c) {
-// 					if t.Variant.String() != t.Original.String() {
-// 						out <- t
-// 					}
-// 				}
-// 			}
-// 		}(w, in, out)
-// 	}
-// 	go func() {
-// 		typ.typoWG.Wait()
-// 		close(out)
-// 	}()
-// 	return typ.Results(out)
-// }
-
-// // Results ...
-// func (typ *DomainTypos) Results(in <-chan Result) <-chan Result {
-// 	out := make(chan Result)
-// 	go func() {
-// 		for r := range in {
-// 			record := Result{Variant: r.Variant, Original: r.Original, Typo: r.Typo}
-// 			// Initialize a place to store extra data for a record
-// 			record.Data = make(map[string]string)
-
-// 			// Initialize a place to store meta data
-// 			record.Variant.Meta = Meta{}
-
-// 			// Add record placeholder for consistent records
-// 			for _, name := range typ.config.headers {
-// 				_, ok := record.Data[name]
-// 				if !ok {
-// 					record.Data[name] = ""
-// 				}
-// 			}
-// 			out <- record
-// 		}
-// 		close(out)
-// 	}()
-// 	return typ.DistChain(out)
-// }
-
-// // FuncChain creates a chain of information gathering functions
-// func (typ *DomainTypos) FuncChain(funcs []Module, in <-chan Result) <-chan Result {
-// 	var xfunc Module
-// 	out := make(chan Result)
-// 	xfunc, funcs = funcs[len(funcs)-1], funcs[:len(funcs)-1]
-// 	go func() {
-// 		for i := range in {
-// 			time.Sleep(typ.config.timing.Random * typ.config.timing.Delay * time.Millisecond)
-// 			// fmt.Println(typ.config.timing.Random * typ.config.timing.Delay * time.Millisecond)
-// 			for _, result := range xfunc.Exec(i) {
-// 				out <- result
-// 			}
-// 		}
-// 		close(out)
-// 	}()
-
-// 	if len(funcs) > 0 {
-// 		return typ.FuncChain(funcs, out)
-// 	}
-// 	return out
-// }
-
-// // DistChain creates workers of chained functions
-// func (typ *DomainTypos) DistChain(in <-chan Result) <-chan Result {
-// 	out := make(chan Result)
-// 	for w := 1; w <= typ.config.concurrency; w++ {
-// 		typ.funcWG.Add(1)
-// 		go func(in <-chan Result, out chan<- Result) {
-// 			defer typ.funcWG.Done()
-// 			output := typ.FuncChain(typ.config.funcs, in)
-// 			for c := range output {
-// 				out <- c
-// 			}
-// 		}(in, out)
-// 	}
-// 	go func() {
-// 		typ.funcWG.Wait()
-// 		close(out)
-// 	}()
-// 	return typ.FilterChain(out)
-// }
-
-// // FilterChain ...
-// func (typ *DomainTypos) FilterChain(in <-chan Result) <-chan Result {
-// 	out := make(chan Result)
-// 	go func() {
-// 		for i := range in {
-// 			if len(typ.config.filters) > 0 {
-// 				for _, filter := range typ.config.filters {
-// 					for _, result := range filter.Exec(i) {
-// 						out <- result
-// 					}
-// 				}
-// 			} else {
-// 				out <- i
-// 			}
-// 		}
-// 		close(out)
-// 	}()
-// 	return typ.Dedup(out)
-// }
-
-// // Dedup filters the results for unique variations of domains
-// func (typ *DomainTypos) Dedup(in <-chan Result) <-chan Result {
-// 	duplicates := make(map[string]int)
-// 	out := make(chan Result)
-// 	go func(in <-chan Result, out chan<- Result) {
-// 		for c := range in {
-// 			// Count and remove deplicates
-// 			dup, ok := duplicates[c.Variant.String()]
-// 			if ok {
-// 				duplicates[c.Variant.String()] = dup + 1
-
-// 			} else {
-// 				duplicates[c.Variant.String()] = 1
-// 				out <- c
-// 			}
-// 		}
-// 		close(out)
-// 	}(in, out)
-// 	return out
-// }
-
-// // Stream returns the results one at a time
-// func (typ *DomainTypos) Stream() <-chan Result {
-// 	return typ.Start()
-// }
-
-// // Batch returns all the results at once
-// func (typ *DomainTypos) Batch() (res []Result) {
-// 	for r := range typ.Stream() {
-// 		res = append(res, r)
-// 	}
-// 	return
-// }
-
-// // Execute starts the program and outputs results. Primarily used for CLI tools
-// func (typ *DomainTypos) Execute() {
-// 	// Output results based on config
-// 	typ.Output(typ.Stream())
-// }
-
-// // Output ...
-// func (typ *DomainTypos) Output(in <-chan Result) {
-// 	if typ.config.format == "json" {
-// 		typ.jsonOutput(in)
-// 	}
-// 	if typ.config.format == "csv" {
-// 		typ.csvOutput(in)
-// 	}
-// 	if typ.config.format == "text" {
-// 		typ.stdOutput(in)
-// 	}
-// }
-
-// func stringInSlice(a string, list []string) bool {
-// 	for _, b := range list {
-// 		if b == a {
-// 			return true
-// 		}
-// 	}
-// 	return false
-// }
