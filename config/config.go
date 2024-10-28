@@ -32,7 +32,7 @@ import (
 )
 
 type Config struct {
-	// Types of targets for typosquattting
+	// Types of targets for typosquatting
 	// Domain urlinsane.Domain
 	target string
 
@@ -102,7 +102,7 @@ func (c *Config) Count(n ...int64) int64 {
 	return c.count
 }
 
-// CliDomainConfig creates a configuration from a cobra cli options and arguments
+// CobraConfig creates a configuration from a cobra command options and arguments
 func CobraConfig(cmd *cobra.Command, args []string) (c Config, err error) {
 
 	if len(args) == 0 {
@@ -168,7 +168,7 @@ func CobraConfig(cmd *cobra.Command, args []string) (c Config, err error) {
 	return c, err
 }
 
-// commaSplit splits comma seperated values into an array
+// commaSplit splits comma separated values into an array
 func commaSplit(values []string, err error) ([]string, error) {
 	return values, err
 }
