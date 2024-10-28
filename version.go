@@ -20,7 +20,7 @@ const (
 
 	DEBUG = false
 
-	// LOGO made as ascii graphics
+	// LOGO made as ASCII graphics
 	LOGO = `
  _   _  ____   _      ___
 | | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
