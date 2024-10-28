@@ -2,7 +2,7 @@
 
 [![Build Status](https://app.travis-ci.com/rangertaha/urlinsane.svg?token=HztkB8fbGuKAztqay7MN&branch=develop)](https://app.travis-ci.com/rangertaha/urlinsane)
 
-![example branch parameter](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=feature-1)
+![Build Status](https://github.com/rangertaha/urlinsane/.actions/workflows/go.yml/badge.svg?branch=develop)
 
 
 This is the most advanced and full-featured typosquatting tool.  It supports more algorithms(24), information gathering(8), keyboard layouts(19), and written languages(9) than any other typosquatting tool. It generates more results per domain in less time, see [`Speed`](#Speed). Originally, I wrote similar tools in Python but was not happy with the performance. This tool was built in Golang to take advantage of its speed, concurrency, and portability.  It builds around linguistic modeling, natural language processing (NLP), concurrency, and plugin architecture. It's easily extensible with plugins for typo-generation algorithms, information gathering, analysis, languages, keyboard layouts, and output formats. 
