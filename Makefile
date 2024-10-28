@@ -61,7 +61,7 @@ doc: ## Go documentation
 GOBIN ?= $$(go env GOPATH)/bin
 
 .PHONY: install-go-test-coverage
-install-go-test-coverage: ## Install test coverage dependincy
+install-go-test-coverage: ## Install test coverage dependency
 	go install github.com/vladopajic/go-test-coverage/v2@latest
 
 .PHONY: check-coverage
