@@ -56,14 +56,14 @@ Use "{{.CommandPath}} [command] --help" for more information about a command.{{e
 const helpTemplate = `
 
 ALGORITHMS:
-    Typosquating algorithms that generate domain names.
+    Typosquatting algorithm plugins that generate typos.
 
     ID | Description
     -----------------------------------------{{range .Algorithms}}
     {{.Id}}	{{.Name}} {{.Description}}{{end}}
 
 INFORMATION:
-    Information gathering functions that collects information on each domain name
+    Information-gathering plugins that collect information on each typo 
 
     ID | Description
     -----------------------------------------{{range .Information}}
@@ -107,12 +107,12 @@ var rootCmd = &cobra.Command{
 	Use:   "urlinsane [flags] [domains]",
 	Short: "Generates and detects possible typosquatting domain names and arbitrary names",
 	Long: `Urlinsane is used to perform or detect typosquatting, brandjacking,
-URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.
+URL hijacking, fraud, phishing attacks, corporate espionage, and threat intelligence.
 
 Urlinsane is built around linguistic modeling, natural language processing, 
-information gathering and analysis. It's easily extensible with plugins for typo algorithms, 
-Information gathering and analysis. Its linguistic models also allow it us to easily add new 
-languages and keyboard layouts. Currently it supports 9 languages, 19 keyboard layouts, 
+information gathering, and analysis. It's easily extensible with plugins for typo algorithms, 
+Information gathering and analysis. Its linguistic models also allow us to easily add new 
+languages and keyboard layouts. Currently, it supports 9 languages, 19 keyboard layouts, 
 24 algorithms, 8 information gathering, and 2 analysis modules.
 
 `,
@@ -160,7 +160,7 @@ func init() {
 	rootCmd.SetUsageTemplate(templateBase + cliOptions.String())
 
 	// Options
-	rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"en"}, "IDs of languages to use for lingustic algorithms")
+	rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"en"}, "IDs of languages to use for linguistic algorithms")
 	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"all"}, "IDs of keyboard layouts to use of the given languages")
 
 	// Plugins
