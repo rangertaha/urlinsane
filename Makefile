@@ -28,8 +28,6 @@ install: build ## build and install the binary
 
 deps: ## Install dependencies
 	$(GOGET) ./...
-	# $(GOGET) github.com/inconshreveable/mousetrap
-	# $(GOGET) github.com/konsorten/go-windows-terminal-sequences
 
 # docker: image ## Build docker image and upload to docker hub
 # 	docker login
@@ -67,6 +65,6 @@ install-go-test-coverage: ## Install test coverage dependincy
 	go install github.com/vladopajic/go-test-coverage/v2@latest
 
 .PHONY: check-coverage
-check-coverage: install-go-test-coverage ## Check code coverage
+coverage: install-go-test-coverage ## Check code coverage
 	go test ./... -coverprofile=./cover.out -covermode=atomic -coverpkg=./...
 	${GOBIN}/go-test-coverage --config=./.testcoverage.yml
