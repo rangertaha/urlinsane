@@ -4,7 +4,9 @@
 
 Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage, and threat intelligence.
 
-This is the most advanced and full-featured typosquatting tool.  It supports more algorithms(24), information gathering(8), keyboard layouts(19), and written languages(9) than any other typosquatting tool. It generates more results per domain in less time, see [`Speed`](#Speed). Originally, I wrote similar tools in Python but was not happy with the performance. This tool was built in Golang to take advantage of its speed, concurrency, and portability.  It builds around linguistic modeling, natural language processing (NLP), concurrency, and plugin architecture. It's easily extensible with plugins for typo-generation algorithms, information gathering, analysis, languages, keyboard layouts, and output formats. 
+It's a plugin-based multilingual permutation engine that supports keyboard layouts for each language. The plugin system allows us to easily extend its capabilities. Currently, it supports plugins for algorithms (24), information gathering (8), keyboard layouts (19), languages (9), and output (4) formats. Originally, I wrote similar tools in Python but was not happy with the performance. This tool was built in Golang to take advantage of its speed, concurrency, and portability (see [`Speed`](#Speed).
+
+
 
 
 | **Plugins** |  count |
