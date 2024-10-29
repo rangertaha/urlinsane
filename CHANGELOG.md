@@ -5,17 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.0.0] - 2024-10-29
-### Marjor rewrite the engine and plugin system
-- Using interfaces instread of functions for the plugins
-- Redesinged the plugins to make it easier to author new ones
-- Added support for arbetrary names, email addresss, and usernames
+### Major rewrite of the engine and plugin system
+- Using interfaces instead of functions for the plugins
+- Redesigned the plugins to make it easier to author new ones
+- Added support for arbitrary names, email addresses, and usernames
 - Added an optional progress bar
-- Improved output plugin that makes it easy to create new output formates
+- Improved output plugin that makes it easy to create new output formats
 - Better documentation around the algorithms
-- Publish a debian package as well as binaries
+- Publish a Debian package as well as binaries
 - Caching results to improve performance
-- Added combosquatting plugin that usese the keywords extracted from the text on target domain
-- Added information plugin that provides the topics of each online domain
+- Added combo squatting plugin that uses the keywords extracted from the text on the target domain
+- Added an information plugin that provides the topics of each online domain
 - VSM(Vector Space Model) plugin for comparing the similarity of two domains
 
 
@@ -61,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added GeoIP function
 - Updated help string
-- Added live filter for domains with IP addresses.
+- I added a live filter for domains with IP addresses.
 - Added the Armenian language.
 - Added the Persian language.
 - Added the Hebrew language.
@@ -69,9 +69,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.0] - 2018-08-30
 ### Added
 - Added concurrency to the extra functions
-- Added ssdeep page similarity function
+- Added SSDeep page similarity function
 - Updated documentation
-- Updated version and builds for Windows, Linux, osx
+- Updated version and builds for Windows, Linux, OSX
 
 ## [0.1.0] - 2018-08-26
 ### Added initial code
