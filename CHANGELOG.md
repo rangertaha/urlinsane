@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2024-10-29
+### Marjor rewrite the engine and plugin system
+- Using interfaces instread of functions for the plugins
+- Redesinged the plugins to make it easier to author new ones
+- Added support for arbetrary names, email addresss, and usernames
+- Added an optional progress bar
+- Improved output plugin that makes it easy to create new output formates
+- Better documentation around the algorithms
+- Publish a debian package as well as binaries
+- Caching results to improve performance
+- Added combosquatting plugin that usese the keywords extracted from the text on target domain
+- Added information plugin that provides the topics of each online domain
+- VSM(Vector Space Model) plugin for comparing the similarity of two domains
+
 
 ## [0.7.0] - 2024-07-11
 ### Cleanup & reorganize codebase
