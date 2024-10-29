@@ -17,7 +17,6 @@ package text
 import (
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/rangertaha/urlinsane"
@@ -45,6 +44,7 @@ func (n *Text) Init(conf urlinsane.Config) {
 func (n *Text) getHeader() (row table.Row) {
 	row = append(row, "ID")
 	row = append(row, "TYPO")
+	row = append(row, "TYPE")
 	for _, info := range n.config.Information() {
 		for _, headers := range info.Headers() {
 			row = append(row, headers)
@@ -56,7 +56,7 @@ func (n *Text) getHeader() (row table.Row) {
 
 func (n *Text) getRow(typo urlinsane.Typo) (row table.Row) {
 	row = append(row, typo.Id())
-	row = append(row, typo.Variant().Repr())
+	row = append(row, typo.Variant().Repr(), typo.Algorithm().Name())
 	for _, info := range n.config.Information() {
 		for _, header := range info.Headers() {
 			meta := typo.Variant().Meta()
@@ -73,16 +73,12 @@ func (n *Text) Description() string {
 
 func (n *Text) Write(in urlinsane.Typo) {
 	n.table.AppendRow(n.getRow(in))
-
-	// n.progress.Add(1)
-	time.Sleep(time.Second * 1)
 }
 
 func (n *Text) Save() {
 	n.table.AppendFooter(table.Row{"Total", n.config.Count()})
 	n.table.SetStyle(StyleDefault)
 	output := n.table.Render()
-	// output := n.table.
 
 	if n.config.File() != "" {
 		results := []byte(output)

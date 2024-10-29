@@ -71,6 +71,19 @@ func (l *Arabic) Homoglyphs() map[string][]string {
 	return l.homoglyphs
 }
 
+func (l *Arabic) SimilarChars(char string) []string {
+	return languages.SimilarChars(l.homoglyphs, char)
+}
+
+func (l *Arabic) SimilarSpellings(word string) []string {
+	return languages.SimilarSpellings(l.misspellings, word)
+}
+
+func (l *Arabic) SimilarSounds(word string) []string {
+	return languages.SimilarSounds(l.homophones, word)
+}
+
+
 func (l *Arabic) Keyboards() []urlinsane.Keyboard {
 	return languages.Keyboards()
 }

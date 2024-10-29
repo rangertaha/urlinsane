@@ -71,6 +71,18 @@ func (l *Hebrew) Homoglyphs() map[string][]string {
 	return l.homoglyphs
 }
 
+func (l *Hebrew) SimilarChars(char string) []string {
+	return languages.SimilarChars(l.homoglyphs, char)
+}
+
+func (l *Hebrew) SimilarSpellings(word string) []string {
+	return languages.SimilarSpellings(l.misspellings, word)
+}
+
+func (l *Hebrew) SimilarSounds(word string) []string {
+	return languages.SimilarSounds(l.homophones, word)
+}
+
 func (l *Hebrew) Keyboards() []urlinsane.Keyboard {
 	return languages.Keyboards()
 }

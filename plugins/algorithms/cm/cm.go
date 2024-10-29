@@ -1,9 +1,23 @@
+// Copyright (C) 2024 Rangertaha
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package cm
 
-// CcommonMisspellingsFunc are created with common misspellings in the given
+// CAlgoFunc are created with common misspellings in the given
 // language. For example, www.youtube.com becomes www.youtub.com and
 // www.abseil.com becomes www.absail.com
-// func commonMisspellingsFunc(tc Result) (results []Result) {
+// func AlgoFunc(tc Result) (results []Result) {
 // 	for _, keyboard := range tc.Keyboards {
 // 		for _, word := range keyboard.Language.SimilarSpellings(tc.Original.Domain) {
 // 			dm := Domain{tc.Original.Subdomain, word, tc.Original.Suffix, Meta{}, false}
@@ -20,35 +34,40 @@ import (
 )
 
 const CODE = "cm"
+// const (
+// 	CODE        = ""
+// 	NAME        = ""
+// 	DESCRIPTION = ""
+// )
 
-type CommonMisspellings struct {
+type Algo struct {
 	types []string
 }
 
-func (n *CommonMisspellings) Id() string {
+func (n *Algo) Id() string {
 	return CODE
 }
-func (n *CommonMisspellings) IsType(str string) bool {
+func (n *Algo) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
 }
 
-func (n *CommonMisspellings) Name() string {
+func (n *Algo) Name() string {
 	return "Common Misspellings"
 }
 
-func (n *CommonMisspellings) Description() string {
+func (n *Algo) Description() string {
 	return "Common Misspellings are created from a dictionary of commonly misspelled words"
 }
 
-func (n *CommonMisspellings) Fields() []string {
+func (n *Algo) Fields() []string {
 	return []string{}
 }
 
-func (n *CommonMisspellings) Headers() []string {
+func (n *Algo) Headers() []string {
 	return []string{}
 }
 
-func (n *CommonMisspellings) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
 	out = append(out, in)
 	return
 }
@@ -56,7 +75,7 @@ func (n *CommonMisspellings) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
-		return &CommonMisspellings{
+		return &Algo{
 			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
 		}
 	})

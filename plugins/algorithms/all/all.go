@@ -13,8 +13,8 @@ import (
 	_ "github.com/rangertaha/urlinsane/plugins/algorithms/cs"
 	_ "github.com/rangertaha/urlinsane/plugins/algorithms/dcr"
 	_ "github.com/rangertaha/urlinsane/plugins/algorithms/hg"
-	_ "github.com/rangertaha/urlinsane/plugins/algorithms/hi"
-	_ "github.com/rangertaha/urlinsane/plugins/algorithms/hr"
+	_ "github.com/rangertaha/urlinsane/plugins/algorithms/di"
+	_ "github.com/rangertaha/urlinsane/plugins/algorithms/hp"
 	_ "github.com/rangertaha/urlinsane/plugins/algorithms/md"
 	_ "github.com/rangertaha/urlinsane/plugins/algorithms/mds"
 	_ "github.com/rangertaha/urlinsane/plugins/algorithms/ns"
@@ -26,4 +26,5 @@ import (
 	_ "github.com/rangertaha/urlinsane/plugins/algorithms/tld3"
 	_ "github.com/rangertaha/urlinsane/plugins/algorithms/tld2"
 	_ "github.com/rangertaha/urlinsane/plugins/algorithms/tld"
+	_ "github.com/rangertaha/urlinsane/plugins/algorithms/com"
 )

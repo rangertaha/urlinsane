@@ -1,6 +1,20 @@
+// Copyright (C) 2024 Rangertaha
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ar
 
-// func alphabetReplacementnFunc(tc Result) (results []Result) {
+// func AlgonFunc(tc Result) (results []Result) {
 // 	alphabet := map[string]bool{}
 // 	for _, keyboard := range tc.Keyboards {
 // 		for _, a := range keyboard.Language.Graphemes {
@@ -30,35 +44,42 @@ import (
 )
 
 const CODE = "ar"
+// const (
+// 	CODE        = ""
+// 	NAME        = ""
+// 	DESCRIPTION = ""
+// )
 
-type AlphabetReplacement struct {
+
+
+type Algo struct {
 	types []string
 }
 
-func (n *AlphabetReplacement) Id() string {
+func (n *Algo) Id() string {
 	return CODE
 }
-func (n *AlphabetReplacement) IsType(str string) bool {
+func (n *Algo) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
 }
 
-func (n *AlphabetReplacement) Name() string {
+func (n *Algo) Name() string {
 	return "Alphabet Replacement"
 }
 
-func (n *AlphabetReplacement) Description() string {
+func (n *Algo) Description() string {
 	return "Replaces an alphabet in the target domain"
 }
 
-func (n *AlphabetReplacement) Fields() []string {
+func (n *Algo) Fields() []string {
 	return []string{}
 }
 
-func (n *AlphabetReplacement) Headers() []string {
+func (n *Algo) Headers() []string {
 	return []string{}
 }
 
-func (n *AlphabetReplacement) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
 	out = append(out, in)
 	return
 }
@@ -66,7 +87,7 @@ func (n *AlphabetReplacement) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
-		return &AlphabetReplacement{
+		return &Algo{
 
 			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
 		}

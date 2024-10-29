@@ -71,6 +71,18 @@ func (l *Russian) Homoglyphs() map[string][]string {
 	return l.homoglyphs
 }
 
+func (l *Russian) SimilarChars(char string) []string {
+	return languages.SimilarChars(l.homoglyphs, char)
+}
+
+func (l *Russian) SimilarSpellings(word string) []string {
+	return languages.SimilarSpellings(l.misspellings, word)
+}
+
+func (l *Russian) SimilarSounds(word string) []string {
+	return languages.SimilarSounds(l.homophones, word)
+}
+
 func (l *Russian) Keyboards() []urlinsane.Keyboard {
 	return languages.Keyboards()
 }

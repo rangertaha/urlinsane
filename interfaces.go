@@ -14,7 +14,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package urlinsane
 
-import "time"
+import (
+	"time"
+)
 
 const (
 	ENTITY = "ENTITY"
@@ -42,9 +44,13 @@ type Algorithm interface {
 	Name() string
 	IsType(string) bool
 	Description() string
-	// Fields() []string
-	// Headers() []string
 	Exec(Typo) []Typo
+
+	
+	// Name(Typo) []Typo
+	// Email(Typo) []Typo
+	// Domain(Typo) []Typo
+	// Username(Typo) []Typo
 }
 
 type Information interface {
@@ -126,6 +132,12 @@ type Language interface {
 
 	Homoglyphs() map[string][]string
 
+	SimilarChars(char string) []string
+
+	SimilarSpellings(word string) []string
+
+	SimilarSounds(word string) []string
+
 	Keyboards() []Keyboard
 }
 
@@ -134,5 +146,6 @@ type Keyboard interface {
 	Name() string
 	Description() string
 	Layouts() []string
+	Adjacent(string) []string
 	Language() string
 }
