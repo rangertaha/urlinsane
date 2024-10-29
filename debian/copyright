@@ -1,9 +1,8 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: cybint-wallpapers
-Source: https://gitlab.com/cybint-linux/packages/cybint-wallpapers.git
-
+Upstream-Name: urlinsane
+Source: https://github.com/rangertaha/urlinsane.git
 Files: *
-Copyright: 2020-2021 CYBINT 
+Copyright: 2024 Rangertaha 
 License: GPL-3.0+
  .
  This package is free software; you can redistribute it and/or modify
