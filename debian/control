@@ -1,16 +1,16 @@
-Source: cybint-wallpapers
+Source: urlinsane
 Section: misc
 Priority: optional
-Maintainer: CYBINT Developers <coder@cybint.io>
-Uploaders: coder <coder@cybint.io>
+Maintainer: Rangertaha <rangertaha@gmail.com>
+Uploaders: Rangertaha <rangertaha@gmail.com>
 Build-Depends: debhelper-compat (= 12),
                graphicsmagick-imagemagick-compat
 Standards-Version: 4.6.0
-Vcs-Git: https://gitlab.com/cybint-linux/packages/cybint-wallpapers.git
-Vcs-Browser: https://gitlab.com/cybint-linux/packages/cybint-wallpapers
+Vcs-Git: git@github.com:rangertaha/urlinsane.git
+Vcs-Browser: https://github.com/rangertaha/urlinsane.git
 
-Package: cybint-wallpapers
+Package: urlinsane
 Architecture: all
 Depends: ${misc:Depends}
-Description: CYBINT Linux wallpapers 
- This package contains wallpapers for CYBINT Linux
+Description: Advanced typosquatting tool 
+ This is the most advanced and full-featured typosquatting tool
