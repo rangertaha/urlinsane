@@ -1,0 +1,16 @@
+Source: cybint-wallpapers
+Section: misc
+Priority: optional
+Maintainer: CYBINT Developers <coder@cybint.io>
+Uploaders: coder <coder@cybint.io>
+Build-Depends: debhelper-compat (= 12),
+               graphicsmagick-imagemagick-compat
+Standards-Version: 4.6.0
+Vcs-Git: https://gitlab.com/cybint-linux/packages/cybint-wallpapers.git
+Vcs-Browser: https://gitlab.com/cybint-linux/packages/cybint-wallpapers
+
+Package: cybint-wallpapers
+Architecture: all
+Depends: ${misc:Depends}
+Description: CYBINT Linux wallpapers 
+ This package contains wallpapers for CYBINT Linux
