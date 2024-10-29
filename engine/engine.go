@@ -144,6 +144,9 @@ func (t *DomainTypos) Information(in <-chan urlinsane.Typo) <-chan urlinsane.Typ
 
 // InfoChain creates a chain of information-gathering functions
 func (t *DomainTypos) InfoChain(funcs []urlinsane.Information, in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
+	if len(funcs) == 0 {
+		return in
+	}
 	var xfunc urlinsane.Information
 	out := make(chan urlinsane.Typo)
 	xfunc, funcs = funcs[len(funcs)-1], funcs[:len(funcs)-1]
@@ -158,11 +161,11 @@ func (t *DomainTypos) InfoChain(funcs []urlinsane.Information, in <-chan urlinsa
 	if len(funcs) > 0 {
 		return t.InfoChain(funcs, out)
 	}
+
 	return out
 }
 
 func (t *DomainTypos) Storage(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
-
 
 	return in
 }
@@ -186,7 +189,6 @@ func (t *DomainTypos) Progress(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
 }
 
 func (t *DomainTypos) Filter(in <-chan urlinsane.Typo) <-chan urlinsane.Typo {
-
 
 	return in
 }

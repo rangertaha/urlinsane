@@ -27,6 +27,28 @@ type Keyboard struct {
 	layout      []string
 }
 
+func (k *Keyboard) Id() string {
+	return k.code
+}
+func (k *Keyboard) Language() string {
+	return k.lang
+}
+func (k *Keyboard) Name() string {
+	return k.name
+}
+func (k *Keyboard) Description() string {
+	return k.description
+}
+func (k *Keyboard) Layouts() []string {
+	return k.layout
+}
+func (k *Keyboard) Adjacent(char string) []string {
+	return languages.Adjacent(k.layout, char)
+}
+func (k *Keyboard) Languages() []urlinsane.Language {
+	return languages.Languages(k.lang)
+}
+
 var Keyboards = []Keyboard{
 	{
 		lang:        LANGUAGE,
@@ -72,26 +94,6 @@ var Keyboards = []Keyboard{
 			"   لكجحغفدسا",
 			"     منبذصخز"},
 	},
-}
-
-func (k *Keyboard) Id() string {
-	return k.code
-}
-func (k *Keyboard) Language() string {
-	return k.lang
-}
-func (k *Keyboard) Name() string {
-	return k.name
-}
-func (k *Keyboard) Description() string {
-	return k.description
-}
-func (k *Keyboard) Layouts() []string {
-	return k.layout
-}
-
-func (k *Keyboard) Languages() []urlinsane.Language {
-	return languages.Languages(k.lang)
 }
 
 func init() {

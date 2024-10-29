@@ -1,7 +1,21 @@
+// Copyright (C) 2024 Rangertaha
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ns
 
-// // numeralSwapFunc are created by swapping numbers and corresponding words
-// func numeralSwapFunc(tc Result) (results []Result) {
+// // AlgoFunc are created by swapping numbers and corresponding words
+// func AlgoFunc(tc Result) (results []Result) {
 // 	for _, keyboard := range tc.Keyboards {
 // 		for inum, words := range keyboard.Language.Numerals {
 // 			for _, snum := range words {
@@ -32,35 +46,41 @@ import (
 )
 
 const CODE = "ns"
+// const (
+// 	CODE        = ""
+// 	NAME        = ""
+// 	DESCRIPTION = ""
+// )
 
-type NumeralSwap struct {
+
+type Algo struct {
 	types []string
 }
 
-func (n *NumeralSwap) Id() string {
+func (n *Algo) Id() string {
 	return CODE
 }
-func (n *NumeralSwap) IsType(str string) bool {
+func (n *Algo) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
 }
 
-func (n *NumeralSwap) Name() string {
-	return "NumeralSwap"
+func (n *Algo) Name() string {
+	return "Algo"
 }
 
-func (n *NumeralSwap) Description() string {
+func (n *Algo) Description() string {
 	return "Numeral Swap numbers, words and vice versa"
 }
 
-func (n *NumeralSwap) Fields() []string {
+func (n *Algo) Fields() []string {
 	return []string{}
 }
 
-func (n *NumeralSwap) Headers() []string {
+func (n *Algo) Headers() []string {
 	return []string{}
 }
 
-func (n *NumeralSwap) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
 	out = append(out, in)
 	return
 }
@@ -68,7 +88,7 @@ func (n *NumeralSwap) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
-		return &NumeralSwap{
+		return &Algo{
 			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
 		}
 	})

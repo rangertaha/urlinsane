@@ -71,6 +71,18 @@ func (l *Persian) Homoglyphs() map[string][]string {
 	return l.homoglyphs
 }
 
+func (l *Persian) SimilarChars(char string) []string {
+	return languages.SimilarChars(l.homoglyphs, char)
+}
+
+func (l *Persian) SimilarSpellings(word string) []string {
+	return languages.SimilarSpellings(l.misspellings, word)
+}
+
+func (l *Persian) SimilarSounds(word string) []string {
+	return languages.SimilarSounds(l.homophones, word)
+}
+
 func (l *Persian) Keyboards() []urlinsane.Keyboard {
 	return languages.Keyboards()
 }

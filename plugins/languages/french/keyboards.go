@@ -42,7 +42,9 @@ func (k *Keyboard) Description() string {
 func (k *Keyboard) Layouts() []string {
 	return k.layout
 }
-
+func (k *Keyboard) Adjacent(char string)  []string {
+	return languages.Adjacent(k.layout, char)
+}
 func (k *Keyboard) Languages() []urlinsane.Language {
 	return languages.Languages(k.lang)
 }
