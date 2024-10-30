@@ -14,6 +14,90 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package co
 
+// Cardinal Numeral Swap
+// Cardinal numerals are the numbers that are used for counting something.
+// For Example: one, two, three, four, five, six, seven, eight, nine, ten.
+// Cardinal swapping replaces cardinal numerals with numbers and numbers for
+// cardinal numerals. For example:
+//
+// Input: 123.com
+//
+// Output:
+//  ID     TYPE           TYPO
+// ---------------------------------------
+//  7      Cardinal Swap  one2three.com
+//  1      Cardinal Swap  one23.com
+//  2      Cardinal Swap  1two3.com
+//  3      Cardinal Swap  1twothree.com
+//  4      Cardinal Swap  onetwothree.com
+//  5      Cardinal Swap  onetwo3.com
+//  6      Cardinal Swap  12three.com
+// ---------------------------------------
+//  TOTAL  7
+//
+//
+//
+// Input: onetwothree.com
+//
+// Output:
+// ID     TYPE           TYPO
+// -------------------------------------
+//  1      Cardinal Swap  one2three.com
+//  2      Cardinal Swap  1twothree.com
+//  3      Cardinal Swap  12three.com
+//  4      Cardinal Swap  123.com
+//  5      Cardinal Swap  1two3.com
+//  6      Cardinal Swap  onetwo3.com
+//  7      Cardinal Swap  one23.com
+// -------------------------------------
+//  TOTAL  7
+//
+// We can verify the number of permutations with some calculations.
+// Assuming language plugins only have numbers and numerals upto 9, we can
+// calculate the total number of variants using this formula:
+// Total variants = 2^(number of numerals) - 1
+//
+
+import (
+	"strings"
+
+	"github.com/rangertaha/urlinsane"
+	"github.com/rangertaha/urlinsane/plugins/algorithms"
+)
+
+const (
+	CODE        = "co"
+	NAME        = "Character Omission"
+	DESCRIPTION = "Omitting a character from the name"
+)
+
+type Algo struct {
+	types []string
+}
+
+func (n *Algo) Id() string {
+	return CODE
+}
+func (n *Algo) IsType(str string) bool {
+	return algorithms.IsType(n.types, str)
+}
+
+func (n *Algo) Name() string {
+	return NAME
+}
+
+func (n *Algo) Description() string {
+	return DESCRIPTION
+}
+
+func (n *Algo) Exec(typo urlinsane.Typo) (typos []urlinsane.Typo) {
+	for _, lang := range typo.Languages() {
+		for _, variant := range n.Func(lang.Cardinal(), typo.Original().Repr()) {
+			typos = append(typos, typo.New(variant))
+		}
+	}
+	return
+}
 
 // AlgoFunc typos are when one character in the original domain name is omitted.
 // For example: www.exmple.com
@@ -34,50 +118,46 @@ package co
 // 	return results
 // }
 
+// Func swaps numbers and carninal numbers
+func (n *Algo) Func(cardinals map[string]string, name string) []string {
+	results := []string{}
+	var fn func(map[string]string, string, bool) map[string]bool
 
-import (
-	"github.com/rangertaha/urlinsane"
-	"github.com/rangertaha/urlinsane/plugins/algorithms"
-)
+	fn = func(data map[string]string, str string, reverse bool) (names map[string]bool) {
+		names = make(map[string]bool)
 
-const CODE = "co"
-// const (
-// 	CODE        = ""
-// 	NAME        = ""
-// 	DESCRIPTION = ""
-// )
+		for num, word := range data {
+			{
+				var variant string
+				if !reverse {
+					variant = strings.Replace(str, word, num, -1)
+				} else {
+					variant = strings.Replace(str, num, word, -1)
+				}
 
+				if str != variant {
+					if _, ok := names[variant]; !ok {
+						names[variant] = true
+						for k, v := range fn(cardinals, variant, reverse) {
+							names[k] = v
+						}
 
-type Algo struct {
-	types []string
-}
+						fn(cardinals, variant, reverse)
+					}
+				}
+			}
+		}
+		return names
+	}
 
-func (n *Algo) Id() string {
-	return CODE
-}
-func (n *Algo) IsType(str string) bool {
-	return algorithms.IsType(n.types, str)
-}
+	for name := range fn(cardinals, name, false) {
+		results = append(results, name)
+	}
+	for name := range fn(cardinals, name, true) {
+		results = append(results, name)
+	}
 
-func (n *Algo) Name() string {
-	return "Character Omission"
-}
-
-func (n *Algo) Description() string {
-	return "omitting a character from the domain"
-}
-
-func (n *Algo) Fields() []string {
-	return []string{}
-}
-
-func (n *Algo) Headers() []string {
-	return []string{}
-}
-
-func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
-	out = append(out, in)
-	return
+	return results
 }
 
 // Register the plugin

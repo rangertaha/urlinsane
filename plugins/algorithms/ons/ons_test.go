@@ -20,19 +20,30 @@ import (
 	"testing"
 )
 
-var originals = map[string]string{
-	"1": "first",
-	"2": "second",
-	"3": "third",
-	"4": "fourth",
-	"5": "fifth",
-	"6": "sixth",
-	"7": "seventh",
-	"8": "eighth",
-	"9": "ninth",
-}
- 
+// var originals = map[string]string{
+// 	"1": "first",
+// 	"2": "second",
+// 	"3": "third",
+// 	"4": "fourth",
+// 	"5": "fifth",
+// 	"6": "sixth",
+// 	"7": "seventh",
+// 	"8": "eighth",
+// 	"9": "ninth",
+// }
+
 func TestAlgo(t *testing.T) {
+	var originals = map[string]string{
+		"1": "first",
+		"2": "second",
+		"3": "third",
+		"4": "fourth",
+		"5": "fifth",
+		"6": "sixth",
+		"7": "seventh",
+		"8": "eighth",
+		"9": "ninth",
+	}
 	tests := []struct {
 		original string
 		variants []string
@@ -58,7 +69,6 @@ func TestAlgo(t *testing.T) {
 			},
 		},
 	}
-
 
 	for _, test := range tests {
 		t.Run(test.original, func(t *testing.T) {
