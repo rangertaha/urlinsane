@@ -46,6 +46,13 @@ func (l *Finnish) Description() string {
 func (l *Finnish) Numerals() map[string][]string {
 	return l.numerals
 }
+func (l *Finnish) Cardinal() map[string]string {
+	return languages.NumeralMap(l.numerals, 0)
+}
+
+func (l *Finnish) Ordinal() map[string]string {
+	return languages.NumeralMap(l.numerals, 1)
+}
 
 func (l *Finnish) Graphemes() []string {
 	return l.graphemes

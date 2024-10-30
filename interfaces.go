@@ -46,7 +46,6 @@ type Algorithm interface {
 	Description() string
 	Exec(Typo) []Typo
 
-	
 	// Name(Typo) []Typo
 	// Email(Typo) []Typo
 	// Domain(Typo) []Typo
@@ -80,8 +79,8 @@ type Target interface {
 
 type Typo interface {
 	Id(...int64) string
-	Keyboard() Keyboard
-	Language() Language
+	Keyboards() []Keyboard
+	Languages() []Language
 	Algorithm() Algorithm
 	Original() Domain
 	Variant() Domain
@@ -115,8 +114,18 @@ type Language interface {
 	Description() string
 
 	// Numerals in the broadest sense a word or phrase that
-	// describes a numerical quantity.
+	// describes a numerical quantity. Example: one, first
 	Numerals() map[string][]string
+
+	// Cardinal numbers are the words of numbers that are used for counting
+	// Example: one, two, three, four, five, six, seven, eight, nine, ten
+	// See: https://byjus.com/maths/cardinal-numbers/
+	Cardinal() map[string]string
+
+	// They are used to denote the rank or position or order of something
+	// Example: Examples: 1st, 2nd, 5th, 6th, 9th or first, second, third
+	// See: https://byjus.com/maths/cardinal-numbers/
+	Ordinal() map[string]string
 
 	// Graphemes is the smallest functional unit of a writing system.
 	Graphemes() []string

@@ -48,6 +48,13 @@ func (l *Armenian) Description() string {
 func (l *Armenian) Numerals() map[string][]string {
 	return l.numerals
 }
+func (l *Armenian) Cardinal() map[string]string {
+	return languages.NumeralMap(l.numerals, 0)
+}
+
+func (l *Armenian) Ordinal() map[string]string {
+	return languages.NumeralMap(l.numerals, 1)
+}
 
 func (l *Armenian) Graphemes() []string {
 	return l.graphemes

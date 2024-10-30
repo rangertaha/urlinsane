@@ -21,8 +21,8 @@ import (
 )
 
 type Typo struct {
-	keyboard  urlinsane.Keyboard
-	language  urlinsane.Language
+	keyboard  []urlinsane.Keyboard
+	language  []urlinsane.Language
 	algorithm urlinsane.Algorithm
 	original  urlinsane.Domain
 	variant   urlinsane.Domain
@@ -44,12 +44,12 @@ func (t *Typo) Id(num ...int64) (id string) {
 		return fmt.Sprintf("%v", t.id)
 	}
 
-	if t.keyboard != nil {
-		id = fmt.Sprintf("%s%s", id, t.keyboard.Id())
-	}
-	if t.language != nil {
-		id = fmt.Sprintf("%s%s", id, t.language.Id())
-	}
+	// if t.keyboard != nil {
+	// 	id = fmt.Sprintf("%s%s", id, t.keyboard.Id())
+	// }
+	// if t.language != nil {
+	// 	id = fmt.Sprintf("%s%s", id, t.language.Id())
+	// }
 	if t.algorithm != nil {
 		id = fmt.Sprintf("%s%s", id, t.algorithm.Id())
 	}
@@ -63,11 +63,11 @@ func (t *Typo) Id(num ...int64) (id string) {
 	return
 }
 
-func (t *Typo) Keyboard() urlinsane.Keyboard {
+func (t *Typo) Keyboards() []urlinsane.Keyboard {
 	return t.keyboard
 }
 
-func (t *Typo) Language() urlinsane.Language {
+func (t *Typo) Languages() []urlinsane.Language {
 	return t.language
 }
 

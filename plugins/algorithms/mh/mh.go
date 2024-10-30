@@ -14,24 +14,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package mds
 
-// Missing Dashes typos are created by omitting a dash from the domain.
-// For example, www.a-b-c.com becomes www.ab-c.com, www.a-bc.com, and ww.abc.com
-
-
+// Missing Dashes
+//
+// Func omits a dash from the name. For example:
+//
+// Original: www.one-two-three.com 
+// 
+// Variants: www.onetwo-three.com
+//           www.one-twothree.com
 
 import (
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
-	"github.com/rangertaha/urlinsane/utils/nlp"
 )
 
-const CODE = "mds"
-// const (
-// 	CODE        = ""
-// 	NAME        = ""
-// 	DESCRIPTION = ""
-// )
-
+const (
+	CODE        = "mh"
+	NAME        = "Missing Hyphen"
+	DESCRIPTION = "Created by stripping all hyphens from the name"
+)
 
 type Algo struct {
 	types []string
@@ -45,17 +46,28 @@ func (n *Algo) IsType(str string) bool {
 }
 
 func (n *Algo) Name() string {
-	return "Missing Dashes"
+	return NAME
 }
 
 func (n *Algo) Description() string {
-	return "created by stripping all dashes from the name"
+	return DESCRIPTION
 }
 
 func (n *Algo) Exec(typo urlinsane.Typo) (typos []urlinsane.Typo) {
-	for _, variant := range nlp.MissingCharFunc(typo.Original().Repr(), "-") {
+	for _, variant := range n.Func(typo.Original().Repr(), "-") {
 		if typo.Original().Repr() != variant {
 			typos = append(typos, typo.New(variant))
+		}
+	}
+	return
+}
+
+// Func omits a dash from the domain.
+// For example, www.a-b-c.com becomes www.ab-c.com, www.a-bc.com, and ww.abc.com
+func (n *Algo) Func(str, character string) (results []string) {
+	for i, char := range str {
+		if character == string(char) {
+			results = append(results, str[:i]+str[i+1:])
 		}
 	}
 	return
@@ -69,17 +81,3 @@ func init() {
 		}
 	})
 }
-
-// // missingDashFunc typos are created by omitting a dash from the domain.
-// // For example, www.a-b-c.com becomes www.ab-c.com, www.a-bc.com, and ww.abc.com
-// func missingDashFunc(tc Result) (results []Result) {
-// 	for _, str := range missingCharFunc(tc.Original.Domain, "-") {
-// 		if tc.Original.Domain != str {
-// 			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix, Meta{}, false}
-// 			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
-// 		}
-// 	}
-// 	dm := Domain{tc.Original.Subdomain, strings.Replace(tc.Original.Domain, "-", "", -1), tc.Original.Suffix, Meta{}, false}
-// 	results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
-// 	return results
-// }

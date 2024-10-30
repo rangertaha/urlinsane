@@ -107,8 +107,8 @@ var cliOptions bytes.Buffer
 var rootCmd = &cobra.Command{
 	Use:   "urlinsane [flags] [domains]",
 	Short: "Generates and detects possible typosquatting domain names and arbitrary names",
-	Long: `Urlinsane is used to perform or detect typosquatting, brandjacking,
-URL hijacking, fraud, phishing attacks, corporate espionage, and threat intelligence.
+	Long: `Urlinsane is used to perform or detect typosquatting, brandjacking, URL hijacking, 
+	fraud, phishing attacks, corporate espionage, and threat intelligence.
 
 Urlinsane is built around linguistic modeling, natural language processing, 
 information gathering, and analysis. It's easily extensible with plugins for typo algorithms, 
@@ -163,7 +163,7 @@ func init() {
 
 	// Options
 	rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"en"}, "IDs of languages to use for linguistic algorithms")
-	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"all"}, "IDs of keyboard layouts to use of the given languages")
+	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"en1,en2,en3,en4"}, "IDs of keyboard layouts to use of the given languages")
 
 	// Plugins
 	rootCmd.PersistentFlags().StringArrayP("typos", "t", []string{"all"}, "IDs of typo algorithms to use for generating typos")

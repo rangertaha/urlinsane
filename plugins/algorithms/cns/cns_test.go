@@ -12,22 +12,47 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package md
+package cns
 
-// Missing Dot
+// Numeral Numeral Swap
+// A numeral is a word describing a number and a number is expressed with
+// digits. Numeral swapping replaces numerals with numbers and numbers for
+// numerals. For example:
 //
-// Created by omitting one dot at a time from the domain, For example
+// Original: onetwothree.com
 //
-// Original: facebook.com.io.uk
+// Variants: 1twothree.com
+//           one2three.com
+//           onetwo3.com
+//           one23.com
+//           12three.com
+//           1two3.com
+//           123.com
 //
-// Variants: facebookcom.io.uk
-//           facebook.comio.uk
-//           facebook.com.iouk
+// Assuming language plugins only have numbers and numerals upto 9, we can
+// calculate the total number of variants using this formula:
+// Total variants = 2^(number of numerals) - 1
 
 import (
 	"reflect"
+	"sort"
 	"testing"
 )
+
+var cardinals = map[string]string{
+	"0":  "zero",
+	"1":  "one",
+	"2":  "two",
+	"3":  "three",
+	"4":  "four",
+	"5":  "five",
+	"6":  "six",
+	"7":  "seven",
+	"8":  "eight",
+	"9":  "nine",
+	"10": "ten",
+}
+
 
 func TestAlgo(t *testing.T) {
 	tests := []struct {
@@ -35,25 +60,27 @@ func TestAlgo(t *testing.T) {
 		variants []string
 	}{
 		{
-			original: "facebook.com.io.uk",
+			original: "123.com",
 			variants: []string{
-				"facebookcom.io.uk",
-				"facebook.comio.uk",
-				"facebook.com.iouk",
+				"12three.com",
+				"1two3.com",
+				"1twothree.com",
+				"one23.com",
+				"one2three.com",
+				"onetwo3.com",
+				"onetwothree.com",
 			},
 		},
 		{
-			original: "google.com.uk",
+			original: "onetwothree.com",
 			variants: []string{
-				"googlecom.uk",
-				"google.comuk",
-			},
-		},
-		{
-			original: "www.google.com",
-			variants: []string{
-				"wwwgoogle.com",
-				"www.googlecom",
+				"123.com",
+				"12three.com",
+				"1two3.com",
+				"1twothree.com",
+				"one23.com",
+				"one2three.com",
+				"onetwo3.com",
 			},
 		},
 	}
@@ -61,10 +88,11 @@ func TestAlgo(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.original, func(t *testing.T) {
 			algo := Algo{}
-			variants := algo.Func(test.original, ".")
+			variants := algo.Func(cardinals, test.original)
+			sort.Strings(variants)
 
 			if !reflect.DeepEqual(variants, test.variants) {
-				t.Errorf("algo.Func(%s, '.') = %s; want %s", test.original, variants, test.variants)
+				t.Errorf("algo.Func(<numerals>, %s) = %s; want %s", test.original, variants, test.variants)
 			}
 		})
 	}
@@ -82,6 +110,7 @@ func TestAlgo(t *testing.T) {
 			t.Errorf("algo.Id() can not return an empty string")
 		}
 	})
+
 	t.Run("md name", func(t *testing.T) {
 		algo := Algo{}
 		if algo.Name() != NAME {
@@ -95,6 +124,7 @@ func TestAlgo(t *testing.T) {
 			t.Errorf("algo.Name() can not return an empty string")
 		}
 	})
+
 	t.Run("md description", func(t *testing.T) {
 		algo := Algo{}
 		if algo.Description() != DESCRIPTION {
@@ -108,4 +138,5 @@ func TestAlgo(t *testing.T) {
 			t.Errorf("algo.Description() can not return an empty string")
 		}
 	})
+
 }

@@ -49,12 +49,15 @@ func (n *Algo) Description() string {
 }
 
 func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
-	original := in.Original().Domain()
+	original := in.Original().Repr()
+
 	for i, char := range original {
-		for _, key := range in.Keyboard().Adjacent(string(char)) {
-			variant := original[:i] + string(key) + string(char) + original[i+1:]
-			vt := in.New(variant)
-			out = append(out, vt)
+		for _, board := range in.Keyboards() {
+			for _, key := range board.Adjacent(string(char)) {
+				variant := original[:i] + string(key) + string(char) + original[i+1:]
+				vt := in.New(variant)
+				out = append(out, vt)
+			}
 		}
 	}
 	return

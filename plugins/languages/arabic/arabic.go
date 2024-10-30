@@ -46,6 +46,13 @@ func (l *Arabic) Description() string {
 func (l *Arabic) Numerals() map[string][]string {
 	return l.numerals
 }
+func (l *Arabic) Cardinal() map[string]string {
+	return languages.NumeralMap(l.numerals, 0)
+}
+
+func (l *Arabic) Ordinal() map[string]string {
+	return languages.NumeralMap(l.numerals, 1)
+}
 
 func (l *Arabic) Graphemes() []string {
 	return l.graphemes
@@ -82,7 +89,6 @@ func (l *Arabic) SimilarSpellings(word string) []string {
 func (l *Arabic) SimilarSounds(word string) []string {
 	return languages.SimilarSounds(l.homophones, word)
 }
-
 
 func (l *Arabic) Keyboards() []urlinsane.Keyboard {
 	return languages.Keyboards()

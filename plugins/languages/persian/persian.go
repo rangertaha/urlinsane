@@ -46,6 +46,13 @@ func (l *Persian) Description() string {
 func (l *Persian) Numerals() map[string][]string {
 	return l.numerals
 }
+func (l *Persian) Cardinal() map[string]string {
+	return languages.NumeralMap(l.numerals, 0)
+}
+
+func (l *Persian) Ordinal() map[string]string {
+	return languages.NumeralMap(l.numerals, 1)
+}
 
 func (l *Persian) Graphemes() []string {
 	return l.graphemes

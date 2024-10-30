@@ -12,17 +12,16 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package md
+package mds
 
-// Missing Dot
+// Missing Dashes
 //
-// Created by omitting one dot at a time from the domain, For example
+// Func omits a hyphen from the name. For example:
 //
-// Original: facebook.com.io.uk
+// Original: www.one-two-three.com
 //
-// Variants: facebookcom.io.uk
-//           facebook.comio.uk
-//           facebook.com.iouk
+// Variants: www.onetwo-three.com
+//           www.one-twothree.com
 
 import (
 	"reflect"
@@ -35,25 +34,23 @@ func TestAlgo(t *testing.T) {
 		variants []string
 	}{
 		{
-			original: "facebook.com.io.uk",
+			original: "www.one-two-three.com",
 			variants: []string{
-				"facebookcom.io.uk",
-				"facebook.comio.uk",
-				"facebook.com.iouk",
+				"www.onetwo-three.com",
+				"www.one-twothree.com",
 			},
 		},
 		{
-			original: "google.com.uk",
+			original: "www.google-me.com",
 			variants: []string{
-				"googlecom.uk",
-				"google.comuk",
+				"www.googleme.com",
 			},
 		},
 		{
-			original: "www.google.com",
+			original: "one-two-three",
 			variants: []string{
-				"wwwgoogle.com",
-				"www.googlecom",
+				"onetwo-three",
+				"one-twothree",
 			},
 		},
 	}
@@ -61,10 +58,10 @@ func TestAlgo(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.original, func(t *testing.T) {
 			algo := Algo{}
-			variants := algo.Func(test.original, ".")
+			variants := algo.Func(test.original, "-")
 
 			if !reflect.DeepEqual(variants, test.variants) {
-				t.Errorf("algo.Func(%s, '.') = %s; want %s", test.original, variants, test.variants)
+				t.Errorf("algo.Func(%s, '-') = %s; want %s", test.original, variants, test.variants)
 			}
 		})
 	}
@@ -82,6 +79,7 @@ func TestAlgo(t *testing.T) {
 			t.Errorf("algo.Id() can not return an empty string")
 		}
 	})
+
 	t.Run("md name", func(t *testing.T) {
 		algo := Algo{}
 		if algo.Name() != NAME {
@@ -95,6 +93,7 @@ func TestAlgo(t *testing.T) {
 			t.Errorf("algo.Name() can not return an empty string")
 		}
 	})
+
 	t.Run("md description", func(t *testing.T) {
 		algo := Algo{}
 		if algo.Description() != DESCRIPTION {
@@ -108,4 +107,5 @@ func TestAlgo(t *testing.T) {
 			t.Errorf("algo.Description() can not return an empty string")
 		}
 	})
+
 }
