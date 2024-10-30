@@ -36,13 +36,11 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
-const CODE = "sp"
-// const (
-// 	CODE        = ""
-// 	NAME        = ""
-// 	DESCRIPTION = ""
-// )
-
+const (
+	CODE        = "sp"
+	NAME        = "Singular Pluralize"
+	DESCRIPTION = "Creates singular and plural names"
+)
 
 type Algo struct {
 	types []string
@@ -56,19 +54,11 @@ func (n *Algo) IsType(str string) bool {
 }
 
 func (n *Algo) Name() string {
-	return "Singular Pluralize"
+	return NAME
 }
 
 func (n *Algo) Description() string {
-	return "Creates singular and plural names"
-}
-
-func (n *Algo) Fields() []string {
-	return []string{}
-}
-
-func (n *Algo) Headers() []string {
-	return []string{}
+	return DESCRIPTION
 }
 
 func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {

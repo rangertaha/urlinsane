@@ -31,12 +31,11 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
-const CODE = "hp"
-// const (
-// 	CODE        = ""
-// 	NAME        = ""
-// 	DESCRIPTION = ""
-// )
+const (
+	CODE        = "hp"
+	NAME        = ""
+	DESCRIPTION = "Created from sets of words that sound the same"
+)
 
 
 type Algo struct {
@@ -51,20 +50,13 @@ func (n *Algo) IsType(str string) bool {
 }
 
 func (n *Algo) Name() string {
-	return "Algo"
+	return NAME
 }
 
 func (n *Algo) Description() string {
-	return "Created from sets of words that sound the same"
+	return DESCRIPTION
 }
 
-func (n *Algo) Fields() []string {
-	return []string{}
-}
-
-func (n *Algo) Headers() []string {
-	return []string{}
-}
 
 func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
 	out = append(out, in)

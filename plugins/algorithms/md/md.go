@@ -18,11 +18,6 @@ package md
 //
 // Created by omitting one dot at a time from the domain, For example
 //
-// Original: facebook.com.io.uk
-//
-// Veriants: facebookcom.io.uk
-//           facebook.comio.uk
-//           facebook.com.iouk
 
 import (
 	"github.com/rangertaha/urlinsane"

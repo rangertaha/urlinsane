@@ -39,13 +39,11 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
-const CODE = "dcr"
-// const (
-// 	CODE        = ""
-// 	NAME        = ""
-// 	DESCRIPTION = ""
-// )
-
+const (
+	CODE        = "dcr"
+	NAME        = "Double Character Replacement"
+	DESCRIPTION = "Created by replacing identical, consecutive letters in the name."
+)
 
 type Algo struct {
 	types []string
@@ -59,20 +57,14 @@ func (n *Algo) IsType(str string) bool {
 }
 
 func (n *Algo) Name() string {
-	return "Double Character Replacement"
+	return NAME
 }
 
 func (n *Algo) Description() string {
-	return "Created by replacing identical, consecutive letters in the name."
+	return DESCRIPTION
 }
 
-func (n *Algo) Fields() []string {
-	return []string{}
-}
 
-func (n *Algo) Headers() []string {
-	return []string{}
-}
 func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
 	out = append(out, in)
 	return

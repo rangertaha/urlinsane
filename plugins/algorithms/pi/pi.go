@@ -33,12 +33,12 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
-const CODE = "pi"
-// const (
-// 	CODE        = ""
-// 	NAME        = ""
-// 	DESCRIPTION = ""
-// )
+
+const (
+	CODE        = "pi"
+	NAME        = ""
+	DESCRIPTION = "Inserting periods in the target name"
+)
 
 
 type Algo struct {
@@ -53,19 +53,11 @@ func (n *Algo) IsType(str string) bool {
 }
 
 func (n *Algo) Name() string {
-	return "Algo"
+	return NAME
 }
 
 func (n *Algo) Description() string {
-	return "Inserting periods in the target name"
-}
-
-func (n *Algo) Fields() []string {
-	return []string{}
-}
-
-func (n *Algo) Headers() []string {
-	return []string{}
+	return DESCRIPTION
 }
 
 func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {

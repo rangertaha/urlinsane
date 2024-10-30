@@ -14,52 +14,46 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package co
 
-// Cardinal Numeral Swap
-// Cardinal numerals are the numbers that are used for counting something.
-// For Example: one, two, three, four, five, six, seven, eight, nine, ten.
-// Cardinal swapping replaces cardinal numerals with numbers and numbers for
-// cardinal numerals. For example:
+// Character Omission
+// Created by leaving out a character in the name.
 //
-// Input: 123.com
+//For example:
 //
-// Output:
-//  ID     TYPE           TYPO
-// ---------------------------------------
-//  7      Cardinal Swap  one2three.com
-//  1      Cardinal Swap  one23.com
-//  2      Cardinal Swap  1two3.com
-//  3      Cardinal Swap  1twothree.com
-//  4      Cardinal Swap  onetwothree.com
-//  5      Cardinal Swap  onetwo3.com
-//  6      Cardinal Swap  12three.com
-// ---------------------------------------
-//  TOTAL  7
-//
-//
-//
-// Input: onetwothree.com
+// Input: google.com
 //
 // Output:
-// ID     TYPE           TYPO
-// -------------------------------------
-//  1      Cardinal Swap  one2three.com
-//  2      Cardinal Swap  1twothree.com
-//  3      Cardinal Swap  12three.com
-//  4      Cardinal Swap  123.com
-//  5      Cardinal Swap  1two3.com
-//  6      Cardinal Swap  onetwo3.com
-//  7      Cardinal Swap  one23.com
-// -------------------------------------
-//  TOTAL  7
+// ID     TYPE    TYPO      
+// --------------------------
+// 1      CO      gogle.com 
+// 2      CO      googlecom 
+// 5      CO      google.cm 
+// 6      CO      google.co 
+// 7      CO      oogle.com 
+// 8      CO      goole.com 
+// 9      CO      googe.com 
+// 3      CO      googl.com 
+// 4      CO      google.om 
+// --------------------------
+// TOTAL  9   
 //
-// We can verify the number of permutations with some calculations.
-// Assuming language plugins only have numbers and numerals upto 9, we can
-// calculate the total number of variants using this formula:
-// Total variants = 2^(number of numerals) - 1
 //
+// Input: abcd
+//
+// Output:
+// ID     TYPE    TYPO 
+// ---------------------
+//  3      CO      abd  
+//  4      CO      abc  
+//  1      CO      bcd  
+//  2      CO      acd  
+// ---------------------
+//  TOTAL  4            
+
+
+
 
 import (
-	"strings"
+	"fmt"
 
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
@@ -91,70 +85,26 @@ func (n *Algo) Description() string {
 }
 
 func (n *Algo) Exec(typo urlinsane.Typo) (typos []urlinsane.Typo) {
-	for _, lang := range typo.Languages() {
-		for _, variant := range n.Func(lang.Cardinal(), typo.Original().Repr()) {
-			typos = append(typos, typo.New(variant))
-		}
+	for _, variant := range n.Func(typo.Original().Domain()) {
+		typos = append(typos, typo.New(variant))
 	}
 	return
 }
 
-// AlgoFunc typos are when one character in the original domain name is omitted.
-// For example: www.exmple.com
-// func AlgoFunc(tc Result) (results []Result) {
-// 	for i := range tc.Original.Domain {
-// 		if i <= len(tc.Original.Domain)-1 {
-// 			domain := fmt.Sprint(
-// 				tc.Original.Domain[:i],
-// 				tc.Original.Domain[i+1:],
-// 			)
-// 			if tc.Original.Domain != domain {
-// 				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
-// 				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
-
-// 			}
-// 		}
-// 	}
-// 	return results
-// }
 
 // Func swaps numbers and carninal numbers
-func (n *Algo) Func(cardinals map[string]string, name string) []string {
-	results := []string{}
-	var fn func(map[string]string, string, bool) map[string]bool
-
-	fn = func(data map[string]string, str string, reverse bool) (names map[string]bool) {
-		names = make(map[string]bool)
-
-		for num, word := range data {
-			{
-				var variant string
-				if !reverse {
-					variant = strings.Replace(str, word, num, -1)
-				} else {
-					variant = strings.Replace(str, num, word, -1)
-				}
-
-				if str != variant {
-					if _, ok := names[variant]; !ok {
-						names[variant] = true
-						for k, v := range fn(cardinals, variant, reverse) {
-							names[k] = v
-						}
-
-						fn(cardinals, variant, reverse)
-					}
-				}
+func (n *Algo) Func(name string) (results []string) {
+	for i := range name {
+		if i <= len(name)-1 {
+			variant := fmt.Sprint(
+				name[:i],
+				name[i+1:],
+			)
+			if name != variant {
+				results = append(results, variant)
 			}
 		}
-		return names
-	}
 
-	for name := range fn(cardinals, name, false) {
-		results = append(results, name)
-	}
-	for name := range fn(cardinals, name, true) {
-		results = append(results, name)
 	}
 
 	return results

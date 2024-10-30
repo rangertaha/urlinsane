@@ -31,12 +31,11 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
-const CODE = "sd"
-// const (
-// 	CODE        = ""
-// 	NAME        = ""
-// 	DESCRIPTION = ""
-// )
+const (
+	CODE        = "sd"
+	NAME        = "Strip Dash"
+	DESCRIPTION = "created by omitting a single dash from the name"
+)
 
 
 type Algo struct {
@@ -58,13 +57,6 @@ func (n *Algo) Description() string {
 	return "created by omitting a single dash from the name"
 }
 
-func (n *Algo) Fields() []string {
-	return []string{}
-}
-
-func (n *Algo) Headers() []string {
-	return []string{}
-}
 
 func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
 	out = append(out, in)

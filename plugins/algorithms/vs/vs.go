@@ -38,13 +38,11 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
-const CODE = "vs"
-// const (
-// 	CODE        = ""
-// 	NAME        = ""
-// 	DESCRIPTION = ""
-// )
-
+const (
+	CODE        = "vs"
+	NAME        = "Vowel Swapping"
+	DESCRIPTION = "Vowel Swapping"
+)
 
 type Algo struct {
 	types []string
@@ -58,19 +56,11 @@ func (n *Algo) IsType(str string) bool {
 }
 
 func (n *Algo) Name() string {
-	return "Vowel Swapping"
+	return NAME
 }
 
 func (n *Algo) Description() string {
-	return "Vowel Swapping is created by swaps vowels"
-}
-
-func (n *Algo) Fields() []string {
-	return []string{}
-}
-
-func (n *Algo) Headers() []string {
-	return []string{}
+	return DESCRIPTION
 }
 
 func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {

@@ -31,12 +31,11 @@ import (
 )
 
 
-const CODE = "si"
-// const (
-// 	CODE        = ""
-// 	NAME        = ""
-// 	DESCRIPTION = ""
-// )
+const (
+	CODE        = "si"
+	NAME        = "Subdomain Insertion"
+	DESCRIPTION = "Inserts common subdomain at the beginning of the domain"
+)
 
 
 type Algo struct {
@@ -51,20 +50,13 @@ func (n *Algo) IsType(str string) bool {
 }
 
 func (n *Algo) Name() string {
-	return "Subdomain Insertion"
+	return NAME
 }
 
 func (n *Algo) Description() string {
-	return "Inserts common subdomain at the beginning of the domain"
+	return DESCRIPTION
 }
 
-func (n *Algo) Fields() []string {
-	return []string{}
-}
-
-func (n *Algo) Headers() []string {
-	return []string{}
-}
 
 func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
 	out = append(out, in)
