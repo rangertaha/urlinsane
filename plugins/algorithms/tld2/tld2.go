@@ -42,12 +42,11 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
-const CODE = "tld2"
-// const (
-// 	CODE        = ""
-// 	NAME        = ""
-// 	DESCRIPTION = ""
-// )
+const (
+	CODE        = "tld2"
+	NAME        = "Wrong TLD2"
+	DESCRIPTION = "Wrong second level domain (TLD2)"
+)
 
 
 type Algo struct {
@@ -62,20 +61,13 @@ func (n *Algo) IsType(str string) bool {
 }
 
 func (n *Algo) Name() string {
-	return "Wrong TLD2"
+	return NAME
 }
 
 func (n *Algo) Description() string {
-	return "Wrong second level domain (TLD2)"
+	return DESCRIPTION
 }
 
-func (n *Algo) Fields() []string {
-	return []string{}
-}
-
-func (n *Algo) Headers() []string {
-	return []string{}
-}
 
 func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
 	out = append(out, in)

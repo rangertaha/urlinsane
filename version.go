@@ -16,7 +16,7 @@ package urlinsane
 
 const (
 	// VERSION format is loosely based on [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-	VERSION = "1.0.0"
+	VERSION = "0.8.0"
 
 	DEBUG = false
 

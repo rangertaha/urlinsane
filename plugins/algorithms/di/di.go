@@ -14,7 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package di
 
-
 // adjacentCharacterInsertionFunc are created by inserting letters adjacent of each letter. For example, www.googhle.com
 // and www.goopgle.com
 // func hyphenInsertionFunc(tc Result) (results []Result) {
@@ -35,13 +34,11 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
-const CODE = "di"
-// const (
-// 	CODE        = ""
-// 	NAME        = ""
-// 	DESCRIPTION = ""
-// )
-
+const (
+	CODE        = "di"
+	NAME        = "Dash Insertion"
+	DESCRIPTION = "Inserting hyphens in the target domain"
+)
 
 type Algo struct {
 	types []string
@@ -55,19 +52,11 @@ func (n *Algo) IsType(str string) bool {
 }
 
 func (n *Algo) Name() string {
-	return "Dash Insertion"
+	return NAME
 }
 
 func (n *Algo) Description() string {
-	return "Inserting hyphens in the target domain"
-}
-
-func (n *Algo) Fields() []string {
-	return []string{}
-}
-
-func (n *Algo) Headers() []string {
-	return []string{}
+	return DESCRIPTION
 }
 
 func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {

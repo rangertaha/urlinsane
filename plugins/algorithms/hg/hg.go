@@ -21,7 +21,7 @@ package hg
 // func homoglyphFunc(tc Result) (results []Result) {
 // 	for i, char := range tc.Original.Domain {
 // 		// Check the alphabet of the language associated with the keyboard for
-// 		// homoglyphs
+// 		// Algo
 // 		for _, keyboard := range tc.Keyboards {
 // 			for _, kchar := range keyboard.Language.SimilarChars(string(char)) {
 // 				domain := fmt.Sprint(tc.Original.Domain[:i], kchar, tc.Original.Domain[i+1:])
@@ -31,7 +31,7 @@ package hg
 // 				}
 // 			}
 // 		}
-// 		// Check languages given with the (-l --language) CLI options for homoglyphs.
+// 		// Check languages given with the (-l --language) CLI options for Algo.
 // 		for _, language := range tc.Languages {
 // 			for _, lchar := range language.SimilarChars(string(char)) {
 // 				domain := fmt.Sprint(tc.Original.Domain[:i], lchar, tc.Original.Domain[i+1:])
@@ -51,43 +51,34 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
-const CODE = "hg"
-// const (
-// 	CODE        = ""
-// 	NAME        = ""
-// 	DESCRIPTION = ""
-// )
+const (
+	CODE        = "hg"
+	NAME        = ""
+	DESCRIPTION = "Replaces characters with characters that look similar"
+)
 
 
 
-type Homoglyphs struct {
+type Algo struct {
 	types []string
 }
 
-func (n *Homoglyphs) Id() string {
+func (n *Algo) Id() string {
 	return CODE
 }
-func (n *Homoglyphs) IsType(str string) bool {
+func (n *Algo) IsType(str string) bool {
 	return algorithms.IsType(n.types, str)
 }
 
-func (n *Homoglyphs) Name() string {
-	return "Homoglyphs"
+func (n *Algo) Name() string {
+	return NAME
 }
 
-func (n *Homoglyphs) Description() string {
-	return "Replaces characters with characters that look similar"
+func (n *Algo) Description() string {
+	return DESCRIPTION
 }
 
-func (n *Homoglyphs) Fields() []string {
-	return []string{}
-}
-
-func (n *Homoglyphs) Headers() []string {
-	return []string{}
-}
-
-func (n *Homoglyphs) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
+func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
 	out = append(out, in)
 	return
 }
@@ -95,7 +86,7 @@ func (n *Homoglyphs) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() urlinsane.Algorithm {
-		return &Homoglyphs{
+		return &Algo{
 			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
 		}
 	})

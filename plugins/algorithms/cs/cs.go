@@ -14,7 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package cs
 
-
 // // AlgoFunc typos are when two consecutive characters are swapped in the original domain name.
 // // Example: www.examlpe.com
 // func AlgoFunc(tc Result) (results []Result) {
@@ -40,13 +39,11 @@ import (
 	"github.com/rangertaha/urlinsane/plugins/algorithms"
 )
 
-const CODE = "cs"
-// const (
-// 	CODE        = ""
-// 	NAME        = ""
-// 	DESCRIPTION = ""
-// )
-
+const (
+	CODE        = "cs"
+	NAME        = "Character Swap"
+	DESCRIPTION = "Character Swap Swapping two consecutive characters in a domain"
+)
 
 type Algo struct {
 	types []string
@@ -60,19 +57,10 @@ func (n *Algo) IsType(str string) bool {
 }
 
 func (n *Algo) Name() string {
-	return "Character Swap"
+	return NAME
 }
-
 func (n *Algo) Description() string {
-	return "Character Swap Swapping two consecutive characters in a domain"
-}
-
-func (n *Algo) Fields() []string {
-	return []string{}
-}
-
-func (n *Algo) Headers() []string {
-	return []string{}
+	return DESCRIPTION
 }
 
 func (n *Algo) Exec(in urlinsane.Typo) (out []urlinsane.Typo) {

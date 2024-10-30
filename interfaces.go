@@ -42,7 +42,6 @@ type Config interface {
 type Algorithm interface {
 	Id() string
 	Name() string
-	IsType(string) bool
 	Description() string
 	Exec(Typo) []Typo
 
@@ -55,9 +54,7 @@ type Algorithm interface {
 type Information interface {
 	Id() string
 	Name() string
-	IsType(string) bool
 	Description() string
-	// Fields() []string
 	Headers() []string
 	Exec(Typo) Typo
 }
@@ -87,6 +84,7 @@ type Typo interface {
 	Active(...bool) bool
 	New(string) Typo
 	Repr() string
+	// New(sub, domain, tld string) Typo
 }
 
 // type Result interface {
