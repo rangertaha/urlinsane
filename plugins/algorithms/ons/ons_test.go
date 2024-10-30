@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package cns
+package ons
 
 import (
 	"reflect"
@@ -20,56 +20,50 @@ import (
 	"testing"
 )
 
-var cardinals = map[string]string{
-	"0":  "zero",
-	"1":  "one",
-	"2":  "two",
-	"3":  "three",
-	"4":  "four",
-	"5":  "five",
-	"6":  "six",
-	"7":  "seven",
-	"8":  "eight",
-	"9":  "nine",
-	"10": "ten",
+var originals = map[string]string{
+	"1": "first",
+	"2": "second",
+	"3": "third",
+	"4": "fourth",
+	"5": "fifth",
+	"6": "sixth",
+	"7": "seventh",
+	"8": "eighth",
+	"9": "ninth",
 }
-
-
+ 
 func TestAlgo(t *testing.T) {
 	tests := []struct {
 		original string
 		variants []string
 	}{
 		{
-			original: "123.com",
+			original: "firstandsecondunited.com",
 			variants: []string{
-				"12three.com",
-				"1two3.com",
-				"1twothree.com",
-				"one23.com",
-				"one2three.com",
-				"onetwo3.com",
-				"onetwothree.com",
+				"1and2united.com",
+				"1andsecondunited.com",
+				"firstand2united.com",
 			},
 		},
 		{
-			original: "onetwothree.com",
+			original: "1united23.com",
 			variants: []string{
-				"123.com",
-				"12three.com",
-				"1two3.com",
-				"1twothree.com",
-				"one23.com",
-				"one2three.com",
-				"onetwo3.com",
+				"1united2third.com",
+				"1unitedsecond3.com",
+				"1unitedsecondthird.com",
+				"firstunited23.com",
+				"firstunited2third.com",
+				"firstunitedsecond3.com",
+				"firstunitedsecondthird.com",
 			},
 		},
 	}
 
+
 	for _, test := range tests {
 		t.Run(test.original, func(t *testing.T) {
 			algo := Algo{}
-			variants := algo.Func(cardinals, test.original)
+			variants := algo.Func(originals, test.original)
 			sort.Strings(variants)
 
 			if !reflect.DeepEqual(variants, test.variants) {

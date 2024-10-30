@@ -162,15 +162,14 @@ func init() {
 	rootCmd.SetUsageTemplate(templateBase + cliOptions.String())
 
 	// Options
-	rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"en"}, "IDs of languages to use for linguistic algorithms")
-	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"en1,en2,en3,en4"}, "IDs of keyboard layouts to use of the given languages")
+	rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"all"}, "IDs of languages to use for linguistic algorithms")
+	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"all"}, "IDs of keyboard layouts to use of the given languages")
 
 	// Plugins
 	rootCmd.PersistentFlags().StringArrayP("typos", "t", []string{"all"}, "IDs of typo algorithms to use for generating typos")
 	rootCmd.PersistentFlags().StringArrayP("info", "i", []string{"all"}, "IDs of info gathering functions to apply")
 
 	// Processing
-	rootCmd.PersistentFlags().BoolP("progress", "p", false, "Show progress bar")
 	rootCmd.PersistentFlags().Bool("no-cache", true, "Prevents caching of results")
 	rootCmd.PersistentFlags().Bool("online", false, "Only show domains that are online")
 
@@ -180,7 +179,8 @@ func init() {
 	rootCmd.PersistentFlags().Duration("delay", 1, "Duration between network calls")
 
 	// Outputs
+	rootCmd.PersistentFlags().BoolP("progress", "p", false, "Show progress bar")
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Show more details and remove truncated columns")
 	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename defaults to stdout")
-	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv, text, html, md)")
+	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv,tsv,text,html,md)")
 }

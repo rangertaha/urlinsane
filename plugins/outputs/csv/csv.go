@@ -17,6 +17,7 @@ package text
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/rangertaha/urlinsane"
@@ -43,6 +44,7 @@ func (n *Text) Init(conf urlinsane.Config) {
 
 func (n *Text) getHeader() (row table.Row) {
 	row = append(row, "ID")
+	row = append(row, "TYPE")
 	row = append(row, "TYPO")
 	for _, info := range n.config.Information() {
 		for _, headers := range info.Headers() {
@@ -55,6 +57,11 @@ func (n *Text) getHeader() (row table.Row) {
 
 func (n *Text) getRow(typo urlinsane.Typo) (row table.Row) {
 	row = append(row, typo.Id())
+	if n.config.Verbose() {
+		row = append(row, typo.Algorithm().Name())
+	} else {
+		row = append(row, strings.ToUpper(typo.Algorithm().Id()))
+	}
 	row = append(row, typo.Variant().Repr())
 	for _, info := range n.config.Information() {
 		for _, header := range info.Headers() {
