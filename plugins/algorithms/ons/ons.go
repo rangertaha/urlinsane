@@ -12,45 +12,42 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package cns
+package ons
 
-// Cardinal Numeral Swap
-// Cardinal numerals are the numbers that are used for counting something. 
-// For Example: one, two, three, four, five, six, seven, eight, nine, ten. 
-// Cardinal swapping replaces cardinal numerals with numbers and numbers for
-// cardinal numerals. For example:
+// Ordinal Numeral Swap
+// Ordinal numerals are the numbers that are used for counting something. 
+// For Example: first, second, third, fourth, fifth, sixth, seventh, eighth. 
+// Ordinal swapping replaces ordinal numerals with digit numbers and numbers for
+// ordinal numerals. For example:
 //
-// Input: 123.com
+// Input: firstandsecondunited.com
 // 
 // Output:
-//  ID     TYPE           TYPO            
-// ---------------------------------------
-//  7      Cardinal Swap  one2three.com   
-//  1      Cardinal Swap  one23.com       
-//  2      Cardinal Swap  1two3.com       
-//  3      Cardinal Swap  1twothree.com   
-//  4      Cardinal Swap  onetwothree.com 
-//  5      Cardinal Swap  onetwo3.com     
-//  6      Cardinal Swap  12three.com     
-// ---------------------------------------
-//  TOTAL  7    
+// ID     TYPE          TYPO                 
+// -------------------------------------------
+//  1      Ordinal Swap  1and2united.com      
+//  2      Ordinal Swap  1andsecondunited.com 
+//  3      Ordinal Swap  firstand2united.com  
+// -------------------------------------------
+//  TOTAL  3   
 //
 //
 //
-// Input: onetwothree.com
+// Input: 1united23.com
 //
 // Output:
-// ID     TYPE           TYPO          
-// -------------------------------------
-//  1      Cardinal Swap  one2three.com 
-//  2      Cardinal Swap  1twothree.com 
-//  3      Cardinal Swap  12three.com   
-//  4      Cardinal Swap  123.com       
-//  5      Cardinal Swap  1two3.com     
-//  6      Cardinal Swap  onetwo3.com   
-//  7      Cardinal Swap  one23.com     
-// -------------------------------------
-//  TOTAL  7  
+
+// ID     TYPE          TYPO                       
+// -------------------------------------------------
+//  1      Ordinal Swap  1unitedsecondthird.com     
+//  2      Ordinal Swap  1united2third.com          
+//  3      Ordinal Swap  firstunited2third.com      
+//  4      Ordinal Swap  firstunited23.com          
+//  5      Ordinal Swap  1unitedsecond3.com         
+//  6      Ordinal Swap  firstunitedsecond3.com     
+//  7      Ordinal Swap  firstunitedsecondthird.com 
+// -------------------------------------------------
+//  TOTAL  7    
 //
 // We can verify the number of permutations with some calculations. 
 // Assuming language plugins only have numbers and numerals upto 9, we can
@@ -66,9 +63,9 @@ import (
 )
 
 const (
-	CODE        = "cns"
-	NAME        = "Cardinal Swap"
-	DESCRIPTION = "Swapping digial numbers and carninal numbers"
+	CODE        = "ons"
+	NAME        = "Ordinal Swap"
+	DESCRIPTION = "Swapping digital numbers and ordinal numbers"
 )
 
 type Algo struct {
@@ -92,7 +89,7 @@ func (n *Algo) Description() string {
 
 func (n *Algo) Exec(typo urlinsane.Typo) (typos []urlinsane.Typo) {
 	for _, lang := range typo.Languages() {
-		for _, variant := range n.Func(lang.Cardinal(), typo.Original().Repr()) {
+		for _, variant := range n.Func(lang.Ordinal(), typo.Original().Repr()) {
 			typos = append(typos, typo.New(variant))
 		}
 	}

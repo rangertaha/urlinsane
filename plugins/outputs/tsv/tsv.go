@@ -20,13 +20,11 @@ import (
 	"strings"
 
 	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/rangertaha/urlinsane"
 	"github.com/rangertaha/urlinsane/plugins/outputs"
-	"golang.org/x/term"
 )
 
-const CODE = "text"
+const CODE = "tsv"
 
 type Text struct {
 	table  table.Writer
@@ -37,27 +35,11 @@ func (n *Text) Id() string {
 	return CODE
 }
 
-func (n *Text) Description() string {
-	return "Text outputs one record per line and is the default"
-}
-
 func (n *Text) Init(conf urlinsane.Config) {
 	n.config = conf
-	width, _, err := term.GetSize(int(os.Stdout.Fd()))
-
 	n.table = table.NewWriter()
-	n.table.SetAllowedRowLength(width)
 	n.table.SetOutputMirror(os.Stdout)
 	n.table.AppendHeader(n.getHeader())
-
-	n.activeRow()
-
-	// width, _, err := term.GetSize(int(os.Stdout.Fd()))
-	if err != nil {
-		fmt.Println("Error getting terminal size:", err)
-		return
-	}
-
 }
 
 func (n *Text) getHeader() (row table.Row) {
@@ -94,34 +76,8 @@ func (n *Text) getRow(typo urlinsane.Typo) (row table.Row) {
 	return
 }
 
-func (n *Text) activeRow() (row table.Row) {
-	nameTransformer := text.Transformer(func(val interface{}) string {
-		return text.Bold.Sprint(val)
-	})
-
-	// n.table.SetRowPainter()
-
-	n.table.SetColumnConfigs([]table.ColumnConfig{
-		{
-			Name:              "TYPE",
-			Align:             text.AlignLeft,
-			AlignFooter:       text.AlignLeft,
-			AlignHeader:       text.AlignLeft,
-			Colors:            text.Colors{text.BgBlack, text.FgRed},
-			ColorsHeader:      text.Colors{text.BgRed, text.FgBlack, text.Bold},
-			ColorsFooter:      text.Colors{text.BgRed, text.FgBlack},
-			Hidden:            false,
-			Transformer:       nameTransformer,
-			TransformerFooter: nameTransformer,
-			TransformerHeader: nameTransformer,
-			VAlign:            text.VAlignMiddle,
-			VAlignFooter:      text.VAlignTop,
-			VAlignHeader:      text.VAlignBottom,
-			WidthMin:          6,
-			WidthMax:          64,
-		},
-	})
-	return
+func (n *Text) Description() string {
+	return "TSV (tab-separated values) formatted output"
 }
 
 func (n *Text) Write(in urlinsane.Typo) {
@@ -130,8 +86,7 @@ func (n *Text) Write(in urlinsane.Typo) {
 
 func (n *Text) Save() {
 	n.table.AppendFooter(table.Row{"Total", n.config.Count()})
-	n.table.SetStyle(StyleDefault)
-	output := n.table.Render()
+	output := n.table.RenderTSV()
 
 	if n.config.File() != "" {
 		results := []byte(output)
