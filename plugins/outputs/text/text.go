@@ -96,29 +96,32 @@ func (n *Text) getRow(typo urlinsane.Typo) (row table.Row) {
 
 func (n *Text) activeRow() (row table.Row) {
 	nameTransformer := text.Transformer(func(val interface{}) string {
-		return text.Bold.Sprint(val)
+		if val.(string) == "MD" {
+			return text.Colors{text.BgBlack, text.FgGreen}.Sprint(val)
+		}
+		return fmt.Sprint(val)
 	})
 
 	// n.table.SetRowPainter()
 
 	n.table.SetColumnConfigs([]table.ColumnConfig{
 		{
-			Name:              "TYPE",
-			Align:             text.AlignLeft,
-			AlignFooter:       text.AlignLeft,
-			AlignHeader:       text.AlignLeft,
-			Colors:            text.Colors{text.BgBlack, text.FgRed},
-			ColorsHeader:      text.Colors{text.BgRed, text.FgBlack, text.Bold},
-			ColorsFooter:      text.Colors{text.BgRed, text.FgBlack},
-			Hidden:            false,
-			Transformer:       nameTransformer,
-			TransformerFooter: nameTransformer,
-			TransformerHeader: nameTransformer,
-			VAlign:            text.VAlignMiddle,
-			VAlignFooter:      text.VAlignTop,
-			VAlignHeader:      text.VAlignBottom,
-			WidthMin:          6,
-			WidthMax:          64,
+			Name:         "TYPE",
+			Align:        text.AlignLeft,
+			AlignFooter:  text.AlignLeft,
+			AlignHeader:  text.AlignLeft,
+			// Colors:       text.Colors{text.BgBlack, text.FgRed},
+			// ColorsHeader: text.Colors{text.BgRed, text.FgBlack, text.Bold},
+			// ColorsFooter: text.Colors{text.BgRed, text.FgBlack},
+			Hidden:       false,
+			Transformer:  nameTransformer,
+			// TransformerFooter: nameTransformer,
+			// TransformerHeader: nameTransformer,
+			VAlign:       text.VAlignMiddle,
+			VAlignFooter: text.VAlignTop,
+			VAlignHeader: text.VAlignBottom,
+			WidthMin:     6,
+			WidthMax:     64,
 		},
 	})
 	return
