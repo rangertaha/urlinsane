@@ -43,8 +43,9 @@ func (n *Text) Init(conf urlinsane.Config) {
 
 func (n *Text) getHeader() (row table.Row) {
 	row = append(row, "ID")
-	row = append(row, "TYPO")
 	row = append(row, "TYPE")
+	row = append(row, "TYPO")
+
 	for _, info := range n.config.Information() {
 		for _, headers := range info.Headers() {
 			row = append(row, headers)
@@ -56,7 +57,9 @@ func (n *Text) getHeader() (row table.Row) {
 
 func (n *Text) getRow(typo urlinsane.Typo) (row table.Row) {
 	row = append(row, typo.Id())
-	row = append(row, typo.Variant().Repr(), typo.Algorithm().Name())
+	row = append(row, typo.Algorithm().Name())
+	row = append(row, typo.Variant().Repr())
+
 	for _, info := range n.config.Information() {
 		for _, header := range info.Headers() {
 			meta := typo.Variant().Meta()

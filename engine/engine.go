@@ -51,18 +51,19 @@ func NewDomainTypos(conf config.Config) DomainTypos {
 func (t *DomainTypos) GenOptions() <-chan urlinsane.Typo {
 	out := make(chan urlinsane.Typo)
 	go func() {
-		for _, lang := range t.Config.Languages() {
-			for _, board := range t.Config.Keyboards() {
-				for _, algo := range t.Config.Algorithms() {
-					domain := NewDomain(t.Config.Target())
-					out <- &Typo{
-						language:  lang,
-						keyboard:  board,
-						algorithm: algo,
-						original:  domain,
-					}
-				}
+		// for _, lang := range t.Config.Languages() {
+		// 	for _, board := range t.Config.Keyboards() {
+		for _, algo := range t.Config.Algorithms() {
+			// fmt.Println(lang.Id(), board.Id(), algo.Id(), t.Config.Target())
+			domain := NewDomain(t.Config.Target())
+			out <- &Typo{
+				language:  t.Config.Languages(),
+				keyboard:  t.Config.Keyboards(),
+				algorithm: algo,
+				original:  domain,
 			}
+			// 	}
+			// }
 		}
 		close(out)
 	}()

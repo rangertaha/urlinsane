@@ -99,6 +99,24 @@ func SimilarSounds(data [][]string, str string) (words []string) {
 	return
 }
 
+
+func NumeralMap(data map[string][]string, pos int) (words map[string]string) {
+	words = make(map[string]string)
+
+	for num, names := range data {
+		for i, name := range names {
+			if i == pos {
+				words[num] = name
+				// words[name] = num
+			}
+		}
+	}
+
+	return
+}
+
+
+
 // type (
 // Language type
 // Language struct {
