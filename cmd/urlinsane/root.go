@@ -12,100 +12,90 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package cmd
+package urlinsane
 
 import (
-	"bytes"
 	"fmt"
 	"os"
-	"text/template"
 
-	"github.com/rangertaha/urlinsane"
-	"github.com/rangertaha/urlinsane/config"
-	"github.com/rangertaha/urlinsane/engine"
-	"github.com/rangertaha/urlinsane/plugins/algorithms"
-	_ "github.com/rangertaha/urlinsane/plugins/algorithms/all"
-	"github.com/rangertaha/urlinsane/plugins/information"
-	_ "github.com/rangertaha/urlinsane/plugins/information/all"
-	"github.com/rangertaha/urlinsane/plugins/languages"
-	_ "github.com/rangertaha/urlinsane/plugins/languages/all"
+	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
+	// _ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
+	// _ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
 	"github.com/spf13/cobra"
 )
 
-const templateBase = `USAGE:{{if .Runnable}}
-  {{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}
-  {{.CommandPath}} [command]{{end}}{{if gt (len .Aliases) 0}}
-ALIASES:
-  {{.NameAndAliases}}{{end}}{{if .HasExample}}
+// const templateBase = `USAGE:{{if .Runnable}}
+//   {{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}
+//   {{.CommandPath}} [command]{{end}}{{if gt (len .Aliases) 0}}
 
-EXAMPLES:
-{{.Example}}{{end}}{{if .HasAvailableSubCommands}}
-Available Commands:{{range .Commands}}{{if (or .IsAvailableCommand (eq .Name "help"))}}
-  {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableLocalFlags}}
+// ALIASES:
+//   {{.NameAndAliases}}{{end}}{{if .HasExample}}
 
-OPTIONS:
-{{.LocalFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasAvailableInheritedFlags}}
+// EXAMPLES:
+// {{.Example}}{{end}}{{if .HasAvailableSubCommands}}
+// Available Commands:{{range .Commands}}{{if (or .IsAvailableCommand (eq .Name "help"))}}
+//   {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableLocalFlags}}
 
-GLOBAL OPTIONS:
-{{.InheritedFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasHelpSubCommands}}
-Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
-  {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableSubCommands}}
+// OPTIONS:
+// {{.LocalFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasAvailableInheritedFlags}}
 
-Use "{{.CommandPath}} [command] --help" for more information about a command.{{end}}`
+// GLOBAL OPTIONS:
+// {{.InheritedFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasHelpSubCommands}}
+// Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
+//   {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableSubCommands}}
 
-const helpTemplate = `
+// Use "{{.CommandPath}} [command] --help" for more information about a command.{{end}}`
 
-ALGORITHMS:
-    Typosquatting algorithm plugins that generate typos.
+// const helpTemplate = `
 
-    ID | Name    | Description
-    -----------------------------------------{{range .Algorithms}}
-    {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
+// ALGORITHMS:
+//     Typosquatting algorithm plugins that generate typos.
 
-INFORMATION:
-    Information-gathering plugins that collect information on each typo 
+//     ID | Name    | Description
+//     -----------------------------------------{{range .Algorithms}}
+//     {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
 
-    ID | Name    | Description
-    -----------------------------------------{{range .Information}}
-    {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
+// INFORMATION:
+//     Information-gathering plugins that collect information on each typo
 
+//     ID | Name    | Description
+//     -----------------------------------------{{range .Information}}
+//     {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
 
-LANGUAGES:
-    ID | Name    | Description
-    -----------------------------------------{{range .Languages}}
-    {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
+// LANGUAGES:
+//     ID | Name    | Description
+//     -----------------------------------------{{range .Languages}}
+//     {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
 
-KEYBOARDS:
-    ID | Name    | Description
-    -----------------------------------------{{range .Keyboards}}
-    {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
+// KEYBOARDS:
+//     ID | Name    | Description
+//     -----------------------------------------{{range .Keyboards}}
+//     {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
 
+// EXAMPLE:
 
+//     urlinsane google.com
+//     urlinsane -t co google.com
+//     urlinsane -t co,oi,oy -i ip,idna,ns google.com
+//     urlinsane -l fr,en -k en1,en2 google.com
 
-EXAMPLE:
+// AUTHOR:
+//    Rangertaha (rangertaha@gmail.com)
 
-    urlinsane google.com
-    urlinsane -t co google.com 
-    urlinsane -t co,oi,oy -i ip,idna,ns google.com
-    urlinsane -l fr,en -k en1,en2 google.com
+// `
 
-AUTHOR:
-   Rangertaha (rangertaha@gmail.com)
+// type HelpOptions struct {
+// 	Languages   []internal.Language
+// 	Keyboards   []internal.Keyboard
+// 	Algorithms  []internal.Algorithm
+// 	Information []internal.Information
+// }
 
-`
-
-type HelpOptions struct {
-	Languages   []urlinsane.Language
-	Keyboards   []urlinsane.Keyboard
-	Algorithms  []urlinsane.Algorithm
-	Information []urlinsane.Information
-}
-
-var cliOptions bytes.Buffer
+// var cliOptions bytes.Buffer
 
 // rootCmd represents the typo command
 var rootCmd = &cobra.Command{
-	Use:   "urlinsane [flags] [domains]",
+	Use:   "urlinsane [flags] [name]",
 	Short: "Generates and detects possible typosquatting domain names and arbitrary names",
 	Long: `Urlinsane is used to perform or detect typosquatting, brandjacking, URL hijacking, 
 	fraud, phishing attacks, corporate espionage, and threat intelligence.
@@ -117,22 +107,35 @@ languages and keyboard layouts. Currently, it supports 9 languages, 19 keyboard 
 24 algorithms, 8 information gathering, and 2 analysis modules.
 
 `,
+	// PersistentPreRun: func(cmd *cobra.Command, args []string) {
+	// 	fmt.Printf("Inside rootCmd PersistentPreRun with args: %v\n", args)
+	// },
+	//   PreRun: func(cmd *cobra.Command, args []string) {
+	// 	fmt.Printf("Inside rootCmd PreRun with args: %v\n", args)
+	//   },
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			cmd.Help()
-			os.Exit(0)
-		}
+		cmd.Help()
+		// if len(args) == 0 {
+		// 	cmd.Help()
+		// 	os.Exit(0)
+		// }
 
-		config, err := config.CobraConfig(cmd, args)
-		if err != nil {
-			fmt.Printf("%s", err)
-			os.Exit(0)
-		}
-		fmt.Print(urlinsane.LOGO)
-		t := engine.NewDomainTypos(config)
-		t.Execute()
+		// config, err := config.CobraConfig(cmd, args)
+		// if err != nil {
+		// 	fmt.Printf("%s", err)
+		// 	os.Exit(0)
+		// }
+		// fmt.Print(internal.LOGO)
+		// t := engine.NewDomainTypos(config)
+		// t.Execute()
 
 	},
+	//   PostRun: func(cmd *cobra.Command, args []string) {
+	// 	fmt.Printf("Inside rootCmd PostRun with args: %v\n", args)
+	//   },
+	//   PersistentPostRun: func(cmd *cobra.Command, args []string) {
+	// 	fmt.Printf("Inside rootCmd PersistentPostRun with args: %v\n", args)
+	//   },
 }
 
 func Execute() {
@@ -142,24 +145,33 @@ func Execute() {
 	}
 }
 func init() {
-	// fmt.Println(languages.Languages())
-	helpOptions := HelpOptions{
-		languages.Languages(),
-		languages.Keyboards(),
-		algorithms.List(),
-		information.List(),
-	}
+	// // fmt.Println(languages.Languages())
+	// helpOptions := HelpOptions{
+	// 	languages.Languages(),
+	// 	languages.Keyboards(),
+	// 	algorithms.List(),
+	// 	information.List(),
+	// }
 
-	// Create a new template and parse the letter into it.
-	tmpl := template.Must(template.New("help").Parse(helpTemplate))
+	// // Create a new template and parse the letter into it.
+	// tmpl := template.Must(template.New("help").Parse(helpTemplate))
 
-	// Run the template to verify the output.
-	err := tmpl.Execute(&cliOptions, helpOptions)
-	if err != nil {
-		fmt.Printf("Execution: %s", err)
-	}
+	// // Run the template to verify the output.
+	// err := tmpl.Execute(&cliOptions, helpOptions)
+	// if err != nil {
+	// 	fmt.Printf("Execution: %s", err)
+	// }
 
-	rootCmd.SetUsageTemplate(templateBase + cliOptions.String())
+	// rootCmd.SetUsageTemplate(templateBase + cliOptions.String())
+	// rootCmd.SetVersionTemplate(internal.VERSION)
+	rootCmd.CompletionOptions.DisableDefaultCmd = true
+
+	// Targets
+	// rootCmd.PersistentFlags().Bool("lib", false, "IDs of languages to use for linguistic algorithms")
+	// rootCmd.PersistentFlags().Bool("email", false, "IDs of languages to use for linguistic algorithms")
+	// rootCmd.PersistentFlags().Bool("username", false, "IDs of keyboard layouts to use of the given languages")
+	// rootCmd.PersistentFlags().Bool("domain", false, "IDs of keyboard layouts to use of the given languages")
+	// rootCmd.MarkFlagsMutuallyExclusive("email", "lib", "username", "domain")
 
 	// Options
 	rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"all"}, "IDs of languages to use for linguistic algorithms")
@@ -183,4 +195,6 @@ func init() {
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Show more details and remove truncated columns")
 	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename defaults to stdout")
 	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv,tsv,text,html,md)")
+
+	rootCmd.AddCommand(domainCmd)
 }
