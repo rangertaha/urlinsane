@@ -43,13 +43,11 @@ import (
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 )
 
-const CODE = "ar"
-
-// const (
-// 	CODE        = ""
-// 	NAME        = ""
-// 	DESCRIPTION = ""
-// )
+const (
+	CODE        = "ar"
+	NAME        = "Alphabet Replacement"
+	DESCRIPTION = "Replaces an alphabet in the target domain"
+)
 
 type Algo struct {
 	types []string
@@ -58,24 +56,12 @@ type Algo struct {
 func (n *Algo) Id() string {
 	return CODE
 }
-func (n *Algo) IsType(str string) bool {
-	return algorithms.IsType(n.types, str)
-}
-
 func (n *Algo) Name() string {
-	return "Alphabet Replacement"
+	return NAME
 }
 
 func (n *Algo) Description() string {
-	return "Replaces an alphabet in the target domain"
-}
-
-func (n *Algo) Fields() []string {
-	return []string{}
-}
-
-func (n *Algo) Headers() []string {
-	return []string{}
+	return DESCRIPTION
 }
 
 func (n *Algo) Exec(in internal.Typo) (out []internal.Typo) {

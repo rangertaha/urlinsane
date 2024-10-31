@@ -14,8 +14,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package aci
 
-// AlgoFunc are created by inserting letters adjacent of each letter. For example, www.googhle.com
-// and www.goopgle.com
+// Adjacent character insertion is where an attacker adds characters 
+// that are next to each other on a keyboard.
+
+// For example, if a user intends to visit "example.com," a typo-squatter
+// might register "examplw.com" or "exanple.com." These small alterations
+// can trick users into clicking on the malicious sites, leading to phishing
+// scams, malware downloads, or other harmful activities.
+
+// Adjacent character insertion exploits common typing errors, making it a
+// particularly effective tactic, as users may not notice the difference,
+// especially if they are typing quickly. It highlights the importance of
+// vigilance and cybersecurity measures to protect against such deceptive
+// practices.
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
@@ -29,15 +40,10 @@ const (
 )
 
 type Algo struct {
-	types []string
 }
 
 func (n *Algo) Id() string {
 	return CODE
-}
-
-func (n *Algo) IsType(str string) bool {
-	return algorithms.IsType(n.types, str)
 }
 
 func (n *Algo) Name() string {
@@ -83,8 +89,6 @@ func (n *Algo) Exec(in internal.Typo) (out []internal.Typo) {
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{
-			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
-		}
+		return &Algo{}
 	})
 }

@@ -14,6 +14,47 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package bf
 
+// Typo-squatting through bit flipping involves manipulating domain names by changing one or more bits in the binary representation of characters. This can lead to visually similar but distinct characters being used in a domain name, which can trick users into visiting malicious sites.
+
+// For instance, an attacker might register a domain like "exarnple.com," where the letter "m" has been flipped to a visually similar character, such as "rn." Users may not notice the subtle difference when typing quickly, leading them to inadvertently access the spoofed site.
+
+// This technique exploits the similarities in how certain characters appear in certain fonts or how they are rendered on screens, making it a clever and deceptive method of capturing traffic meant for legitimate websites. It highlights the importance of vigilance and proactive measures in cybersecurity to protect against such tactics.
+
+
+
+import (
+	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+)
+
+
+const (
+	CODE        = "bf"
+	NAME        = "Bit Flipping"
+	DESCRIPTION = "Relies on random bit-errors to redirect connections"
+)
+
+type Algo struct {
+
+}
+
+func (n *Algo) Id() string {
+	return CODE
+}
+
+func (n *Algo) Name() string {
+	return NAME
+}
+
+func (n *Algo) Description() string {
+	return DESCRIPTION
+}
+
+func (n *Algo) Exec(in internal.Typo) (out []internal.Typo) {
+	out = append(out, in)
+	return
+}
+
 // // bitsquattingFunc relies on random bit- errors to redirect connections
 // // intended for popular domains
 // func bitsquattingFunc(tc Result) (results []Result) {
@@ -44,56 +85,11 @@ package bf
 // 	return
 // }
 
-import (
-	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
-)
-
-const CODE = "bf"
-
-// const (
-// 	CODE        = ""
-// 	NAME        = ""
-// 	DESCRIPTION = ""
-// )
-
-type Algo struct {
-	types []string
-}
-
-func (n *Algo) Id() string {
-	return CODE
-}
-func (n *Algo) IsType(str string) bool {
-	return algorithms.IsType(n.types, str)
-}
-
-func (n *Algo) Name() string {
-	return "Bit Flipping"
-}
-
-func (n *Algo) Description() string {
-	return "Relies on random bit-errors to redirect connections"
-}
-
-func (n *Algo) Fields() []string {
-	return []string{}
-}
-
-func (n *Algo) Headers() []string {
-	return []string{}
-}
-
-func (n *Algo) Exec(in internal.Typo) (out []internal.Typo) {
-	out = append(out, in)
-	return
-}
-
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {
 		return &Algo{
-			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
+			
 		}
 	})
 }
