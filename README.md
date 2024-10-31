@@ -1,6 +1,25 @@
 # URLInsane
 
+
+## Badges
+
+    [![Go Report Card](https://goreportcard.com/badge/github.com/rangertaha/urlinsane?style=flat-square)](https://goreportcard.com/report/github.com/rangertaha/urlinsane)
+
+    [![Go Doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](http://godoc.org/github.com/rangertaha/urlinsane)
+
+    [![PkgGoDev](https://pkg.go.dev/badge/github.com/rangertaha/urlinsane)](https://pkg.go.dev/github.com/github.com/rangertaha/urlinsane)
+
+    [![Release](https://img.shields.io/github/release/rangertaha/urlinsane.svg?style=flat-square)](https://github.com/rangertaha/urlinsane/releases/latest)
+
 [![Build Status](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml/badge.svg)](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml)
+
+
+
+
+Urlinsane is an advanced cybersecurity tool designed to protect businesses from the threats of typo-squatting. By monitoring domain registrations in real time, it identifies potentially harmful variations of a brand's domain name that cybercriminals might exploit. With features like automated alerts, risk assessment reports, and integrated domain blocking, TypoSquatGuard helps organizations safeguard their online presence, ensuring that customers are directed to legitimate websites and reducing the risk of phishing attacks. Its intuitive dashboard and actionable insights make it an essential tool for any brand looking to enhance its digital security posture.
+
+
+
 
 Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage, and threat intelligence.
 

@@ -14,10 +14,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package main
 
-import (
-	cmd "github.com/rangertaha/urlinsane/cmd/urlinsane"
-)
+import "github.com/rangertaha/urlinsane/cmd/urlinsane"
 
 func main() {
-	cmd.Execute()
+	urlinsane.Execute()
 }
