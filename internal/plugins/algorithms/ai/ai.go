@@ -14,6 +14,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ai
 
+// Typo-squatting involving alphabet insertion occurs when attackers register domain names that include additional letters or characters within a legitimate brand's name. This tactic aims to exploit common typing errors by inserting one or more letters, creating a slight variation that may not be immediately noticeable to users.
+
+// For example, if the legitimate domain is "example.com," a typo-squatter might register "exampel.com" or "exampxle.com." Users who accidentally mistype or overlook the extra characters might be redirected to these malicious sites, which could be used for phishing, distributing malware, or other harmful activities.
+
+// This method capitalizes on the likelihood of users making small mistakes while typing, underscoring the need for brands to monitor and protect their online identities against such threats.
+
+
 // func AlgoFunc(tc Result) (results []Result) {
 // 	alphabet := map[string]bool{}
 // 	for _, keyboard := range tc.Keyboards {

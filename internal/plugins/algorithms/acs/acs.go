@@ -14,6 +14,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package acs
 
+// Adjacent character substitution is where an attacker swaps characters 
+// that are next to each other on a keyboard.
+
+// For example, if a user intends to visit "example.com," a typo-squatter
+// might register "exampel.com" or "exmaple.com." These small alterations
+// can trick users into clicking on the malicious sites, leading to phishing
+// scams, malware downloads, or other harmful activities.
+
+// Adjacent character substitution exploits common typing errors, making it a
+// particularly effective tactic, as users may not notice the difference,
+// especially if they are typing quickly. It highlights the importance of
+// vigilance and cybersecurity measures to protect against such deceptive
+// practices.
+
 import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
