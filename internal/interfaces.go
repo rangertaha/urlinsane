@@ -41,7 +41,8 @@ type Config interface {
 	Verbose() bool
 	Format() string
 	File() string
-	Count(...int64) int64
+	// Count(...int64) int64
+	// Live(...int64) int64
 	Type() int
 }
 
@@ -84,6 +85,7 @@ type Output interface {
 	Id() string
 	Description() string
 	Write(Typo)
+	Summary(int64, int64)
 	Save()
 }
 
@@ -102,10 +104,8 @@ type Typo interface {
 	Algorithm() Algorithm
 	Original() Target
 	Variant() Target
-	Active(...bool) bool
+	Active() bool
 	Clone(string) Typo
-	// GetType() string
-	// SetType(string)
 	String() string
 }
 

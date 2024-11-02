@@ -29,20 +29,22 @@ type (
 	// Urlinsane ...
 	Urlinsane struct {
 		Config config.Config
-		Typos  map[string]*internal.Typo
+		Typos  map[string]Typo
 
 		algoWG sync.WaitGroup
 		infoWG sync.WaitGroup
 
 		progress *progressbar.ProgressBar
-		// stats <-chan Statser
-		// errs <-chan interface{}
+		live     int64
+		count    int64
 	}
 )
 
 // NewUrlinsane ...
 func New(conf config.Config) Urlinsane {
 	return Urlinsane{
+		live:   0,
+		count:  0,
 		Config: conf,
 	}
 }
@@ -50,7 +52,7 @@ func New(conf config.Config) Urlinsane {
 // Init typo config options
 func (t *Urlinsane) Init() {
 	// Used for deduping and updating the count
-	t.Typos = make(map[string]*internal.Typo)
+	t.Typos = make(map[string]Typo)
 
 	internal.Banner()
 }
@@ -65,17 +67,11 @@ func (t *Urlinsane) GenOptions() <-chan internal.Typo {
 				al.Init(&t.Config)
 			}
 
-			// // fmt.Println("GenOptions: ", algorithm)
-			// domain := domain.New(t.Config.Target())
-
 			out <- &Typo{
-				// languages: t.Config.Languages(), // remove
-				// keyboards: t.Config.Keyboards(), // remove
 				algorithm: algorithm,
-				original:  t.Config.Target(), // remove and add to config: config.Domain()
+				original:  t.Config.Target(),
 				variant:   &target.Target{},
 			}
-			// fmt.Println("GenOptions: ", algorithm)
 		}
 		close(out)
 	}()
@@ -93,35 +89,20 @@ func (ts *Urlinsane) Algorithms(in <-chan internal.Typo) <-chan internal.Typo {
 			for typo := range in {
 				algo := typo.Algorithm()
 
-				// Execute typo algorithm returning typos
+				//
 				if al, ok := algo.(internal.Initializer); ok {
 					al.Init(&ts.Config)
 				}
-
-				// if ts.Config.IsMode(internal.DOMAIN) {
-				// 	if fn, ok := algo.(internal.DomainAlgo); ok {
-				// 		exec = fn.Domain
-				// 	}
-
-				// }
-				// if ts.Config.IsMode(internal.USERNAME) {
-
-				// }
-				// if ts.Config.IsMode(internal.NAME) {
-
-				// }
-
-				for _, typ := range algo.Exec(typo) {
+				// Execute typo algorithm returning typos
+				for _, newtypo := range algo.Exec(typo) {
 
 					// Dedup typo variants by checking and adding to a map
-					if variant, ok := ts.Typos[typ.Variant().Name()]; !ok {
-						ts.Typos[typ.Variant().Name()] = variant
+					if variant, ok := ts.Typos[newtypo.Variant().Name()]; !ok {
+						ts.Typos[newtypo.Variant().Name()] = variant
 
 						// Make sure the variant does not match the original
-						if typ.Variant().Name() != typ.Original().Name() {
-
-							// Cache and or reuse
-							out <- ts.Cache(typ)
+						if newtypo.Variant().Name() != newtypo.Original().Name() {
+							out <- newtypo
 						}
 					}
 				}
@@ -130,16 +111,33 @@ func (ts *Urlinsane) Algorithms(in <-chan internal.Typo) <-chan internal.Typo {
 	}
 	go func() {
 		ts.algoWG.Wait()
-		ts.Config.Count(int64(len(ts.Typos)))
 		close(out)
 	}()
 
 	return out
 }
 
-func (t *Urlinsane) Cache(typo internal.Typo) internal.Typo {
+func (t *Urlinsane) Cache(in <-chan internal.Typo) <-chan internal.Typo {
+	// out := make(chan internal.Typo)
 
-	return typo
+	// for typo := range in {
+	// 	// Dedup typo variants by checking and adding to a map
+	// 	if variant, ok := t.Typos[typo.Variant().Name()]; !ok {
+	// 		t.Typos[typo.Variant().Name()] = variant
+
+	// 		// Make sure the variant does not match the original
+	// 		if typo.Variant().Name() != typo.Original().Name() {
+	// 			t.count++
+	// 			out <- typo
+	// 		}
+	// 	}
+	// }
+
+	// for _, typo := range t.Typos {
+	// 	out <- typo
+	// }
+
+	return in
 }
 
 func (t *Urlinsane) Information(in <-chan internal.Typo) <-chan internal.Typo {
@@ -156,7 +154,7 @@ func (t *Urlinsane) Information(in <-chan internal.Typo) <-chan internal.Typo {
 	}
 	go func() {
 		t.infoWG.Wait()
-		close(out)
+		// close(out)
 	}()
 	return out
 }
@@ -197,8 +195,8 @@ func (t *Urlinsane) Progress(in <-chan internal.Typo) <-chan internal.Typo {
 		out := make(chan internal.Typo)
 		go func(in <-chan internal.Typo, out chan<- internal.Typo) {
 			for c := range in {
-				if t.Config.Count() != 0 && t.progress == nil {
-					t.progress = progressbar.Default(t.Config.Count())
+				if t.count != 0 && t.progress == nil {
+					t.progress = progressbar.Default(t.count)
 				}
 				out <- c
 				t.progress.Add(1)
@@ -222,6 +220,9 @@ func (t *Urlinsane) Output(in <-chan internal.Typo) {
 	}
 
 	// Save typo records collected by the output plugin
+	t.Config.Output().Summary(t.count, t.live)
+
+	// Save typo records collected by the output plugin
 	t.Config.Output().Save()
 }
 
@@ -229,6 +230,7 @@ func (t *Urlinsane) Start() {
 	t.Init()
 	typos := t.GenOptions()
 	typos = t.Algorithms(typos)
+	typos = t.Cache(typos)
 	typos = t.Information(typos)
 	typos = t.Storage(typos)
 	typos = t.Progress(typos)

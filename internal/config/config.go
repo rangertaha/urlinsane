@@ -54,6 +54,7 @@ type Config struct {
 	format   string
 	file     string
 	count    int64
+	live     int64
 	progress bool
 }
 
@@ -113,12 +114,18 @@ func (c *Config) Type() int {
 // }
 
 // Count sets and gets the count of variants for processing
-func (c *Config) Count(n ...int64) int64 {
-	if len(n) > 0 {
-		c.count = n[0]
-	}
-	return c.count
-}
+// func (c *Config) Count(n ...int64) int64 {
+// 	if len(n) > 0 {
+// 		c.count = n[0]
+// 	}
+// 	return c.count
+// }
+// func (c *Config) Live(n ...int64) int64 {
+// 	if len(n) > 0 {
+// 		c.live = n[0]
+// 	}
+// 	return c.count
+// }
 
 // CobraConfig creates a configuration from a cobra command options and arguments
 func CobraConfig(cmd *cobra.Command) (c Config, err error) {

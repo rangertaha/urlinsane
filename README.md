@@ -1,8 +1,5 @@
 # URLInsane
 
-
-## Badges
-
 [![Go Report Card](https://goreportcard.com/badge/github.com/rangertaha/urlinsane?style=flat-square)](https://goreportcard.com/report/github.com/rangertaha/urlinsane) [![Go Doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](http://godoc.org/github.com/rangertaha/urlinsane) [![PkgGoDev](https://pkg.go.dev/badge/github.com/rangertaha/urlinsane)](https://pkg.go.dev/github.com/github.com/rangertaha/urlinsane) [![Release](https://img.shields.io/github/release/rangertaha/urlinsane.svg?style=flat-square)](https://github.com/rangertaha/urlinsane/releases/latest) [![Build Status](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml/badge.svg)](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml)
 
 
@@ -92,154 +89,19 @@ $ urlinsane typo google.com -t co -x all
 ## Cli Commands
 
 ```bash
-$ urlinsane 
 
-Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking, 
-URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.
-
-Usage:
-  urlinsane [flags]
-  urlinsane [command]
-
-Available Commands:
-  help        Help about any command
-  server      Start a websocket server to use this tool programmatically
-  typo        Generates domain typos and variations
-
-Flags:
-      --config string   Configuration file (default is $HOME/.urlinsane.yaml)
-  -h, --help            help for urlinsane
-
-Use "urlinsane [command] --help" for more information about a command.
 
 ```
 
 ### Squatting Options
 
 ```bash
-$ urlinsane typo -h
-
-
-Multilingual domain typo permutation engine used to perform or detect typosquatting, brandjacking,
-URL hijacking, fraud, phishing attacks, corporate espionage and threat intelligence.
-
-USAGE:
-  urlinsane typo [domains] [flags]
-
-OPTIONS:
-  -c, --concurrency int         Number of concurrent workers (default 50)
-      --delay int               A delay between network calls (default 10)
-  -f, --file string             Output filename
-  -r, --filters stringArray     Filter results to reduce the number of results
-  -o, --format string           Output format (csv, text) (default "text")
-  -x, --funcs stringArray       Extra functions or filters (default [ld,idna])
-  -h, --help                    help for typo
-  -k, --keyboards stringArray   Keyboards/layouts ID to use (default [en])
-      --random-delay int        Used to randomize the delay between network calls. (default 5)
-  -t, --typos stringArray       Types of typos to perform (default [all])
-  -v, --verbose                 Output additional details
-
-GLOBAL OPTIONS:
-      --config string   Configuration file (default is $HOME/.urlinsane.yaml)
-
-TYPOS: 
-  These are the types of typo/error algorithms that generate the domain variants
-    MD	Missing Dot is created by omitting a dot from the domain.
-    SI	Inserting common subdomain at the beginning of the domain.
-    MDS	Missing Dashes is created by stripping all dashes from the domain.
-    CO	Character Omission Omitting a character from the domain.
-    CS	Character Swap Swapping two consecutive characters in a domain
-    ACS	Adjacent Character Substitution replaces adjacent characters
-    ACI	Adjacent Character Insertion inserts adjacent character 
-    CR	Character Repeat Repeats a character of the domain name twice
-    DCR	Double Character Replacement repeats a character twice.
-    SD	Strip Dashes is created by omitting a dash from the domain
-    SP	Singular Pluralise creates a singular domain plural and vice versa
-    CM	Common Misspellings are created from a dictionary of commonly misspelled words
-    VS	Vowel Swapping is created by swaps vowels
-    HG	Homoglyphs replaces characters with characters that look similar
-    WTLD	Wrong Top Level Domain
-    W2TLD	Wrong Second Level Domain
-    W3TLD	Wrong Third Level Domain
-    HP	Homophones Modules are created from sets of words that sound the same
-    BF	Bitsquatting relies on random bit-errors to redirect connections
-    NS	Numeral Swap numbers, words and vice versa
-    PI	Inserting periods in the target domain
-    HI	Inserting hyphens in the target domain
-    AI	Inserting the language specific alphabet in the target domain
-    AR	Replacing the language specific alphabet in the target domain
-    ALL	Apply all typosquatting algorithms
-
-INFORMATION: 
-  Retrieve aditional information on each domain variant.
-    LD    The Levenshtein distance between strings
-    IDNA    Show international domain name
-    IP    Checking for IP address
-    HTTP    Get http related information
-    MX    Checking for DNS's MX records
-    TXT    Checking for DNS's TXT records
-    NS    Checks DNS NS records
-    CNAME    Checks DNS CNAME records
-    SIM    Show domain content similarity
-    GEO    Show country location of IP address
-    ALL    Apply all post typosquatting functions
-
-FILTERS: 
-  Filters to reduce the number of domain variants returned.
-    LIVE   Show online/live domains only.
-    ALL    Apply all filters
-
-KEYBOARDS:
-    AR1	Arabic keyboard layout
-    AR2	Arabic PC keyboard layout
-    AR3	Arabic North african keyboard layout
-    AR4	Arabic keyboard layout
-    HY1	Armenian QWERTY keyboard layout
-    HY2	Armenian, Western QWERTY keyboard layout
-    EN1	English QWERTY keyboard layout
-    EN2	English AZERTY keyboard layout
-    EN3	English QWERTZ keyboard layout
-    EN4	English DVORAK keyboard layout
-    FI1	Finnish QWERTY keybaord layout
-    FR1	French Canadian CSA keyboard layout
-    IW1	Hebrew standard layout
-    FA1	Persian standard layout
-    RU1	Russian keyboard layout
-    RU2	Phonetic Russian keybaord layout
-    RU3	PC Russian keyboard layout
-    ES1	Spanish keyboard layout
-    ES2	Spanish ISO keyboard layout
-    ALL	Use all keyboards
-
-EXAMPLE:
-
-    urlinsane google.com
-    urlinsane google.com -t co
-    urlinsane google.com -t co -x ip -x idna -x ns
-
-AUTHOR:
-    Written by Rangertaha
-
 
 ```
 
 ## Server Options
 
 ```bash
-
-urlinsane server -h
-
-Usage:
-  urlinsane server [flags]
-
-Flags:
-  -c, --concurrency int   Number of concurrent workers (default 50)
-  -h, --help              help for server
-  -a, --host string       IP address for API server (default "127.0.0.1")
-  -p, --port string       Port to use (default "8080")
-
-Global Flags:
-      --config string   Configuration file (default is $HOME/.urlinsane.yaml)
 
 ```
 
@@ -249,24 +111,6 @@ Generates variations for **google.com** using the character omission **(CO)**
 algorithm.
 
 ```txt
-urlinsane typo google.com -t co
-
- _   _  ____   _      ___
-| | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
-| | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
-| |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
- \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
-
- Version: 0.6.0
-
-  LIVE | TYPE |   TYPO    | SUFFIX |   IDNA
--------+------+-----------+--------+------------
-       | CO   | oogle.com | com    | oogle.com  
-       | CO   | gogle.com | com    | gogle.com  
-       | CO   | goole.com | com    | goole.com  
-       | CO   | gogle.com | com    | gogle.com  
-       | CO   | googl.com | com    | googl.com  
-       | CO   | googe.com | com    | googe.com  
 
 ```
 
@@ -277,7 +121,6 @@ then checks for **ip** addresses.
 
 ```txt
 
-urlinsane typo google.com -t co  -x geo
 
 ```
 
@@ -292,12 +135,42 @@ just the short name 'HG'
 
 ```txt
 
-urlinsane typo google.com -t hg -v -x ip -x idna -x ns
-
 
 ```
 
 ## Languages
+
+### Language & Keyboard Comparison
+
+This table shows which tools have support for common **misspellings**,
+**homophones**, **numerals**, **vowels**, **homoglyphs**, and the number of
+**keyboards** that support each language's character set.
+
+Vowels
+Graphemes
+Ordinal
+Cardinal
+
+| Languages | Keyboards | Homoglyphs  | Homophones   | Antonyms |Misspellings
+|--------------------------|-----------|-----------|------------|-------------|
+| Arabic    |    4     |           |            |             |
+| Armenian  |    3     |           |            |             |
+| English   |    4     |     X     |      X     |      X      |
+| Finnish   |    1     |           |            |             |
+| Russian   |    3     |           |            |             |
+| Spanish   |    2     |           |            |             |
+| Hebrew    |    1     |           |            |             |
+| Persian   |    1     |           |            |             |  
+
+
+
+
+
+
+
+
+
+
 
 ### English
 
@@ -308,14 +181,14 @@ urlinsane typo google.com -t hg -v -x ip -x idna -x ns
 
 ### Finnish, Russian, Persian, Hebrew, Arabic, Spanish
 
-See [Languages](https://cybersectech-org.github.io/urlinsane/#languages) for details
+See [Languages](https://github.com/rangertaha/urlinsane#languages) for details
 on other languages.
 
 ## Algorithms
 
 The modular architecture for code extensibility allows developers to add new
 typosquatting algorithms with ease. Currently, we have implemented 19
-typosquatting algorithms. See [Typo Algorithms](https://cybersectech-org.github.io/urlinsane/#algorithms) for details.
+typosquatting algorithms. See [Typo Algorithms](https://github.com/rangertaha/urlinsane#algorithms) for details.
 
 ## Extra Functions
 
@@ -389,9 +262,9 @@ This table shows the list of algorithms supported for each tool.
 | Period Insertion                |     X     |           |            |             |
 | Combosquatting (Keywords)       |           |           |            |             |
 
-## Post Typo Functions
+## Information Gathering
 
-|      **Extra Functions**            | URLInsane  | URLCrazy  | DNSTwist  | DomainFuzz  |
+|      **Info Gathering**            | URLInsane  | URLCrazy  | DNSTwist  | DomainFuzz  |
 |-------------------------------------|-----------|-----------|------------|-------------|
 | Live/Online Check                   |     X     |     X     |      X     |             |
 | DNS A Records                       |     X     |     X     |      X     |      X      |
@@ -409,6 +282,29 @@ This table shows the list of algorithms supported for each tool.
 | Human Readable output               |     X     |     X     |      X     |      X      |
 | HTTP/SMTP Banner                    |     X     |           |      X     |             |
 | Multithreaded Extra Functions       |     X     |           |      X     |      X      |
+
+## Output Formats
+
+|      **Info Gathering**            | URLInsane  | URLCrazy  | DNSTwist  | DomainFuzz  |
+|-------------------------------------|-----------|-----------|------------|-------------|
+| Live/Online Check                   |     X     |     X     |      X     |             |
+| DNS A Records                       |     X     |     X     |      X     |      X      |
+| DNS MX Records                      |     X     |     X     |      X     |             |
+| DNS txt Records                     |     X     |     X     |            |             |
+| DNS AAAA Records                    |     X     |           |      X     |      X      |
+| DNS CName Records                   |     X     |           |            |             |
+| DNS NS Records                      |     X     |           |      X     |      X      |
+| Geographic Info                     |     X     |     X     |      X     |             |
+| Domain Similarity                   |     X     |           |      X     |      X      |
+| Domain Redirects                    |     X     |           |            |             |
+| IDNA Format                         |     X     |           |      X     |             |
+| CSV output                          |     X     |     X     |      X     |      X      |
+| JSON output                         |     X     |           |      X     |      X      |
+| Human Readable output               |     X     |     X     |      X     |      X      |
+| HTTP/SMTP Banner                    |     X     |           |      X     |             |
+| Multithreaded Extra Functions       |     X     |           |      X     |      X      |
+
+
 
 ### Speed
 
