@@ -49,7 +49,7 @@ import (
 const (
 	CODE        = "ai"
 	NAME        = "Alphabet Insertion"
-	DESCRIPTION = "Inserting the language specific alphabet in the target domain"
+	DESCRIPTION = "Inserting the language-specific alphabet in the target domain"
 )
 
 type Algo struct {
