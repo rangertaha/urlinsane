@@ -14,7 +14,7 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 * Plugin architecture for extensability
 * Multi-lingual language modeling
 
-# Targets
+## Targets
 
 
 |   Type   | Decscription |
@@ -23,6 +23,17 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 | Domains  | Domain specific typosquating variants and information information  |
 | Usernames| Finding variants of usernames online or on a specifc site |
 | Packages | Finding opensource software packages or libaries and variants |
+
+
+## Installation
+
+
+## Usage
+
+
+
+
+## Internals
 
 
 # Plugins
