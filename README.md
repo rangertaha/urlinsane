@@ -6,7 +6,7 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 
 
 
-# Features
+## Features
 * Fast execution time
 * Cuncurrency in generating typos and collection informaiton
 * Distribute queries to multiple DNS Servers
@@ -14,13 +14,22 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 * Plugin architecture for extensability
 * Multi-lingual language modeling
 
+# Targets
+
+
+|   Type   | Decscription |
+|----------|--------|
+| Names    | Generating variants on arbitrary names without assuming its a domain  |
+| Domains  | Domain specific typosquating variants and information information  |
+| Usernames| Finding variants of usernames online or on a specifc site |
+| Packages | Finding opensource software packages or libaries and variants |
 
 
 # Plugins
 
 Plugins play a crucial role in extending the functionality, flexibility, and customization of Urlinsane and allow it to evolve alongside changing needs and technological advancements. Here's a structured summary of the plugin types and their roles in Urlinsane:
 
-| **Type**    | Count  | Decscription |
+|    Type     | Number  | Decscription |
 |-------------|--------|--------------|
 | Languages   |    9   | Language plugins enable support for various language models, expanding the application's linguistic capability. |
 | Keyboards   |    19  | Keyboard layout plugins allow us to target multiple languages and regions |
@@ -56,43 +65,6 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 ## Vowels
 ## Graphemes  
 
-
-
-
-
-1. Homoglyph Replacement Across Alphabets
-
-    Attackers take advantage of languages with characters that look similar to those in the target language (usually English). For instance, many Cyrillic letters closely resemble Latin ones, making it possible to create domains like “fаcebook.com” (using Cyrillic "а" instead of Latin "a") that look almost identical to the legitimate "facebook.com."
-    Other language scripts, such as Greek, also have similar characters, enabling a wide range of homograph attacks, which exploit look-alike characters from different languages.
-
-2. Misspellings and Common Typing Errors
-
-    Typo domains rely on common typing errors, especially for language-specific keyboards. For instance, a Spanish-speaking audience might accidentally type “goolge” instead of “google” due to familiarity with specific keystroke patterns.
-    Attackers might also replace accented letters or letters with diacritics in languages like Spanish, French, or German. For example, using "télégramme.com" for “telegram.com” could mislead French-speaking users.
-
-3. Phonetic and Linguistic Variations
-
-    Attackers exploit phonetic similarities, where the target name is replaced by a similar-sounding word or phrase in the target language. For instance, “secure” might be replaced by “sekur” or “bank” by “banq” for a French-speaking audience.
-    Additionally, attackers create typosquatted domains that reflect common dialectal or regional language spellings, targeting specific communities. For instance, “colour.com” might be typosquatted as “colur.com” to confuse UK users.
-
-4. Multilingual Blending
-
-    For international brands, typosquatting can incorporate hybrid language variations that mix English with local language elements. For instance, combining “amazon” with country-specific words like “amazonkaufen.com” (using the German word for “buy”) can mislead German-speaking users.
-
-5. Foreign Language Cognates and Loanwords
-
-    Attackers use cognates (words that look similar and have the same meaning across languages) or loanwords to appeal to international audiences. A word like “hotel” appears in many languages and can be combined with a typosquatting element like “h0tel.com” to fool non-native English speakers, as they may overlook minor changes in familiar words.
-
-6. Transliterations and Alternate Alphabets
-
-    Some typosquatters use transliterations, converting words from one alphabet to another in ways that resemble the original brand or name. For example, using Punycode (a way of encoding Unicode within the ASCII character set) allows for domain names like “xn--pple-43d.com,” which appears as “аpple.com” in the browser (with Cyrillic "а").
-    Transliteration is also common in languages like Arabic, Chinese, and Hindi, where brand names are spelled out using Latin characters or phonetically similar sounds to trick users.
-
-7. Local Language Targeting
-
-    Typosquatting often uses localized or region-specific spellings and slang to make a fake domain appear legitimate to a particular audience. For instance, Spanish speakers might see “amig0s.com” instead of “amigos.com,” where “0” is used in place of “o” to fool users who are accustomed to similar regional variations.
-
-By carefully crafting typosquatted names that resonate linguistically and culturally with the target audience, attackers enhance the believability of their fake domains or usernames, increasing the likelihood of successful phishing or other deceptive attacks.
 
 
 
