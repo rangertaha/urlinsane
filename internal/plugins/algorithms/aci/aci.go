@@ -49,10 +49,48 @@ func (n *Algo) Id() string {
 func (n *Algo) Name() string {
 	return NAME
 }
+func (n *Algo) Init(conf internal.Config) {
+	n.keyboards = conf.Keyboards()
+	n.languages = conf.Languages()
+	n.ctype = conf.Type()
+	n.config = conf
+}
 
 func (n *Algo) Description() string {
 	return DESCRIPTION
 }
+
+
+func (n *Algo) Domain(typo internal.Typo) (typos []internal.Typo) {
+	original := n.config.Target().Name()
+	for _, variant := range n.Func(original, ".") {
+		if original != variant {
+			typos = append(typos, typo.Clone(variant))
+		}
+	}
+	return
+}
+
+func (n *Algo) Package(typo internal.Typo) (typos []internal.Typo) {
+	original := n.config.Target().Name()
+	for _, variant := range n.Func(original, ".") {
+		if original != variant {
+			typos = append(typos, typo.Clone(variant))
+		}
+	}
+	return
+}
+
+func (n *Algo) String(typo internal.Typo) (typos []internal.Typo) {
+	original := n.config.Target().Name()
+	for _, variant := range n.Func(original, ".") {
+		if original != variant {
+			typos = append(typos, typo.Clone(variant))
+		}
+	}
+	return
+}
+
 
 func (n *Algo) Exec(in internal.Typo) (out []internal.Typo) {
 	original := in.Original().Repr()

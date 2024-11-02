@@ -19,12 +19,17 @@ import (
 )
 
 const (
-	ENTITY = "ENTITY"
-	DOMAIN = "DOMAIN"
+	PACKAGE = iota
+	DOMAIN
+	NAME
 )
 
+type Initializer interface {
+	Init(Config)
+}
+
 type Config interface {
-	Target() string
+	Target() Target
 	Keyboards() []Keyboard
 	Languages() []Language
 	Algorithms() []Algorithm
@@ -37,6 +42,7 @@ type Config interface {
 	Format() string
 	File() string
 	Count(...int64) int64
+	Type() int
 }
 
 type Algorithm interface {
@@ -44,12 +50,19 @@ type Algorithm interface {
 	Name() string
 	Description() string
 	Exec(Typo) []Typo
-
-	// Name(Typo) []Typo
-	// Email(Typo) []Typo
-	// Domain(Typo) []Typo
-	// Username(Typo) []Typo
 }
+
+type UsernameAlgo interface {
+	Username(Typo) []Typo
+}
+
+type DomainAlgo interface {
+	Domain(Typo) []Typo
+}
+
+// type Executor interface {
+// 	Exec(Typo) []Typo
+// }
 
 type Information interface {
 	Id() string
@@ -69,30 +82,31 @@ type Storage interface {
 
 type Output interface {
 	Id() string
-	Init(Config)
 	Description() string
-	Write(Typo) // Write(interface{})
+	Write(Typo)
 	Save()
 }
 
 type Target interface {
-	Repr() string
-	Live(...bool) bool
 	Meta() map[string]interface{}
 	Add(string, interface{})
+	Get(string) interface{}
+	Ready(...bool) bool
+	Live(...bool) bool
+	Name() string
+	Domain() (string, string, string)
+	Json() ([]byte, error)
 }
 
 type Typo interface {
-	Id(...int64) string
-	Keyboards() []Keyboard
-	Languages() []Language
 	Algorithm() Algorithm
-	Original() Domain
-	Variant() Domain
+	Original() Target
+	Variant() Target
 	Active(...bool) bool
-	New(string) Typo
-	Repr() string
-	// New(sub, domain, tld string) Typo
+	Clone(string) Typo
+	// GetType() string
+	// SetType(string)
+	String() string
 }
 
 // type Result interface {
@@ -105,13 +119,27 @@ type Typo interface {
 // }
 
 type Domain interface {
-	Subdomain() string
-	Domain() string
-	Suffix() string
-	Repr() string
+	GetMeta() map[string]interface{}
+	AddMeta(string, interface{})
+
+	GetUsername() string
+	SetUsername(string)
+
+	GetSubdomain() string
+	SetSubdomain(string)
+
+	GetDomain() string
+	SetDomain(string)
+
+	GetSuffix() string
+	SetSuffix(string)
+
+	GetUrl() string
+	SetUrl(string)
+
 	Live() bool
-	Meta() map[string]interface{}
-	Add(string, interface{})
+	Name() string
+	String() string
 }
 
 type Language interface {

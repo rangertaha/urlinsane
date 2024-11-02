@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package engine
+package urlinsane
 
 import (
 	"sync"
@@ -20,16 +20,16 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/config"
+	"github.com/rangertaha/urlinsane/internal/pkg/target"
 	"github.com/schollz/progressbar/v3"
 )
 
 type (
 
-	// DomainTypos ...
-	DomainTypos struct {
+	// Urlinsane ...
+	Urlinsane struct {
 		Config config.Config
-		Typos  map[string]internal.Typo
-		Count  int64
+		Typos  map[string]*internal.Typo
 
 		algoWG sync.WaitGroup
 		infoWG sync.WaitGroup
@@ -40,30 +40,42 @@ type (
 	}
 )
 
-// NewDomainTypos ...
-func NewDomainTypos(conf config.Config) DomainTypos {
-	return DomainTypos{
+// NewUrlinsane ...
+func New(conf config.Config) Urlinsane {
+	return Urlinsane{
 		Config: conf,
 	}
 }
 
+// Init typo config options
+func (t *Urlinsane) Init() {
+	// Used for deduping and updating the count
+	t.Typos = make(map[string]*internal.Typo)
+
+	internal.Banner()
+}
+
 // GenOptions typo config options
-func (t *DomainTypos) GenOptions() <-chan internal.Typo {
+func (t *Urlinsane) GenOptions() <-chan internal.Typo {
 	out := make(chan internal.Typo)
 	go func() {
-		// for _, lang := range t.Config.Languages() {
-		// 	for _, board := range t.Config.Keyboards() {
-		for _, algo := range t.Config.Algorithms() {
-			// fmt.Println(lang.Id(), board.Id(), algo.Id(), t.Config.Target())
-			domain := NewDomain(t.Config.Target())
-			out <- &Typo{
-				language:  t.Config.Languages(),
-				keyboard:  t.Config.Keyboards(),
-				algorithm: algo,
-				original:  domain,
+		for _, algorithm := range t.Config.Algorithms() {
+
+			if al, ok := algorithm.(internal.Initializer); ok {
+				al.Init(&t.Config)
 			}
-			// 	}
-			// }
+
+			// // fmt.Println("GenOptions: ", algorithm)
+			// domain := domain.New(t.Config.Target())
+
+			out <- &Typo{
+				// languages: t.Config.Languages(), // remove
+				// keyboards: t.Config.Keyboards(), // remove
+				algorithm: algorithm,
+				original:  t.Config.Target(), // remove and add to config: config.Domain()
+				variant:   &target.Target{},
+			}
+			// fmt.Println("GenOptions: ", algorithm)
 		}
 		close(out)
 	}()
@@ -71,7 +83,7 @@ func (t *DomainTypos) GenOptions() <-chan internal.Typo {
 }
 
 // Algorithms generate typos using the algorithm plugins
-func (ts *DomainTypos) Algorithms(in <-chan internal.Typo) <-chan internal.Typo {
+func (ts *Urlinsane) Algorithms(in <-chan internal.Typo) <-chan internal.Typo {
 	out := make(chan internal.Typo)
 
 	for w := 1; w <= ts.Config.Concurrency(); w++ {
@@ -79,10 +91,38 @@ func (ts *DomainTypos) Algorithms(in <-chan internal.Typo) <-chan internal.Typo 
 		go func(id int, in <-chan internal.Typo, out chan<- internal.Typo) {
 			defer ts.algoWG.Done()
 			for typo := range in {
+				algo := typo.Algorithm()
+
 				// Execute typo algorithm returning typos
-				for _, typ := range typo.Algorithm().Exec(typo) {
-					if typ.Variant() != nil {
-						out <- typ
+				if al, ok := algo.(internal.Initializer); ok {
+					al.Init(&ts.Config)
+				}
+
+				// if ts.Config.IsMode(internal.DOMAIN) {
+				// 	if fn, ok := algo.(internal.DomainAlgo); ok {
+				// 		exec = fn.Domain
+				// 	}
+
+				// }
+				// if ts.Config.IsMode(internal.USERNAME) {
+
+				// }
+				// if ts.Config.IsMode(internal.NAME) {
+
+				// }
+
+				for _, typ := range algo.Exec(typo) {
+
+					// Dedup typo variants by checking and adding to a map
+					if variant, ok := ts.Typos[typ.Variant().Name()]; !ok {
+						ts.Typos[typ.Variant().Name()] = variant
+
+						// Make sure the variant does not match the original
+						if typ.Variant().Name() != typ.Original().Name() {
+
+							// Cache and or reuse
+							out <- ts.Cache(typ)
+						}
 					}
 				}
 			}
@@ -90,41 +130,19 @@ func (ts *DomainTypos) Algorithms(in <-chan internal.Typo) <-chan internal.Typo 
 	}
 	go func() {
 		ts.algoWG.Wait()
-		close(out)
-	}()
-
-	return ts.Dedup(out)
-}
-
-func (ts *DomainTypos) Dedup(in <-chan internal.Typo) <-chan internal.Typo {
-	out := make(chan internal.Typo)
-	var typos = make(map[string]internal.Typo)
-
-	go func() {
-
-		// Create map of unique domains
-		for typo := range in {
-			typos[typo.Variant().Repr()] = typo
-		}
-		var count int64 = 0
-		for _, typ := range typos {
-			count++
-			typ.Id(count) // Set typo record number
-		}
-		// Save the total count in the config for output plugins to use
-		ts.Config.Count(count)
-
-		// Return all typos via channels
-		for _, typ := range typos {
-			out <- typ
-		}
+		ts.Config.Count(int64(len(ts.Typos)))
 		close(out)
 	}()
 
 	return out
 }
 
-func (t *DomainTypos) Information(in <-chan internal.Typo) <-chan internal.Typo {
+func (t *Urlinsane) Cache(typo internal.Typo) internal.Typo {
+
+	return typo
+}
+
+func (t *Urlinsane) Information(in <-chan internal.Typo) <-chan internal.Typo {
 	out := make(chan internal.Typo)
 	for w := 1; w <= t.Config.Concurrency(); w++ {
 		t.infoWG.Add(1)
@@ -144,7 +162,7 @@ func (t *DomainTypos) Information(in <-chan internal.Typo) <-chan internal.Typo 
 }
 
 // InfoChain creates a chain of information-gathering functions
-func (t *DomainTypos) InfoChain(funcs []internal.Information, in <-chan internal.Typo) <-chan internal.Typo {
+func (t *Urlinsane) InfoChain(funcs []internal.Information, in <-chan internal.Typo) <-chan internal.Typo {
 	if len(funcs) == 0 {
 		return in
 	}
@@ -153,6 +171,9 @@ func (t *DomainTypos) InfoChain(funcs []internal.Information, in <-chan internal
 	xfunc, funcs = funcs[len(funcs)-1], funcs[:len(funcs)-1]
 	go func() {
 		for i := range in {
+			if fn, ok := xfunc.(internal.Initializer); ok {
+				fn.Init(&t.Config)
+			}
 			time.Sleep(t.Config.Random() * t.Config.Delay())
 			out <- xfunc.Exec(i)
 		}
@@ -166,12 +187,12 @@ func (t *DomainTypos) InfoChain(funcs []internal.Information, in <-chan internal
 	return out
 }
 
-func (t *DomainTypos) Storage(in <-chan internal.Typo) <-chan internal.Typo {
+func (t *Urlinsane) Storage(in <-chan internal.Typo) <-chan internal.Typo {
 
 	return in
 }
 
-func (t *DomainTypos) Progress(in <-chan internal.Typo) <-chan internal.Typo {
+func (t *Urlinsane) Progress(in <-chan internal.Typo) <-chan internal.Typo {
 	if t.Config.Progress() {
 		out := make(chan internal.Typo)
 		go func(in <-chan internal.Typo, out chan<- internal.Typo) {
@@ -189,28 +210,27 @@ func (t *DomainTypos) Progress(in <-chan internal.Typo) <-chan internal.Typo {
 	return in
 }
 
-func (t *DomainTypos) Filter(in <-chan internal.Typo) <-chan internal.Typo {
-
-	return in
-}
-
-func (t *DomainTypos) Output(in <-chan internal.Typo) {
-	t.Config.Output().Init(&t.Config)
-	for c := range in {
-		// Write output
-		if c != nil {
-			t.Config.Output().Write(c)
-		}
+func (t *Urlinsane) Output(in <-chan internal.Typo) {
+	// Initialize output plugin and provide config
+	if out, ok := t.Config.Output().(internal.Initializer); ok {
+		out.Init(&t.Config)
 	}
+
+	// Stream typo records to the output plugin
+	for c := range in {
+		t.Config.Output().Write(c)
+	}
+
+	// Save typo records collected by the output plugin
 	t.Config.Output().Save()
 }
 
-func (t *DomainTypos) Execute() {
+func (t *Urlinsane) Start() {
+	t.Init()
 	typos := t.GenOptions()
 	typos = t.Algorithms(typos)
 	typos = t.Information(typos)
 	typos = t.Storage(typos)
 	typos = t.Progress(typos)
-	typos = t.Filter(typos)
 	t.Output(typos)
 }

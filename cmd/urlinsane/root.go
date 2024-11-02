@@ -21,6 +21,7 @@ import (
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
+	"github.com/rangertaha/urlinsane/internal/config"
 	"github.com/spf13/cobra"
 )
 
@@ -92,24 +93,22 @@ import (
 // }
 
 // var cliOptions bytes.Buffer
+var Config config.Config
 
 // rootCmd represents the typo command
 var rootCmd = &cobra.Command{
 	Use:   "urlinsane [flags] [name]",
-	Short: "Generates and detects possible typosquatting domain names and arbitrary names",
-	Long: `Urlinsane is used to perform or detect typosquatting, brandjacking, URL hijacking, 
-	fraud, phishing attacks, corporate espionage, and threat intelligence.
-
-Urlinsane is built around linguistic modeling, natural language processing, 
-information gathering, and analysis. It's easily extensible with plugins for typo algorithms, 
-Information gathering and analysis. Its linguistic models also allow us to easily add new 
-languages and keyboard layouts. Currently, it supports 9 languages, 19 keyboard layouts, 
-24 algorithms, 8 information gathering, and 2 analysis modules.
+	Short: "Urlinsane is an advanced cybersecurity typosquatting tool",
+	Long: `URLInsane is a powerful command-line tool crafted to identify typo-squatting across domains, 
+  usernames, and software packages. Utilizing advanced algorithms, information gathering, and data analysis, 
+  it uncovers potentially harmful variations of a target's named entity that cybercriminals could exploit. 
+  This tool is essential for combating typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, 
+  corporate espionage, and enhancing threat intelligence.
 
 `,
-	// PersistentPreRun: func(cmd *cobra.Command, args []string) {
-	// 	fmt.Printf("Inside rootCmd PersistentPreRun with args: %v\n", args)
-	// },
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+
+	},
 	//   PreRun: func(cmd *cobra.Command, args []string) {
 	// 	fmt.Printf("Inside rootCmd PreRun with args: %v\n", args)
 	//   },
@@ -145,6 +144,7 @@ func Execute() {
 	}
 }
 func init() {
+	
 	// // fmt.Println(languages.Languages())
 	// helpOptions := HelpOptions{
 	// 	languages.Languages(),
@@ -173,13 +173,17 @@ func init() {
 	// rootCmd.PersistentFlags().Bool("domain", false, "IDs of keyboard layouts to use of the given languages")
 	// rootCmd.MarkFlagsMutuallyExclusive("email", "lib", "username", "domain")
 
-	// Options
-	rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"all"}, "IDs of languages to use for linguistic algorithms")
-	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"all"}, "IDs of keyboard layouts to use of the given languages")
-
 	// Plugins
-	rootCmd.PersistentFlags().StringArrayP("typos", "t", []string{"all"}, "IDs of typo algorithms to use for generating typos")
-	rootCmd.PersistentFlags().StringArrayP("info", "i", []string{"all"}, "IDs of info gathering functions to apply")
+	rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"all"}, "IDs of languages to use for linguistic algorithms \n Use --list-languages to view full list of supported languages and thier IDs\n\n")
+	// rootCmd.PersistentFlags().Bool("list-languages", false, "List languages and thier IDs")
+
+	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"all"}, "IDs of keyboard layouts to use of the given languages \n Use --list-keyboards to view full list of supported keyboard layouts and thier IDs \n\n")
+	// rootCmd.PersistentFlags().Bool("list-keyboards", false, "List keyboards and their IDs")
+
+	rootCmd.PersistentFlags().StringArrayP("algorithms", "a", []string{"all"}, "IDs of typo algorithms to use for generating typos \n Use --list-algorithms to view full list of supported algorithms and thier IDs \n\n")
+	rootCmd.PersistentFlags().Bool("list", false, "List plugins/IDs for algorithms, langauages, information, and keyboards")
+
+	// rootCmd.PersistentFlags().StringArrayP("info", "i", []string{"all"}, "IDs of info gathering functions to apply")
 
 	// Processing
 	rootCmd.PersistentFlags().Bool("no-cache", true, "Prevents caching of results")
@@ -196,5 +200,5 @@ func init() {
 	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename defaults to stdout")
 	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv,tsv,text,html,md)")
 
-	rootCmd.AddCommand(domainCmd)
+	
 }

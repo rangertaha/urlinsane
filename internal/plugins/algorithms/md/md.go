@@ -31,28 +31,72 @@ const (
 )
 
 type Algo struct {
-	types []string
+	ctype     int
+	config    internal.Config
+	languages []internal.Language
+	keyboards []internal.Keyboard
 }
 
 func (n *Algo) Id() string {
 	return CODE
 }
-func (n *Algo) IsType(str string) bool {
-	return algorithms.IsType(n.types, str)
+
+func (n *Algo) Init(conf internal.Config) {
+	n.keyboards = conf.Keyboards()
+	n.languages = conf.Languages()
+	n.ctype = conf.Type()
+	n.config = conf
 }
 
 func (n *Algo) Name() string {
-	return "Missing Dot"
+	return NAME
 }
 
 func (n *Algo) Description() string {
-	return "Created by omitting a dot from the name"
+	return DESCRIPTION
 }
 
 func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
-	for _, variant := range n.Func(typo.Original().Repr(), ".") {
-		if typo.Original().Repr() != variant {
-			typos = append(typos, typo.New(variant))
+	if n.config.Type() == internal.DOMAIN {
+		return n.domain(typo)
+	}
+
+	if n.config.Type() == internal.PACKAGE {
+		return n.code(typo)
+	}
+
+	if n.config.Type() == internal.NAME {
+		return n.name(typo)
+	}
+	return
+}
+
+
+func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
+	original := n.config.Target().Name()
+	for _, variant := range n.Func(original, ".") {
+		if original != variant {
+			typos = append(typos, typo.Clone(variant))
+		}
+	}
+	return
+}
+
+func (n *Algo) code(typo internal.Typo) (typos []internal.Typo) {
+	original := n.config.Target().Name()
+	for _, variant := range n.Func(original, ".") {
+		if original != variant {
+			typos = append(typos, typo.Clone(variant))
+		}
+	}
+	return
+}
+
+func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
+	original := n.config.Target().Name()
+	for _, variant := range n.Func(original, ".") {
+		if original != variant {
+			typos = append(typos, typo.Clone(variant))
 		}
 	}
 	return
@@ -72,8 +116,6 @@ func (n *Algo) Func(str, character string) (results []string) {
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{
-			types: []string{algorithms.ENTITY, algorithms.DOMAIN},
-		}
+		return &Algo{}
 	})
 }

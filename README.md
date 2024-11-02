@@ -6,10 +6,13 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/rangertaha/urlinsane?style=flat-square)](https://goreportcard.com/report/github.com/rangertaha/urlinsane) [![Go Doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](http://godoc.org/github.com/rangertaha/urlinsane) [![PkgGoDev](https://pkg.go.dev/badge/github.com/rangertaha/urlinsane)](https://pkg.go.dev/github.com/github.com/rangertaha/urlinsane) [![Release](https://img.shields.io/github/release/rangertaha/urlinsane.svg?style=flat-square)](https://github.com/rangertaha/urlinsane/releases/latest) [![Build Status](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml/badge.svg)](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml)
 
 
+URLInsane is a robust command-line tool designed to detect typosquatting across domains, arbitrary names, usernames, and software packages. By leveraging advanced algorithms, information-gathering techniques, and data analysis, it identifies potentially harmful variations of targeted entities that cybercriminals might exploit. Essential for defending against typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, and corporate espionage, URLInsane also enhances threat intelligence capabilities.
+
+Featuring a plugin-based multilingual permutation engine, URLInsane supports various keyboard layouts for multiple languages. Its extensible plugin system allows easy addition of new capabilities. Currently, it includes plugins for 24 algorithms, 8 information gathering methods, 19 keyboard layouts, 9 languages, and 4 output formats. Originally developed in Python, URLInsane was built in Go to enhance speed, concurrency, and portability.
 
 
-Urlinsane is an advanced cybersecurity tool designed to protect businesses from the threats of typo-squatting. By monitoring domain registrations in real time, it identifies potentially harmful variations of a brand's domain name that cybercriminals might exploit. With features like automated alerts, risk assessment reports, and integrated domain blocking, TypoSquatGuard helps organizations safeguard their online presence, ensuring that customers are directed to legitimate websites and reducing the risk of phishing attacks. Its intuitive dashboard and actionable insights make it an essential tool for any brand looking to enhance its digital security posture.
 
+Urlinsane is a powerful command-line tool designed for the detection of typo-squatting across domains, email addresses, usernames, and software packages. Utilizing  Urlinsane scans for potential typosquatted variants by applying advanced typo squatting algorithms, information gathering, and data analysis.  It identifies potentially harmful variations of a victim's domain name, email address, software packages, and that cybercriminals might exploit. 
 
 
 

@@ -14,8 +14,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package internal
 
+import "fmt"
+
 const (
-	// VERSION format is loosely based on 
+	// VERSION format is loosely based on
 	// [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 	VERSION = "0.8.0"
 
@@ -29,5 +31,11 @@ const (
 | |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
  \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
 
- Version: ` + VERSION + "\n\n"
+ Version: %s
+ 
+ `
 )
+
+func Banner() {
+	fmt.Printf(LOGO, VERSION)
+}

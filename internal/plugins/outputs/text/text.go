@@ -61,7 +61,6 @@ func (n *Text) Init(conf internal.Config) {
 }
 
 func (n *Text) getHeader() (row table.Row) {
-	row = append(row, "ID")
 	row = append(row, "TYPE")
 	row = append(row, "TYPO")
 
@@ -75,20 +74,20 @@ func (n *Text) getHeader() (row table.Row) {
 }
 
 func (n *Text) getRow(typo internal.Typo) (row table.Row) {
-	row = append(row, typo.Id())
 	if n.config.Verbose() {
 		row = append(row, typo.Algorithm().Name())
 	} else {
 		row = append(row, strings.ToUpper(typo.Algorithm().Id()))
 	}
 
-	row = append(row, typo.Variant().Repr())
+	row = append(row, typo.String())
 
 	for _, info := range n.config.Information() {
 		for _, header := range info.Headers() {
 			meta := typo.Variant().Meta()
 			row = append(row, meta[header])
 		}
+
 	}
 
 	return
@@ -134,6 +133,9 @@ func (n *Text) Write(in internal.Typo) {
 func (n *Text) Save() {
 	n.table.AppendFooter(table.Row{"Total", n.config.Count()})
 	n.table.SetStyle(StyleDefault)
+
+	// We need a little space between the progress bar and this output
+	fmt.Println("\n")
 	output := n.table.Render()
 
 	if n.config.File() != "" {
