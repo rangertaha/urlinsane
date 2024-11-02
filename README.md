@@ -16,7 +16,6 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 
 ## Targets
 
-
 |   Type   | Decscription |
 |----------|--------|
 | Names    | Generating variants on arbitrary names without assuming it's a domain  |
@@ -33,10 +32,10 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 
 
 
-## Internals
+# Internals
 
 
-# Plugins
+## Plugins
 
 Plugins play a crucial role in extending the functionality, flexibility, and customization of Urlinsane and allow it to evolve alongside changing needs and technological advancements. Here's a structured summary of the plugin types and their roles in Urlinsane:
 
@@ -51,7 +50,7 @@ Plugins play a crucial role in extending the functionality, flexibility, and cus
 
 
 
-# Languages
+### Languages
 
 In typosquatting, language plays a significant role in manipulating legitimate terms and names to create deceptive variations that appear familiar to the target audience. Attackers use linguistic techniques to construct these variations in ways that exploit the visual similarity or familiarity of certain languages and alphabets.
 
@@ -66,15 +65,15 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 | Hebrew    |    1      |           |            |           |              |   |   |   |    | 
 | Persian   |    1      |           |            |           |              |   |   |   |    | 
 
-## Keyboards
-## Homoglyphs
-## Homophones
-## Antonyms
-## Misspellings 
-## Cardinal 
-## Ordinal 
-## Vowels
-## Graphemes  
+### Keyboards
+### Homoglyphs
+### Homophones
+### Antonyms
+### Misspellings 
+### Cardinal 
+### Ordinal 
+### Vowels
+### Graphemes  
 
 
 
