@@ -2,16 +2,16 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/rangertaha/urlinsane?style=flat-square)](https://goreportcard.com/report/github.com/rangertaha/urlinsane) [![Go Doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](http://godoc.org/github.com/rangertaha/urlinsane) [![PkgGoDev](https://pkg.go.dev/badge/github.com/rangertaha/urlinsane)](https://pkg.go.dev/github.com/github.com/rangertaha/urlinsane) [![Release](https://img.shields.io/github/release/rangertaha/urlinsane.svg?style=flat-square)](https://github.com/rangertaha/urlinsane/releases/latest) [![Build Status](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml/badge.svg)](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml)
 
-Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage, supply chain attacks, and threat intelligence. It's a command-line tool designed for the detection of typo-squatting across domains, usernames, and software packages. It scans for potential typosquatted variants by applying advanced typo squatting algorithms, information gathering, and data analysis.  It identifies potentially harmful variations of a victim's domain name, arbitrary names, and software packages that cybercriminals might exploit. 
+Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage, supply chain attacks, and threat intelligence. It's a command-line tool for detecting typosquatting across domains, usernames, and software packages. It scans for potential typosquatting variants by applying advanced typo squatting algorithms, information gathering, and data analysis.  It identifies potentially harmful variations of a victim's domain name, arbitrary names, and software packages that cybercriminals might exploit. 
 
 
 
 ## Features
 * Fast execution time
-* Cuncurrency in generating typos and collection informaiton
+* Concurrency in generating typos and collecting information
 * Distribute queries to multiple DNS Servers
-* Single downloadable binary with no system depedencies
-* Plugin architecture for extensability
+* Single downloadable binary with no system dependencies
+* Plugin architecture for extensibility
 * Multi-lingual language modeling
 
 ## Targets
@@ -19,10 +19,10 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 
 |   Type   | Decscription |
 |----------|--------|
-| Names    | Generating variants on arbitrary names without assuming its a domain  |
-| Domains  | Domain specific typosquating variants and information gathering  |
-| Usernames| Finding variants of usernames online or on a specifc site |
-| Packages | Finding opensource software packages or libaries and variants |
+| Names    | Generating variants on arbitrary names without assuming it's a domain  |
+| Domains  | Domain-specific typosquatting variants and information gathering  |
+| Usernames| Finding variants of usernames online or on a specific site |
+| Packages | Finding opensource software packages or libraries and variants |
 
 
 ## Installation
@@ -40,14 +40,14 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 
 Plugins play a crucial role in extending the functionality, flexibility, and customization of Urlinsane and allow it to evolve alongside changing needs and technological advancements. Here's a structured summary of the plugin types and their roles in Urlinsane:
 
-|    Type     | Number  | Decscription |
+|    Type     | Number  | Description |
 |-------------|--------|--------------|
 | Languages   |    9   | Language plugins enable support for various language models, expanding the application's linguistic capability. |
 | Keyboards   |    19  | Keyboard layout plugins allow us to target multiple languages and regions |
 | Algorithms  |    24  | Used to generate typo variants for domains, arbitrary names, and software packages|
-| Information |    8   | Used for gather data on domains, software libraries, and named entities|
+| Information |    8   | Used for gathering data on domains, software libraries, and named entities|
 | Outputs     |    6   | Formats data for display and or save outputs to files, improving usability and reporting |
-| Database    |    1   | It caches and saves scan results and boosting performance and enabling efficient data retrieval.|
+| Database    |    1   | It caches and saves scan results boosting performance and enabling efficient data retrieval.|
 
 
 
@@ -156,7 +156,7 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 DNS TXT records (Text Records) are a type of DNS record used to store arbitrary text data associated with a domain. Originally intended for descriptive text, they’re now widely used for various purposes, including domain verification, email authentication, and configuration data. TXT records allow domain owners to associate key-value data with their domain, which can be retrieved by external systems for verification and configuration purposes.
 
-DNS MX records (Mail Exchange records) are a type of DNS record used to route email for a domain to designated mail servers. They help direct emails sent to a domain (e.g., user@example.com) to the correct mail servers that handle receiving and processing the email.
+DNS MX records (Mail Exchange records) are a type of DNS record used to route email from a domain to designated mail servers. They help direct emails sent to a domain (e.g., user@example.com) to the correct mail servers that handle receiving and processing the email.
 
 
 
