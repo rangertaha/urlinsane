@@ -33,7 +33,7 @@ const (
 
  Version: %s
  
- `
+`
 )
 
 func Banner() {

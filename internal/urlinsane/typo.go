@@ -26,42 +26,6 @@ type Typo struct {
 	active    bool
 }
 
-// func (t *Typo) Id(num ...int64) (id string) {
-// 	if len(num) > 0 {
-// 		t.id = num[0]
-// 	}
-
-// 	if t.id > 0 {
-// 		return fmt.Sprintf("%v", t.id)
-// 	}
-
-// 	// if t.keyboard != nil {
-// 	// 	id = fmt.Sprintf("%s%s", id, t.keyboard.Id())
-// 	// }
-// 	// if t.language != nil {
-// 	// 	id = fmt.Sprintf("%s%s", id, t.language.Id())
-// 	// }
-// 	if t.algorithm != nil {
-// 		id = fmt.Sprintf("%s%s", id, t.algorithm.Id())
-// 	}
-// 	if t.original != nil {
-// 		id = fmt.Sprintf("%s%s", id, t.original.String())
-// 	}
-// 	if t.variant != nil {
-// 		id = fmt.Sprintf("%s%s", id, t.variant.String())
-// 	}
-
-// 	return
-// }
-
-// func (t *Typo) Keyboards() []internal.Keyboard {
-// 	return t.keyboards
-// }
-
-// func (t *Typo) Languages() []internal.Language {
-// 	return t.languages
-// }
-
 func (t *Typo) Algorithm() internal.Algorithm {
 	return t.algorithm
 }
@@ -74,19 +38,9 @@ func (t *Typo) Variant() internal.Target {
 	return t.variant
 }
 
-// func (t *Typo) SetType(val string) {
-// 	t.ttype = val
-// }
 
-// func (t *Typo) GetType() string {
-// 	return t.ttype
-// }
-
-func (t *Typo) Active(a ...bool) bool {
-	if len(a) > 0 {
-		t.active = a[0]
-	}
-	return t.active
+func (t *Typo) Active() bool {
+	return t.variant.Live()
 }
 
 func (t *Typo) Clone(name string) internal.Typo {

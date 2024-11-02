@@ -12,21 +12,39 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package acs
+package hr
 
-// Adjacent character substitution is where an attacker swaps characters
-// that are next to each other on a keyboard.
+// Homoglyph replacement in typosquatting involves substituting letters in a
+// legitimate domain name, username, brand, or package name with visually similar
+// characters (homoglyphs) from different alphabets or symbols. The aim is to
+// create misleading, but seemingly identical or near-identical names that can
+// trick users into thinking they're accessing a legitimate resource, when in
+// fact, they’re visiting a malicious or spoofed one. This tactic is widely
+// used in phishing attacks, brand impersonation, and other social engineering
+// scams.
 
-// For example, if a user intends to visit "example.com," a typo-squatter
-// might register "exampel.com" or "exmaple.com." These small alterations
-// can trick users into clicking on the malicious sites, leading to phishing
-// scams, malware downloads, or other harmful activities.
+// homoglyphFunc when one or more characters that look similar to another
+// character but are different are called homogylphs. An example is that the
+// lower case l looks similar to the numeral one, e.g. l vs 1. For example,
+// google.com becomes goog1e.com.
 
-// Adjacent character substitution exploits common typing errors, making it a
-// particularly effective tactic, as users may not notice the difference,
-// especially if they are typing quickly. It highlights the importance of
-// vigilance and cybersecurity measures to protect against such deceptive
-// practices.
+// INPUT:  g.com
+//
+// TYPE    TYPO  
+// ---------------
+//  HR      ģ.com 
+//  HR      q.com 
+//  HR      ɢ.com 
+//  HR      ɡ.com 
+//  HR      ԍ.com 
+//  HR      ġ.com 
+//  HR      ğ.com 
+//  HR      ց.com 
+//  HR      ǵ.com 
+// ---------------
+//  TOTAL   9  
+
+
 
 import (
 	"fmt"
@@ -37,9 +55,9 @@ import (
 )
 
 const (
-	CODE        = "acs"
-	NAME        = "Adjacent Character Substitution"
-	DESCRIPTION = "Replaces adjacent character from the keyboard"
+	CODE        = "hr"
+	NAME        = "Homoglyphs Replacement"
+	DESCRIPTION = "Replaces characters with characters that look similar"
 )
 
 type Algo struct {
@@ -119,32 +137,47 @@ func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
 	return
 }
 
+// AlgoFunc typos are when two consecutive characters are swapped in the original domain name.
+// Example: www.examlpe.com
 func (n *Algo) Func(original string) (results []string) {
 	for i, char := range original {
-		for _, board := range n.keyboards {
-			for _, kchar := range board.Adjacent(string(char)) {
+		for _, language := range n.languages {
+			for _, kchar := range language.SimilarChars(string(char)) {
 				variant := fmt.Sprint(original[:i], kchar, original[i+1:])
 				results = append(results, variant)
 			}
 		}
 	}
-	return results
+
+	return
 }
 
-// AlgoFunc typos are when characters are replaced in the original domain name by their
-// adjacent ones on a specific keyboard layout, e.g., www.ezample.com, where “x” was replaced by the adjacent
-// character “z” in a the QWERTY keyboard layout.
-// func AlgoFunc(tc Result) (results []Result) {
-// 	for _, keyboard := range tc.Keyboards {
-// 		for i, char := range tc.Original.Domain {
-// 			for _, key := range keyboard.Adjacent(string(char)) {
-// 				domain := tc.Original.Domain[:i] + string(key) + tc.Original.Domain[i+1:]
-// 				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
-// 				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
+// func homoglyphFunc(tc Result) (results []Result) {
+// 	for i, char := range tc.Original.Domain {
+// 		// Check the alphabet of the language associated with the keyboard for
+// 		// Algo
+// 		for _, keyboard := range tc.Keyboards {
+// 			for _, kchar := range keyboard.Language.SimilarChars(string(char)) {
+// 				domain := fmt.Sprint(tc.Original.Domain[:i], kchar, tc.Original.Domain[i+1:])
+// 				if tc.Original.Domain != domain {
+// 					dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
+// 					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
+// 				}
 // 			}
 // 		}
+// 		// Check languages given with the (-l --language) CLI options for Algo.
+// 		for _, language := range tc.Languages {
+// 			for _, lchar := range language.SimilarChars(string(char)) {
+// 				domain := fmt.Sprint(tc.Original.Domain[:i], lchar, tc.Original.Domain[i+1:])
+// 				if tc.Original.Domain != domain {
+// 					dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
+// 					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
+// 				}
+// 			}
+// 		}
+
 // 	}
-// 	return
+// 	return results
 // }
 
 // Register the plugin

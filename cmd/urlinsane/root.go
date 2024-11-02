@@ -198,7 +198,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolP("progress", "p", false, "Show progress bar")
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Show more details and remove truncated columns")
 	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename defaults to stdout")
-	rootCmd.PersistentFlags().StringP("format", "o", "text", "Output format (csv,tsv,text,html,md)")
+	rootCmd.PersistentFlags().StringP("format", "o", "table", "Output format: (csv,tsv,table,text,html,md)")
 
 	
 }

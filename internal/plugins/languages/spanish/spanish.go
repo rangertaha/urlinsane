@@ -105,6 +105,77 @@ var (
 		[]string{"punto", "."},
 	}
 
+// 	Here’s a list of some commonly known Spanish homophones—words that sound alike but have different meanings or spellings:
+
+//     A (preposition) / Ha (form of haber)
+//         a (to): Voy a la tienda (I’m going to the store)
+//         ha (he/she/it has): Ella ha comido (She has eaten)
+
+//     Ahí (there) / Ay (exclamation) / Hay (there is/are)
+//         ahí: El libro está ahí (The book is there)
+//         ay: ¡Ay, qué dolor! (Oh, what pain!)
+//         hay: Hay comida en la mesa (There is food on the table)
+
+//     Abría (opened) / Habría (would have)
+//         abría: Él abría la puerta (He opened the door)
+//         habría: Ella habría ido (She would have gone)
+
+//     Baca (luggage rack) / Vaca (cow)
+//         baca: La baca del coche está llena (The car’s luggage rack is full)
+//         vaca: La vaca está en el campo (The cow is in the field)
+
+//     Bello (beautiful) / Vello (body hair)
+//         bello: El paisaje es bello (The landscape is beautiful)
+//         vello: Tiene vello en los brazos (He/she has hair on their arms)
+
+//     Bienes (goods) / Vienes (you come)
+//         bienes: Los bienes son importantes (The goods are important)
+//         vienes: ¿Vienes a la fiesta? (Are you coming to the party?)
+
+//     Caza (hunting) / Casa (house)
+//         caza: La caza es su pasatiempo (Hunting is his/her hobby)
+//         casa: La casa es bonita (The house is beautiful)
+
+//     Cierra (closes) / Sierra (saw, mountain range)
+//         cierra: Ella cierra la puerta (She closes the door)
+//         sierra: La sierra es hermosa (The mountain range is beautiful)
+
+//     Cima (summit) / Sima (abyss)
+//         cima: Llegaron a la cima (They reached the summit)
+//         sima: Cayó en la sima (He/she fell into the abyss)
+
+//     Echo (I throw) / Hecho (fact)
+//         echo: Echo la basura (I throw away the trash)
+//         hecho: Es un hecho importante (It’s an important fact)
+
+//     Haya (subjunctive form of haber) / Halla (finds) / Aya (nanny)
+//         haya: Espero que haya comida (I hope there’s food)
+//         halla: Ella halla la solución (She finds the solution)
+//         aya: La aya cuida a los niños (The nanny takes care of the children)
+
+//     Hola (hello) / Ola (wave)
+//         hola: Hola, ¿cómo estás? (Hello, how are you?)
+//         ola: La ola es grande (The wave is big)
+
+//     Hora (hour) / Ora (pray)
+//         hora: ¿Qué hora es? (What time is it?)
+//         ora: Ella ora todos los días (She prays every day)
+
+//     Rallar (to grate) / Rayar (to scratch or line)
+//         rallar: Voy a rallar el queso (I’m going to grate the cheese)
+//         rayar: Voy a rayar el papel (I’m going to scratch the paper)
+
+//     Tubo (tube) / Tuvo (he/she/it had)
+//         tubo: Necesito un tubo para el agua (I need a tube for the water)
+//         tuvo: Él tuvo una idea (He had an idea)
+
+//     Votar (to vote) / Botar (to throw away)
+//         votar: Voy a votar en las elecciones (I’m going to vote in the elections)
+//         botar: Voy a botar la basura (I’m going to throw away the trash)
+
+// These examples cover a wide range of commonly used Spanish homophones. They’re important to distinguish due to their different meanings, even though they sound identical.
+
+
 	// esAntonyms are words opposite in meaning to another (e.g. bad and good ).
 	esAntonyms = map[string][]string{
 		"bueno": []string{"malo"},
