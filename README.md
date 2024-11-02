@@ -17,141 +17,38 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 
 It's a plugin-based multilingual permutation engine that supports keyboard layouts for each language. The plugin system allows us to easily extend its capabilities. Currently, it supports plugins for algorithms (24), information gathering (8), keyboard layouts (19), languages (9), and output (4) formats. Originally, I wrote similar tools in Python but was not happy with the performance. This tool was built in Golang to take advantage of its speed, concurrency, and portability (see [`Speed`](#Speed).
 
+# Features
+* Fast execution time
+* Cuncurrency in generating typos and collection informaiton
+* Distribute queries to multiple DNS Servers
+* Single downloadable binary with no system depedencies
+* Plugin architecture for extensability
+* Multi-lingual language modeling
 
 
 
-| **Plugins** |  count |
-|-------------|--------|
-| Languages   |    9   |
-| Keyboards   |    19  |
-| Algorithms  |    24  |
-| Information |    8   |
-| Analysis    |    2   |
+# Plugins
+
+Plugins play a crucial role in extending the functionality, flexibility, and customization of Urlinsane and allow it to evolve alongside changing needs and technological advancements.
+
+
+Here's a structured summary of the plugin types and their roles in the application:
+| **Type**    | Count  | Decscription |
+|-------------|--------|--------------|
+| Languages   |    9   | Language plugins enable support for various language models, expanding the application's linguistic capability. |
+| Keyboards   |    19  | Keyboard layout plugins allow us to target multiple languages and regions |
+| Algorithms  |    24  | Used to generate typo variants for domains, arbitrary names, and software packages|
+| Information |    8   | Used for gather data on domains, software libraries, and named entities|
+| Outputs     |    6   | Formats data for display and or save outputs to files, improving usability and reporting |
+| Database    |    1   | It caches and saves scan results and boosting performance and enabling efficient data retrieval.|
 
 
 
- 
+# Languages
 
+In typosquatting, language plays a significant role in manipulating legitimate terms and names to create deceptive variations that appear familiar to the target audience. Attackers use linguistic techniques to construct these variations in ways that exploit the visual similarity or familiarity of certain languages and alphabets.
 
-## Features
-
-* Binary executable, written in Go with no dependencies.
-* Will have all the functionality of URLCrazy and DNSTwist.
-* Contains 24 typosquatting algorithms and 10 extra functions to retrieve additional data such as IP to geographic location, DNS lookups and more
-* Modular architecture for language, keyboard, typo algorithm, and functions extensibility.
-* Supports multiple keyboard layouts found in English, Spanish, Russian, Armenian, Finnish, French, Hebrew, Persian, and Arabic.
-* Supports multiple languages with the ability to add more languages with ease.
-* Concurrent function (**-x --funcs**) workers to retrieve additional info on each record.
-* Concurrent typo squatting workers.
-
-
-
-## Example
-
-Finds "character omission" typos for the given domain. **-t** specifies the type of typo you want to use and defaults to 
-all 24. **-x** specifies the extra information retrieval functions to use and defaults to non-internet required functions. 
- 
-```bash
-$ urlinsane typo google.com -t co -x all 
-
- _   _  ____   _      ___
-| | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
-| | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
-| |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
- \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
-
- Version: 0.7.0
-
-   LIVE  | TYPE |   TYPO    | SUFFIX | LD |   IDNA    |      IPV4      |           IPV6           | SIZE |    REDIRECT    |        MX        |                                            TXT                                             |           NS           | CNAME | SIM |      GEO       
----------+------+-----------+--------+----+-----------+----------------+--------------------------+------+----------------+------------------+--------------------------------------------------------------------------------------------+------------------------+-------+-----+----------------
-  ONLINE | CO   | googl.com | com    |  1 | googl.com | 172.217.10.228 | 2607:f8b0:4006:813::2004 |      | www.google.com |                  | v=spf1 -all                                                                                | ns3.google.com         |       |     | United States  
-         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns2.google.com         |       |     |                
-         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns4.google.com         |       |     |                
-         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns1.google.com         |       |     |                
-  ONLINE | CO   | oogle.com | com    |  1 | oogle.com | 104.28.29.162  | 2606:4700:30::681c:1da2  |      |                | mx.zoho.com      | brave-ledger-verification=2dd5f8cc6d7ac0d6d6f27de1c07629a8e329ecdebdc7303506854fc3eec20968 | gwen.ns.cloudflare.com |       |     | United States  
-         |      |           |        |    |           | 104.28.28.162  | 2606:4700:30::681c:1ca2  |      |                | mx2.zoho.com     | v=spf1 +a +mx +ip4:204.9.184.9 +include:zoho.com ~all                                      | amir.ns.cloudflare.com |       |     |                
-  ONLINE | CO   | gogle.com | com    |  1 | gogle.com | 172.217.10.132 | 2607:f8b0:4006:810::2004 |      | www.google.com |                  | v=spf1 -all                                                                                | ns4.google.com         |       |     | United States  
-         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns2.google.com         |       |     |                
-         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns1.google.com         |       |     |                
-         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns3.google.com         |       |     |                
-  ONLINE | CO   | goole.com | com    |  1 | goole.com | 217.160.0.201  |                          |      | www.goole.com  | mx00.1and1.co.uk |                                                                                            | ns1083.ui-dns.com      |       |     | Germany        
-         |      |           |        |    |           |                |                          |      |                | mx01.1and1.co.uk |                                                                                            | ns1083.ui-dns.biz      |       |     |                
-         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns1083.ui-dns.de       |       |     |                
-         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns1083.ui-dns.org      |       |     |                
-  ONLINE | CO   | googe.com | com    |  1 | googe.com | 50.63.202.32   |                          |      |                |                  | v=spf1 -all                                                                                | ns2.yourdoor.com       |       |     | United States  
-         |      |           |        |    |           |                |                          |      |                |                  |                                                                                            | ns1.yourdoor.com       |       |     |                
-
-
-```
-
-
-
-## Cli Commands
-
-```bash
-
-
-```
-
-### Squatting Options
-
-```bash
-
-```
-
-## Server Options
-
-```bash
-
-```
-
-## Usage
-
-Generates variations for **google.com** using the character omission **(CO)**
-algorithm.
-
-```txt
-
-```
-
-Additional e**x**tra functions can be selected with the **-x, --funcs** options.
-These functions can add columns to the output. For example, the following generates
-variations for **google.com** using the character omission **(CO)** algorithm
-then checks for **ip** addresses.
-
-```txt
-
-
-```
-
-Generates variations for **google.com** with the following parameters:
-
-* **-t hg** lets us use the Homoglyphs(HG) algorithm only
-* **-v** Verbose mode shows us the full name 'Homoglyphs' of the algorithm not
-just the short name 'HG'
-* **-x ip** Check or IP address
-* **-x idna** Shows the IDNA format
-* **-x ns** Checks for DNS NS records
-
-```txt
-
-
-```
-
-## Languages
-
-### Language & Keyboard Comparison
-
-This table shows which tools have support for common **misspellings**,
-**homophones**, **numerals**, **vowels**, **homoglyphs**, and the number of
-**keyboards** that support each language's character set.
-
-Vowels
-Graphemes
-Ordinal
-Cardinal
-
-| Languages | Keyboards | Homoglyphs | Homophones | Antonyms | Misspellings | Vowels | Graphemes | Ordinal | Cardinal  | 
+| Languages | Keyboards | Homoglyphs | Homophones | Antonyms | Misspellings | Cardinal | Ordinal | Vowels | Graphemes  | 
 |-----------|-----------|-----------|------------|-----------|--------------|--------|-----------|---------|-----------|
 | Arabic    |    4      |           |            |           |              |   |   |   |    | 
 | Armenian  |    3      |           |            |           |              |   |   |   |    | 
@@ -160,37 +57,104 @@ Cardinal
 | Russian   |    3      |           |            |           |              |   |   |   |    | 
 | Spanish   |    2      |           |            |           |              |   |   |   |    | 
 | Hebrew    |    1      |           |            |           |              |   |   |   |    | 
-| Persian   |    1      |           |            |           |                |   |   |   |    | 
+| Persian   |    1      |           |            |           |              |   |   |   |    | 
+
+## Keyboards
+## Homoglyphs
+## Homophones
+## Antonyms
+## Misspellings 
+## Cardinal 
+## Ordinal 
+## Vowels
+## Graphemes  
 
 
 
 
 
+1. Homoglyph Replacement Across Alphabets
+
+    Attackers take advantage of languages with characters that look similar to those in the target language (usually English). For instance, many Cyrillic letters closely resemble Latin ones, making it possible to create domains like “fаcebook.com” (using Cyrillic "а" instead of Latin "a") that look almost identical to the legitimate "facebook.com."
+    Other language scripts, such as Greek, also have similar characters, enabling a wide range of homograph attacks, which exploit look-alike characters from different languages.
+
+2. Misspellings and Common Typing Errors
+
+    Typo domains rely on common typing errors, especially for language-specific keyboards. For instance, a Spanish-speaking audience might accidentally type “goolge” instead of “google” due to familiarity with specific keystroke patterns.
+    Attackers might also replace accented letters or letters with diacritics in languages like Spanish, French, or German. For example, using "télégramme.com" for “telegram.com” could mislead French-speaking users.
+
+3. Phonetic and Linguistic Variations
+
+    Attackers exploit phonetic similarities, where the target name is replaced by a similar-sounding word or phrase in the target language. For instance, “secure” might be replaced by “sekur” or “bank” by “banq” for a French-speaking audience.
+    Additionally, attackers create typosquatted domains that reflect common dialectal or regional language spellings, targeting specific communities. For instance, “colour.com” might be typosquatted as “colur.com” to confuse UK users.
+
+4. Multilingual Blending
+
+    For international brands, typosquatting can incorporate hybrid language variations that mix English with local language elements. For instance, combining “amazon” with country-specific words like “amazonkaufen.com” (using the German word for “buy”) can mislead German-speaking users.
+
+5. Foreign Language Cognates and Loanwords
+
+    Attackers use cognates (words that look similar and have the same meaning across languages) or loanwords to appeal to international audiences. A word like “hotel” appears in many languages and can be combined with a typosquatting element like “h0tel.com” to fool non-native English speakers, as they may overlook minor changes in familiar words.
+
+6. Transliterations and Alternate Alphabets
+
+    Some typosquatters use transliterations, converting words from one alphabet to another in ways that resemble the original brand or name. For example, using Punycode (a way of encoding Unicode within the ASCII character set) allows for domain names like “xn--pple-43d.com,” which appears as “аpple.com” in the browser (with Cyrillic "а").
+    Transliteration is also common in languages like Arabic, Chinese, and Hindi, where brand names are spelled out using Latin characters or phonetically similar sounds to trick users.
+
+7. Local Language Targeting
+
+    Typosquatting often uses localized or region-specific spellings and slang to make a fake domain appear legitimate to a particular audience. For instance, Spanish speakers might see “amig0s.com” instead of “amigos.com,” where “0” is used in place of “o” to fool users who are accustomed to similar regional variations.
+
+By carefully crafting typosquatted names that resonate linguistically and culturally with the target audience, attackers enhance the believability of their fake domains or usernames, increasing the likelihood of successful phishing or other deceptive attacks.
 
 
-
-
-
-
-### English
-
-* Over 8000 common misspellings
-* Over 500 common homophones
-* English alphabet, vowels, homoglyphs, and numerals
-* Common keyboard layouts (qwerty, azerty, qwertz, dvorak)
-
-### Finnish, Russian, Persian, Hebrew, Arabic, Spanish
-
-See [Languages](https://github.com/rangertaha/urlinsane#languages) for details
-on other languages.
 
 ## Algorithms
 
-The modular architecture for code extensibility allows developers to add new
-typosquatting algorithms with ease. Currently, we have implemented 19
-typosquatting algorithms. See [Typo Algorithms](https://github.com/rangertaha/urlinsane#algorithms) for details.
+| ID | Name   | Description  | 
+|--|------------|-------------|
+| |   |         |    
+| |    |           |   
+| |    |         |   
 
-## Extra Functions
+
+| ID | Name            | Description ||
+|---|---------------------------------|--|
+| | Missing Dot                     ||
+| | Missing Dashes                  | |
+| | Strip Dashes                    | |
+| | Character Omission              | |
+| | Character Swap                  | |
+| | Adjacent Character Substitution | |
+| | Adjacent Character Insertion    ||
+| | Homoglyphs                      ||
+| | Singular Pluralise              | |
+| | Character Repeat                | |
+| | Double Character Replacement    | |
+| | Common Misspellings             | |
+| | Homophones                      ||
+| | Vowel Swapping                  | |
+| | Bitsquatting                    | |
+| | Wrong Top Level Domain          | | 
+| | Wrong Second Level Domain       | | 
+| | Wrong Third Level Domain        | |
+| | Ordinal Number Swap             | |
+| | Cardinal Number Swap            ||
+| | Hyphenation                     || 
+| | Multithreaded Algorithms        ||   
+| | Subdomain insertion             | |
+| | Period Insertion                | | 
+| | Combosquatting (Keywords)       | |
+
+
+
+## Information
+
+| ID | Name   | Description  | 
+|----|------------|-------------|
+|    |   |         |    
+|    |    |           |   
+|    |    |         |   
 
 * **IDNA**  Show international domain name (Default)
 * **MX**    Checking for DNS's MX records
@@ -203,106 +167,54 @@ typosquatting algorithms. See [Typo Algorithms](https://github.com/rangertaha/ur
 * **301**   Show domains redirects
 * **GEO**   Show country location of IP address
 
-## Tools Comparisons
-
-### Results
-
-| **Tool**   | google.com  | facebook.com  | youtube.com   | amazon.com | amazon4you.com |
-|------------|-------------|---------------|---------------|------------|----------------|
-| URLInsane  |    6931     |    7049       |     6996      |   6934     |     7192       |
-| URLCrazy   |    88       |    109        |     107       |   78       |     129        |
-| DNSTwist   |    1687     |    2529       |     3770      |   2262     |     5815       |
-
-### Language & Keyboard Comparison
-
-This table shows which tools have support for common **misspellings**,
-**homophones**, **numerals**, **vowels**, **homoglyphs**, and the number of
-**keyboards** that support each language's character set.
-
-| **Lang (# Keyboards)**   | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz |
-|--------------------------|-----------|-----------|------------|-------------|
-| Arabic (4)               |     X     |           |            |             |
-| Armenian (3)             |     X     |           |            |             |
-| English (4)              |     X     |     X     |      X     |      X      |
-| Finnish (1)              |     X     |           |            |             |
-| Russian (3)              |     X     |           |            |             |
-| Spanish (2)              |     X     |           |            |             |
-| Hebrew (1)               |     X     |           |            |             |
-| Persian (1)              |     X     |           |            |             |  
-
-### Algorithm Comparisons
-
-This table shows the list of algorithms supported for each tool.
-
-|      **Algorithms**             | URLInsane | URLCrazy  | DNSTwist   | DomainFuzz **(TODO)**  |
-|---------------------------------|-----------|-----------|------------|-------------|
-| Missing Dot                     |     X     |     X     |     X      |             |
-| Missing Dashes                  |     X     |           |            |             |
-| Strip Dashes                    |     X     |     X     |            |             |
-| Character Omission              |     X     |     X     |     X      |             |
-| Character Swap                  |     X     |     X     |            |             |
-| Adjacent Character Substitution |     X     |     X     |            |             |
-| Adjacent Character Insertion    |     X     |     X     |     X      |             |
-| Homoglyphs                      |     X     |     X     |     P      |             |
-| Singular Pluralise              |     X     |     X     |            |             |
-| Character Repeat                |     X     |     X     |     X      |             |
-| Double Character Replacement    |     X     |     X     |            |             |
-| Common Misspellings             |     X     |     X     |            |             |
-| Homophones                      |     X     |     X     |     P      |             |
-| Vowel Swapping                  |     X     |     X     |            |             |
-| Bitsquatting                    |     X     |     X     |     X      |             |
-| Wrong Top Level Domain          |     X     |     X     |            |             |
-| Wrong Second Level Domain       |     X     |     X     |            |             |
-| Wrong Third Level Domain        |     X     |           |            |             |
-| Ordinal Number Swap             |     X     |           |            |             |
-| Cardinal Number Swap            |     X     |           |            |             |
-| Hyphenation                     |     X     |           |      X     |             |
-| Multithreaded Algorithms        |     X     |     ?     |      X     |             |
-| Subdomain insertion             |     X     |           |            |             |
-| Period Insertion                |     X     |           |            |             |
-| Combosquatting (Keywords)       |           |           |            |             |
-
 ## Information Gathering
 
-|      **Info Gathering**            | URLInsane  | URLCrazy  | DNSTwist  | DomainFuzz  |
-|-------------------------------------|-----------|-----------|------------|-------------|
-| Live/Online Check                   |     X     |     X     |      X     |             |
-| DNS A Records                       |     X     |     X     |      X     |      X      |
-| DNS MX Records                      |     X     |     X     |      X     |             |
-| DNS txt Records                     |     X     |     X     |            |             |
-| DNS AAAA Records                    |     X     |           |      X     |      X      |
-| DNS CName Records                   |     X     |           |            |             |
-| DNS NS Records                      |     X     |           |      X     |      X      |
-| Geographic Info                     |     X     |     X     |      X     |             |
-| Domain Similarity                   |     X     |           |      X     |      X      |
-| Domain Redirects                    |     X     |           |            |             |
-| IDNA Format                         |     X     |           |      X     |             |
-| CSV output                          |     X     |     X     |      X     |      X      |
-| JSON output                         |     X     |           |      X     |      X      |
-| Human Readable output               |     X     |     X     |      X     |      X      |
-| HTTP/SMTP Banner                    |     X     |           |      X     |             |
-| Multithreaded Extra Functions       |     X     |           |      X     |      X      |
+|  Name           | Description  |
+|-------------------------------------||
+| DNS A Records                       | Retrieving IPv4 and IPv6 IP host addresses |
+| DNS MX Records                      |Retrieving Mail Exchange (MX) records|
+| DNS TXT Records                     |Retrieving TXT records storing arbitrary data associated with a domain |
+| DNS AAAA Records                    ||
+| DNS CName Records                   ||
+| DNS NS Records                      |Checks DNS NS records |
+| Geographic Info                     | Show country location of IP address|
+| Domain Similarity                   | Show domain similarity % using fuzzy hashing with ssdeep|
+| Domain Redirects                    |Show domains redirects |
+| IDNA Format                         |Show international domain name (Default) |
+| HTTP/SMTP Banner                    | |
 
-## Output Formats
 
-|      **Info Gathering**            | URLInsane  | URLCrazy  | DNSTwist  | DomainFuzz  |
-|-------------------------------------|-----------|-----------|------------|-------------|
-| Live/Online Check                   |     X     |     X     |      X     |             |
-| DNS A Records                       |     X     |     X     |      X     |      X      |
-| DNS MX Records                      |     X     |     X     |      X     |             |
-| DNS txt Records                     |     X     |     X     |            |             |
-| DNS AAAA Records                    |     X     |           |      X     |      X      |
-| DNS CName Records                   |     X     |           |            |             |
-| DNS NS Records                      |     X     |           |      X     |      X      |
-| Geographic Info                     |     X     |     X     |      X     |             |
-| Domain Similarity                   |     X     |           |      X     |      X      |
-| Domain Redirects                    |     X     |           |            |             |
-| IDNA Format                         |     X     |           |      X     |             |
-| CSV output                          |     X     |     X     |      X     |      X      |
-| JSON output                         |     X     |           |      X     |      X      |
-| Human Readable output               |     X     |     X     |      X     |      X      |
-| HTTP/SMTP Banner                    |     X     |           |      X     |             |
-| Multithreaded Extra Functions       |     X     |           |      X     |      X      |
+DNS TXT records (Text Records) are a type of DNS record used to store arbitrary text data associated with a domain. Originally intended for descriptive text, they’re now widely used for various purposes, including domain verification, email authentication, and configuration data. TXT records allow domain owners to associate key-value data with their domain, which can be retrieved by external systems for verification and configuration purposes.
+
+DNS MX records (Mail Exchange records) are a type of DNS record used to route email for a domain to designated mail servers. They help direct emails sent to a domain (e.g., user@example.com) to the correct mail servers that handle receiving and processing the email.
+
+
+
+## Outputs
+
+| Name  | Description | 
+|-------|-------------|
+| TABLE |         |  
+| TEXT  |         |  
+| CSV   |         |    
+| TSV   |         |   
+| MD    |         |   
+
+
+## Database
+
+| Name   | Description  | 
+|--------|-------------|
+| Badger |         |    
+
+
+
+
+
+
+
+
+
 
 
 
