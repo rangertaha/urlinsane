@@ -156,7 +156,7 @@ type Language interface {
 	// See: https://byjus.com/maths/cardinal-numbers/
 	Cardinal() map[string]string
 
-	// They are used to denote the rank or position or order of something
+	// They are used to denote the rank position or order of something
 	// Example: Examples: 1st, 2nd, 5th, 6th, 9th or first, second, third
 	// See: https://byjus.com/maths/cardinal-numbers/
 	Ordinal() map[string]string
