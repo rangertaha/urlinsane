@@ -26,7 +26,9 @@ package md
 
 import (
 	"reflect"
+	"strings"
 	"testing"
+	"unicode"
 )
 
 func TestAlgo(t *testing.T) {
@@ -82,6 +84,14 @@ func TestAlgo(t *testing.T) {
 			t.Errorf("algo.Id() can not return an empty string")
 		}
 	})
+	t.Run("md lowercase id", func(t *testing.T) {
+		algo := Algo{}
+		for _, c := range algo.Id() {
+			if unicode.IsUpper(c) {
+				t.Errorf("algo.Id() must be lowercase")
+			}
+		}
+	})
 	t.Run("md name", func(t *testing.T) {
 		algo := Algo{}
 		if algo.Name() != NAME {
@@ -95,6 +105,20 @@ func TestAlgo(t *testing.T) {
 			t.Errorf("algo.Name() can not return an empty string")
 		}
 	})
+
+	t.Run("md titlecase name", func(t *testing.T) {
+		algo := Algo{}
+		strs := ""
+		for _, name := range strings.Split(algo.Name(), " ") {
+			strs = strs + string(name[0])
+		}
+		for _, c := range strs {
+			if !unicode.IsUpper(c) {
+				t.Errorf("algo.Name() must be in titlecase: %s, Found: (%s)", algo.Name(), string(c))
+			}
+		}
+	})
+
 	t.Run("md description", func(t *testing.T) {
 		algo := Algo{}
 		if algo.Description() != DESCRIPTION {
@@ -106,6 +130,14 @@ func TestAlgo(t *testing.T) {
 		algo := Algo{}
 		if algo.Description() == "" {
 			t.Errorf("algo.Description() can not return an empty string")
+		}
+	})
+
+	t.Run("md capitalizing fist char of description", func(t *testing.T) {
+		algo := Algo{}
+		firstRune := []rune(algo.Description())[0]
+		if !unicode.IsUpper(firstRune) {
+			t.Errorf("algo.Name() must capitalize start of sentence: %s", algo.Description())
 		}
 	})
 }

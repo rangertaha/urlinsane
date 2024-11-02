@@ -18,12 +18,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/config"
-	"github.com/rangertaha/urlinsane/internal/engine"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
+	"github.com/rangertaha/urlinsane/internal/urlinsane"
 	"github.com/spf13/cobra"
 )
 
@@ -97,19 +96,14 @@ import (
 // var cliOptions bytes.Buffer
 
 // rootCmd represents the typo command
-var domainCmd = &cobra.Command{
-	Use:   "domain [flags] [name]",
-	Short: "Generates and detects possible typosquatting domain names and arbitrary names",
-	Long: `Urlinsane is used to perform or detect typosquatting, brandjacking, URL hijacking, 
-	fraud, phishing attacks, corporate espionage, and threat intelligence.
-
-Urlinsane is built around linguistic modeling, natural language processing, 
-information gathering, and analysis. It's easily extensible with plugins for typo algorithms, 
-Information gathering and analysis. Its linguistic models also allow us to easily add new 
-languages and keyboard layouts. Currently, it supports 9 languages, 19 keyboard layouts, 
-24 algorithms, 8 information gathering, and 2 analysis modules.
-
-`,
+var typoCmd = &cobra.Command{
+	Use:   "typo [flags] [name]",
+	Short: "Detects typosquatting across domains, arbitrary names, usernames, and software packages",
+	Long:  `Designed to detect typosquatting across domains, arbitrary names, usernames, and software packages. 
+By leveraging advanced algorithms, information-gathering techniques, and data analysis, it identifies 
+potentially harmful variations of targeted entities that cybercriminals might exploit. Essential for 
+defending against typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, and corporate 
+espionage, URLInsane also enhances threat intelligence capabilities.`,
 	// PersistentPreRun: func(cmd *cobra.Command, args []string) {
 	// 	fmt.Printf("Inside rootCmd PersistentPreRun with args: %v\n", args)
 	// },
@@ -117,19 +111,18 @@ languages and keyboard layouts. Currently, it supports 9 languages, 19 keyboard 
 	// 	fmt.Printf("Inside rootCmd PreRun with args: %v\n", args)
 	//   },
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
+		if len(args) != 0 {
 			cmd.Help()
-			os.Exit(0)
 		}
 
-		config, err := config.CobraConfig(cmd, args)
+		config, err := config.CobraConfig(cmd)
 		if err != nil {
 			fmt.Printf("%s", err)
 			os.Exit(0)
 		}
-		fmt.Print(internal.LOGO)
-		t := engine.NewDomainTypos(config)
-		t.Execute()
+
+		t := urlinsane.New(config)
+		t.Start()
 
 	},
 	//   PostRun: func(cmd *cobra.Command, args []string) {
@@ -140,7 +133,12 @@ languages and keyboard layouts. Currently, it supports 9 languages, 19 keyboard 
 	//   },
 }
 
+// func ShowDomainInfoPlugins() {
+// 	config.GetDomainInfoPlugins()
+// }
+
 func init() {
+	rootCmd.AddCommand(typoCmd)
 	// // fmt.Println(languages.Languages())
 	// helpOptions := HelpOptions{
 	// 	languages.Languages(),
@@ -163,7 +161,11 @@ func init() {
 	// DomainCmd.CompletionOptions.DisableDefaultCmd = true
 
 	// Plugins
-	domainCmd.PersistentFlags().StringArrayP("typos", "t", []string{"all"}, "IDs of typo algorithms to use for generating typos")
-	domainCmd.PersistentFlags().StringArrayP("info", "i", []string{"all"}, "IDs of info gathering functions to apply")
-
+	typoCmd.Flags().StringArrayP("info", "i", []string{"all"}, "IDs of domain information gathering plugins to apply")
+	typoCmd.Flags().StringP("domain", "d", "", "Domain name for generating typo variations")
+	typoCmd.Flags().StringP("name", "n", "", "Named entity or Username for generating typo variations")
+	typoCmd.Flags().StringP("pkg", "m", "", "Module/package name for generating typo variations")
+	typoCmd.Flags().StringP("url", "u", "", "URL associagted with the named entity or username")
+	typoCmd.MarkFlagsOneRequired("domain", "name", "pkg")
+	typoCmd.MarkFlagsMutuallyExclusive("domain", "name", "pkg")
 }

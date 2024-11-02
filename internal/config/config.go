@@ -15,21 +15,17 @@
 package config
 
 import (
-	"fmt"
 	"strings"
 	"time"
 
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/pkg/target"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
 
 	// "github.com/rangertaha/urlinsane/internal/plugins/information"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
-	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
-	"github.com/rangertaha/urlinsane/internal/plugins/information/emails"
-	"github.com/rangertaha/urlinsane/internal/plugins/information/packages"
-	"github.com/rangertaha/urlinsane/internal/plugins/information/usernames"
 	"github.com/rangertaha/urlinsane/internal/plugins/languages"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
@@ -38,9 +34,8 @@ import (
 )
 
 type Config struct {
-	// Types of targets for typosquatting
-	// Domain internal.Domain
-	target string
+	target internal.Target // Config target
+	ctype  int             // Config type
 
 	// Plugins
 	keyboards   []internal.Keyboard
@@ -62,7 +57,11 @@ type Config struct {
 	progress bool
 }
 
-func (c *Config) Target() string {
+func New() Config {
+	return Config{}
+}
+
+func (c *Config) Target() internal.Target {
 	return c.target
 }
 func (c *Config) Keyboards() []internal.Keyboard {
@@ -101,6 +100,17 @@ func (c *Config) Format() string {
 func (c *Config) File() string {
 	return c.file
 }
+func (c *Config) Type() int {
+	return c.ctype
+}
+
+// func (c *Config) IsMode(mode string) bool {
+// 	return c.mode == mode
+// }
+
+// func (c *Config) IsDomain() string {
+// 	return c.file
+// }
 
 // Count sets and gets the count of variants for processing
 func (c *Config) Count(n ...int64) int64 {
@@ -111,64 +121,99 @@ func (c *Config) Count(n ...int64) int64 {
 }
 
 // CobraConfig creates a configuration from a cobra command options and arguments
-func CobraConfig(cmd *cobra.Command, args []string) (c Config, err error) {
+func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 
-	if len(args) == 0 {
-		return c, fmt.Errorf("at least one argument required")
+	if name, err := cmd.Flags().GetString("name"); err == nil && name != "" {
+		c.ctype = internal.NAME
+		c.target = target.New(strings.TrimSpace(name))
 	}
-	if len(args) > 1 {
-		return c, fmt.Errorf("only one argument is allowed")
+	if pkg, err := cmd.Flags().GetString("pkg"); err == nil && pkg != "" {
+		c.ctype = internal.PACKAGE
+		c.target = target.New(strings.TrimSpace(pkg))
 	}
-	c.target = strings.TrimSpace(args[0])
+	if domain, err := cmd.Flags().GetString("domain"); err == nil && domain != "" {
+		c.ctype = internal.DOMAIN
+		c.target = target.New(strings.TrimSpace(domain))
+	}
+	if url, err := cmd.Flags().GetString("url"); err == nil && url != "" {
+		if c.target != nil {
+			c.target.Add("url", url)
+		}
+	}
 
-	if langs, err := commaSplit(cmd.PersistentFlags().GetStringArray("languages")); err == nil {
+	// if c.name, err = cmd.Flags().GetString("pkg"); err == nil {
+	// 	c.mode = internal.PACKAGE
+	// }
+
+	// if name, err := cmd.Flags().GetString("domain"); err == nil {
+	// 	name = strings.TrimSpace(name)
+	// 	c.domain = domain.New(name)
+	// 	c.mode = internal.DOMAIN
+	// }
+
+	if langs, err := commaSplit(cmd.Flags().GetStringArray("languages")); err == nil {
 		c.languages = languages.Languages(langs...)
 	}
 
-	if keybs, err := commaSplit(cmd.PersistentFlags().GetStringArray("keyboards")); err == nil {
+	if keybs, err := commaSplit(cmd.Flags().GetStringArray("keyboards")); err == nil {
 		c.keyboards = languages.Keyboards(keybs...)
 	}
 
-	if typos, err := commaSplit(cmd.PersistentFlags().GetStringArray("typos")); err == nil {
+	if typos, err := commaSplit(cmd.Flags().GetStringArray("algorithms")); err == nil {
+		// c.algorithms = algorithms.List(typos...)
 		c.algorithms = algorithms.List(typos...)
 	}
+
+	// if typos, err := commaSplit(cmd.Flags().GetStringArray("algorithms")); err == nil {
+	// 	algos := algorithms.List(typos...)
+
+	// 	for _, algo := range algos {
+	// 		if c.IsMode(internal.DOMAIN) {
+	// 			if al, ok := algo.(internal.DomainAlgo); ok {
+
+	// 				c.algorithms = append(c.algorithms, al)
+	// 			}
+	// 		}
+
+	// 	}
+	// }
 
 	// if infos, err := commaSplit(cmd.Flags().GetStringArray("info")); err == nil {
 	// 	c.information = information.List(infos...)
 	// }
 
-	if c.format, err = cmd.PersistentFlags().GetString("format"); err == nil {
+	if c.format, err = cmd.Flags().GetString("format"); err == nil {
 		if c.output, err = outputs.Get(c.format); err != nil {
 			return c, err
 		}
 	}
 
-	if c.concurrency, err = cmd.PersistentFlags().GetInt("concurrency"); err != nil {
+	if c.concurrency, err = cmd.Flags().GetInt("concurrency"); err != nil {
 		return c, err
 	}
 
 	// Output options
-	if c.file, err = cmd.PersistentFlags().GetString("file"); err != nil {
+	if c.file, err = cmd.Flags().GetString("file"); err != nil {
 		return c, err
 	}
 
-	if c.format, err = cmd.PersistentFlags().GetString("format"); err != nil {
+	if c.format, err = cmd.Flags().GetString("format"); err != nil {
 		return c, err
 	}
 
-	if c.verbose, err = cmd.PersistentFlags().GetBool("verbose"); err != nil {
+	if c.verbose, err = cmd.Flags().GetBool("verbose"); err != nil {
 		return c, err
 	}
 
-	if c.progress, err = cmd.PersistentFlags().GetBool("progress"); err != nil {
+	if c.progress, err = cmd.Flags().GetBool("progress"); err != nil {
 		return c, err
 	}
 
-	if c.random, err = cmd.PersistentFlags().GetDuration("random"); err != nil {
+	if c.random, err = cmd.Flags().GetDuration("random"); err != nil {
 		return c, err
 	}
 
-	if c.delay, err = cmd.PersistentFlags().GetDuration("delay"); err != nil {
+	if c.delay, err = cmd.Flags().GetDuration("delay"); err != nil {
 		return c, err
 	}
 	c.count = 1
@@ -176,42 +221,24 @@ func CobraConfig(cmd *cobra.Command, args []string) (c Config, err error) {
 	return c, err
 }
 
-// CobraConfig creates a configuration from a cobra command options and arguments
-func DomainConfig(cmd *cobra.Command, args []string) (c Config, err error) {
-	c, err = CobraConfig(cmd, args)
+// // CobraConfig creates a configuration from a cobra command options and arguments
+// func DomainConfig(cmd *cobra.Command, args []string) (c Config, err error) {
+// 	c, err = CobraConfig(cmd, args)
 
-	if infos, err := commaSplit(cmd.Flags().GetStringArray("info")); err == nil {
-		c.information = domains.List(infos...)
-	}
-	return
-}
+// 	if infos, err := commaSplit(cmd.Flags().GetStringArray("info")); err == nil {
+// 		c.information = domains.List(infos...)
+// 	}lgos :=
+// 	return
+// }
 
-func EmailConfig(cmd *cobra.Command, args []string) (c Config, err error) {
-	c, err = CobraConfig(cmd, args)
+// func UsernameConfig(cmd *cobra.Command, args []string) (c Config, err error) {
+// 	c, err = CobraConfig(cmd, args)
 
-	if infos, err := commaSplit(cmd.Flags().GetStringArray("info")); err == nil {
-		c.information = emails.List(infos...)
-	}
-	return
-}
-
-func UsernameConfig(cmd *cobra.Command, args []string) (c Config, err error) {
-	c, err = CobraConfig(cmd, args)
-
-	if infos, err := commaSplit(cmd.Flags().GetStringArray("info")); err == nil {
-		c.information = usernames.List(infos...)
-	}
-	return
-}
-
-func PackageConfig(cmd *cobra.Command, args []string) (c Config, err error) {
-	c, err = CobraConfig(cmd, args)
-
-	if infos, err := commaSplit(cmd.Flags().GetStringArray("info")); err == nil {
-		c.information = packages.List(infos...)
-	}
-	return
-}
+// 	if infos, err := commaSplit(cmd.Flags().GetStringArray("info")); err == nil {
+// 		c.information = usernames.List(infos...)
+// 	}
+// 	return
+// }
 
 // commaSplit splits comma separated values into an array
 func commaSplit(values []string, err error) ([]string, error) {
