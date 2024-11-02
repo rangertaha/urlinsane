@@ -20,7 +20,7 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 |   Type   | Decscription |
 |----------|--------|
 | Names    | Generating variants on arbitrary names without assuming its a domain  |
-| Domains  | Domain specific typosquating variants and information information  |
+| Domains  | Domain specific typosquating variants and information gathering  |
 | Usernames| Finding variants of usernames online or on a specifc site |
 | Packages | Finding opensource software packages or libaries and variants |
 
