@@ -45,339 +45,245 @@ developers to add functionality and support for additional languages. See
 [URLInsane](https://rangertaha.github.io/urlinsane/) for more details.
 
 
+# URLInsane
 
-## Installation
-
-To get the latest updates, create the binary executable with the **make** command or 
-[download](https://github.com/cybersectech-org/urlinsane/releases/tag/0.3.0) one of the 
-pre-built release binaries. 
-
-Get the project
-```bash
-go get github.com/cybersectech-org/urlinsane
-```
-
-Go to the project folder and run the **make** command.
-```bash
-cd ~/go/src/github.com/cybersectech-org/urlinsane/
-make
-```
-
-After building the binary you can execute it within the **builds** directory 
-that was created by the **make** command. 
-```bash
-cd builds/
-./urlinsane -h
-```
+[![Go Report Card](https://goreportcard.com/badge/github.com/rangertaha/urlinsane?style=flat-square)](https://goreportcard.com/report/github.com/rangertaha/urlinsane) [![Go Doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](http://godoc.org/github.com/rangertaha/urlinsane) [![PkgGoDev](https://pkg.go.dev/badge/github.com/rangertaha/urlinsane)](https://pkg.go.dev/github.com/github.com/rangertaha/urlinsane) [![Release](https://img.shields.io/github/release/rangertaha/urlinsane.svg?style=flat-square)](https://github.com/rangertaha/urlinsane/releases/latest) [![Build Status](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml/badge.svg)](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml)
 
 
-## Usage
-Generate variations for `google.com` using the character omission **(CO)** algorithm.
-```
-urlinsane typo google.com -t co
- _   _  ____   _      ___
-| | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
-| | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
-| |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
- \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
+URLInsane is a robust command-line tool designed to detect typosquatting across domains, arbitrary names, usernames, and software packages. By leveraging advanced algorithms, information-gathering techniques, and data analysis, it identifies potentially harmful variations of targeted entities that cybercriminals might exploit. Essential for defending against typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, and corporate espionage, URLInsane also enhances threat intelligence capabilities.
 
- Version: 0.3.0
-
-  LIVE | TYPE |   TYPO    | SUFFIX |   IDNA     
-+------+------+-----------+--------+-----------+
-       | CO   | oogle.com | com    | oogle.com  
-       | CO   | gogle.com | com    | gogle.com  
-       | CO   | goole.com | com    | goole.com  
-       | CO   | googl.com | com    | googl.com  
-       | CO   | gogle.com | com    | gogle.com  
-       | CO   | googe.com | com    | googe.com 
-```
-
-
-Generate variations for `google.com` using the character omission **(CO)** algorithm and check for **ip** addresses. 
-```
-urlinsane typo google.com -t co -x ip
-
- _   _  ____   _      ___
-| | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
-| | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
-| |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
- \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
-
- Version: 0.3.0
-
-   LIVE  | TYPE |   TYPO    | SUFFIX |      IPV4      |           IPV6            
-+--------+------+-----------+--------+----------------+--------------------------+
-  ONLINE | CO   | oogle.com | com    | 104.28.28.162  | 2606:4700:30::681c:1ca2   
-         |      |           |        | 104.28.29.162  | 2606:4700:30::681c:1da2   
-  ONLINE | CO   | gogle.com | com    | 172.217.10.68  | 2607:f8b0:4004:80a::2004  
-  ONLINE | CO   | gogle.com | com    | 172.217.10.68  | 2607:f8b0:4004:80a::2004  
-  ONLINE | CO   | googl.com | com    | 172.217.10.132 | 2607:f8b0:4004:800::2004  
-  ONLINE | CO   | goole.com | com    | 217.160.0.201  |                           
-  ONLINE | CO   | googe.com | com    | 162.243.10.151 |   
-```
-
-Generate variations for `google.com` using the character omission **(CO)** algorithm. 
- Also execute extra functions to get the **ip** addresses, **idna** format and check for **ns** records. 
-```
-urlinsane typo google.com -t co -x ip -x idna -x ns
-
- _   _  ____   _      ___
-| | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
-| | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
-| |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
- \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
-
- Version: 0.3.0
-
-   LIVE  | TYPE |   TYPO    | SUFFIX |      IPV4      |           IPV6           |   IDNA    |        NS         
-+--------+------+-----------+--------+----------------+--------------------------+-----------+------------------+
-  ONLINE | CO   | gogle.com | com    | 172.217.10.68  | 2607:f8b0:4004:80a::2004 | gogle.com |                   
-  ONLINE | CO   | oogle.com | com    | 104.28.29.162  | 2606:4700:30::681c:1da2  | oogle.com | mx.zoho.com       
-         |      |           |        | 104.28.28.162  | 2606:4700:30::681c:1ca2  |           | mx2.zoho.com      
-  ONLINE | CO   | gogle.com | com    | 172.217.10.68  | 2607:f8b0:4004:80a::2004 | gogle.com |                   
-  ONLINE | CO   | googl.com | com    | 172.217.10.132 | 2607:f8b0:4004:800::2004 | googl.com |                   
-  ONLINE | CO   | goole.com | com    | 217.160.0.201  |                          | goole.com | mx01.1and1.co.uk  
-         |      |           |        |                |                          |           | mx00.1and1.co.uk  
-  ONLINE | CO   | googe.com | com    | 162.243.10.151 |                          | googe.com |                   
-
-```
-
-For more details look at the **-h --help** output.
-```
-urlinsane typo -h
-
-    
-Generates domain typos and variations to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage.
-
-USAGE:
-  urlinsane [domains] [flags]
-
-OPTIONS:
-  -c, --concurrency int         Number of concurrent workers (default 50)
-  -f, --file string             Output filename
-  -o, --format string           Output format (json, csv, text) (default "text")
-  -x, --funcs stringArray       Extra functions for retrieving additional data (default [idna])
-  -h, --help                    help for urlinsane
-  -k, --keyboards stringArray   Keyboards/layouts ID to use (default [en1])
-  -t, --typos stringArray       Types of typos to perform (default [all])
-  -v, --verbose                 Output additional details
-  
-  ...
-  
-  
-```
+Featuring a plugin-based multilingual permutation engine, URLInsane supports various keyboard layouts for multiple languages. Its extensible plugin system allows easy addition of new capabilities. Currently, it includes plugins for 24 algorithms, 8 information gathering methods, 19 keyboard layouts, 9 languages, and 4 output formats. Originally developed in Python, URLInsane was built in Go to enhance speed, concurrency, and portability.
 
 
 
+Urlinsane is a powerful command-line tool designed for the detection of typo-squatting across domains, email addresses, usernames, and software packages. Utilizing  Urlinsane scans for potential typosquatted variants by applying advanced typo squatting algorithms, information gathering, and data analysis.  It identifies potentially harmful variations of a victim's domain name, email address, software packages, and that cybercriminals might exploit. 
 
 
-## Features
 
-* Open Source
-* Binary executable, written in Go with no dependencies. 
-* Will have all the functionality of URLCrazy and DNSTwist. 
-* Contains 19 typosquatting algorithms and 7 extra functions to retrieve additional data
-* Modular architecture for language, keyboard, typo algorithm, and functions extensibility.
-* Supports multiple keyboard layouts found in English, Spanish, Russian, Finnish, and Arabic.
-* Supports multiple languages with the ability to add more languages with ease.
-* Concurrent function (**-x --funcs**) workers to retrieve additional info on each record.
-* Concurrent typo squatting workers.
+Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage, and threat intelligence.
 
+It's a plugin-based multilingual permutation engine that supports keyboard layouts for each language. The plugin system allows us to easily extend its capabilities. Currently, it supports plugins for algorithms (24), information gathering (8), keyboard layouts (19), languages (9), and output (4) formats. Originally, I wrote similar tools in Python but was not happy with the performance. This tool was built in Golang to take advantage of its speed, concurrency, and portability (see [`Speed`](#Speed).
+
+# Features
+* Fast execution time
+* Cuncurrency in generating typos and collection informaiton
+* Distribute queries to multiple DNS Servers
+* Single downloadable binary with no system depedencies
+* Plugin architecture for extensability
+* Multi-lingual language modeling
+
+
+
+# Plugins
+
+Plugins play a crucial role in extending the functionality, flexibility, and customization of Urlinsane and allow it to evolve alongside changing needs and technological advancements.
+
+
+Here's a structured summary of the plugin types and their roles in the application:
+| **Type**    | Count  | Decscription |
+|-------------|--------|--------------|
+| Languages   |    9   | Language plugins enable support for various language models, expanding the application's linguistic capability. |
+| Keyboards   |    19  | Keyboard layout plugins allow us to target multiple languages and regions |
+| Algorithms  |    24  | Used to generate typo variants for domains, arbitrary names, and software packages|
+| Information |    8   | Used for gather data on domains, software libraries, and named entities|
+| Outputs     |    6   | Formats data for display and or save outputs to files, improving usability and reporting |
+| Database    |    1   | It caches and saves scan results and boosting performance and enabling efficient data retrieval.|
+
+
+
+# Languages
+
+In typosquatting, language plays a significant role in manipulating legitimate terms and names to create deceptive variations that appear familiar to the target audience. Attackers use linguistic techniques to construct these variations in ways that exploit the visual similarity or familiarity of certain languages and alphabets.
+
+| Languages | Keyboards | Homoglyphs | Homophones | Antonyms | Misspellings | Cardinal | Ordinal | Vowels | Graphemes  | 
+|-----------|-----------|-----------|------------|-----------|--------------|--------|-----------|---------|-----------|
+| Arabic    |    4      |           |            |           |              |   |   |   |    | 
+| Armenian  |    3      |           |            |           |              |   |   |   |    | 
+| English   |    4      |           |            |           |              |   |   |   |    | 
+| Finnish   |    1      |           |            |           |              |   |   |   |    | 
+| Russian   |    3      |           |            |           |              |   |   |   |    | 
+| Spanish   |    2      |           |            |           |              |   |   |   |    | 
+| Hebrew    |    1      |           |            |           |              |   |   |   |    | 
+| Persian   |    1      |           |            |           |              |   |   |   |    | 
 
 ## Keyboards
-
-  AR3	Arabic North African keyboard layout
-  EN1	English QWERTY keyboard layout
-  EN4	English DVORAK keyboard layout
-  AR1	Arabic keyboard layout
-  EN2	English AZERTY keyboard layout
-  EN3	English QWERTZ keyboard layout
-  FI1	Finnish QWERTY keyboard layout
-  RU2	Phonetic Russian keyboard layout
-  RU3	PC Russian keyboard layout
-  ES1	Spanish keyboard layout
-  ES2	Spanish ISO keyboard layout
-  AR2	Arabic PC keyboard layout
-  AR4	Arabic keyboard layout
-  RU1	Russian keyboard layout
-  ALL	Use all keyboards
-  
-## Languages
-
-URLInsane supports multiple languages with the ability to add more languages 
-with ease. If you know where I can find a list of commonly misspelled words or 
-homophones for languages other than English please send the info to 
-rangertaha@gmail.com or add it yourself and submit a pull request. 
+## Homoglyphs
+## Homophones
+## Antonyms
+## Misspellings 
+## Cardinal 
+## Ordinal 
+## Vowels
+## Graphemes  
 
 
-### English
-
-* Over 8000 common misspellings
-* Over 500 common homophones
-* English alphabet, vowels, homoglyphs, and numerals
-* Common keyboard layouts (qwerty, azerty, qwertz, dvorak)
-
-### Spanish
-
-* Spanish alphabet, vowels, homoglyphs, and numerals
-* Basic and ISO keyboard layouts 
-
-### Russian
-
-* Russian alphabet, vowels, homoglyphs, and numerals
-* Common 3 keyboard layouts
-
-### Finish
-
-* Finish alphabet, vowels, homoglyphs, and numerals
-* Finnish QWERTY keyboard layout
-
-### Arabic
-
-* Arabic alphabet, homoglyphs, and numerals
-* 4 Common keyboard layouts
-
-### Persian
-
-* Persian alphabet and numerals
-* One Common keyboard layout
 
 
-### Hebrew
 
-* Hebrew alphabet
-* One Common keyboard layout
+1. Homoglyph Replacement Across Alphabets
 
-### Armenian
+    Attackers take advantage of languages with characters that look similar to those in the target language (usually English). For instance, many Cyrillic letters closely resemble Latin ones, making it possible to create domains like “fаcebook.com” (using Cyrillic "а" instead of Latin "a") that look almost identical to the legitimate "facebook.com."
+    Other language scripts, such as Greek, also have similar characters, enabling a wide range of homograph attacks, which exploit look-alike characters from different languages.
 
-* Armenian alphabet and numerals
-* 2 Common keyboard layouts
+2. Misspellings and Common Typing Errors
+
+    Typo domains rely on common typing errors, especially for language-specific keyboards. For instance, a Spanish-speaking audience might accidentally type “goolge” instead of “google” due to familiarity with specific keystroke patterns.
+    Attackers might also replace accented letters or letters with diacritics in languages like Spanish, French, or German. For example, using "télégramme.com" for “telegram.com” could mislead French-speaking users.
+
+3. Phonetic and Linguistic Variations
+
+    Attackers exploit phonetic similarities, where the target name is replaced by a similar-sounding word or phrase in the target language. For instance, “secure” might be replaced by “sekur” or “bank” by “banq” for a French-speaking audience.
+    Additionally, attackers create typosquatted domains that reflect common dialectal or regional language spellings, targeting specific communities. For instance, “colour.com” might be typosquatted as “colur.com” to confuse UK users.
+
+4. Multilingual Blending
+
+    For international brands, typosquatting can incorporate hybrid language variations that mix English with local language elements. For instance, combining “amazon” with country-specific words like “amazonkaufen.com” (using the German word for “buy”) can mislead German-speaking users.
+
+5. Foreign Language Cognates and Loanwords
+
+    Attackers use cognates (words that look similar and have the same meaning across languages) or loanwords to appeal to international audiences. A word like “hotel” appears in many languages and can be combined with a typosquatting element like “h0tel.com” to fool non-native English speakers, as they may overlook minor changes in familiar words.
+
+6. Transliterations and Alternate Alphabets
+
+    Some typosquatters use transliterations, converting words from one alphabet to another in ways that resemble the original brand or name. For example, using Punycode (a way of encoding Unicode within the ASCII character set) allows for domain names like “xn--pple-43d.com,” which appears as “аpple.com” in the browser (with Cyrillic "а").
+    Transliteration is also common in languages like Arabic, Chinese, and Hindi, where brand names are spelled out using Latin characters or phonetically similar sounds to trick users.
+
+7. Local Language Targeting
+
+    Typosquatting often uses localized or region-specific spellings and slang to make a fake domain appear legitimate to a particular audience. For instance, Spanish speakers might see “amig0s.com” instead of “amigos.com,” where “0” is used in place of “o” to fool users who are accustomed to similar regional variations.
+
+By carefully crafting typosquatted names that resonate linguistically and culturally with the target audience, attackers enhance the believability of their fake domains or usernames, increasing the likelihood of successful phishing or other deceptive attacks.
+
 
 
 ## Algorithms
 
-The modular architecture for code extensibility allows developers to add new typosquatting
-algorithms with ease. Currently, we have implemented 19 
-typosquatting algorithms. 
+| ID | Name   | Description  | 
+|--|------------|-------------|
+| |   |         |    
+| |    |           |   
+| |    |         |   
 
-1. **Missing Dot(MD)** is created by omitting a dot from the domain.
-2. **Missing Dashes(MDS)** is created by omitting a dash from the domain.
-3. **Strip Dashes(SD)** is created by stripping all dashes from the domain
-4. **Character Omission(CO)** Omitting a character from the domain
-5. **Character Swap(CS)** swaps two consecutive characters in a domain
-6. **Adjacent Character Substitution(ACS)** replaces adjacent characters
-7. **Adjacent Character Insertion(ACI)** inserts adjacent character
-8. **Homoglyphs(HG)** replaces characters with characters that look similar
-9. **Singular Pluralise(SP)** creates a singular domain plural and vice versa
-10. **Character Repeat(CR)** repeats a character of the domain name twice
-11. **Double Character Replacement(DCR)** repeats a character twice
-12. **Common Misspellings(CM)** are created from common misspellings
-13. **Homophones(HP)** Typos are created from sets of words that sound the same
-14. **Vowel Swapping(VS)** is created by swaps vowels
-15. **Bitsquatting(BF)** relies on random bit-errors
-16. **Wrong Top Level Domain(WTLD)**
-17. **Wrong Second Level Domain(W2TLD)**
-18. **Numeral Swap(NS)** numbers, words and vice versa
-19. **Wrong Third Level Domain(W3TLD)**
 
-## Extra Functions
-
-- **IDNA**    Show international domain name (Default)
-- **MX**      Checking for DNS's MX records
-- **TXT**     Checking for DNS's TXT records
-- **IP**      Checking for IP address
-- **NS**      Checks DNS NS records
-- **CNAME**   Checks DNS CNAME records
-- **SIM**     Show domain similarity % using fuzzy hashing with ssdeep
-- **301**	Show domains redirects
-- **GEO**	Show domains redirects
-
-## TODO 
-
-* Complete tool comparison
-* Extract keywords from domains. Keywords will be used for additional algorithms
-* Estimate popularity of a domain variant via google search
-* Lookup whois record
-* Emoji domains
-* Grabs HTTP and SMTP service banners
+| ID | Name            | Description ||
+|---|---------------------------------|--|
+| | Missing Dot                     ||
+| | Missing Dashes                  | |
+| | Strip Dashes                    | |
+| | Character Omission              | |
+| | Character Swap                  | |
+| | Adjacent Character Substitution | |
+| | Adjacent Character Insertion    ||
+| | Homoglyphs                      ||
+| | Singular Pluralise              | |
+| | Character Repeat                | |
+| | Double Character Replacement    | |
+| | Common Misspellings             | |
+| | Homophones                      ||
+| | Vowel Swapping                  | |
+| | Bitsquatting                    | |
+| | Wrong Top Level Domain          | | 
+| | Wrong Second Level Domain       | | 
+| | Wrong Third Level Domain        | |
+| | Ordinal Number Swap             | |
+| | Cardinal Number Swap            ||
+| | Hyphenation                     || 
+| | Multithreaded Algorithms        ||   
+| | Subdomain insertion             | |
+| | Period Insertion                | | 
+| | Combosquatting (Keywords)       | |
 
 
 
-## Tool Comparisons
+## Information
+
+| ID | Name   | Description  | 
+|----|------------|-------------|
+|    |   |         |    
+|    |    |           |   
+|    |    |         |   
+
+* **IDNA**  Show international domain name (Default)
+* **MX**    Checking for DNS's MX records
+* **TXT**   Checking for DNS's TXT records
+* **IP**    Checking for IP address
+* **NS**    Checks DNS NS records
+* **CNAME** Checks DNS CNAME records
+* **SIM**   Show domain similarity % using fuzzy hashing with ssdeep
+* **LIVE**  Show domains with IP addresses only
+* **301**   Show domains redirects
+* **GEO**   Show country location of IP address
+
+## Information Gathering
+
+|  Name           | Description  |
+|-------------------------------------||
+| DNS A Records                       | Retrieving IPv4 and IPv6 IP host addresses |
+| DNS MX Records                      |Retrieving Mail Exchange (MX) records|
+| DNS TXT Records                     |Retrieving TXT records storing arbitrary data associated with a domain |
+| DNS AAAA Records                    ||
+| DNS CName Records                   ||
+| DNS NS Records                      |Checks DNS NS records |
+| Geographic Info                     | Show country location of IP address|
+| Domain Similarity                   | Show domain similarity % using fuzzy hashing with ssdeep|
+| Domain Redirects                    |Show domains redirects |
+| IDNA Format                         |Show international domain name (Default) |
+| HTTP/SMTP Banner                    | |
 
 
-|      **Algorithms**             | URLInsane | URLCrazy  | DNSTwist   | DomainFuzz  |
-|                                 |           |           |            |             |          
-|---------------------------------|-----------|-----------|------------|-------------|
-| Missing Dot                     |     X     |     X     |     X      |             |           
-| Missing Dashes                  |     X     |           |            |             |          
-| Strip Dashes                    |     X     |     X     |            |             |           
-| Character Omission              |     X     |     X     |     X      |             |           
-| Character Swap                  |     X     |     X     |            |             |           
-| Adjacent Character Substitution |     X     |     X     |            |             |           
-| Adjacent Character Insertion    |     X     |     X     |     X      |             |          
-| Homoglyphs                      |     X     |     X     |     P      |             |           
-| Singular Pluralise              |     X     |     X     |            |             |           
-| Character Repeat                |     X     |     X     |     X      |             |           
-| Double Character Replacement    |     X     |     X     |            |             |           
-| Common Misspellings             |     X     |     X     |            |             |           
-| Homophones                      |     X     |     X     |     P      |             |           
-| Vowel Swapping                  |     X     |     X     |            |             |           
-| Bitsquatting                    |     X     |     X     |     X      |             |           
-| Wrong Top Level Domain          |     X     |     X     |            |             |           
-| Wrong Second Level Domain       |     X     |     X     |            |             |           
-| Wrong Third Level Domain        |     X     |           |            |             |           
-| Ordinal Number Swap             |     X     |           |            |             |           
-| Cardinal Number Swap            |           |           |            |             |           
-| Hyphenation                     |           |           |      X     |             |         
-| Combosquatting(Keywords)        |           |           |            |             |           
-| Multithreaded Algorithms        |     X     |     ?     |      X     |      X      |         
+DNS TXT records (Text Records) are a type of DNS record used to store arbitrary text data associated with a domain. Originally intended for descriptive text, they’re now widely used for various purposes, including domain verification, email authentication, and configuration data. TXT records allow domain owners to associate key-value data with their domain, which can be retrieved by external systems for verification and configuration purposes.
+
+DNS MX records (Mail Exchange records) are a type of DNS record used to route email for a domain to designated mail servers. They help direct emails sent to a domain (e.g., user@example.com) to the correct mail servers that handle receiving and processing the email.
 
 
 
-|      **Extra Functions**            | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz | 
-|-------------------------------------|-----------|-----------|------------|-------------|
-|                                     |           |           |            |             |           
-| Live/Online Check                   |     X     |     X     |      X     |             |           
-| Google Popularity Estimate          |           |     X     |            |             |           
-| DNS A Records                       |     X     |     X     |      X     |      X      |          
-| DNS MX Records                      |     X     |     X     |      X     |             |           
-| DNS txt Records                     |     X     |     X     |            |             |           
-| DNS AAAA Records                    |     X     |           |      X     |      X      |           
-| DNS CName Records                   |     X     |           |            |             |           
-| DNS NS Records                      |     X     |           |      X     |      X      |           
-| GeoIP Info                          |     X     |     X     |      X     |             |           
-| Domain Similarity                   |     X     |           |      X     |      X      |           
-| Domain Redirects                    |     X     |           |            |             |           
-| IDNA Format                         |     X     |           |      X     |             |           
-| CSV output                          |     X     |     X     |      X     |      X      |           
-| JSON output                         |     X     |           |      X     |      X      |           
-| Human Readable output               |     X     |     X     |      X     |      X      |           
-| HTTP/SMTP Banner                    |           |           |      X     |             |           
-| WHOIS Info                          |           |           |      X     |             |           
-| Test MX email intercepts            |           |           |      X     |             |           
-| Multithreaded Extra Functions       |     X     |           |      X     |      X      |           
+## Outputs
+
+| Name  | Description | 
+|-------|-------------|
+| TABLE |         |  
+| TEXT  |         |  
+| CSV   |         |    
+| TSV   |         |   
+| MD    |         |   
 
 
-| **Language (Keyboards)** | URLInsane  | URLCrazy  | DNSTwist   | DomainFuzz  | XN-Twist |
-|--------------------------|-----------|-----------|------------|-------------|-----------|
-|                          |           |           |            |             |           |
-| Arabic (4)               |     X     |           |            |             |           |
-| Armenian (3)             |     X     |           |            |             |           |
-| English (4)              |     X     |     X     |      X     |      X      |     X     |
-| Finnish (1)              |     X     |           |            |             |           |
-| Russian (3)              |     X     |           |            |             |           |
-| Spanish (2)              |     X     |           |            |             |           |
-| Hebrew (1)               |     X     |           |            |             |           |
-| Persian (1)              |     X     |           |            |             |           |
+## Database
 
+| Name   | Description  | 
+|--------|-------------|
+| Badger |         |    
+
+
+
+
+
+
+
+
+
+
+
+
+### Speed
+
+| **Tool**   | google.com  | facebook.com  | youtube.com   | amazon.com | amazon4you.com |
+|------------|-------------|---------------|---------------|------------|----------------|
+| URLInsane  |             |               |               |            |                |
+| URLCrazy   |             |               |               |            |                |
+| DNSTwist   |             |               |               |            |                |
+| DomainFuzz |             |               |               |            |                |
 
 ## Authors
 
-* [Rangertaha](https://github.com/rangertaha)
-
+* [Rangertaha (rangertaha@gmail.com)](https://github.com/rangertaha)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the GPLv3 License - see the [LICENSE](LICENSE) file for details
+
+
+
+
+
+
