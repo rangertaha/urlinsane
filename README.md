@@ -151,16 +151,16 @@ Graphemes
 Ordinal
 Cardinal
 
-| Languages | Keyboards | Homoglyphs  | Homophones   | Antonyms |Misspellings
-|--------------------------|-----------|-----------|------------|-------------|
-| Arabic    |    4     |           |            |             |
-| Armenian  |    3     |           |            |             |
-| English   |    4     |     X     |      X     |      X      |
-| Finnish   |    1     |           |            |             |
-| Russian   |    3     |           |            |             |
-| Spanish   |    2     |           |            |             |
-| Hebrew    |    1     |           |            |             |
-| Persian   |    1     |           |            |             |  
+| Languages | Keyboards | Homoglyphs | Homophones | Antonyms | Misspellings | Vowels | Graphemes | Ordinal | Cardinal  | 
+|-----------|-----------|-----------|------------|-----------|--------------|--------|-----------|---------|-----------|
+| Arabic    |    4      |           |            |           |              |   |   |   |    | 
+| Armenian  |    3      |           |            |           |              |   |   |   |    | 
+| English   |    4      |           |            |           |              |   |   |   |    | 
+| Finnish   |    1      |           |            |           |              |   |   |   |    | 
+| Russian   |    3      |           |            |           |              |   |   |   |    | 
+| Spanish   |    2      |           |            |           |              |   |   |   |    | 
+| Hebrew    |    1      |           |            |           |              |   |   |   |    | 
+| Persian   |    1      |           |            |           |                |   |   |   |    | 
 
 
 
