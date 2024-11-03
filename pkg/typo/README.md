@@ -20,8 +20,6 @@ enough to lead users to a fake or malicious site. Example:
     examlpe.com (swapping "l" and "p")
     exapmle.com (swapping "p" and "m")
 
-* **-a** or **--algorithms** Allows you to specify the type of typosquatting algorithms to apply for generating variants
-* **-d** or **--domain** Allows us to specify the target type(domain) followed by the name.
 
 ```bash
 urlinsane typo -a cs -d example.com
@@ -34,6 +32,8 @@ urlinsane typo -a cs  -n username
 ```bash
 urlinsane typo -a cs  -e username@example.com
 ```
+- **-a** or **--algorithms** Allows you to specify the type of typosquatting algorithms to apply for generating variants
+- **-d** or **--domain** Allows us to specify the target type(domain) followed by the name.
 
 
 
