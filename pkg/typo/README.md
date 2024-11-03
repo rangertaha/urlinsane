@@ -1,13 +1,45 @@
 # Typo Algorithms
 
 
-## CharacterSwapping
+## (cs) Character Swapping
 
-Character Swapping typos occur when two consecutive characters are swapped in the original domain name. This small change can often go unnoticed by users.
+Character swapping in typosquatting is a technique where two consecutive 
+characters in a domain name are swapped to create a typo that looks similar to 
+the original domain. This subtle change can trick users into visiting the wrong 
+website, especially if they are scanning quickly and not looking closely at 
+each letter.
 
     Example: www.examlpe.com instead of www.example.com
 
-## AdjacentCharacterSubstitution
+
+Character swapping takes advantage of the fact that minor typographical errors 
+often go unnoticed. By switching two adjacent characters, attackers create 
+domains that look nearly identical to the intended site but are just different 
+enough to lead users to a fake or malicious site. Example:
+
+    examlpe.com (swapping "l" and "p")
+    exapmle.com (swapping "p" and "m")
+
+* **-a** or **--algorithms** Allows you to specify the type of typosquatting algorithms to apply for generating variants
+* **-d** or **--domain** Allows us to specify the target type(domain) followed by the name.
+
+```bash
+urlinsane typo -a cs -d example.com
+```
+
+```bash
+urlinsane typo -a cs  -n username
+```
+
+```bash
+urlinsane typo -a cs  -e username@example.com
+```
+
+
+
+
+
+## (acs) AdjacentCharacterSubstitution
 
 Adjacent Character Substitution typos replace characters in the original domain name with neighboring characters on a specific keyboard layout, such as QWERTY.
 

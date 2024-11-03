@@ -2,8 +2,8 @@ package all
 
 // registered plugin
 import (
-	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/aci"
-	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/acs"
+	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/aci"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/acs"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/ai"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/ar"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/bf"
@@ -12,7 +12,7 @@ import (
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/co"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/com"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/cr"
-	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/cs"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/cs"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/dcr"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/hd"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/hi"

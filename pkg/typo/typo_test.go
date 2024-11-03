@@ -92,7 +92,7 @@ func TestSuffixInsertion(t *testing.T) {
 
 }
 
-func TestCharacterSwap(t *testing.T) {
+func TestCharacterSwapping(t *testing.T) {
 	tests := []TypoCase{
 		{
 			name:   "example",
@@ -106,11 +106,11 @@ func TestCharacterSwap(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			variants := CharacterSwap(test.name)
+			variants := CharacterSwapping(test.name)
 			sort.Strings(variants)
 
 			if !reflect.DeepEqual(variants, test.typos) {
-				t.Errorf("CharacterSwap(%s, a, b, c) = %s; want %s", test.name, variants, test.typos)
+				t.Errorf("CharacterSwapping(%s, a, b, c) = %s; want %s", test.name, variants, test.typos)
 			}
 		})
 	}
@@ -1104,13 +1104,12 @@ func TestCardinalSwap(t *testing.T) {
 	}
 }
 
-
 func TestOrdinalSwap(t *testing.T) {
 	tests := []TypoCase{
 		{
 			name: "123",
 			typos: []string{
-				"12third","1second3","1secondthird","first23","first2third","firstsecond3","firstsecondthird", 
+				"12third", "1second3", "1secondthird", "first23", "first2third", "firstsecond3", "firstsecondthird",
 			},
 		},
 		{
