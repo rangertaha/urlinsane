@@ -53,8 +53,14 @@ func (n *Text) Write(in internal.Typo) {
 	fmt.Println(data...)
 }
 
-func (n *Text) Summary(total, live int64) {
-	fmt.Println("TOTAL: ", total, "LIVE", live)
+func (n *Text) Summary(report map[string]int64) {
+	// footer := table.Row{}
+	// for k, v := range report {
+	// 	footer = append(footer, k, v)
+	// }
+
+	// n.table.AppendFooter(footer)
+	// n.table.SetStyle(StyleDefault)
 }
 
 func (n *Text) Save() {}

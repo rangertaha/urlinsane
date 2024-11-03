@@ -59,6 +59,7 @@ package cns
 //
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
@@ -73,10 +74,10 @@ const (
 )
 
 type Algo struct {
-	ctype     int
 	config    internal.Config
 	languages []internal.Language
 	keyboards []internal.Keyboard
+	funcs     map[int]func(internal.Typo) []internal.Typo
 }
 
 func (n *Algo) Id() string {
@@ -84,10 +85,16 @@ func (n *Algo) Id() string {
 }
 
 func (n *Algo) Init(conf internal.Config) {
+	n.funcs = make(map[int]func(internal.Typo) []internal.Typo)
 	n.keyboards = conf.Keyboards()
 	n.languages = conf.Languages()
-	n.ctype = conf.Type()
 	n.config = conf
+
+	// Supported targets
+	n.funcs[internal.DOMAIN] = n.domain
+	n.funcs[internal.PACKAGE] = n.name
+	n.funcs[internal.EMAIL] = n.email
+	n.funcs[internal.NAME] = n.name
 }
 
 func (n *Algo) Name() string {
@@ -97,34 +104,18 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
-	if n.config.Type() == internal.DOMAIN {
-		return n.domain(typo)
-	}
-
-	if n.config.Type() == internal.PACKAGE {
-		return n.pkgs(typo)
-	}
-
-	if n.config.Type() == internal.NAME {
-		return n.name(typo)
-	}
-	return
+func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
+	return n.funcs[n.config.Type()](typo)
 }
 
 func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
-	// fmt.Println(sub, prefix, suffix)
-
 	for _, lang := range n.languages {
 
 		for _, variant := range n.Func(lang.Cardinal(), prefix) {
 			if prefix != variant {
 				d := domain.New(sub, variant, suffix)
-				// fmt.Println(sub, variant, suffix)
-
 				new := typo.Clone(d.String())
-
 				typos = append(typos, new)
 			}
 		}
@@ -132,11 +123,15 @@ func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	return
 }
 
-func (n *Algo) pkgs(typo internal.Typo) (typos []internal.Typo) {
-	original := n.config.Target().Name()
+func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
+	username, domain := typo.Original().Email()
 	for _, lang := range n.languages {
-		for _, variant := range n.Func(lang.Cardinal(), original) {
-			typos = append(typos, typo.Clone(variant))
+
+		for _, variant := range n.Func(lang.Cardinal(), username) {
+			if username != variant {
+				new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
+				typos = append(typos, new)
+			}
 		}
 	}
 	return
@@ -149,13 +144,6 @@ func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
 			typos = append(typos, typo.Clone(variant))
 		}
 	}
-
-	// original := n.config.Target().Name()
-	// for _, variant := range n.Func(original) {
-	// 	if original != variant {
-	// 		typos = append(typos, typo.Clone(variant))
-	// 	}
-	// }
 	return
 }
 
@@ -200,76 +188,6 @@ func (n *Algo) Func(cardinals map[string]string, name string) []string {
 
 	return results
 }
-
-// type Algo struct {
-// 	types []string
-// }
-
-// func (n *Algo) Id() string {
-// 	return CODE
-// }
-// func (n *Algo) IsType(str string) bool {
-// 	return algorithms.IsType(n.types, str)
-// }
-
-// func (n *Algo) Name() string {
-// 	return NAME
-// }
-
-// func (n *Algo) Description() string {
-// 	return DESCRIPTION
-// }
-
-// func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
-// 	for _, lang := range typo.Languages() {
-// 		for _, variant := range n.Func(lang.Cardinal(), typo.Original().Repr()) {
-// 			typos = append(typos, typo.New(variant))
-// 		}
-// 	}
-// 	return
-// }
-
-// // Func swaps numbers and carninal numbers
-// func (n *Algo) Func(cardinals map[string]string, name string) []string {
-// 	results := []string{}
-// 	var fn func(map[string]string, string, bool) map[string]bool
-
-// 	fn = func(data map[string]string, str string, reverse bool) (names map[string]bool) {
-// 		names = make(map[string]bool)
-
-// 		for num, word := range data {
-// 			{
-// 				var variant string
-// 				if !reverse {
-// 					variant = strings.Replace(str, word, num, -1)
-// 				} else {
-// 					variant = strings.Replace(str, num, word, -1)
-// 				}
-
-// 				if str != variant {
-// 					if _, ok := names[variant]; !ok {
-// 						names[variant] = true
-// 						for k, v := range fn(cardinals, variant, reverse) {
-// 							names[k] = v
-// 						}
-
-// 						fn(cardinals, variant, reverse)
-// 					}
-// 				}
-// 			}
-// 		}
-// 		return names
-// 	}
-
-// 	for name := range fn(cardinals, name, false) {
-// 		results = append(results, name)
-// 	}
-// 	for name := range fn(cardinals, name, true) {
-// 		results = append(results, name)
-// 	}
-
-// 	return results
-// }
 
 // Register the plugin
 func init() {

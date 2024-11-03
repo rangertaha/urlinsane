@@ -38,7 +38,6 @@ func (t *Typo) Variant() internal.Target {
 	return t.variant
 }
 
-
 func (t *Typo) Active() bool {
 	return t.variant.Live()
 }

@@ -99,7 +99,7 @@ import (
 var typoCmd = &cobra.Command{
 	Use:   "typo [flags] [name]",
 	Short: "Detects typosquatting across domains, arbitrary names, usernames, and software packages",
-	Long:  `Designed to detect typosquatting across domains, arbitrary names, usernames, and software packages. 
+	Long: `Designed to detect typosquatting across domains, arbitrary names, usernames, and software packages. 
 By leveraging advanced algorithms, information-gathering techniques, and data analysis, it identifies 
 potentially harmful variations of targeted entities that cybercriminals might exploit. Essential for 
 defending against typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, and corporate 
@@ -122,7 +122,7 @@ espionage, URLInsane also enhances threat intelligence capabilities.`,
 		}
 
 		t := urlinsane.New(config)
-		t.Start()
+		t.Execute()
 
 	},
 	//   PostRun: func(cmd *cobra.Command, args []string) {
@@ -162,10 +162,12 @@ func init() {
 
 	// Plugins
 	typoCmd.Flags().StringArrayP("info", "i", []string{"all"}, "IDs of domain information gathering plugins to apply")
-	typoCmd.Flags().StringP("domain", "d", "", "Domain name for generating typo variations")
-	typoCmd.Flags().StringP("name", "n", "", "Named entity or Username for generating typo variations")
-	typoCmd.Flags().StringP("pkg", "m", "", "Module/package name for generating typo variations")
+	typoCmd.Flags().StringP("domain", "d", "", "Domain name typo squatting variations")
+	typoCmd.Flags().StringP("name", "n", "", "Named entity or Username typo squatting variations")
+	typoCmd.Flags().StringP("email", "e", "", "Email address typo squatting variations")
+	typoCmd.Flags().StringP("pkg", "g", "", "Package or library name for typo squatting variations")
 	typoCmd.Flags().StringP("url", "u", "", "URL associagted with the named entity or username")
-	typoCmd.MarkFlagsOneRequired("domain", "name", "pkg")
-	typoCmd.MarkFlagsMutuallyExclusive("domain", "name", "pkg")
+	typoCmd.Flags().Int("ld", 0, "Minimum levenshtein distance between the original and variant names. Ignored if 0")
+	typoCmd.MarkFlagsOneRequired("domain", "name", "pkg", "email")
+	typoCmd.MarkFlagsMutuallyExclusive("domain", "name", "pkg", "email")
 }

@@ -20,7 +20,6 @@ import (
 	"testing"
 )
 
-
 func TestAlgo(t *testing.T) {
 	var originals = map[string]string{
 		"1": "first",

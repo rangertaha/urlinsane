@@ -21,6 +21,7 @@ import (
 const (
 	PACKAGE = iota
 	DOMAIN
+	EMAIL
 	NAME
 )
 
@@ -41,6 +42,7 @@ type Config interface {
 	Verbose() bool
 	Format() string
 	File() string
+	Levenshtein() int
 	// Count(...int64) int64
 	// Live(...int64) int64
 	Type() int
@@ -85,7 +87,7 @@ type Output interface {
 	Id() string
 	Description() string
 	Write(Typo)
-	Summary(int64, int64)
+	Summary(map[string]int64)
 	Save()
 }
 
@@ -97,6 +99,7 @@ type Target interface {
 	Live(...bool) bool
 	Name() string
 	Domain() (string, string, string)
+	Email() (string, string)
 	Json() ([]byte, error)
 }
 

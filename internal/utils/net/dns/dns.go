@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright © 2019 CYBINT
+// # Copyright © 2019 CYBINT
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -50,8 +50,6 @@ func NewNS(ns ...*net.NS) (nns []NS) {
 	}
 	return
 }
-
-
 
 // func checkIP(tr Result) Result {
 // 	if tr.Variant.Meta.DNS.ipCheck == false {

@@ -34,7 +34,6 @@ func ReplaceCharFunc(str, old, new string) (results []string) {
 	return
 }
 
-
 func Paddding(str, old, new string) (results []string) {
 	results = append(results, strings.Replace(str, old, new, -1))
 	return

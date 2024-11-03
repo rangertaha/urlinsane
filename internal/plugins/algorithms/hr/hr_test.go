@@ -21,7 +21,7 @@ import (
 	"testing"
 	"unicode"
 
-		"github.com/rangertaha/urlinsane/internal/plugins/languages"
+	"github.com/rangertaha/urlinsane/internal/plugins/languages"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
 )
 

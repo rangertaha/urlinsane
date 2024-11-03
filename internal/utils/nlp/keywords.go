@@ -25,4 +25,3 @@ import (
 func Rake(s string) map[string]float64 {
 	return rake.WithText(s)
 }
-

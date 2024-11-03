@@ -99,7 +99,6 @@ func SimilarSounds(data [][]string, str string) (words []string) {
 	return
 }
 
-
 func NumeralMap(data map[string][]string, pos int) (words map[string]string) {
 	words = make(map[string]string)
 
@@ -114,8 +113,6 @@ func NumeralMap(data map[string][]string, pos int) (words map[string]string) {
 
 	return
 }
-
-
 
 // type (
 // Language type

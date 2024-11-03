@@ -66,6 +66,7 @@ func (n *Text) Init(conf internal.Config) {
 func (n *Text) getHeader() (row table.Row) {
 	row = append(row, "TYPE")
 	row = append(row, "TYPO")
+	row = append(row, "ld")
 
 	for _, info := range n.config.Information() {
 		for _, headers := range info.Headers() {
@@ -84,6 +85,7 @@ func (n *Text) getRow(typo internal.Typo) (row table.Row) {
 	}
 
 	row = append(row, typo.String())
+	row = append(row, typo.Variant().Meta()["ld"])
 
 	for _, info := range n.config.Information() {
 		for _, header := range info.Headers() {
@@ -133,8 +135,13 @@ func (n *Text) Write(in internal.Typo) {
 	n.table.AppendRow(n.getRow(in))
 }
 
-func (n *Text) Summary(total, live int64) {
-	n.table.AppendFooter(table.Row{"Total", total, "Live", live})
+func (n *Text) Summary(report map[string]int64) {
+	footer := table.Row{}
+	for k, v := range report {
+		footer = append(footer, k, v)
+	}
+
+	n.table.AppendFooter(footer)
 	n.table.SetStyle(StyleDefault)
 }
 
