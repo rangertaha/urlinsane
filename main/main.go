@@ -2,30 +2,69 @@ package main
 
 import (
 	"fmt"
-
-	"github.com/weppos/publicsuffix-go/publicsuffix"
 )
 
-func main() {
-	// Extract the domain from a string
-	// using the default list
-	fmt.Println(publicsuffix.Domain("example.com"))       // example.com
-	fmt.Println(publicsuffix.Domain("www.example.com"))   // example.com
-	fmt.Println(publicsuffix.Domain("example.co.uk"))     // example.co.uk
-	fmt.Println(publicsuffix.Domain("www.example.co.uk")) // example.co.uk
 
-	// Parse the domain from a string
-	// using the default list
-	fmt.Println("---------------------------------------------------------------------")
-	fmt.Println(publicsuffix.Parse("example.com"))       // &DomainName{"com", "example", ""}
-	fmt.Println(publicsuffix.Parse("www.example.com"))   // &DomainName{"com", "example", "www"}
-	fmt.Println(publicsuffix.Parse("example.co.uk"))     // &DomainName{"co.uk", "example", ""}
-	fmt.Println(publicsuffix.Parse("www.example.co.uk")) // &DomainName{"co.uk", "example", "www"}
-	fmt.Println(publicsuffix.Parse("www.example.co.uk")) // &DomainName{"co.uk", "example", "www"}
-	fmt.Println(publicsuffix.Parse("example"))           // &DomainName{"co.uk", "example", "www"}
-	d, _ := publicsuffix.Parse("example.com.uk.io")
-	fmt.Println(d.String(), " SLD:", d.SLD, " TLD:", d.TLD, " TRD:", d.TRD)
+// Generate variations by flipping bits in the a name
+func generateDomainVariations(name string) (variations []string) {
+
+	// Flip a single bit in a byte
+	flipBit := func(b byte, pos uint) byte {
+		mask := byte(1 << pos)
+		return b ^ mask
+	}
+
+	// Flip each bit in each byte of the name
+	for i := 0; i < len(name); i++ {
+		for bit := 0; bit < 8; bit++ {
+			flippedChar := flipBit(name[i], uint(bit))
+			// Construct new variation
+			variant := name[:i] + string(flippedChar) + name[i+1:]
+			variations = append(variations, variant)
+		}
+	}
+
+	return
 }
+
+func main() {
+	domain := "example"
+	fmt.Println("Original Domain:", domain)
+
+	variations := generateDomainVariations(domain)
+
+	fmt.Println("\nGenerated Variations:")
+	for _, variation := range variations {
+		fmt.Println(variation)
+	}
+}
+
+// import (
+// 	"fmt"
+
+// 	"github.com/weppos/publicsuffix-go/publicsuffix"
+// )
+
+// func main() {
+// 	// Extract the domain from a string
+// 	// using the default list
+// 	fmt.Println(publicsuffix.Domain("example.com"))       // example.com
+// 	fmt.Println(publicsuffix.Domain("www.example.com"))   // example.com
+// 	fmt.Println(publicsuffix.Domain("example.co.uk"))     // example.co.uk
+// 	fmt.Println(publicsuffix.Domain("www.example.co.uk")) // example.co.uk
+
+// 	// Parse the domain from a string
+// 	// using the default list
+// 	fmt.Println("---------------------------------------------------------------------")
+// 	fmt.Println(publicsuffix.Parse("example.com"))       // &DomainName{"com", "example", ""}
+// 	fmt.Println(publicsuffix.Parse("www.example.com"))   // &DomainName{"com", "example", "www"}
+// 	fmt.Println(publicsuffix.Parse("example.co.uk"))     // &DomainName{"co.uk", "example", ""}
+// 	fmt.Println(publicsuffix.Parse("www.example.co.uk")) // &DomainName{"co.uk", "example", "www"}
+// 	fmt.Println(publicsuffix.Parse("www.example.co.uk")) // &DomainName{"co.uk", "example", "www"}
+// 	fmt.Println(publicsuffix.Parse("example"))           // &DomainName{"co.uk", "example", "www"}
+// 	d, _ := publicsuffix.Parse("example.com.uk.io")
+// 	fmt.Println(d.String(), " SLD:", d.SLD, " TLD:", d.TLD, " TRD:", d.TRD)
+// }
 
 // package main
 
