@@ -163,7 +163,7 @@ func TestAdjacentCharacterSubstitution(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			for _, keyboard := range Keyboards {
+			for _, keyboard := range enKeyboards {
 				if keyboard.name == test.layout {
 					variants := AdjacentCharacterSubstitution(test.name, keyboard.layout...)
 					sort.Strings(variants)
@@ -242,7 +242,7 @@ func TestAdjacentCharacterInsertion(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			for _, keyboard := range Keyboards {
+			for _, keyboard := range enKeyboards {
 				if keyboard.name == test.layout {
 					variants := AdjacentCharacterInsertion(test.name, keyboard.layout...)
 					sort.Strings(variants)
@@ -297,13 +297,162 @@ func TestHyphenInsertion(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			for _, keyboard := range Keyboards {
+			for _, keyboard := range enKeyboards {
 				if keyboard.name == test.layout {
 					variants := HyphenInsertion(test.name)
 					sort.Strings(variants)
 
 					if !reflect.DeepEqual(variants, test.typos) {
 						t.Errorf("HyphenInsertion(%s) = %s; want %s", test.name, variants, test.typos)
+					}
+				}
+
+			}
+		})
+	}
+}
+
+func TestHyphenOmission(t *testing.T) {
+	tests := []TypoCase{
+		{
+			name:   "example-named-entity",
+			layout: "QWERTY",
+			typos: []string{
+				"example-namedentity", "examplenamed-entity", "examplenamedentity",
+			},
+		},
+		{
+			name:   "one-two-three",
+			layout: "AZERTY",
+			typos: []string{
+				"one-twothree", "onetwo-three", "onetwothree",
+			},
+		},
+
+		{
+			name:   "alessandro-site",
+			layout: "QWERTZ",
+			typos: []string{
+				"alessandrosite",
+			},
+		},
+		{
+			name:   "puppet-009",
+			layout: "DVORAK",
+			typos: []string{
+				"puppet009",
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			for _, keyboard := range enKeyboards {
+				if keyboard.name == test.layout {
+					variants := HyphenOmission(test.name)
+					sort.Strings(variants)
+
+					if !reflect.DeepEqual(variants, test.typos) {
+						t.Errorf("HyphenOmission(%s) = %s; want %s", test.name, variants, test.typos)
+					}
+				}
+
+			}
+		})
+	}
+}
+func TestDotInsertion(t *testing.T) {
+	tests := []TypoCase{
+		{
+			name:   "example",
+			layout: "QWERTY",
+			typos: []string{
+				"e.xample", "ex.ample", "exa.mple", "exam.ple", "examp.le", "example",
+			},
+		},
+		{
+			name:   "rangertaha",
+			layout: "AZERTY",
+			typos: []string{
+				"r.angertaha", "ra.ngertaha", "ran.gertaha", "rang.ertaha", "range.rtaha", "ranger.taha", "rangert.aha", "rangerta.ha", "rangertaha",
+			},
+		},
+
+		{
+			name:   "alessandro",
+			layout: "QWERTZ",
+			typos: []string{
+				"a.lessandro", "al.essandro", "ale.ssandro", "ales.sandro", "aless.andro", "alessa.ndro", "alessan.dro", "alessand.ro", "alessandro",
+			},
+		},
+		{
+			name:   "puppet",
+			layout: "DVORAK",
+			typos: []string{
+				"p.uppet", "pu.ppet", "pup.pet", "pupp.et", "puppet",
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			for _, keyboard := range enKeyboards {
+				if keyboard.name == test.layout {
+					variants := DotInsertion(test.name)
+					sort.Strings(variants)
+
+					if !reflect.DeepEqual(variants, test.typos) {
+						t.Errorf("DotInsertion(%s) = %s; want %s", test.name, variants, test.typos)
+					}
+				}
+
+			}
+		})
+	}
+}
+
+func TestDotOmission(t *testing.T) {
+	tests := []TypoCase{
+		{
+			name:   "example.named.entity",
+			layout: "QWERTY",
+			typos: []string{
+				"example.namedentity", "examplenamed.entity", "examplenamedentity",
+			},
+		},
+		{
+			name:   "one.two.three",
+			layout: "AZERTY",
+			typos: []string{
+				"one.twothree", "onetwo.three", "onetwothree",
+			},
+		},
+
+		{
+			name:   "www.alessandro.net",
+			layout: "QWERTZ",
+			typos: []string{
+				"www.alessandronet", "wwwalessandro.net", "wwwalessandronet",
+			},
+		},
+		{
+			name:   "puppet.com",
+			layout: "DVORAK",
+			typos: []string{
+				"puppetcom",
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			for _, keyboard := range enKeyboards {
+				if keyboard.name == test.layout {
+					variants := DotOmission(test.name)
+					sort.Strings(variants)
+
+					if !reflect.DeepEqual(variants, test.typos) {
+						t.Errorf("DotOmission(%s) = %s; want %s", test.name, variants, test.typos)
 					}
 				}
 
@@ -361,9 +510,9 @@ func TestGraphemeInsertion(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			for _, keyboard := range Keyboards {
+			for _, keyboard := range enKeyboards {
 				if keyboard.name == test.layout {
-					variants := GraphemeInsertion(test.name, Graphemes...)
+					variants := GraphemeInsertion(test.name, enGraphemes...)
 					sort.Strings(variants)
 
 					if !reflect.DeepEqual(variants, test.typos) {
@@ -419,9 +568,9 @@ func TestGraphemeReplacement(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			for _, keyboard := range Keyboards {
+			for _, keyboard := range enKeyboards {
 				if keyboard.name == test.layout {
-					variants := GraphemeReplacement(test.name, Graphemes...)
+					variants := GraphemeReplacement(test.name, enGraphemes...)
 					sort.Strings(variants)
 
 					if !reflect.DeepEqual(variants, test.typos) {
@@ -434,7 +583,7 @@ func TestGraphemeReplacement(t *testing.T) {
 	}
 }
 
-func TestGraphemeRepetition(t *testing.T) {
+func TestCharacterRepetition(t *testing.T) {
 	tests := []TypoCase{
 		{
 			name:   "example",
@@ -448,13 +597,13 @@ func TestGraphemeRepetition(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			for _, keyboard := range Keyboards {
+			for _, keyboard := range enKeyboards {
 				if keyboard.name == test.layout {
-					variants := GraphemeRepetition(test.name)
+					variants := CharacterRepetition(test.name)
 					sort.Strings(variants)
 
 					if !reflect.DeepEqual(variants, test.typos) {
-						t.Errorf("GraphemeRepetition(%s) = %s; want %s", test.name, variants, test.typos)
+						t.Errorf("CharacterRepetition(%s) = %s; want %s", test.name, variants, test.typos)
 					}
 				}
 
@@ -463,7 +612,7 @@ func TestGraphemeRepetition(t *testing.T) {
 	}
 }
 
-func TestDoubleGraphemeAdjacentReplacement(t *testing.T) {
+func TestDoubleCharacterAdjacentReplacement(t *testing.T) {
 	tests := []TypoCase{
 		{
 			name:   "google",
@@ -489,13 +638,13 @@ func TestDoubleGraphemeAdjacentReplacement(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			for _, keyboard := range Keyboards {
+			for _, keyboard := range enKeyboards {
 				if keyboard.name == test.layout {
-					variants := DoubleGraphemeAdjacentReplacement(test.name, keyboard.layout...)
+					variants := DoubleCharacterAdjacentReplacement(test.name, keyboard.layout...)
 					sort.Strings(variants)
 
 					if !reflect.DeepEqual(variants, test.typos) {
-						t.Errorf("DoubleGraphemeAdjacentReplacement(%s) = %s; want %s", test.name, variants, test.typos)
+						t.Errorf("DoubleCharacterAdjacentReplacement(%s) = %s; want %s", test.name, variants, test.typos)
 					}
 				}
 
@@ -504,7 +653,7 @@ func TestDoubleGraphemeAdjacentReplacement(t *testing.T) {
 	}
 }
 
-func TestGraphemeOmission(t *testing.T) {
+func TestCharacterOmission(t *testing.T) {
 	tests := []TypoCase{
 		{
 			name:   "google",
@@ -531,13 +680,13 @@ func TestGraphemeOmission(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			for _, keyboard := range Keyboards {
+			for _, keyboard := range enKeyboards {
 				if keyboard.name == test.layout {
-					variants := GraphemeOmission(test.name)
+					variants := CharacterOmission(test.name)
 					sort.Strings(variants)
 
 					if !reflect.DeepEqual(variants, test.typos) {
-						t.Errorf("GraphemeOmission(%s) = %s; want %s", test.name, variants, test.typos)
+						t.Errorf("CharacterOmission(%s) = %s; want %s", test.name, variants, test.typos)
 					}
 				}
 
@@ -572,7 +721,7 @@ func TestSingularPluraliseSubstitution(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			for _, keyboard := range Keyboards {
+			for _, keyboard := range enKeyboards {
 				if keyboard.name == test.layout {
 					variants := SingularPluraliseSubstitution(test.name)
 					sort.Strings(variants)
@@ -583,6 +732,401 @@ func TestSingularPluraliseSubstitution(t *testing.T) {
 				}
 
 			}
+		})
+	}
+}
+
+func TestCommonMisspellings(t *testing.T) {
+	tests := []TypoCase{
+		{
+			name:   "hwilevery.com",
+			layout: "QWERTY",
+			typos: []string{
+				"hwilevyre.com", "whilevery.com",
+			},
+		},
+		{
+			name:   "cassowarrydominationadvised",
+			layout: "QWERTY",
+			typos: []string{
+				"cassowarrydominationadviced", "cassowarrydominatonadvised",
+				"cassowarydominationadvised",
+			},
+		},
+		{
+			name:   "abseilabondonadviced",
+			layout: "QWERTY",
+			typos: []string{
+				"absailabondonadviced", "abseilabandonadviced",
+				"abseilabondonadvised",
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			for _, keyboard := range enKeyboards {
+				if keyboard.name == test.layout {
+					variants := CommonMisspellings(test.name, enMisspellings...)
+					sort.Strings(variants)
+
+					if !reflect.DeepEqual(variants, test.typos) {
+						t.Errorf("CommonMisspellings(%s) = %s; want %s", test.name, variants, test.typos)
+					}
+				}
+
+			}
+		})
+	}
+}
+
+func TestVowelSwapping(t *testing.T) {
+	tests := []TypoCase{
+		{
+			name:   "hwile",
+			layout: "QWERTY",
+			typos: []string{
+				"hwale", "hwele", "hwila", "hwili", "hwilo", "hwilu", "hwole", "hwule",
+			},
+		},
+		{
+			name:   "vised",
+			layout: "QWERTY",
+			typos: []string{
+				"vased", "vesed", "visad", "visid", "visod", "visud", "vosed", "vused",
+			},
+		},
+		{
+			name:   "abse",
+			layout: "QWERTY",
+			typos: []string{
+				"absa", "absi", "abso", "absu", "ebse", "ibse", "obse", "ubse",
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			for _, keyboard := range enKeyboards {
+				if keyboard.name == test.layout {
+					variants := VowelSwapping(test.name, enVowels...)
+					sort.Strings(variants)
+
+					if !reflect.DeepEqual(variants, test.typos) {
+						t.Errorf("VowelSwapping(%s) = %s; want %s", test.name, variants, test.typos)
+					}
+				}
+
+			}
+		})
+	}
+}
+
+func TestHomophoneSwapping(t *testing.T) {
+	tests := []TypoCase{
+		{
+			name:   "doordash",
+			layout: "QWERTY",
+			typos: []string{
+				"door-",
+			},
+		},
+		{
+			name:   "accepteffect",
+			layout: "QWERTY",
+			typos: []string{
+				"acceptaffect", "excepteffect",
+			},
+		},
+		{
+			name:   "addsax",
+			layout: "QWERTY",
+			typos: []string{
+				"addsacts", "addsaxe", "adzax", "adzeax",
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			for _, keyboard := range enKeyboards {
+				if keyboard.name == test.layout {
+					variants := HomophoneSwapping(test.name, enHomophones...)
+					sort.Strings(variants)
+
+					if !reflect.DeepEqual(variants, test.typos) {
+						t.Errorf("HomophoneSwapping(%s) = %s; want %s", test.name, variants, test.typos)
+					}
+				}
+
+			}
+		})
+	}
+}
+
+func TestHomoglyphSwapping(t *testing.T) {
+	tests := []TypoCase{
+		{
+			name:   "abc",
+			layout: "QWERTY",
+			typos: []string{
+				"abç", "abć", "abċ", "abƈ", `ab̔"c`, "abϲ", "abс", "adc", "aibc", "albc", "aɓc", "aʙc", "aБc", "aЬc", "àbc", "ábc", "âbc", "ãbc", "äbc", "åbc", "ăbc", "ǎbc", "ȧbc", "ɑbc", "аbc", "ӓbc", "٨bc", "ạbc",
+			},
+		},
+		{
+			name:   "def",
+			layout: "QWERTY",
+			typos: []string{
+				"bef", "clef", "deƒ", "deϜ", "deҒ", "dief", "dlef", "déf", "dêf", "dëf", "dēf", "dĕf", "dėf", "dęf", "děf", "dϵf", "dеf", "dєf", "dҽf", "dẹf", "đef", "ɗef", "ԁef", "ժef",
+			},
+		},
+		{
+			name:   "ghi",
+			layout: "QWERTY",
+			typos: []string{
+				"gh1", "ghl", "gh¡", "ghí", "ghï", "ghĭ", "ghı", "ghǐ", "ghɩ", "ghι", "ghᎥ", "ghꙇ", "gihi", "glhi", "gнi", "gһi", "gհi", "gᏂi", "qhi", "ğhi", "ġhi", "ģhi", "ǵhi", "ɡhi", "ɢhi", "Ԍhi", "Ԍhi", "ցhi",
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			for _, keyboard := range enKeyboards {
+				if keyboard.name == test.layout {
+					variants := HomoglyphSwapping(test.name, enHomoglyphs)
+					sort.Strings(variants)
+
+					if !reflect.DeepEqual(variants, test.typos) {
+						t.Errorf("HomoglyphSwapping(%s) = %s; want %s", test.name, variants, test.typos)
+					}
+				}
+
+			}
+		})
+	}
+}
+
+func TestTopLevelDomain(t *testing.T) {
+	tests := []TypoCase{
+		{
+			name: "co",
+			typos: []string{
+				"co",
+				"io",
+				"uk",
+			},
+		},
+		{
+			name: "uk.com",
+			typos: []string{
+				"co",
+				"io",
+				"uk",
+			},
+		},
+		{
+			name: "uk.eu.org",
+			typos: []string{
+				"co",
+				"io",
+				"uk",
+			},
+		},
+		{
+			name: "io",
+			typos: []string{
+				"co",
+				"io",
+				"uk",
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			variants := TopLevelDomain(test.name, tstTLDs...)
+			sort.Strings(variants)
+
+			if !reflect.DeepEqual(variants, test.typos) {
+				t.Errorf("TopLevelDomain(%s) = %s; want %s", test.name, variants, test.typos)
+			}
+
+		})
+	}
+}
+
+func TestTopLevel2Domain(t *testing.T) {
+	tests := []TypoCase{
+		{
+			name: "co",
+			typos: []string{
+				"uk.com",
+				"uk.io",
+			},
+		},
+		{
+			name: "uk.com",
+			typos: []string{
+				"uk.com",
+				"uk.io",
+			},
+		},
+		{
+			name: "uk.eu.org",
+			typos: []string{
+				"uk.com",
+				"uk.io",
+			},
+		},
+		{
+			name: "io",
+			typos: []string{
+				"uk.com",
+				"uk.io",
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			variants := SecondLevelDomain(test.name, tstTLDs...)
+			sort.Strings(variants)
+
+			if !reflect.DeepEqual(variants, test.typos) {
+				t.Errorf("SecondLevelDomain(%s) = %s; want %s", test.name, variants, test.typos)
+			}
+
+		})
+	}
+}
+
+func TestTopLevel3Domain(t *testing.T) {
+	tests := []TypoCase{
+		{
+			name: "co",
+			typos: []string{
+				"uk.eu.org",
+			},
+		},
+		{
+			name: "uk.com",
+			typos: []string{
+				"uk.eu.org",
+			},
+		},
+		{
+			name: "uk.eu.org",
+			typos: []string{
+				"uk.eu.org",
+			},
+		},
+		{
+			name: "io",
+			typos: []string{
+				"uk.eu.org",
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			variants := ThirdLevelDomain(test.name, tstTLDs...)
+			sort.Strings(variants)
+
+			if !reflect.DeepEqual(variants, test.typos) {
+				t.Errorf("ThirdLevelDomain(%s) = %s; want %s", test.name, variants, test.typos)
+			}
+
+		})
+	}
+}
+
+func TestBitFlipping(t *testing.T) {
+	tests := []TypoCase{
+		{
+			name: "example",
+			typos: []string{
+				"%xample", "Example", "axample", "dxample", "e8ample", "eXample",
+				"ehample", "epample", "ex!mple", "exAmple", "ex`mple", "exa-ple",
+				"exaMple", "exaeple", "exaiple", "exalple", "exam0le", "examPle",
+				"exam`le", "examp,e", "exampLe", "exampde", "examphe", "exampl%",
+				"examplE", "exampla", "exampld", "examplg", "examplm", "examplu",
+				"examplå", "exampme", "exampne", "examp|e", "exampìe", "examqle",
+				"examrle", "examtle", "examxle", "examðle", "exaople", "exa}ple",
+				"exaíple", "excmple", "exemple", "eximple", "exqmple", "exámple",
+				"eyample", "ezample", "e|ample", "eøample", "gxample", "mxample",
+				"uxample", "åxample",
+			},
+		},
+		{
+			name: "google",
+			typos: []string{
+				"'oogle", "Google", "coogle", "eoogle", "foogle", "g/ogle",
+				"gOogle", "ggogle", "gkogle", "gmogle", "gnogle", "go/gle",
+				"goOgle", "goggle", "gokgle", "gomgle", "gongle", "goo'le",
+				"gooGle", "goocle", "gooele", "goofle", "goog,e", "googLe",
+				"googde", "googhe", "googl%", "googlE", "googla", "googld",
+				"googlg", "googlm", "googlu", "googlå", "googme", "googne",
+				"goog|e", "googìe", "gooole", "goowle", "gooçle", "gogle",
+				"goïgle", "gogle", "gïogle", "ooogle", "woogle", "çoogle",
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			variants := BitFlipping(test.name, tstTLDs...)
+			sort.Strings(variants)
+
+			if !reflect.DeepEqual(variants, test.typos) {
+				t.Errorf("BitFlipping(%s) = %s; want %s", test.name, variants, test.typos)
+			}
+
+		})
+	}
+}
+
+func TestCardinalSwap(t *testing.T) {
+	tests := []TypoCase{
+		{
+			name: "onetwothree",
+			typos: []string{
+				"123", "12three", "1two3", "1twothree", "one23", "one2three", "onetwo3",
+			},
+		},
+		{
+			name:  "threeonly2",
+			typos: []string{"3only2", "threeonlytwo"},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			variants := CardinalSwap(test.name, enNumerals)
+			sort.Strings(variants)
+
+			if !reflect.DeepEqual(variants, test.typos) {
+				t.Errorf("CardinalSwap(%s) = %s; want %s", test.name, variants, test.typos)
+			}
+
+		})
+	}
+}
+
+
+func TestOrdinalSwap(t *testing.T) {
+	tests := []TypoCase{
+		{
+			name: "123",
+			typos: []string{
+				"12third","1second3","1secondthird","first23","first2third","firstsecond3","firstsecondthird", 
+			},
+		},
+		{
+			name:  "threeonly2",
+			typos: []string{"threeonlysecond"},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			variants := OrdinalSwap(test.name, enNumerals)
+			sort.Strings(variants)
+
+			if !reflect.DeepEqual(variants, test.typos) {
+				t.Errorf("OrdinalSwap(%s) = %s; want %s", test.name, variants, test.typos)
+			}
+
 		})
 	}
 }
