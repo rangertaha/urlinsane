@@ -38,7 +38,6 @@ urlinsane typo -a cs  -e username@example.com
 
 
 
-
 ## (acs) AdjacentCharacterSubstitution
 
 Adjacent Character Substitution typos replace characters in the original domain name with neighboring characters on a specific keyboard layout, such as QWERTY.
