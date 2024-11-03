@@ -20,12 +20,13 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 const (
 	CODE        = "cs"
-	NAME        = "Character Swap"
-	DESCRIPTION = "Swapping two consecutive characters in a domain"
+	NAME        = "Character Swapping"
+	DESCRIPTION = "Swapping two consecutive characters in a name"
 )
 
 type Algo struct {
@@ -66,7 +67,7 @@ func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
 func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
 
-	for _, variant := range n.Func(prefix) {
+	for _, variant := range algo.CharacterSwapping(prefix) {
 		if prefix != variant {
 			d := domain.New(sub, variant, suffix)
 
@@ -81,7 +82,7 @@ func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
 
-	for _, variant := range n.Func(username) {
+	for _, variant := range algo.CharacterSwapping(username) {
 		if username != variant {
 			new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
 
@@ -93,48 +94,13 @@ func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 
 func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
 	original := n.config.Target().Name()
-	for _, variant := range n.Func(original) {
+	for _, variant := range algo.CharacterSwapping(original) {
 		if original != variant {
 			typos = append(typos, typo.Clone(variant))
 		}
 	}
 	return
 }
-
-// AlgoFunc typos are when two consecutive characters are swapped in the original domain name.
-// Example: www.examlpe.com
-func (n *Algo) Func(original string) (results []string) {
-	for i := range original {
-		if i <= len(original)-2 {
-			variant := fmt.Sprint(original[:i], string(original[i+1]), string(original[i]), original[i+2:])
-			if variant != original {
-				results = append(results, variant)
-			}
-		}
-	}
-
-	return
-}
-
-// // AlgoFunc typos are when two consecutive characters are swapped in the original domain name.
-// // Example: www.examlpe.com
-// func AlgoFunc(tc Result) (results []Result) {
-// 	for i := range tc.Original.Domain {
-// 		if i <= len(tc.Original.Domain)-2 {
-// 			domain := fmt.Sprint(
-// 				tc.Original.Domain[:i],
-// 				string(tc.Original.Domain[i+1]),
-// 				string(tc.Original.Domain[i]),
-// 				tc.Original.Domain[i+2:],
-// 			)
-// 			if tc.Original.Domain != domain {
-// 				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
-// 				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
-// 			}
-// 		}
-// 	}
-// 	return results
-// }
 
 // Register the plugin
 func init() {

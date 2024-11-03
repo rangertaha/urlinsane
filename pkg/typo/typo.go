@@ -47,7 +47,7 @@ func SuffixInsertion(name string, suffixes ...string) (names []string) {
 
 // characterSwapFunc typos are when two consecutive characters are swapped in the original domain name.
 // Example: www.examlpe.com
-func CharacterSwap(name string) (names []string) {
+func CharacterSwapping(name string) (names []string) {
 	for i := range name {
 		if i <= len(name)-2 {
 			variant := fmt.Sprint(name[:i], string(name[i+1]), string(name[i]), name[i+2:])
