@@ -144,7 +144,7 @@ func Execute() {
 	}
 }
 func init() {
-	
+
 	// // fmt.Println(languages.Languages())
 	// helpOptions := HelpOptions{
 	// 	languages.Languages(),
@@ -200,5 +200,4 @@ func init() {
 	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename defaults to stdout")
 	rootCmd.PersistentFlags().StringP("format", "o", "table", "Output format: (csv,tsv,table,text,html,md)")
 
-	
 }

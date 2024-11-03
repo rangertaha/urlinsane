@@ -47,6 +47,12 @@ func (d *Target) Domain() (string, string, string) {
 	dm := domain.Parse(d.name)
 	return dm.Subdomain, dm.Prefix, dm.Suffix
 }
+func (d *Target) Email() (string, string) {
+	if names := strings.Split(d.name, "@"); len(names) > 1 {
+		return names[0], strings.Join(names[1:], "@")
+	}
+	return "", ""
+}
 
 func (d *Target) Add(key string, value interface{}) {
 	d.meta[key] = value
@@ -56,6 +62,12 @@ func (d *Target) Get(key string) (value interface{}) {
 		return value
 	}
 	return nil
+}
+func (d *Target) GetInt(key string) (value int) {
+	if value, ok := d.meta[key]; ok {
+		return value.(int)
+	}
+	return
 }
 
 func (d *Target) Name() string {

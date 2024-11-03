@@ -24,7 +24,7 @@ func main() {
 	fmt.Println(publicsuffix.Parse("www.example.co.uk")) // &DomainName{"co.uk", "example", "www"}
 	fmt.Println(publicsuffix.Parse("example"))           // &DomainName{"co.uk", "example", "www"}
 	d, _ := publicsuffix.Parse("example.com.uk.io")
-	fmt.Println(d.String(), " SLD:", d.SLD,  " TLD:",d.TLD,  " TRD:",d.TRD)
+	fmt.Println(d.String(), " SLD:", d.SLD, " TLD:", d.TLD, " TRD:", d.TRD)
 }
 
 // package main

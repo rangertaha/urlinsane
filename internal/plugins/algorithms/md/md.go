@@ -20,7 +20,10 @@ package md
 //
 
 import (
+	"fmt"
+
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/pkg/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 )
 
@@ -31,10 +34,10 @@ const (
 )
 
 type Algo struct {
-	ctype     int
 	config    internal.Config
 	languages []internal.Language
 	keyboards []internal.Keyboard
+	funcs     map[int]func(internal.Typo) []internal.Typo
 }
 
 func (n *Algo) Id() string {
@@ -42,51 +45,52 @@ func (n *Algo) Id() string {
 }
 
 func (n *Algo) Init(conf internal.Config) {
+	n.funcs = make(map[int]func(internal.Typo) []internal.Typo)
 	n.keyboards = conf.Keyboards()
 	n.languages = conf.Languages()
-	n.ctype = conf.Type()
 	n.config = conf
+
+	// Supported targets
+	n.funcs[internal.DOMAIN] = n.domain
+	n.funcs[internal.PACKAGE] = n.name
+	n.funcs[internal.EMAIL] = n.email
+	n.funcs[internal.NAME] = n.name
 }
 
 func (n *Algo) Name() string {
 	return NAME
 }
-
 func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
-	if n.config.Type() == internal.DOMAIN {
-		return n.domain(typo)
-	}
-
-	if n.config.Type() == internal.PACKAGE {
-		return n.code(typo)
-	}
-
-	if n.config.Type() == internal.NAME {
-		return n.name(typo)
-	}
-	return
+func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
+	return n.funcs[n.config.Type()](typo)
 }
 
-
 func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
-	original := n.config.Target().Name()
-	for _, variant := range n.Func(original, ".") {
-		if original != variant {
-			typos = append(typos, typo.Clone(variant))
+	sub, prefix, suffix := typo.Original().Domain()
+
+	for _, variant := range n.Func(prefix, ".") {
+		if prefix != variant {
+			d := domain.New(sub, variant, suffix)
+
+			new := typo.Clone(d.String())
+
+			typos = append(typos, new)
 		}
 	}
 	return
 }
 
-func (n *Algo) code(typo internal.Typo) (typos []internal.Typo) {
-	original := n.config.Target().Name()
-	for _, variant := range n.Func(original, ".") {
-		if original != variant {
-			typos = append(typos, typo.Clone(variant))
+func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
+	username, domain := typo.Original().Email()
+
+	for _, variant := range n.Func(username, ".") {
+		if username != variant {
+			new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
+
+			typos = append(typos, new)
 		}
 	}
 	return

@@ -89,31 +89,30 @@ func TestNumeralMap(t *testing.T) {
 
 }
 
-
 func TestOrdinalMap(t *testing.T) {
 	tests := []TestCase{
 		{
 			numerals: numerals,
 			position: 0,
 			returns: map[string]string{
-				"1":     "first",
-				"2":     "second",
-				"3":     "third",
-				"4":     "fourth",
-				"5":     "fifth",
-				"6":     "sixth",
-				"7":     "seventh",
-				"8":     "eighth",
-				"9":     "ninth",
+				"1":       "first",
+				"2":       "second",
+				"3":       "third",
+				"4":       "fourth",
+				"5":       "fifth",
+				"6":       "sixth",
+				"7":       "seventh",
+				"8":       "eighth",
+				"9":       "ninth",
 				"first":   "1",
-				"second":   "2",
-				"third": "3",
+				"second":  "2",
+				"third":   "3",
 				"fourth":  "4",
-				"fifth":  "5",
+				"fifth":   "5",
 				"sixth":   "6",
 				"seventh": "7",
-				"eighth": "8",
-				"ninth":  "9",
+				"eighth":  "8",
+				"ninth":   "9",
 			},
 		},
 	}

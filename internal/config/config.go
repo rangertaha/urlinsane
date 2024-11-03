@@ -22,6 +22,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal/pkg/target"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
+	"github.com/rangertaha/urlinsane/internal/plugins/information"
 
 	// "github.com/rangertaha/urlinsane/internal/plugins/information"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
@@ -48,6 +49,7 @@ type Config struct {
 	concurrency int
 	delay       time.Duration
 	random      time.Duration
+	levenshtein int
 
 	// Output
 	verbose  bool
@@ -82,6 +84,9 @@ func (c *Config) Output() internal.Output {
 }
 func (c *Config) Concurrency() int {
 	return c.concurrency
+}
+func (c *Config) Levenshtein() int {
+	return c.levenshtein
 }
 func (c *Config) Delay() time.Duration {
 	return c.delay
@@ -130,6 +135,7 @@ func (c *Config) Type() int {
 // CobraConfig creates a configuration from a cobra command options and arguments
 func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 
+	// Target options
 	if name, err := cmd.Flags().GetString("name"); err == nil && name != "" {
 		c.ctype = internal.NAME
 		c.target = target.New(strings.TrimSpace(name))
@@ -137,6 +143,10 @@ func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 	if pkg, err := cmd.Flags().GetString("pkg"); err == nil && pkg != "" {
 		c.ctype = internal.PACKAGE
 		c.target = target.New(strings.TrimSpace(pkg))
+	}
+	if email, err := cmd.Flags().GetString("email"); err == nil && email != "" {
+		c.ctype = internal.EMAIL
+		c.target = target.New(strings.TrimSpace(email))
 	}
 	if domain, err := cmd.Flags().GetString("domain"); err == nil && domain != "" {
 		c.ctype = internal.DOMAIN
@@ -148,16 +158,7 @@ func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 		}
 	}
 
-	// if c.name, err = cmd.Flags().GetString("pkg"); err == nil {
-	// 	c.mode = internal.PACKAGE
-	// }
-
-	// if name, err := cmd.Flags().GetString("domain"); err == nil {
-	// 	name = strings.TrimSpace(name)
-	// 	c.domain = domain.New(name)
-	// 	c.mode = internal.DOMAIN
-	// }
-
+	// Plugin options
 	if langs, err := commaSplit(cmd.Flags().GetStringArray("languages")); err == nil {
 		c.languages = languages.Languages(langs...)
 	}
@@ -169,6 +170,10 @@ func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 	if typos, err := commaSplit(cmd.Flags().GetStringArray("algorithms")); err == nil {
 		// c.algorithms = algorithms.List(typos...)
 		c.algorithms = algorithms.List(typos...)
+	}
+
+	if infos, err := commaSplit(cmd.Flags().GetStringArray("info")); err == nil {
+		c.information = information.List(infos...)
 	}
 
 	// if typos, err := commaSplit(cmd.Flags().GetStringArray("algorithms")); err == nil {
@@ -185,27 +190,15 @@ func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 	// 	}
 	// }
 
-	// if infos, err := commaSplit(cmd.Flags().GetStringArray("info")); err == nil {
-	// 	c.information = information.List(infos...)
-	// }
-
-	if c.format, err = cmd.Flags().GetString("format"); err == nil {
-		if c.output, err = outputs.Get(c.format); err != nil {
-			return c, err
-		}
-	}
-
-	if c.concurrency, err = cmd.Flags().GetInt("concurrency"); err != nil {
-		return c, err
-	}
-
 	// Output options
 	if c.file, err = cmd.Flags().GetString("file"); err != nil {
 		return c, err
 	}
 
-	if c.format, err = cmd.Flags().GetString("format"); err != nil {
-		return c, err
+	if c.format, err = cmd.Flags().GetString("format"); err == nil {
+		if c.output, err = outputs.Get(c.format); err != nil {
+			return c, err
+		}
 	}
 
 	if c.verbose, err = cmd.Flags().GetBool("verbose"); err != nil {
@@ -216,6 +209,11 @@ func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 		return c, err
 	}
 
+	// Performance and processing options
+	if c.concurrency, err = cmd.Flags().GetInt("concurrency"); err != nil {
+		return c, err
+	}
+
 	if c.random, err = cmd.Flags().GetDuration("random"); err != nil {
 		return c, err
 	}
@@ -223,7 +221,12 @@ func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 	if c.delay, err = cmd.Flags().GetDuration("delay"); err != nil {
 		return c, err
 	}
-	c.count = 1
+
+	if c.levenshtein, err = cmd.Flags().GetInt("ld"); err != nil {
+		return c, err
+	}
+
+	// c.count = 1
 
 	return c, err
 }
