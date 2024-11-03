@@ -21,91 +21,6 @@ import (
 	"github.com/rangertaha/urlinsane/pkg/nlp"
 )
 
-// import (
-// 	"fmt"
-// 	"strings"
-
-// 	"github.com/rangertaha/urlinsane/internal/utils/datasets"
-// )
-
-// // Adjacent Characters
-
-// // Inserting adjacent character from the keyboard
-
-// // // Adjacent Character Insertion
-// // func AdjacentCharacterInsertion(keyboard []string, word string) (typos []string) {
-// // 	// for i, char := range word {
-// // 	// 	for _, row := range keyboard {
-// // 	// 		for _, kchar := range keyboard.Adjacent(string(char)) {
-// // 	// 			variant := fmt.Sprint(word[:i], kchar, word[i+1:])
-// // 	// 			typos = append(typos, variant)
-// // 	// 		}
-// // 	// 	}
-// // 	// }
-// // 	return
-// // }
-
-// // // Adjacent Character Substitution
-// // func AdjacentCharacterSubstitution(keyboard []string, word string) (typos []string) {
-// // 	// for i, char := range word {
-// // 	// 	for _, row := range keyboard {
-// // 	// 		for _, kchar := range keyboard.Adjacent(string(char)) {
-// // 	// 			variant := fmt.Sprint(word[:i], kchar, word[i+1:])
-// // 	// 			typos = append(typos, variant)
-// // 	// 		}
-// // 	// 	}
-// // 	// }
-// // 	return
-// // }
-
-// // // Adjacent Character Swapping
-// // func AdjacentCharacterSwapping(keyboard []string, word string) (typos []string) {
-// // 	// for i, char := range word {
-// // 	// 	for _, row := range keyboard {
-// // 	// 		for _, kchar := range keyboard.Adjacent(string(char)) {
-// // 	// 			variant := fmt.Sprint(word[:i], kchar, word[i+1:])
-// // 	// 			typos = append(typos, variant)
-// // 	// 		}
-// // 	// 	}
-// // 	// }
-// // 	return
-// // }
-
-// // Character substitution is the process of replacing a character or set of characters with another character or set of characters
-// func CharSubstitution(name string, substitutes ...string) (names []string) {
-
-// 	return
-// }
-
-// func CharOmission(name string, substitutes ...string) (names []string) {
-
-// 	return
-// }
-
-// // Dot deletion typos are created by omitting a dot from the domain. For example, wwwgoogle.com and www.googlecom
-// func DotDeletion(name string) (names []string) {
-// 	return CharOmission(name, ".")
-// }
-
-// // www.google.com  ->  www-google.com
-// //
-// // Dot substitution typos are created by substituting a dot with a dash.
-// func DotSubstitution(name string) (names []string) {
-// 	return CharSubstitution(name, ".")
-// }
-
-// // // missingDotFunc typos are created by omitting a dot from the domain. For example, wwwgoogle.com and www.googlecom
-// // func missingDotFunc(tc Result) (results []Result) {
-// // 	for _, str := range missingCharFunc(tc.Original.String(), ".") {
-// // 		if tc.Original.Domain != str {
-// // 			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix, Meta{}, false}
-// // 			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
-// // 		}
-// // 	}
-// // 	dm := Domain{tc.Original.Subdomain, strings.Replace(tc.Original.Domain, ".", "", -1), tc.Original.Suffix, Meta{}, false}
-// // 	results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
-// // 	return results
-// // }
 
 func PrefixInsertion(name string, prefixes ...string) (names []string) {
 	for _, prefix := range prefixes {
@@ -121,75 +36,14 @@ func SuffixInsertion(name string, suffixes ...string) (names []string) {
 	return
 }
 
-func SubdomainInsertion(subdomains []string, name string) (names []string) {
-	return PrefixInsertion(name, subdomains...)
-}
+// func SubdomainInsertion(name string, subdomains ...string) (names []string) {
+// 	return PrefixInsertion(name, subdomains...)
+// }
 
-func TldInsertion(subdomains []string, name string) (names []string) {
-	return PrefixInsertion(name, subdomains...)
-}
+// func TldInsertion(subdomains []string, name string) (names []string) {
+// 	return PrefixInsertion(name, subdomains...)
+// }
 
-// // subdomainInsertionFunc typos are created by inserting common subdomains at the begining of the domain. wwwgoogle.com and ftpgoogle.com
-// // func subdomainInsertionFunc(tc Result) (results []Result) {
-// // 	for _, str := range datasets.SUBDOMAINS {
-// // 		dm := Domain{tc.Original.Subdomain, str + tc.Original.Domain, tc.Original.Suffix, Meta{}, false}
-// // 		results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
-// // 	}
-// // 	return results
-// // }
-
-// // missingDashFunc typos are created by omitting a dash from the domain.
-// // For example, www.a-b-c.com becomes www.ab-c.com, www.a-bc.com, and ww.abc.com
-// // func missingDashFunc(tc Result) (results []Result) {
-// // 	for _, str := range missingCharFunc(tc.Original.Domain, "-") {
-// // 		if tc.Original.Domain != str {
-// // 			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix, Meta{}, false}
-// // 			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
-// // 		}
-// // 	}
-// // 	dm := Domain{tc.Original.Subdomain, strings.Replace(tc.Original.Domain, "-", "", -1), tc.Original.Suffix, Meta{}, false}
-// // 	results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
-// // 	return results
-// // }
-
-// // characterOmissionFunc typos are when one character in the original domain name is omitted.
-// // For example: www.exmple.com
-// // func characterOmissionFunc(tc Result) (results []Result) {
-// // 	for i := range tc.Original.Domain {
-// // 		if i <= len(tc.Original.Domain)-1 {
-// // 			domain := fmt.Sprint(
-// // 				tc.Original.Domain[:i],
-// // 				tc.Original.Domain[i+1:],
-// // 			)
-// // 			if tc.Original.Domain != domain {
-// // 				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
-// // 				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
-
-// //				}
-// //			}
-// //		}
-// //		return results
-// //	}
-
-// // characterSwapFunc typos are when two consecutive characters are swapped in the original domain name.
-// // Example: www.examlpe.com
-// // func characterSwapFunc(tc Result) (results []Result) {
-// // 	for i := range tc.Original.Domain {
-// // 		if i <= len(tc.Original.Domain)-2 {
-// // 			domain := fmt.Sprint(
-// // 				tc.Original.Domain[:i],
-// // 				string(tc.Original.Domain[i+1]),
-// // 				string(tc.Original.Domain[i]),
-// // 				tc.Original.Domain[i+2:],
-// // 			)
-// // 			if tc.Original.Domain != domain {
-// // 				dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
-// // 				results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
-// // 			}
-// // 		}
-// // 	}
-// // 	return results
-// // }
 
 // characterSwapFunc typos are when two consecutive characters are swapped in the original domain name.
 // Example: www.examlpe.com
