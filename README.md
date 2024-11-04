@@ -120,19 +120,19 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 ## Information Gathering
 
-|  Name           | Description  |
-|-------------------------------------||
-| DNS A Records                       | Retrieving IPv4 and IPv6 IP host addresses |
-| DNS MX Records                      |Retrieving Mail Exchange (MX) records|
-| DNS TXT Records                     |Retrieving TXT records storing arbitrary data associated with a domain |
-| DNS AAAA Records                    ||
-| DNS CName Records                   ||
-| DNS NS Records                      |Checks DNS NS records |
-| Geographic Info                     | Show country location of IP address|
-| Domain Similarity                   | Show domain similarity % using fuzzy hashing with ssdeep|
-| Domain Redirects                    |Show domains redirects |
-| IDNA Format                         |Show international domain name (Default) |
-| HTTP/SMTP Banner                    | |
+|  Name             | Description  |
+|-------------------|--------------|
+| DNS A Records     | Retrieving IPv4 and IPv6 IP host addresses |
+| DNS MX Records    | Retrieving Mail Exchange (MX) records|
+| DNS TXT Records   | Retrieving TXT records storing arbitrary data associated with a domain |
+| DNS AAAA Records  | |
+| DNS CName Records | |
+| DNS NS Records    | Checks DNS NS records |
+| Geographic Info   | Show country location of IP address|
+| Domain Similarity | Show domain similarity % using fuzzy hashing with ssdeep|
+| Domain Redirects  | Show domains redirects |
+| IDNA Format       | Show international domain name (Default) |
+| HTTP/SMTP Banner  | |
 
 
 
