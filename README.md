@@ -63,13 +63,12 @@ Plugins play a crucial role in extending the functionality, flexibility, and cus
 
 |    Type     | Number  | Description |
 |-------------|--------|--------------|
-| Languages   |    9   | Language plugins enable support for various language models, expanding the application's linguistic capability. |
-| Keyboards   |    19  | Keyboard layout plugins allow us to target multiple languages and regions |
-| Algorithms  |    24  | Used to generate typo variants for domains, arbitrary names, and software packages|
-| Information |    8   | Used for gathering data on domains, software libraries, and named entities|
-| Outputs     |    6   | Formats data for display and or save outputs to files, improving usability and reporting |
-| Database    |    1   | It caches and saves scan results boosting performance and enabling efficient data retrieval.|
-
+| Languages   |    9   | Language plugins provide data for it's linguistic capability. |
+| Keyboards   |    19  | Keyboard plugins provide layouts for international keyboads |
+| Algorithms  |    24  | They generate typo variants for each target type |
+| Information |    8   | Collects information on target types |
+| Database    |    1   | TODO: Caches and saves results for analysis |
+| Outputs     |    6   | Formats and saves results  |
 
 
 ### Languages
