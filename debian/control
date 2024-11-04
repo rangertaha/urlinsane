@@ -3,8 +3,7 @@ Section: misc
 Priority: optional
 Maintainer: Rangertaha <rangertaha@gmail.com>
 Uploaders: Rangertaha <rangertaha@gmail.com>
-Build-Depends: debhelper-compat (= 12),
-               graphicsmagick-imagemagick-compat
+Build-Depends: debhelper-compat (= 12)
 Standards-Version: 4.6.0
 Vcs-Git: git@github.com:rangertaha/urlinsane.git
 Vcs-Browser: https://github.com/rangertaha/urlinsane.git
@@ -12,5 +11,7 @@ Vcs-Browser: https://github.com/rangertaha/urlinsane.git
 Package: urlinsane
 Architecture: all
 Depends: ${misc:Depends}
-Description: Advanced typosquatting tool 
- This is the most advanced and full-featured typosquatting tool
+Description: Urlinsane typosquatting tool
+ is used to aid in the detection of typosquatting, brandjacking, 
+ URL hijacking, fraud, phishing attacks, corporate espionage, supply 
+ chain attacks, and threat intelligence.
