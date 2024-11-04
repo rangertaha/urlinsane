@@ -15,6 +15,29 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 | Usernames| Finding variants of usernames online or on a specific site |
 | Packages | Finding opensource software packages or libraries and variants |
 
+Domain 
+```bash
+urlinsane typo -d example.com 
+```
+
+Email 
+```bash
+urlinsane typo -e username@example.com 
+```
+
+Username 
+```bash
+urlinsane typo -n username 
+```
+
+Packages 
+```bash
+urlinsane typo -g express
+```
+
+
+
+
 
 ## Installation
 
