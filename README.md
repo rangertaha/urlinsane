@@ -15,7 +15,8 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 | Usernames| Finding variants of usernames online or on a specific site |
 | Packages | Finding opensource software packages or libraries and variants |
 
-Domain 
+# Domain 
+
 ```bash
 urlinsane typo -d example.com 
 ```
