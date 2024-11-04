@@ -42,9 +42,7 @@ type Config interface {
 	Verbose() bool
 	Format() string
 	File() string
-	Levenshtein() int
-	// Count(...int64) int64
-	// Live(...int64) int64
+	Dist() int
 	Type() int
 }
 
@@ -52,20 +50,23 @@ type Algorithm interface {
 	Id() string
 	Name() string
 	Description() string
-	Exec(Typo) []Typo
 }
 
-type UsernameAlgo interface {
-	Username(Typo) []Typo
-}
-
-type DomainAlgo interface {
+type DomainAlgorithm interface {
 	Domain(Typo) []Typo
 }
-
-// type Executor interface {
-// 	Exec(Typo) []Typo
-// }
+type PackageAlgorithm interface {
+	Package(Typo) []Typo
+}
+type EmailAlgorithm interface {
+	Email(Typo) []Typo
+}
+type UserAlgorithm interface {
+	Username(Typo) []Typo
+}
+type ExecAlgorithm interface {
+	Exec(Typo) []Typo
+}
 
 type Information interface {
 	Id() string
@@ -110,6 +111,7 @@ type Typo interface {
 	Active() bool
 	Clone(string) Typo
 	String() string
+	Ld() int
 }
 
 // type Result interface {

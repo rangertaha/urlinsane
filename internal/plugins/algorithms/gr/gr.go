@@ -12,33 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package ai
-
-// Typo-squatting involving alphabet insertion occurs when attackers register domain names that include additional letters or characters within a legitimate brand's name. This tactic aims to exploit common typing errors by inserting one or more letters, creating a slight variation that may not be immediately noticeable to users.
-
-// For example, if the legitimate domain is "example.com," a typo-squatter might register "exampel.com" or "exampxle.com." Users who accidentally mistype or overlook the extra characters might be redirected to these malicious sites, which could be used for phishing, distributing malware, or other harmful activities.
-
-// This method capitalizes on the likelihood of users making small mistakes while typing, underscoring the need for brands to monitor and protect their online identities against such threats.
-
-// func AlgoFunc(tc Result) (results []Result) {
-// 	alphabet := map[string]bool{}
-// 	for _, keyboard := range tc.Keyboards {
-// 		for _, a := range keyboard.Language.Graphemes {
-// 			alphabet[a] = true
-// 		}
-// 	}
-// 	for i, char := range tc.Original.Domain {
-// 		for alp := range alphabet {
-// 			d1 := tc.Original.Domain[:i] + alp + string(char) + tc.Original.Domain[i+1:]
-// 			if i == len(tc.Original.Domain)-1 {
-// 				d1 = tc.Original.Domain[:i] + string(char) + alp + tc.Original.Domain[i+1:]
-// 			}
-// 			dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}, false}
-// 			results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
-// 		}
-// 	}
-// 	return
-// }
+package gr
 
 import (
 	"fmt"
@@ -46,12 +20,13 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 const (
-	CODE        = "ai"
-	NAME        = "Alphabet Insertion"
-	DESCRIPTION = "Inserting the language-specific alphabet in the target domain"
+	CODE        = "gr"
+	NAME        = "Grapheme Replacement"
+	DESCRIPTION = "Replaces an alphabet in the target domain"
 )
 
 type Algo struct {
@@ -91,16 +66,13 @@ func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
 
 func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
-	// fmt.Println(sub, prefix, suffix)
-
-	for _, variant := range n.Func(prefix) {
-		if prefix != variant {
-			d := domain.New(sub, variant, suffix)
-			// fmt.Println(sub, variant, suffix)
-
-			new := typo.Clone(d.String())
-
-			typos = append(typos, new)
+	for _, language := range n.languages {
+		for _, variant := range algo.GraphemeReplacement(prefix, language.Graphemes()...) {
+			if prefix != variant {
+				d := domain.New(sub, variant, suffix)
+				new := typo.Clone(d.String())
+				typos = append(typos, new)
+			}
 		}
 	}
 	return
@@ -108,23 +80,26 @@ func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 
 func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
-	// fmt.Println(sub, prefix, suffix)
+	for _, language := range n.languages {
+		for _, variant := range algo.GraphemeReplacement(username, language.Graphemes()...) {
+			if username != variant {
+				new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
 
-	for _, variant := range n.Func(username) {
-		if username != variant {
-			new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
-
-			typos = append(typos, new)
+				typos = append(typos, new)
+			}
 		}
 	}
+
 	return
 }
 
 func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
-	original := n.config.Target().Name()
-	for _, variant := range n.Func(original) {
-		if original != variant {
-			typos = append(typos, typo.Clone(variant))
+	name := n.config.Target().Name()
+	for _, language := range n.languages {
+		for _, variant := range algo.GraphemeReplacement(name, language.Graphemes()...) {
+			if name != variant {
+				typos = append(typos, typo.Clone(variant))
+			}
 		}
 	}
 	return

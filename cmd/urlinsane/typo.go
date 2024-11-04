@@ -167,7 +167,8 @@ func init() {
 	typoCmd.Flags().StringP("email", "e", "", "Email address typo squatting variations")
 	typoCmd.Flags().StringP("pkg", "g", "", "Package or library name for typo squatting variations")
 	typoCmd.Flags().StringP("url", "u", "", "URL associagted with the named entity or username")
-	typoCmd.Flags().Int("ld", 0, "Minimum levenshtein distance between the original and variant names. Ignored if 0")
+	typoCmd.Flags().Bool("live", false, "Only show registered/live targets")
+	typoCmd.Flags().Int("ld", 0, "Minimum levenshtein distance between names")
 	typoCmd.MarkFlagsOneRequired("domain", "name", "pkg", "email")
 	typoCmd.MarkFlagsMutuallyExclusive("domain", "name", "pkg", "email")
 }

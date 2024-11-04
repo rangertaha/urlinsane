@@ -12,21 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package acs
-
-// Adjacent character substitution is where an attacker swaps characters
-// that are next to each other on a keyboard.
-
-// For example, if a user intends to visit "example.com," a typo-squatter
-// might register "exampel.com" or "exmaple.com." These small alterations
-// can trick users into clicking on the malicious sites, leading to phishing
-// scams, malware downloads, or other harmful activities.
-
-// Adjacent character substitution exploits common typing errors, making it a
-// particularly effective tactic, as users may not notice the difference,
-// especially if they are typing quickly. It highlights the importance of
-// vigilance and cybersecurity measures to protect against such deceptive
-// practices.
+package hs
 
 import (
 	"fmt"
@@ -38,9 +24,9 @@ import (
 )
 
 const (
-	CODE        = "acs"
-	NAME        = "Adjacent Character Substitution"
-	DESCRIPTION = "Replaces adjacent character from the keyboard"
+	CODE        = "hs"
+	NAME        = "Homophone Substitution"
+	DESCRIPTION = "Substitutes words that sound the same but have different spellings"
 )
 
 type Algo struct {
@@ -80,29 +66,24 @@ func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
 
 func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
-
-	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterSubstitution(prefix, keyboard.Layouts()...) {
+	for _, language := range n.languages {
+		for _, variant := range algo.HomophoneSwapping(prefix, language.Homophones()...) {
 			if prefix != variant {
 				d := domain.New(sub, variant, suffix)
 				new := typo.Clone(d.String())
-
 				typos = append(typos, new)
 			}
 		}
 	}
-
 	return
 }
 
 func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
-
-	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterSubstitution(username, keyboard.Layouts()...) {
+	for _, language := range n.languages {
+		for _, variant := range algo.HomophoneSwapping(username, language.Homophones()...) {
 			if username != variant {
 				new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
-
 				typos = append(typos, new)
 			}
 		}
@@ -112,8 +93,8 @@ func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 
 func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
 	name := n.config.Target().Name()
-	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterSubstitution(name, keyboard.Layouts()...) {
+	for _, language := range n.languages {
+		for _, variant := range algo.HomophoneSwapping(name, language.Homophones()...) {
 			if name != variant {
 				typos = append(typos, typo.Clone(variant))
 			}

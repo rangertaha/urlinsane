@@ -46,46 +46,39 @@ func (n *Text) Description() string {
 
 func (n *Text) Init(conf internal.Config) {
 	n.config = conf
-	width, _, err := term.GetSize(int(os.Stdout.Fd()))
-
 	n.table = table.NewWriter()
-	n.table.SetAllowedRowLength(width)
-	n.table.SetOutputMirror(os.Stdout)
-	n.table.AppendHeader(n.getHeader())
 
-	n.activeRow()
-
-	// width, _, err := term.GetSize(int(os.Stdout.Fd()))
-	if err != nil {
-		fmt.Println("Error getting terminal size:", err)
-		return
+	if width, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil {
+		n.table.SetAllowedRowLength(width)
 	}
 
+	n.table.SetOutputMirror(os.Stdout)
+	n.table.AppendHeader(n.Header())
+
+	n.Config()
 }
 
-func (n *Text) getHeader() (row table.Row) {
+func (n *Text) Header() (row table.Row) {
 	row = append(row, "TYPE")
+	row = append(row, "LD")
 	row = append(row, "TYPO")
-	row = append(row, "ld")
 
 	for _, info := range n.config.Information() {
 		for _, headers := range info.Headers() {
 			row = append(row, headers)
 		}
 	}
-
 	return
 }
 
-func (n *Text) getRow(typo internal.Typo) (row table.Row) {
+func (n *Text) Row(typo internal.Typo) (row table.Row) {
 	if n.config.Verbose() {
 		row = append(row, typo.Algorithm().Name())
 	} else {
 		row = append(row, strings.ToUpper(typo.Algorithm().Id()))
 	}
-
+	row = append(row, typo.Ld())
 	row = append(row, typo.String())
-	row = append(row, typo.Variant().Meta()["ld"])
 
 	for _, info := range n.config.Information() {
 		for _, header := range info.Headers() {
@@ -98,7 +91,10 @@ func (n *Text) getRow(typo internal.Typo) (row table.Row) {
 	return
 }
 
-func (n *Text) activeRow() (row table.Row) {
+func (n *Text) Config() (row table.Row) {
+	n.table.SetStyle(StyleDefault)
+	n.table.AppendFooter(table.Row{})
+
 	nameTransformer := text.Transformer(func(val interface{}) string {
 		if val.(string) == "MD" {
 			return text.Colors{text.BgBlack, text.FgGreen}.Sprint(val)
@@ -124,29 +120,43 @@ func (n *Text) activeRow() (row table.Row) {
 			VAlign:       text.VAlignMiddle,
 			VAlignFooter: text.VAlignTop,
 			VAlignHeader: text.VAlignBottom,
-			WidthMin:     6,
+			WidthMin:     1,
 			WidthMax:     64,
+		},
+		{
+			Name:        "ID",
+			Align:       text.AlignLeft,
+			AlignFooter: text.AlignLeft,
+			AlignHeader: text.AlignLeft,
+			// Colors:       text.Colors{text.BgBlack, text.FgRed},
+			// ColorsHeader: text.Colors{text.BgRed, text.FgBlack, text.Bold},
+			// ColorsFooter: text.Colors{text.BgRed, text.FgBlack},
+			Hidden:      false,
+			Transformer: nameTransformer,
+			// TransformerFooter: nameTransformer,
+			// TransformerHeader: nameTransformer,
+			VAlign:       text.VAlignMiddle,
+			VAlignFooter: text.VAlignTop,
+			VAlignHeader: text.VAlignBottom,
+			WidthMin:     1,
+			WidthMax:     3,
 		},
 	})
 	return
 }
 
 func (n *Text) Write(in internal.Typo) {
-	n.table.AppendRow(n.getRow(in))
+	n.table.AppendRow(n.Row(in))
 }
 
 func (n *Text) Summary(report map[string]int64) {
-	footer := table.Row{}
 	for k, v := range report {
-		footer = append(footer, k, v)
+		fmt.Printf("%s %d   ", k, v)
 	}
-
-	n.table.AppendFooter(footer)
-	n.table.SetStyle(StyleDefault)
+	fmt.Println("")
 }
 
 func (n *Text) Save() {
-
 	// We need a little space between the progress bar and this output
 	fmt.Println("")
 	output := n.table.Render()
@@ -157,7 +167,6 @@ func (n *Text) Save() {
 			fmt.Printf("Error: %s", err)
 		}
 	}
-
 }
 
 // Register the plugin

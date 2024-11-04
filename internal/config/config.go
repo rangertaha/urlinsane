@@ -23,9 +23,6 @@ import (
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/information"
-
-	// "github.com/rangertaha/urlinsane/internal/plugins/information"
-	// _ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/languages"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
@@ -55,8 +52,7 @@ type Config struct {
 	verbose  bool
 	format   string
 	file     string
-	count    int64
-	live     int64
+	live     bool
 	progress bool
 }
 
@@ -85,7 +81,7 @@ func (c *Config) Output() internal.Output {
 func (c *Config) Concurrency() int {
 	return c.concurrency
 }
-func (c *Config) Levenshtein() int {
+func (c *Config) Dist() int {
 	return c.levenshtein
 }
 func (c *Config) Delay() time.Duration {
@@ -109,28 +105,9 @@ func (c *Config) File() string {
 func (c *Config) Type() int {
 	return c.ctype
 }
-
-// func (c *Config) IsMode(mode string) bool {
-// 	return c.mode == mode
-// }
-
-// func (c *Config) IsDomain() string {
-// 	return c.file
-// }
-
-// Count sets and gets the count of variants for processing
-// func (c *Config) Count(n ...int64) int64 {
-// 	if len(n) > 0 {
-// 		c.count = n[0]
-// 	}
-// 	return c.count
-// }
-// func (c *Config) Live(n ...int64) int64 {
-// 	if len(n) > 0 {
-// 		c.live = n[0]
-// 	}
-// 	return c.count
-// }
+func (c *Config) Live() bool {
+	return c.live
+}
 
 // CobraConfig creates a configuration from a cobra command options and arguments
 func CobraConfig(cmd *cobra.Command) (c Config, err error) {
@@ -168,27 +145,12 @@ func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 	}
 
 	if typos, err := commaSplit(cmd.Flags().GetStringArray("algorithms")); err == nil {
-		// c.algorithms = algorithms.List(typos...)
 		c.algorithms = algorithms.List(typos...)
 	}
 
 	if infos, err := commaSplit(cmd.Flags().GetStringArray("info")); err == nil {
 		c.information = information.List(infos...)
 	}
-
-	// if typos, err := commaSplit(cmd.Flags().GetStringArray("algorithms")); err == nil {
-	// 	algos := algorithms.List(typos...)
-
-	// 	for _, algo := range algos {
-	// 		if c.IsMode(internal.DOMAIN) {
-	// 			if al, ok := algo.(internal.DomainAlgo); ok {
-
-	// 				c.algorithms = append(c.algorithms, al)
-	// 			}
-	// 		}
-
-	// 	}
-	// }
 
 	// Output options
 	if c.file, err = cmd.Flags().GetString("file"); err != nil {
@@ -226,29 +188,12 @@ func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 		return c, err
 	}
 
-	// c.count = 1
+	if c.live, err = cmd.Flags().GetBool("live"); err != nil {
+		return c, err
+	}
 
 	return c, err
 }
-
-// // CobraConfig creates a configuration from a cobra command options and arguments
-// func DomainConfig(cmd *cobra.Command, args []string) (c Config, err error) {
-// 	c, err = CobraConfig(cmd, args)
-
-// 	if infos, err := commaSplit(cmd.Flags().GetStringArray("info")); err == nil {
-// 		c.information = domains.List(infos...)
-// 	}lgos :=
-// 	return
-// }
-
-// func UsernameConfig(cmd *cobra.Command, args []string) (c Config, err error) {
-// 	c, err = CobraConfig(cmd, args)
-
-// 	if infos, err := commaSplit(cmd.Flags().GetStringArray("info")); err == nil {
-// 		c.information = usernames.List(infos...)
-// 	}
-// 	return
-// }
 
 // commaSplit splits comma separated values into an array
 func commaSplit(values []string, err error) ([]string, error) {

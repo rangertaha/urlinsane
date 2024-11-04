@@ -12,21 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package pi
-
-// // adjacentCharacterInsertionFunc are created by inserting letters adjacent of each letter. For example, www.googhle.com
-// // and www.goopgle.com
-// func AlgoFunc(tc Result) (results []Result) {
-
-// 	for i, char := range tc.Original.Domain {
-
-// 		d1 := tc.Original.Domain[:i] + "." + string(char) + tc.Original.Domain[i+1:]
-// 		dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}, false}
-// 		results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
-// 	}
-
-// 	return
-// }
+package gi
 
 import (
 	"fmt"
@@ -34,12 +20,13 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 const (
-	CODE        = "pi"
-	NAME        = "Period Insertion"
-	DESCRIPTION = "Inserting periods in the target name"
+	CODE        = "gi"
+	NAME        = "Grapheme Insertion"
+	DESCRIPTION = "Inserting the language-specific alphabet in the target domain"
 )
 
 type Algo struct {
@@ -80,51 +67,49 @@ func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
 func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
 
-	for _, variant := range n.Func(prefix) {
-		if prefix != variant {
-			d := domain.New(sub, variant, suffix)
+	for _, language := range n.languages {
+		for _, variant := range algo.GraphemeInsertion(prefix, language.Graphemes()...) {
+			if prefix != variant {
+				d := domain.New(sub, variant, suffix)
+				// fmt.Println(sub, variant, suffix)
 
-			new := typo.Clone(d.String())
+				new := typo.Clone(d.String())
 
-			typos = append(typos, new)
+				typos = append(typos, new)
+			}
 		}
 	}
+
 	return
 }
 
 func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
 
-	for _, variant := range n.Func(username) {
-		if username != variant {
-			new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
+	for _, language := range n.languages {
+		for _, variant := range algo.GraphemeInsertion(username, language.Graphemes()...) {
 
-			typos = append(typos, new)
+			if username != variant {
+				new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
+
+				typos = append(typos, new)
+			}
 		}
 	}
 	return
 }
 
 func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
-	original := n.config.Target().Name()
-	for _, variant := range n.Func(original) {
-		if original != variant {
-			typos = append(typos, typo.Clone(variant))
-		}
-	}
-	return
-}
+	name := n.config.Target().Name()
+	for _, language := range n.languages {
+		for _, variant := range algo.GraphemeInsertion(name, language.Graphemes()...) {
 
-func (n *Algo) Func(original string) (results []string) {
-	for i, char := range original {
-		for _, board := range n.keyboards {
-			for _, kchar := range board.Adjacent(string(char)) {
-				variant := fmt.Sprint(original[:i], kchar, original[i+1:])
-				results = append(results, variant)
+			if name != variant {
+				typos = append(typos, typo.Clone(variant))
 			}
 		}
 	}
-	return results
+	return
 }
 
 // Register the plugin

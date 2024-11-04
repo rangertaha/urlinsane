@@ -36,57 +36,69 @@ urlinsane typo -a cs  -e username@example.com
 - **-d** or **--domain** Allows us to specify the target type(domain) followed by the name.
 
 
+algo "github.com/rangertaha/urlinsane/pkg/typo"
 
-
-## (acs) AdjacentCharacterSubstitution
+## (acs) Adjacent Character Substitution
 
 Adjacent Character Substitution typos replace characters in the original domain name with neighboring characters on a specific keyboard layout, such as QWERTY.
 
     Example: www.ezample.com (substitutes "z" for "x" due to proximity on a QWERTY keyboard)
 
-## AdjacentCharacterInsertion
+
+
+
+
+## (aci) Adjacent Character Insertion
 
 Adjacent Character Insertion typos involve adding characters adjacent to each letter on the keyboard.
 
     Example: www.googhle.com (inserts "h" next to "g" on a QWERTY keyboard)
 
-## HyphenInsertion
+## (hi) Hyphen Insertion
 
 Hyphen Insertion typos add hyphens at different points in a domain name to create variations.
 
     Examples: -example, e-xample, ex-ample, exa-mple, exam-ple, examp-le, example-
 
-## HyphenOmission
+## (ho) Hyphen Omission
 
 ## Hyphen Omission typos involve removing hyphens from domain names that would normally contain them.
 
     Example: my-example.com becomes myexample.com
 
-## DotInsertion
+
+
+
+
+
+
+## (pi) Dot Insertion
 
 Dot Insertion typos occur when dots (.) are inserted into different parts of the domain name.
 
     Examples: e.xample.com, ex.ample.com, exa.mple.com, exam.ple.com
 
-## DotOmission
+
+
+## (do) Dot Omission
 
 Dot Omission typos leave out dots that are part of the domain.
 
     Example: one.two.three.com might become onetwo.three.com or one.twothree.com
 
-## GraphemeInsertion
+## (gi) Grapheme Insertion
 
 Grapheme Insertion (or Alphabet Insertion) adds extra letters to the original domain name to create a slight variation.
 
     Examples: aexample.com, bexample.com, cexample.com, dexample.com
 
-## GraphemeReplacement
+## (gr) Grapheme Replacement
 
 Grapheme Replacement (or Alphabet Replacement) involves replacing characters in the domain with different alphabet letters.
 
     Examples: axample.com, bxample.com, cxample.com, dxample.com
 
-## CharacterRepetition
+## (cr) Character Repetition
 
 Character Repetition typos repeat a letter in the domain name.
 
@@ -98,45 +110,45 @@ Double Character Adjacent Replacement typos replace consecutive identical letter
 
     Examples: gppgle.com and giigle.com (replacing "oo" with adjacent keys on a QWERTY layout)
 
-## CharacterOmission
+## (co) Character Omission
 
 Character Omission typos occur when one character is left out from the domain name.
 
     Examples: gogle.com, googe.com, googl.com
 
-## SingularPluraliseSubstitution
+## (sps) Singular Pluralise Substitution
 
 Singular-Plural Substitution is when singular forms of words are swapped for plural forms (or vice versa) in a domain.
 
     Examples: example.com becomes examples.com, or examples.com becomes example.com
 
-## CharacterDeletion
+## Character Deletion
 
 Character Deletion is similar to Character Omission but usually involves removing multiple characters to create a shortened version.
 
     Example: example.com might become exampl.com or xample.com
 
-## CommonMisspellings
+## (cm) Common Misspellings
 
 Common Misspelling typos involve using frequent misspellings of words or brand names.
 
     Examples: youtube.com becomes youtub.com, or abseil.com becomes absail.com
 
-## VowelSwapping
+## (vs) Vowel Swapping
 
 Vowel Swapping replaces vowels in the domain name with other vowels to create variations.
 
     Examples: example.com might become ixample.com, exemple.com, exomple.com
 
-## HomophoneSwapping
+## (hs) Homophone Substitution
 
-Homophone Swapping substitutes words that sound the same but have different spellings.
+Substitutes words that sound the same but have different spellings.
 
     Examples: base.com becomes bass.com, site.com might become sight.com
 
-## HomoglyphSwapping
+## (hr) Homoglyph Replacement
 
-Homoglyph Swapping replaces characters with visually similar ones from different alphabets or character sets.
+Homoglyph substitution replaces characters with visually similar ones from different alphabets or character sets.
 
     Example: google.com might be replaced with googIe.com (using a capital "I" instead of a lowercase "l")
 
@@ -158,19 +170,19 @@ Third-Level Domain Replacement involves manipulating the subdomain part of the U
 
     Example: blog.example.com might become bl0g.example.com
 
-## BitFlipping
+## (bf) BitFlipping
 
 Bit Flipping is a low-level manipulation where individual bits in the binary representation of a domain name are flipped, creating similar-looking domains.
 
     Example: example.com might become exampIe.com (flipping a bit to make the "l" into a capital "I")
 
-## CardinalSwapping
+## (cns) Cardinal Numeral Substitution
 
-Cardinal Swapping swaps letters with those that look similar in specific fonts, such as "1" and "l" or "0" and "O".
+Substitution letters with those that look similar in specific fonts, such as "1" and "l" or "0" and "O".
 
     Example: google.com might become goog1e.com
 
-## OrdinalSwapping
+## Ordinal Numeral Substitution
 
 Ordinal Swapping involves rearranging letters within the domain to form typos.
 

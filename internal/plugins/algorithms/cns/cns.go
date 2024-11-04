@@ -60,16 +60,16 @@ package cns
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 const (
 	CODE        = "cns"
-	NAME        = "Cardinal Swap"
+	NAME        = "Cardinal Substitution"
 	DESCRIPTION = "Swapping digial numbers and carninal numbers"
 )
 
@@ -111,14 +111,14 @@ func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
 func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
 	for _, lang := range n.languages {
-
-		for _, variant := range n.Func(lang.Cardinal(), prefix) {
+		for _, variant := range algo.CardinalSwap(prefix, lang.Numerals()) {
 			if prefix != variant {
 				d := domain.New(sub, variant, suffix)
 				new := typo.Clone(d.String())
 				typos = append(typos, new)
 			}
 		}
+
 	}
 	return
 }
@@ -127,7 +127,8 @@ func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
 	for _, lang := range n.languages {
 
-		for _, variant := range n.Func(lang.Cardinal(), username) {
+		for _, variant := range algo.CardinalSwap(username, lang.Numerals()) {
+
 			if username != variant {
 				new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
 				typos = append(typos, new)
@@ -140,53 +141,11 @@ func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
 	original := n.config.Target().Name()
 	for _, lang := range n.languages {
-		for _, variant := range n.Func(lang.Cardinal(), original) {
+		for _, variant := range algo.CardinalSwap(original, lang.Numerals()) {
 			typos = append(typos, typo.Clone(variant))
 		}
 	}
 	return
-}
-
-// Func swaps numbers and carninal numbers
-func (n *Algo) Func(cardinals map[string]string, name string) []string {
-	results := []string{}
-	var fn func(map[string]string, string, bool) map[string]bool
-
-	fn = func(data map[string]string, str string, reverse bool) (names map[string]bool) {
-		names = make(map[string]bool)
-
-		for num, word := range data {
-			{
-				var variant string
-				if !reverse {
-					variant = strings.Replace(str, word, num, -1)
-				} else {
-					variant = strings.Replace(str, num, word, -1)
-				}
-
-				if str != variant {
-					if _, ok := names[variant]; !ok {
-						names[variant] = true
-						for k, v := range fn(cardinals, variant, reverse) {
-							names[k] = v
-						}
-
-						fn(cardinals, variant, reverse)
-					}
-				}
-			}
-		}
-		return names
-	}
-
-	for name := range fn(cardinals, name, false) {
-		results = append(results, name)
-	}
-	for name := range fn(cardinals, name, true) {
-		results = append(results, name)
-	}
-
-	return results
 }
 
 // Register the plugin

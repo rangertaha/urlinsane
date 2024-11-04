@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package acs
+package sps
 
 // Adjacent character substitution is where an attacker swaps characters
 // that are next to each other on a keyboard.
@@ -38,9 +38,9 @@ import (
 )
 
 const (
-	CODE        = "acs"
-	NAME        = "Adjacent Character Substitution"
-	DESCRIPTION = "Replaces adjacent character from the keyboard"
+	CODE        = "sps"
+	NAME        = "Singular Pluralise Substitution"
+	DESCRIPTION = "Singular-Plural Substitution is when singular forms of words are swapped for plural forms"
 )
 
 type Algo struct {
@@ -80,45 +80,34 @@ func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
 
 func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
-
-	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterSubstitution(prefix, keyboard.Layouts()...) {
-			if prefix != variant {
-				d := domain.New(sub, variant, suffix)
-				new := typo.Clone(d.String())
-
-				typos = append(typos, new)
-			}
+	for _, variant := range algo.SingularPluraliseSubstitution(prefix) {
+		if prefix != variant {
+			d := domain.New(sub, variant, suffix)
+			new := typo.Clone(d.String())
+			typos = append(typos, new)
 		}
 	}
-
 	return
 }
 
 func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
-
-	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterSubstitution(username, keyboard.Layouts()...) {
+		for _, variant := range algo.SingularPluraliseSubstitution(username) {
 			if username != variant {
 				new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
-
 				typos = append(typos, new)
 			}
 		}
-	}
 	return
 }
 
 func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
 	name := n.config.Target().Name()
-	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterSubstitution(name, keyboard.Layouts()...) {
+		for _, variant := range algo.SingularPluraliseSubstitution(name) {
 			if name != variant {
 				typos = append(typos, typo.Clone(variant))
 			}
 		}
-	}
 	return
 }
 

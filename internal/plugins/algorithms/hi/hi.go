@@ -14,20 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package hi
 
-// adjacentCharacterInsertionFunc are created by inserting letters adjacent of each letter. For example, www.googhle.com
-// and www.goopgle.com
-// func hyphenInsertionFunc(tc Result) (results []Result) {
-
-// 	for i, char := range tc.Original.Domain {
-// 		d1 := tc.Original.Domain[:i] + "-" + string(char) + tc.Original.Domain[i+1:]
-// 		if i == len(tc.Original.Domain)-1 {
-// 			d1 = tc.Original.Domain[:i] + string(char) + "-" + tc.Original.Domain[i+1:]
-// 		}
-// 		dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}, false}
-// 		results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
-// 	}
-// 	return
-// }
 
 import (
 	"fmt"
@@ -35,6 +21,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 const (
@@ -44,10 +31,10 @@ const (
 )
 
 type Algo struct {
-	config    internal.Config
-	languages []internal.Language
-	keyboards []internal.Keyboard
-	funcs     map[int]func(internal.Typo) []internal.Typo
+	config internal.Config
+	// languages []internal.Language
+	// keyboards []internal.Keyboard
+	funcs map[int]func(internal.Typo) []internal.Typo
 }
 
 func (n *Algo) Id() string {
@@ -56,8 +43,8 @@ func (n *Algo) Id() string {
 
 func (n *Algo) Init(conf internal.Config) {
 	n.funcs = make(map[int]func(internal.Typo) []internal.Typo)
-	n.keyboards = conf.Keyboards()
-	n.languages = conf.Languages()
+	// n.keyboards = conf.Keyboards()
+	// n.languages = conf.Languages()
 	n.config = conf
 
 	// Supported targets
@@ -80,13 +67,10 @@ func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
 
 func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
-
-	for _, variant := range n.Func(prefix) {
+	for _, variant := range algo.HyphenInsertion(prefix) {
 		if prefix != variant {
 			d := domain.New(sub, variant, suffix)
-
 			new := typo.Clone(d.String())
-
 			typos = append(typos, new)
 		}
 	}
@@ -95,8 +79,7 @@ func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 
 func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
-
-	for _, variant := range n.Func(username) {
+	for _, variant := range algo.HyphenInsertion(username) {
 		if username != variant {
 			new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
 
@@ -107,25 +90,13 @@ func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 }
 
 func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
-	original := n.config.Target().Name()
-	for _, variant := range n.Func(original) {
-		if original != variant {
+	name := n.config.Target().Name()
+	for _, variant := range algo.HyphenInsertion(name) {
+		if name != variant {
 			typos = append(typos, typo.Clone(variant))
 		}
 	}
 	return
-}
-
-func (n *Algo) Func(original string) (results []string) {
-	for i, char := range original {
-		for _, board := range n.keyboards {
-			for _, kchar := range board.Adjacent(string(char)) {
-				variant := fmt.Sprint(original[:i], kchar, original[i+1:])
-				results = append(results, variant)
-			}
-		}
-	}
-	return results
 }
 
 // Register the plugin

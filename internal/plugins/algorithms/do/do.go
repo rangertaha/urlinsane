@@ -12,21 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package acs
-
-// Adjacent character substitution is where an attacker swaps characters
-// that are next to each other on a keyboard.
-
-// For example, if a user intends to visit "example.com," a typo-squatter
-// might register "exampel.com" or "exmaple.com." These small alterations
-// can trick users into clicking on the malicious sites, leading to phishing
-// scams, malware downloads, or other harmful activities.
-
-// Adjacent character substitution exploits common typing errors, making it a
-// particularly effective tactic, as users may not notice the difference,
-// especially if they are typing quickly. It highlights the importance of
-// vigilance and cybersecurity measures to protect against such deceptive
-// practices.
+package do
 
 import (
 	"fmt"
@@ -38,16 +24,16 @@ import (
 )
 
 const (
-	CODE        = "acs"
-	NAME        = "Adjacent Character Substitution"
-	DESCRIPTION = "Replaces adjacent character from the keyboard"
+	CODE        = "do"
+	NAME        = "Dot Omission"
+	DESCRIPTION = "Omission periods in the target name"
 )
 
 type Algo struct {
-	config    internal.Config
-	languages []internal.Language
-	keyboards []internal.Keyboard
-	funcs     map[int]func(internal.Typo) []internal.Typo
+	config internal.Config
+	// languages []internal.Language
+	// keyboards []internal.Keyboard
+	funcs map[int]func(internal.Typo) []internal.Typo
 }
 
 func (n *Algo) Id() string {
@@ -56,8 +42,8 @@ func (n *Algo) Id() string {
 
 func (n *Algo) Init(conf internal.Config) {
 	n.funcs = make(map[int]func(internal.Typo) []internal.Typo)
-	n.keyboards = conf.Keyboards()
-	n.languages = conf.Languages()
+	// n.keyboards = conf.Keyboards()
+	// n.languages = conf.Languages()
 	n.config = conf
 
 	// Supported targets
@@ -80,43 +66,32 @@ func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
 
 func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
-
-	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterSubstitution(prefix, keyboard.Layouts()...) {
-			if prefix != variant {
-				d := domain.New(sub, variant, suffix)
-				new := typo.Clone(d.String())
-
-				typos = append(typos, new)
-			}
+	for _, variant := range algo.DotOmission(prefix) {
+		if prefix != variant {
+			d := domain.New(sub, variant, suffix)
+			new := typo.Clone(d.String())
+			typos = append(typos, new)
 		}
 	}
-
 	return
 }
 
 func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
-
-	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterSubstitution(username, keyboard.Layouts()...) {
-			if username != variant {
-				new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
-
-				typos = append(typos, new)
-			}
+	for _, variant := range algo.DotOmission(username) {
+		if username != variant {
+			new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
+			typos = append(typos, new)
 		}
 	}
 	return
 }
 
 func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
-	name := n.config.Target().Name()
-	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterSubstitution(name, keyboard.Layouts()...) {
-			if name != variant {
-				typos = append(typos, typo.Clone(variant))
-			}
+	original := n.config.Target().Name()
+	for _, variant := range algo.DotOmission(original) {
+		if original != variant {
+			typos = append(typos, typo.Clone(variant))
 		}
 	}
 	return

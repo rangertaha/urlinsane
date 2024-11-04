@@ -12,31 +12,21 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package ar
+package dcar
 
-// func AlgonFunc(tc Result) (results []Result) {
-// 	alphabet := map[string]bool{}
-// 	for _, keyboard := range tc.Keyboards {
-// 		for _, a := range keyboard.Language.Graphemes {
-// 			alphabet[a] = true
-// 		}
-// 	}
+// Adjacent character substitution is where an attacker swaps characters
+// that are next to each other on a keyboard.
 
-// 	for i := range tc.Original.Domain {
-// 		for alp := range alphabet {
-// 			d1 := tc.Original.Domain[:i] + alp + tc.Original.Domain[i+1:]
-// 			dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}, false}
-// 			results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
+// For example, if a user intends to visit "example.com," a typo-squatter
+// might register "exampel.com" or "exmaple.com." These small alterations
+// can trick users into clicking on the malicious sites, leading to phishing
+// scams, malware downloads, or other harmful activities.
 
-// 			if i == len(tc.Original.Domain)-1 {
-// 				d1 = tc.Original.Domain[:i] + alp + tc.Original.Domain[i+1:]
-// 				dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}, false}
-// 				results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
-// 			}
-// 		}
-// 	}
-// 	return
-// }
+// Adjacent character substitution exploits common typing errors, making it a
+// particularly effective tactic, as users may not notice the difference,
+// especially if they are typing quickly. It highlights the importance of
+// vigilance and cybersecurity measures to protect against such deceptive
+// practices.
 
 import (
 	"fmt"
@@ -44,12 +34,13 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 const (
-	CODE        = "ar"
-	NAME        = "Alphabet Replacement"
-	DESCRIPTION = "Replaces an alphabet in the target domain"
+	CODE        = "dcar"
+	NAME        = "Double Character Adjacent Replacement"
+	DESCRIPTION = "Double character adjacent replacement typos replace consecutive identical letters with adjacent keys on the keyboard."
 )
 
 type Algo struct {
@@ -89,55 +80,46 @@ func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
 
 func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
-	// fmt.Println(sub, prefix, suffix)
 
-	for _, variant := range n.Func(prefix) {
-		if prefix != variant {
-			d := domain.New(sub, variant, suffix)
-			// fmt.Println(sub, variant, suffix)
+	for _, keyboard := range n.keyboards {
+		for _, variant := range algo.DoubleCharacterAdjacentReplacement(prefix, keyboard.Layouts()...) {
+			if prefix != variant {
+				d := domain.New(sub, variant, suffix)
+				new := typo.Clone(d.String())
 
-			new := typo.Clone(d.String())
-
-			typos = append(typos, new)
+				typos = append(typos, new)
+			}
 		}
 	}
+
 	return
 }
 
 func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
-	// fmt.Println(sub, prefix, suffix)
 
-	for _, variant := range n.Func(username) {
-		if username != variant {
-			new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
+	for _, keyboard := range n.keyboards {
+		for _, variant := range algo.DoubleCharacterAdjacentReplacement(username, keyboard.Layouts()...) {
+			if username != variant {
+				new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
 
-			typos = append(typos, new)
+				typos = append(typos, new)
+			}
 		}
 	}
 	return
 }
 
 func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
-	original := n.config.Target().Name()
-	for _, variant := range n.Func(original) {
-		if original != variant {
-			typos = append(typos, typo.Clone(variant))
-		}
-	}
-	return
-}
-
-func (n *Algo) Func(original string) (results []string) {
-	for i, char := range original {
-		for _, board := range n.keyboards {
-			for _, kchar := range board.Adjacent(string(char)) {
-				variant := fmt.Sprint(original[:i], kchar, original[i+1:])
-				results = append(results, variant)
+	name := n.config.Target().Name()
+	for _, keyboard := range n.keyboards {
+		for _, variant := range algo.DoubleCharacterAdjacentReplacement(name, keyboard.Layouts()...) {
+			if name != variant {
+				typos = append(typos, typo.Clone(variant))
 			}
 		}
 	}
-	return results
+	return
 }
 
 // Register the plugin
