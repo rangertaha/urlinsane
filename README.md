@@ -148,6 +148,7 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 ## Information
 
+### Domain Information
 
 | ID |  Name             | Description  |
 |----|-------------------|--------------|
@@ -162,6 +163,23 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 |    | Domain Redirects  | Show domains redirects |
 |    | IDNA Format       | Show international domain name (Default) |
 |    | HTTP/SMTP Banner  | |
+
+### Package Information
+
+| ID |  Name                | Description  |
+|----|----------------------|--------------|
+| py | Python Package Index | Checks PyPi servers for pacakges |
+| js | Node Package Manager | Checks NPM servers for pacakges |
+| gh | Github               | Checks NPM servers for pacakges |
+
+
+
+### Username Information
+
+| ID |  Name             | Description  |
+|----|-------------------|--------------|
+|    |                   |              |
+
 
 
 
@@ -189,7 +207,7 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 
 
-# Other Tools
+###  Other Tools
 
 
 
