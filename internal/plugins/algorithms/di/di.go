@@ -12,17 +12,19 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package hp
+package di
 
-// // AlgoFunc are created from sets of words that sound the same when spoken.
-// // For example, www.base.com becomes www .bass.com.
+// // adjacentCharacterInsertionFunc are created by inserting letters adjacent of each letter. For example, www.googhle.com
+// // and www.goopgle.com
 // func AlgoFunc(tc Result) (results []Result) {
-// 	for _, keyboard := range tc.Keyboards {
-// 		for _, word := range keyboard.Language.SimilarSounds(tc.Original.Domain) {
-// 			dm := Domain{tc.Original.Subdomain, word, tc.Original.Suffix, Meta{}, false}
-// 			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
-// 		}
+
+// 	for i, char := range tc.Original.Domain {
+
+// 		d1 := tc.Original.Domain[:i] + "." + string(char) + tc.Original.Domain[i+1:]
+// 		dm1 := Domain{tc.Original.Subdomain, d1, tc.Original.Suffix, Meta{}, false}
+// 		results = append(results, Result{Original: tc.Original, Variant: dm1, Typo: tc.Typo, Data: tc.Data})
 // 	}
+
 // 	return
 // }
 
@@ -32,19 +34,20 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 const (
-	CODE        = "hp"
-	NAME        = ""
-	DESCRIPTION = "Created from sets of words that sound the same"
+	CODE        = "di"
+	NAME        = "Dot Insertion"
+	DESCRIPTION = "Inserting periods in the target name"
 )
 
 type Algo struct {
-	config    internal.Config
-	languages []internal.Language
-	keyboards []internal.Keyboard
-	funcs     map[int]func(internal.Typo) []internal.Typo
+	config internal.Config
+	// languages []internal.Language
+	// keyboards []internal.Keyboard
+	funcs map[int]func(internal.Typo) []internal.Typo
 }
 
 func (n *Algo) Id() string {
@@ -53,8 +56,8 @@ func (n *Algo) Id() string {
 
 func (n *Algo) Init(conf internal.Config) {
 	n.funcs = make(map[int]func(internal.Typo) []internal.Typo)
-	n.keyboards = conf.Keyboards()
-	n.languages = conf.Languages()
+	// n.keyboards = conf.Keyboards()
+	// n.languages = conf.Languages()
 	n.config = conf
 
 	// Supported targets
@@ -77,13 +80,10 @@ func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
 
 func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
-
-	for _, variant := range n.Func(prefix) {
+	for _, variant := range algo.DotInsertion(prefix) {
 		if prefix != variant {
 			d := domain.New(sub, variant, suffix)
-
 			new := typo.Clone(d.String())
-
 			typos = append(typos, new)
 		}
 	}
@@ -92,11 +92,9 @@ func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 
 func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
-
-	for _, variant := range n.Func(username) {
+	for _, variant := range algo.DotInsertion(username) {
 		if username != variant {
 			new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
-
 			typos = append(typos, new)
 		}
 	}
@@ -105,24 +103,12 @@ func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 
 func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
 	original := n.config.Target().Name()
-	for _, variant := range n.Func(original) {
+	for _, variant := range algo.DotInsertion(original) {
 		if original != variant {
 			typos = append(typos, typo.Clone(variant))
 		}
 	}
 	return
-}
-
-func (n *Algo) Func(original string) (results []string) {
-	for i, char := range original {
-		for _, board := range n.keyboards {
-			for _, kchar := range board.Adjacent(string(char)) {
-				variant := fmt.Sprint(original[:i], kchar, original[i+1:])
-				results = append(results, variant)
-			}
-		}
-	}
-	return results
 }
 
 // Register the plugin

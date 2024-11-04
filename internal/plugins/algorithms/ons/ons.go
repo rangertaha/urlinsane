@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ons
 
-// Ordinal Numeral Swap
+// Ordinal Numeral Substitution
 // Ordinal numerals are the numbers that are used for counting something.
 // For Example: first, second, third, fourth, fifth, sixth, seventh, eighth.
 // Ordinal swapping replaces ordinal numerals with digit numbers and numbers for
@@ -57,17 +57,17 @@ package ons
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 const (
 	CODE        = "ons"
-	NAME        = "Ordinal Swap"
-	DESCRIPTION = "Swapping digital numbers and ordinal numbers"
+	NAME        = "Ordinal Numeral Substitution"
+	DESCRIPTION = "Substituting digital numbers and ordinal numbers"
 )
 
 type Algo struct {
@@ -109,7 +109,8 @@ func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
 	original := n.config.Target().Name()
 	for _, language := range n.languages {
-		for _, variant := range n.Func(language.Cardinal(), prefix) {
+		for _, variant := range algo.OrdinalSwap(prefix, language.Numerals()) {
+
 			if original != variant {
 				d := domain.New(sub, variant, suffix)
 				new := typo.Clone(d.String())
@@ -124,7 +125,7 @@ func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
 	for _, language := range n.languages {
-		for _, variant := range n.Func(language.Cardinal(), username) {
+		for _, variant := range algo.OrdinalSwap(username, language.Numerals()) {
 			if username != variant {
 				new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
 
@@ -138,55 +139,13 @@ func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
 	original := n.config.Target().Name()
 	for _, language := range n.languages {
-		for _, variant := range n.Func(language.Cardinal(), original) {
+		for _, variant := range algo.OrdinalSwap(original, language.Numerals()) {
 			if original != variant {
 				typos = append(typos, typo.Clone(variant))
 			}
 		}
 	}
 	return
-}
-
-// Func swaps numbers and carninal numbers
-func (n *Algo) Func(cardinals map[string]string, name string) []string {
-	results := []string{}
-	var fn func(map[string]string, string, bool) map[string]bool
-
-	fn = func(data map[string]string, str string, reverse bool) (names map[string]bool) {
-		names = make(map[string]bool)
-
-		for num, word := range data {
-			{
-				var variant string
-				if !reverse {
-					variant = strings.Replace(str, word, num, -1)
-				} else {
-					variant = strings.Replace(str, num, word, -1)
-				}
-
-				if str != variant {
-					if _, ok := names[variant]; !ok {
-						names[variant] = true
-						for k, v := range fn(cardinals, variant, reverse) {
-							names[k] = v
-						}
-
-						fn(cardinals, variant, reverse)
-					}
-				}
-			}
-		}
-		return names
-	}
-
-	for name := range fn(cardinals, name, false) {
-		results = append(results, name)
-	}
-	for name := range fn(cardinals, name, true) {
-		results = append(results, name)
-	}
-
-	return results
 }
 
 // Register the plugin

@@ -17,13 +17,14 @@ package urlinsane
 import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg/target"
+	"github.com/rangertaha/urlinsane/pkg/strutils"
 )
 
 type Typo struct {
 	algorithm internal.Algorithm
 	original  internal.Target
 	variant   internal.Target
-	active    bool
+	dist      int
 }
 
 func (t *Typo) Algorithm() internal.Algorithm {
@@ -42,11 +43,18 @@ func (t *Typo) Active() bool {
 	return t.variant.Live()
 }
 
+func (t *Typo) Ld() int {
+	return t.dist
+}
+
 func (t *Typo) Clone(name string) internal.Typo {
+	dist := strutils.Levenshtein(t.original.Name(), name)
+
 	return &Typo{
 		algorithm: t.algorithm,
 		original:  t.original,
 		variant:   target.New(name),
+		dist:      dist,
 	}
 }
 

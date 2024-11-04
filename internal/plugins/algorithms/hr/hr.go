@@ -50,6 +50,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 const (
@@ -96,13 +97,16 @@ func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
 func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
 
-	for _, variant := range n.Func(prefix) {
-		if prefix != variant {
-			d := domain.New(sub, variant, suffix)
+	for _, language := range n.languages {
+		for _, variant := range algo.HomoglyphSwapping(prefix, language.Homoglyphs()) {
 
-			new := typo.Clone(d.String())
+			if prefix != variant {
+				d := domain.New(sub, variant, suffix)
 
-			typos = append(typos, new)
+				new := typo.Clone(d.String())
+
+				typos = append(typos, new)
+			}
 		}
 	}
 	return
@@ -111,11 +115,14 @@ func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
 
-	for _, variant := range n.Func(username) {
-		if username != variant {
-			new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
+	for _, language := range n.languages {
+		for _, variant := range algo.HomoglyphSwapping(username, language.Homoglyphs()) {
 
-			typos = append(typos, new)
+			if username != variant {
+				new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
+
+				typos = append(typos, new)
+			}
 		}
 	}
 	return
@@ -123,56 +130,16 @@ func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 
 func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
 	original := n.config.Target().Name()
-	for _, variant := range n.Func(original) {
-		if original != variant {
-			typos = append(typos, typo.Clone(variant))
-		}
-	}
-	return
-}
+	for _, language := range n.languages {
+		for _, variant := range algo.HomoglyphSwapping(original, language.Homoglyphs()) {
 
-// AlgoFunc typos are when two consecutive characters are swapped in the original domain name.
-// Example: www.examlpe.com
-func (n *Algo) Func(original string) (results []string) {
-	for i, char := range original {
-		for _, language := range n.languages {
-			for _, kchar := range language.SimilarChars(string(char)) {
-				variant := fmt.Sprint(original[:i], kchar, original[i+1:])
-				results = append(results, variant)
+			if original != variant {
+				typos = append(typos, typo.Clone(variant))
 			}
 		}
 	}
-
 	return
 }
-
-// func homoglyphFunc(tc Result) (results []Result) {
-// 	for i, char := range tc.Original.Domain {
-// 		// Check the alphabet of the language associated with the keyboard for
-// 		// Algo
-// 		for _, keyboard := range tc.Keyboards {
-// 			for _, kchar := range keyboard.Language.SimilarChars(string(char)) {
-// 				domain := fmt.Sprint(tc.Original.Domain[:i], kchar, tc.Original.Domain[i+1:])
-// 				if tc.Original.Domain != domain {
-// 					dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
-// 					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
-// 				}
-// 			}
-// 		}
-// 		// Check languages given with the (-l --language) CLI options for Algo.
-// 		for _, language := range tc.Languages {
-// 			for _, lchar := range language.SimilarChars(string(char)) {
-// 				domain := fmt.Sprint(tc.Original.Domain[:i], lchar, tc.Original.Domain[i+1:])
-// 				if tc.Original.Domain != domain {
-// 					dm := Domain{tc.Original.Subdomain, domain, tc.Original.Suffix, Meta{}, false}
-// 					results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
-// 				}
-// 			}
-// 		}
-
-// 	}
-// 	return results
-// }
 
 // Register the plugin
 func init() {
