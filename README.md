@@ -100,19 +100,6 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 |        |          |          |         |           |         |        |         | 
 
 
-
-### Homoglyphs
-### Homophones
-### Antonyms
-### Misspellings 
-### Cardinal 
-### Ordinal 
-### Vowels
-### Graphemes  
-
-
-
-
 ## Algorithms
 
 
