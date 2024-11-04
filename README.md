@@ -24,7 +24,7 @@ urlinsane typo -e username@example.com
 ## Username 
 
 ```bash
-urlinsane typo -n urlinsane -u https://github.com/rangertaha/urlinsane
+urlinsane typo -n urlinsane
 ```
 
 ```bash
@@ -34,7 +34,7 @@ urlinsane typo -n urlinsane -u https://github.com/rangertaha/urlinsane
 ## Packages 
 
 ```bash
-urlinsane typo -g express -u https://www.npmjs.com/package/express
+urlinsane typo -g express
 ```
 
 
