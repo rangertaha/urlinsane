@@ -6,19 +6,11 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 
 
 
-## Features
-* Fast execution time
-* Concurrency in generating typos and collecting information
-* Distribute queries to multiple DNS Servers
-* Single downloadable binary with no system dependencies
-* Plugin architecture for extensibility
-* Multi-lingual language modeling
-
 ## Targets
 
 |   Type   | Decscription |
 |----------|--------|
-| Names    | Generating variants on arbitrary names without assuming it's a domain  |
+| Eamil    | Generating variantions email usernames  |
 | Domains  | Domain-specific typosquatting variants and information gathering  |
 | Usernames| Finding variants of usernames online or on a specific site |
 | Packages | Finding opensource software packages or libraries and variants |
@@ -80,61 +72,51 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 ## Algorithms
 
-| ID | Name   | Description  | 
-|--|------------|-------------|
-| |   |         |    
-| |    |           |   
-| |    |         |   
+| ID | Name       | Description | 
+|----|------------|-------------|
+|    |            |             |    
+|    |            |             |   
+|    |            |             |   
 
 
-| ID | Name            | Description ||
-|---|---------------------------------|--|
-| | Missing Dot                     ||
-| | Missing Dashes                  | |
-| | Strip Dashes                    | |
-| | Character Omission              | |
-| | Character Swap                  | |
-| | Adjacent Character Substitution | |
-| | Adjacent Character Insertion    ||
-| | Homoglyphs                      ||
-| | Singular Pluralise              | |
-| | Character Repeat                | |
-| | Double Character Replacement    | |
-| | Common Misspellings             | |
-| | Homophones                      ||
-| | Vowel Swapping                  | |
-| | Bitsquatting                    | |
-| | Wrong Top Level Domain          | | 
-| | Wrong Second Level Domain       | | 
-| | Wrong Third Level Domain        | |
-| | Ordinal Number Swap             | |
-| | Cardinal Number Swap            ||
-| | Hyphenation                     || 
-| | Multithreaded Algorithms        ||   
-| | Subdomain insertion             | |
-| | Period Insertion                | | 
-| | Combosquatting (Keywords)       | |
+| ID | Name                         | Description |
+|----|------------------------------|-------------|
+|    | Missing Dot                  |             |
+|    | Missing Dashes               |             |
+|    | Strip Dashes                 |             |
+|    | Character Omission           |             |
+| | Character Swap                  |             |
+| | Adjacent Character Substitution |             |
+| | Adjacent Character Insertion    |             |
+| | Homoglyphs                      |             |
+| | Singular Pluralise              |             |
+| | Character Repeat                |             |
+| | Double Character Replacement    |             |
+| | Common Misspellings             |             |
+| | Homophones                      |             |
+| | Vowel Swapping                  |             |
+| | Bitsquatting                    |             |
+| | Wrong Top Level Domain          |             | 
+| | Wrong Second Level Domain       |             | 
+| | Wrong Third Level Domain        |             |
+| | Ordinal Number Swap             |             |
+| | Cardinal Number Swap            |             |
+| | Hyphenation                     |             | 
+| | Multithreaded Algorithms        |             |   
+| | Subdomain insertion             |             |
+| | Period Insertion                |             | 
+| | Combosquatting (Keywords)       |             |
 
 
 
 ## Information
 
-| ID | Name   | Description  | 
-|----|------------|-------------|
-|    |   |         |    
-|    |    |           |   
-|    |    |         |   
+| ID | Name   | Description | 
+|----|--------|-------------|
+|    |        |             |    
+|    |        |             |   
+|    |        |             |   
 
-* **IDNA**  Show international domain name (Default)
-* **MX**    Checking for DNS's MX records
-* **TXT**   Checking for DNS's TXT records
-* **IP**    Checking for IP address
-* **NS**    Checks DNS NS records
-* **CNAME** Checks DNS CNAME records
-* **SIM**   Show domain similarity % using fuzzy hashing with ssdeep
-* **LIVE**  Show domains with IP addresses only
-* **301**   Show domains redirects
-* **GEO**   Show country location of IP address
 
 ## Information Gathering
 
@@ -153,10 +135,6 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 | HTTP/SMTP Banner                    | |
 
 
-DNS TXT records (Text Records) are a type of DNS record used to store arbitrary text data associated with a domain. Originally intended for descriptive text, they’re now widely used for various purposes, including domain verification, email authentication, and configuration data. TXT records allow domain owners to associate key-value data with their domain, which can be retrieved by external systems for verification and configuration purposes.
-
-DNS MX records (Mail Exchange records) are a type of DNS record used to route email from a domain to designated mail servers. They help direct emails sent to a domain (e.g., user@example.com) to the correct mail servers that handle receiving and processing the email.
-
 
 
 ## Outputs
@@ -172,9 +150,9 @@ DNS MX records (Mail Exchange records) are a type of DNS record used to route em
 
 ## Database
 
-| Name   | Description  | 
+| Name   | Description | 
 |--------|-------------|
-| Badger |         |    
+| Badger |             |    
 
 
 
