@@ -4,36 +4,42 @@
 
 Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage, supply chain attacks, and threat intelligence. It's a command-line tool for detecting typosquatting across domains, usernames, and software packages. It scans for potential typosquatting variants by applying advanced typo squatting algorithms, information gathering, and data analysis.  It identifies potentially harmful variations of a victim's domain name, arbitrary names, and software packages that cybercriminals might exploit. 
 
+It's inspired by [URLCrazy](https://morningstarsecurity.com/research/urlcrazy), [Dnstwist](https://github.com/elceef/dnstwist), and about 8 others I was researching at the time.
 
 
 ## Targets
 
-|   Type   | Decscription |
-|----------|--------|
-| Email    | Generating variations email usernames  |
-| Domains  | Domain-specific typosquatting variants and information gathering  |
-| Usernames| Finding variants of usernames online or on a specific site |
-| Packages | Finding opensource software packages or libraries and variants |
-
-# Domain 
+ Urlinsane supports typo generation and information collection for **Domains**, **Emails**, **Usernames**, and software **Packages**.
+## Domain 
 
 ```bash
 urlinsane typo -d example.com 
 ```
 
-Email 
+## Email 
 ```bash
 urlinsane typo -e username@example.com 
 ```
 
-Username 
+## Username 
+
 ```bash
-urlinsane typo -n username 
+urlinsane typo -n urlinsane -u https://github.com/rangertaha/urlinsane
 ```
 
-Packages 
 ```bash
-urlinsane typo -g express
+urlinsane typo -n urlinsane -u https://github.com/rangertaha/urlinsane
+```
+
+## Packages 
+
+```bash
+urlinsane typo -g express -u https://www.npmjs.com/package/express
+```
+
+
+```bash
+urlinsane typo -g express -u https://www.npmjs.com/package/express
 ```
 
 
@@ -82,6 +88,20 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 | Persian   |    1      |           |            |           |              |   |   |   |    | 
 
 ### Keyboards
+
+| Arabic | Armenian | English  | Finnish | Russian   | Spanish | Hebrew | Persian | 
+|--------|----------|----------|---------|-----------|---------|--------|---------|
+|        |          |          |         |           |         |        |         |
+|        |          |          |         |           |         |        |         |   
+|        |          |          |         |           |         |        |         |  
+|        |          |          |         |           |         |        |         |
+|        |          |          |         |           |         |        |         | 
+|        |          |          |         |           |         |        |         |  
+|        |          |          |         |           |         |        |         | 
+|        |          |          |         |           |         |        |         | 
+
+
+
 ### Homoglyphs
 ### Homophones
 ### Antonyms
@@ -96,12 +116,6 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 ## Algorithms
 
-| ID | Name       | Description | 
-|----|------------|-------------|
-|    |            |             |    
-|    |            |             |   
-|    |            |             |   
-
 
 | ID | Name                         | Description |
 |----|------------------------------|-------------|
@@ -109,54 +123,46 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 |    | Missing Dashes               |             |
 |    | Strip Dashes                 |             |
 |    | Character Omission           |             |
-| | Character Swap                  |             |
-| | Adjacent Character Substitution |             |
-| | Adjacent Character Insertion    |             |
-| | Homoglyphs                      |             |
-| | Singular Pluralise              |             |
-| | Character Repeat                |             |
-| | Double Character Replacement    |             |
-| | Common Misspellings             |             |
-| | Homophones                      |             |
-| | Vowel Swapping                  |             |
-| | Bitsquatting                    |             |
-| | Wrong Top Level Domain          |             | 
-| | Wrong Second Level Domain       |             | 
-| | Wrong Third Level Domain        |             |
-| | Ordinal Number Swap             |             |
-| | Cardinal Number Swap            |             |
-| | Hyphenation                     |             | 
-| | Multithreaded Algorithms        |             |   
-| | Subdomain insertion             |             |
-| | Period Insertion                |             | 
-| | Combosquatting (Keywords)       |             |
+|    | Character Swap                  |             |
+|    | Adjacent Character Substitution |             |
+|    | Adjacent Character Insertion    |             |
+|    | Homoglyphs                      |             |
+|    | Singular Pluralise              |             |
+|    | Character Repeat                |             |
+|    | Double Character Replacement    |             |
+|    | Common Misspellings             |             |
+|    | Homophones                      |             |
+|    | Vowel Swapping                  |             |
+|    | Bitsquatting                    |             |
+|    | Wrong Top Level Domain          |             | 
+|    | Wrong Second Level Domain       |             | 
+|    | Wrong Third Level Domain        |             |
+|    | Ordinal Number Swap             |             |
+|    | Cardinal Number Swap            |             |
+|    | Hyphenation                     |             | 
+|    | Multithreaded Algorithms        |             |   
+|    | Subdomain insertion             |             |
+|    | Period Insertion                |             | 
+|    | Combosquatting (Keywords)       |             |
 
 
 
 ## Information
 
-| ID | Name   | Description | 
-|----|--------|-------------|
-|    |        |             |    
-|    |        |             |   
-|    |        |             |   
 
-
-## Information Gathering
-
-|  Name             | Description  |
-|-------------------|--------------|
-| DNS A Records     | Retrieving IPv4 and IPv6 IP host addresses |
-| DNS MX Records    | Retrieving Mail Exchange (MX) records|
-| DNS TXT Records   | Retrieving TXT records storing arbitrary data associated with a domain |
-| DNS AAAA Records  | |
-| DNS CName Records | |
-| DNS NS Records    | Checks DNS NS records |
-| Geographic Info   | Show country location of IP address|
-| Domain Similarity | Show domain similarity % using fuzzy hashing with ssdeep|
-| Domain Redirects  | Show domains redirects |
-| IDNA Format       | Show international domain name (Default) |
-| HTTP/SMTP Banner  | |
+| ID |  Name             | Description  |
+|----|-------------------|--------------|
+|    | DNS A Records     | Retrieving IPv4 and IPv6 IP host addresses |
+|    | DNS MX Records    | Retrieving Mail Exchange (MX) records|
+|    | DNS TXT Records   | Retrieving TXT records storing arbitrary data associated with a domain |
+|    | DNS AAAA Records  | |
+|    | DNS CName Records | |
+|    | DNS NS Records    | Checks DNS NS records |
+|    | Geographic Info   | Show country location of IP address|
+|    | Domain Similarity | Show domain similarity % using fuzzy hashing with ssdeep|
+|    | Domain Redirects  | Show domains redirects |
+|    | IDNA Format       | Show international domain name (Default) |
+|    | HTTP/SMTP Banner  | |
 
 
 
@@ -184,19 +190,13 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 
 
+# Performance
 
 
 
 
 
-### Speed
 
-| **Tool**   | google.com  | facebook.com  | youtube.com   | amazon.com | amazon4you.com |
-|------------|-------------|---------------|---------------|------------|----------------|
-| URLInsane  |             |               |               |            |                |
-| URLCrazy   |             |               |               |            |                |
-| DNSTwist   |             |               |               |            |                |
-| DomainFuzz |             |               |               |            |                |
 
 ## Authors
 
