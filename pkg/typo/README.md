@@ -14,7 +14,7 @@ each letter.
 
 Character swapping takes advantage of the fact that minor typographical errors 
 often go unnoticed. By switching two adjacent characters, attackers create 
-domains that look nearly identical to the intended site but are just different 
+domains that look nearly identical to the intended site but are different 
 enough to lead users to a fake or malicious site. Example:
 
     examlpe.com (swapping "l" and "p")
@@ -56,7 +56,7 @@ Adjacent Character Insertion typos involve adding characters adjacent to each le
 
 ## (hi) Hyphen Insertion
 
-Hyphen Insertion typos add hyphens at different points in a domain name to create variations.
+Hyphen Insertion typos add hyphens in a domain name at different points to create variations.
 
     Examples: -example, e-xample, ex-ample, exa-mple, exam-ple, examp-le, example-
 
@@ -142,7 +142,7 @@ Vowel Swapping replaces vowels in the domain name with other vowels to create va
 
 ## (hs) Homophone Substitution
 
-Substitutes words that sound the same but have different spellings.
+Substitute words that sound the same but have different spellings.
 
     Examples: base.com becomes bass.com, site.com might become sight.com
 
@@ -178,7 +178,7 @@ Bit Flipping is a low-level manipulation where individual bits in the binary rep
 
 ## (cns) Cardinal Numeral Substitution
 
-Substitution letters with those that look similar in specific fonts, such as "1" and "l" or "0" and "O".
+Substitute letters with those that look similar in specific fonts, such as "1" and "l" or "0" and "O".
 
     Example: google.com might become goog1e.com
 
@@ -215,8 +215,8 @@ with the adjacent character on a QWERTY keyboard.
 
 ## AdjacentCharacterInsertion
 
-Adjacent character insertion typos occur when characters adjacent of each
-letter are inserted. For example, www.googhle.com inserts "h" next to it's
+Adjacent character insertion typos occur when characters adjacent to each
+letter are inserted. For example, www.googhle.com inserts "h" next to its
 adjacent character "g" on a QWERTY keyboard.
 
 
@@ -286,7 +286,7 @@ For google: "gogle", "gogle", "googe", "googl", "goole", "oogle",
 
 
 The technique of creating typosquatting domains by switching between singular
-and plural forms of words is often referred to as Singular-Plural Substitution
+and plural forms of words are often referred to as Singular-Plural Substitution
 or Singular-Plural Manipulation.
 
 ## SingularPluraliseSubstitution
@@ -323,7 +323,7 @@ For example, www.base.com becomes www .bass.com.
 ## HomoglyphSwapping
 Homoglyph swapping is a technique where visually similar characters, called
 homoglyphs, are swapped for one another in text. These characters look alike
-but are actually different in code, often coming from different alphabets
+but are different in code, often coming from different alphabets
 or character sets. For example, an attacker might replace the letter "o" with
 the Cyrillic letter "о" (which looks nearly identical) in a URL or word. This
 can trick people into clicking a fraudulent link or misreading text.
