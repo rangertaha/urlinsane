@@ -12,50 +12,46 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package wi
-
-// func whoisLookupFunc(tr Result) (results []Result) {
-// 	return
-// }
+package dhus
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/information"
+	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 const (
-	CODE        = "wi"
-	NAME        = "Whois"
-	DESCRIPTION = "Whois database search"
+	CODE        = "dhus"
+	NAME        = "Dot Hyphen Underscore Sub"
+	DESCRIPTION = "Omitting a character from the name"
 )
 
-type None struct {
-	types []string
-}
+type Algo struct{}
 
-func (n *None) Id() string {
+func (n *Algo) Id() string {
 	return CODE
 }
 
-func (n *None) Name() string {
+func (n *Algo) Name() string {
 	return NAME
 }
-func (n *None) Description() string {
+func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *None) Headers() []string {
-	return []string{"WHOIS"}
-}
-
-func (n *None) Exec(in internal.Typo) (out internal.Typo) {
-	in.Variant().Add("WHOIS", "11safasdfafd1111")
-	return in
+func (n *Algo) Package(typo internal.Typo) (typos []internal.Typo) {
+	name := typo.Original().Name()
+	for _, variant := range algo.CharacterOmission(name) {
+		if name != variant {
+			typos = append(typos, typo.Clone(variant))
+		}
+	}
+	return
 }
 
 // Register the plugin
 func init() {
-	information.Add(CODE, func() internal.Information {
-		return &None{}
+	algorithms.Add(CODE, func() internal.Algorithm {
+		return &Algo{}
 	})
 }

@@ -186,7 +186,7 @@ func init() {
 	// rootCmd.PersistentFlags().StringArrayP("info", "i", []string{"all"}, "IDs of info gathering functions to apply")
 
 	// Processing
-	rootCmd.PersistentFlags().Bool("no-cache", true, "Prevents caching of results")
+	rootCmd.PersistentFlags().Bool("no-cache", false, "Prevents caching of results")
 	rootCmd.PersistentFlags().Bool("online", false, "Only show domains that are online")
 
 	// Timing

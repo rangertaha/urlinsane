@@ -182,7 +182,7 @@ Substitute letters with those that look similar in specific fonts, such as "1" a
 
     Example: google.com might become goog1e.com
 
-## Ordinal Numeral Substitution
+## (ons) Ordinal Numeral Substitution
 
 Ordinal Swapping involves rearranging letters within the domain to form typos.
 
@@ -190,8 +190,12 @@ Ordinal Swapping involves rearranging letters within the domain to form typos.
 
 These techniques help attackers create URLs that look legitimate, making it easier to deceive users and conduct phishing attacks.
 
+## (dh) DHSubstitution   
+Dot Hyphen Substitution
 
 
+## (dhu) DHUSubstitution  Dot Hyphen Underscore Substitution 
+These typos are created by changing a dot to a dash.
 
 
 

@@ -4,7 +4,7 @@
 
 Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage, supply chain attacks, and threat intelligence. It's a command-line tool for detecting typosquatting across domains, usernames, and software packages. It scans for potential typosquatting variants by applying advanced typo squatting algorithms, information gathering, and data analysis.  It identifies potentially harmful variations of a victim's domain name, arbitrary names, and software packages that cybercriminals might exploit. 
 
-It's inspired by [URLCrazy](https://morningstarsecurity.com/research/urlcrazy), [Dnstwist](https://github.com/elceef/dnstwist), and about 8 others I was researching at the time.
+It's inspired by [URLCrazy](https://morningstarsecurity.com/research/urlcrazy), [Dnstwist](https://github.com/elceef/dnstwist), [DomainFuzz](https://github.com/monkeym4ster/DomainFuzz) and a few other libraries and tools I was researching at the time.
 
 
 ## Targets
@@ -86,7 +86,7 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 | Hebrew    |    1      |           |            |           |              |   |   |   |    | 
 | Persian   |    1      |           |            |           |              |   |   |   |    | 
 
-### Keyboards
+### Keyboard Layouts
 
 | Arabic | Armenian | English  | Finnish | Russian   | Spanish | Hebrew | Persian | 
 |--------|----------|----------|---------|-----------|---------|--------|---------|
@@ -189,7 +189,9 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 
 
-# Performance
+# Other Tools
+
+
 
 
 

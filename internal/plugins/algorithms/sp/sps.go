@@ -12,19 +12,21 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package hd
+package sp
 
-// AlgoesFunc typos are created by omitting a dot from the domain.
-// For example, www.a-b-c.com becomes www.abc.com
-// func AlgoesFunc(tc Result) (results []Result) {
-// 	for _, str := range replaceCharFunc(tc.Original.Domain, "-", "") {
-// 		if tc.Original.Domain != str {
-// 			dm := Domain{tc.Original.Subdomain, str, tc.Original.Suffix, Meta{}, false}
-// 			results = append(results, Result{Original: tc.Original, Variant: dm, Typo: tc.Typo, Data: tc.Data})
-// 		}
-// 	}
-// 	return
-// }
+// Adjacent character substitution is where an attacker swaps characters
+// that are next to each other on a keyboard.
+
+// For example, if a user intends to visit "example.com," a typo-squatter
+// might register "exampel.com" or "exmaple.com." These small alterations
+// can trick users into clicking on the malicious sites, leading to phishing
+// scams, malware downloads, or other harmful activities.
+
+// Adjacent character substitution exploits common typing errors, making it a
+// particularly effective tactic, as users may not notice the difference,
+// especially if they are typing quickly. It highlights the importance of
+// vigilance and cybersecurity measures to protect against such deceptive
+// practices.
 
 import (
 	"fmt"
@@ -32,12 +34,13 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 const (
-	CODE        = "hd"
-	NAME        = "Hyphen Deletion"
-	DESCRIPTION = "Created by omitting a single hyphen from the name"
+	CODE        = "sps"
+	NAME        = "Singular Pluralise Substitution"
+	DESCRIPTION = "Singular-Plural Substitution is when singular forms of words are swapped for plural forms"
 )
 
 type Algo struct {
@@ -77,13 +80,10 @@ func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
 
 func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
-
-	for _, variant := range n.Func(prefix) {
+	for _, variant := range algo.SingularPluraliseSubstitution(prefix) {
 		if prefix != variant {
 			d := domain.New(sub, variant, suffix)
-
 			new := typo.Clone(d.String())
-
 			typos = append(typos, new)
 		}
 	}
@@ -92,37 +92,23 @@ func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 
 func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
-
-	for _, variant := range n.Func(username) {
-		if username != variant {
-			new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
-
-			typos = append(typos, new)
+		for _, variant := range algo.SingularPluraliseSubstitution(username) {
+			if username != variant {
+				new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
+				typos = append(typos, new)
+			}
 		}
-	}
 	return
 }
 
 func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
-	original := n.config.Target().Name()
-	for _, variant := range n.Func(original) {
-		if original != variant {
-			typos = append(typos, typo.Clone(variant))
-		}
-	}
-	return
-}
-
-func (n *Algo) Func(original string) (results []string) {
-	for i, char := range original {
-		for _, board := range n.keyboards {
-			for _, kchar := range board.Adjacent(string(char)) {
-				variant := fmt.Sprint(original[:i], kchar, original[i+1:])
-				results = append(results, variant)
+	name := n.config.Target().Name()
+		for _, variant := range algo.SingularPluraliseSubstitution(name) {
+			if name != variant {
+				typos = append(typos, typo.Clone(variant))
 			}
 		}
-	}
-	return results
+	return
 }
 
 // Register the plugin

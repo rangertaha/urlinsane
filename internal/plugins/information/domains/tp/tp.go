@@ -18,11 +18,14 @@ package tp
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	"github.com/rangertaha/urlinsane/internal/plugins/information"
 )
 
-const CODE = "tp"
+const (
+	CODE        = "tp"
+	NAME        = "Topics"
+	DESCRIPTION = "Topics associated with the name"
+)
 
 type None struct {
 	types []string
@@ -33,15 +36,11 @@ func (n *None) Id() string {
 }
 
 func (n *None) Name() string {
-	return "Topics"
-}
-
-func (n *None) IsType(str string) bool {
-	return algorithms.IsType(n.types, str)
+	return NAME
 }
 
 func (n *None) Description() string {
-	return "Topics associated with the name"
+	return DESCRIPTION
 }
 
 func (n *None) Headers() []string {
@@ -56,8 +55,6 @@ func (n *None) Exec(in internal.Typo) (out internal.Typo) {
 // Register the plugin
 func init() {
 	information.Add(CODE, func() internal.Information {
-		return &None{
-			types: []string{internal.ENTITY, internal.DOMAIN},
-		}
+		return &None{}
 	})
 }

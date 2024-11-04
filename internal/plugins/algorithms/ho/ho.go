@@ -35,7 +35,7 @@ import (
 const (
 	CODE        = "ho"
 	NAME        = "Hyphen Omission"
-	DESCRIPTION = "Created by stripping all hyphens from the name"
+	DESCRIPTION = "Created by removing hyphens from the name"
 )
 
 type Algo struct {
