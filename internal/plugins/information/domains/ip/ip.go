@@ -22,11 +22,14 @@ package ip
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	"github.com/rangertaha/urlinsane/internal/plugins/information"
 )
 
-const CODE = "ip"
+const (
+	CODE        = "ip"
+	NAME        = "Ip Address"
+	DESCRIPTION = "Domain IP addresses"
+)
 
 type Ipaddr struct {
 	types []string
@@ -36,21 +39,13 @@ func (n *Ipaddr) Id() string {
 	return CODE
 }
 
-func (n *Ipaddr) IsType(str string) bool {
-	return algorithms.IsType(n.types, str)
-}
-
 func (n *Ipaddr) Name() string {
-	return "Ip Address"
+	return NAME
 }
 
 func (n *Ipaddr) Description() string {
-	return "Domain IP addresses"
+	return DESCRIPTION
 }
-
-// func (n *Ipaddr) Fields() []string {
-// 	return []string{}
-// }
 
 func (n *Ipaddr) Headers() []string {
 	return []string{"Online", "IPv4", "IPv6"}
@@ -68,8 +63,6 @@ func (n *Ipaddr) Exec(in internal.Typo) (out internal.Typo) {
 // Register the plugin
 func init() {
 	information.Add(CODE, func() internal.Information {
-		return &Ipaddr{
-			types: []string{internal.DOMAIN},
-		}
+		return &Ipaddr{}
 	})
 }

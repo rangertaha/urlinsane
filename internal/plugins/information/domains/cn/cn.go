@@ -14,25 +14,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package cn
 
-// // cnameLookupFunc
-// func cnameLookupFunc(tr Result) (results []Result) {
-// 	records, _ := net.LookupCNAME(tr.Variant.String())
-// 	// tr.Variant.Meta.DNS.CName = records
-// 	for _, record := range records {
-// 		tr.Data["CNAME"] = strings.TrimSuffix(string(record), ".")
-// 		tr.Variant.Meta.DNS.CName = append(tr.Variant.Meta.DNS.CName, string(record))
-// 	}
-// 	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Data: tr.Data})
-// 	return
-// }
-
 import (
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	"github.com/rangertaha/urlinsane/internal/plugins/information"
 )
 
-const CODE = "cn"
+const (
+	CODE        = "cn"
+	NAME        = "CNAME"
+	DESCRIPTION = "Retrieve CNAME DNS records"
+)
 
 type None struct {
 	types []string
@@ -43,27 +34,21 @@ func (n *None) Id() string {
 }
 
 func (n *None) Name() string {
-	return "CNAME"
-}
-
-func (n *None) IsType(str string) bool {
-	return algorithms.IsType(n.types, str)
+	return NAME
 }
 
 func (n *None) Description() string {
-	return "DNS CNAME record"
-}
-
-func (n *None) Fields() []string {
-	return []string{}
+	return DESCRIPTION
 }
 
 func (n *None) Headers() []string {
-	return []string{"CNAME"}
+	return []string{"CNAME", "OLLSD", "LALCOM"}
 }
 
 func (n *None) Exec(in internal.Typo) (out internal.Typo) {
 	in.Variant().Add("CNAME", 111111)
+	in.Variant().Add("OLLSD", 444444444444)
+	in.Variant().Add("LALCOM", 1115555555555111)
 	in.Variant().Add("JSON", []string{"one", "two"})
 	return in
 }
@@ -71,8 +56,6 @@ func (n *None) Exec(in internal.Typo) (out internal.Typo) {
 // Register the plugin
 func init() {
 	information.Add(CODE, func() internal.Information {
-		return &None{
-			types: []string{internal.ENTITY, internal.DOMAIN},
-		}
+		return &None{}
 	})
 }

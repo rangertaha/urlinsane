@@ -12,12 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package md
-
-// Missing Dot
-//
-// Created by omitting one dot at a time from the domain, For example
-//
+package dhs
 
 import (
 	"fmt"
@@ -25,36 +20,19 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 const (
-	CODE        = "md"
-	NAME        = "Missing Dot"
-	DESCRIPTION = "Created by omitting a dot from the name"
+	CODE        = "dh"
+	NAME        = "Dot Hyphen Substitution"
+	DESCRIPTION = "Dot hyphen substitution"
 )
 
-type Algo struct {
-	config    internal.Config
-	languages []internal.Language
-	keyboards []internal.Keyboard
-	funcs     map[int]func(internal.Typo) []internal.Typo
-}
+type Algo struct{}
 
 func (n *Algo) Id() string {
 	return CODE
-}
-
-func (n *Algo) Init(conf internal.Config) {
-	n.funcs = make(map[int]func(internal.Typo) []internal.Typo)
-	n.keyboards = conf.Keyboards()
-	n.languages = conf.Languages()
-	n.config = conf
-
-	// Supported targets
-	n.funcs[internal.DOMAIN] = n.domain
-	n.funcs[internal.PACKAGE] = n.name
-	n.funcs[internal.EMAIL] = n.email
-	n.funcs[internal.NAME] = n.name
 }
 
 func (n *Algo) Name() string {
@@ -64,29 +42,21 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
-	return n.funcs[n.config.Type()](typo)
-}
-
-func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
+func (n *Algo) Domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
-
-	for _, variant := range n.Func(prefix, ".") {
+	for _, variant := range algo.DotHyphenSubstitution(prefix) {
 		if prefix != variant {
 			d := domain.New(sub, variant, suffix)
-
 			new := typo.Clone(d.String())
-
 			typos = append(typos, new)
 		}
 	}
 	return
 }
 
-func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
+func (n *Algo) Email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
-
-	for _, variant := range n.Func(username, ".") {
+	for _, variant := range algo.DotHyphenSubstitution(username) {
 		if username != variant {
 			new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
 
@@ -95,23 +65,21 @@ func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	}
 	return
 }
-
-func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
-	original := n.config.Target().Name()
-	for _, variant := range n.Func(original, ".") {
-		if original != variant {
+func (n *Algo) Username(typo internal.Typo) (typos []internal.Typo) {
+	name := typo.Original().Name()
+	for _, variant := range algo.DotHyphenSubstitution(name) {
+		if name != variant {
 			typos = append(typos, typo.Clone(variant))
 		}
 	}
 	return
 }
 
-// Func removes a character one at a time from the string.
-// For example, wwwgoogle.com and www.googlecom
-func (n *Algo) Func(str, character string) (results []string) {
-	for i, char := range str {
-		if character == string(char) {
-			results = append(results, str[:i]+str[i+1:])
+func (n *Algo) Package(typo internal.Typo) (typos []internal.Typo) {
+	name := typo.Original().Name()
+	for _, variant := range algo.DotHyphenSubstitution(name) {
+		if name != variant {
+			typos = append(typos, typo.Clone(variant))
 		}
 	}
 	return

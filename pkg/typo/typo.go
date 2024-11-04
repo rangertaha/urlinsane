@@ -21,7 +21,6 @@ import (
 	"github.com/rangertaha/urlinsane/pkg/nlp"
 )
 
-
 func PrefixInsertion(name string, prefixes ...string) (names []string) {
 	for _, prefix := range prefixes {
 		names = append(names, prefix+name)
@@ -43,7 +42,6 @@ func SuffixInsertion(name string, suffixes ...string) (names []string) {
 // func TldInsertion(subdomains []string, name string) (names []string) {
 // 	return PrefixInsertion(name, subdomains...)
 // }
-
 
 // characterSwapFunc typos are when two consecutive characters are swapped in the original domain name.
 // Example: www.examlpe.com
@@ -519,6 +517,20 @@ func SimilarSounds(str string, data ...[]string) (words []string) {
 			}
 		}
 	}
+	return
+}
+
+// DHUSubstitution substitutes (.-_) in a given name to produce variants that
+// look similar. Primarily used in package names
+func DHUSubstitution(name string) (variations []string) {
+
+	return
+}
+
+// DotHyphenSubstitution substitutes (.-) in a given name to produce variants that
+// look similar.
+func DotHyphenSubstitution(name string) (variations []string) {
+
 	return
 }
 

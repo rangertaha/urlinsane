@@ -49,7 +49,7 @@ func (n *Text) Init(conf internal.Config) {
 	n.table = table.NewWriter()
 
 	if width, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil {
-		n.table.SetAllowedRowLength(width)
+		n.table.SetAllowedRowLength(width - 4)
 	}
 
 	n.table.SetOutputMirror(os.Stdout)

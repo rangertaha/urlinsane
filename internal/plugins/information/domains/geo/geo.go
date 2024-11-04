@@ -14,37 +14,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package geo
 
-// // geoIPLookupFunc
-// func geoIPLookupFunc(tr Result) (results []Result) {
-// 	tr = checkIP(tr)
-// 	if tr.Variant.Live {
-// 		_, ok := tr.Data["IPv4"]
-// 		if ok {
-// 			for _, ip4 := range tr.Variant.Meta.DNS.IPv4 {
-// 				if ip4 != "" {
-// 					record, _ := geoLib.GeoIP(ip4)
-// 					// if err != nil {
-// 					// 	fmt.Print(err)
-// 					// }
-// 					tr.Data["GEO"] = fmt.Sprint(record.Country.Names["en"])
-// 					tr.Variant.Meta.Geo = *record
-// 				}
-// 			}
-// 		}
-// 	}
-
-// 	// If you are using strings that may be invalid, check that ip is not nil
-// 	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Data: tr.Data})
-// 	return
-// }
-
 import (
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	"github.com/rangertaha/urlinsane/internal/plugins/information"
 )
 
-const CODE = "geo"
+const (
+	CODE        = "geo"
+	NAME        = "GEOIP Lookup"
+	DESCRIPTION = "Retrieves Location of IP addresses"
+)
 
 type None struct {
 	types []string
@@ -55,19 +34,11 @@ func (n *None) Id() string {
 }
 
 func (n *None) Name() string {
-	return "None"
-}
-
-func (n *None) IsType(str string) bool {
-	return algorithms.IsType(n.types, str)
+	return NAME
 }
 
 func (n *None) Description() string {
-	return "Nothing"
-}
-
-func (n *None) Fields() []string {
-	return []string{}
+	return DESCRIPTION
 }
 
 func (n *None) Headers() []string {
@@ -82,8 +53,6 @@ func (n *None) Exec(in internal.Typo) (out internal.Typo) {
 // Register the plugin
 func init() {
 	information.Add(CODE, func() internal.Information {
-		return &None{
-			types: []string{internal.ENTITY, internal.DOMAIN},
-		}
+		return &None{}
 	})
 }

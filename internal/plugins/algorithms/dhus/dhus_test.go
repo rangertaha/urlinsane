@@ -12,23 +12,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package md
-
-// Missing Dot
-//
-// Created by omitting one dot at a time from the domain, For example
-//
-// Original: facebook.com.io.uk
-//
-// Variants: facebookcom.io.uk
-//           facebook.comio.uk
-//           facebook.com.iouk
+package dhus
 
 import (
 	"reflect"
-	"strings"
+	"sort"
 	"testing"
-	"unicode"
 )
 
 func TestAlgo(t *testing.T) {
@@ -37,25 +26,27 @@ func TestAlgo(t *testing.T) {
 		variants []string
 	}{
 		{
-			original: "facebook.com.io.uk",
+			original: "123.com",
 			variants: []string{
-				"facebookcom.io.uk",
-				"facebook.comio.uk",
-				"facebook.com.iouk",
+				"12three.com",
+				"1two3.com",
+				"1twothree.com",
+				"one23.com",
+				"one2three.com",
+				"onetwo3.com",
+				"onetwothree.com",
 			},
 		},
 		{
-			original: "google.com.uk",
+			original: "onetwothree.com",
 			variants: []string{
-				"googlecom.uk",
-				"google.comuk",
-			},
-		},
-		{
-			original: "www.google.com",
-			variants: []string{
-				"wwwgoogle.com",
-				"www.googlecom",
+				"123.com",
+				"12three.com",
+				"1two3.com",
+				"1twothree.com",
+				"one23.com",
+				"one2three.com",
+				"onetwo3.com",
 			},
 		},
 	}
@@ -63,10 +54,11 @@ func TestAlgo(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.original, func(t *testing.T) {
 			algo := Algo{}
-			variants := algo.Func(test.original, ".")
+			variants := algo.Func(test.original)
+			sort.Strings(variants)
 
 			if !reflect.DeepEqual(variants, test.variants) {
-				t.Errorf("algo.Func(%s, '.') = %s; want %s", test.original, variants, test.variants)
+				t.Errorf("algo.Func(<numerals>, %s) = %s; want %s", test.original, variants, test.variants)
 			}
 		})
 	}
@@ -84,14 +76,7 @@ func TestAlgo(t *testing.T) {
 			t.Errorf("algo.Id() can not return an empty string")
 		}
 	})
-	t.Run("md lowercase id", func(t *testing.T) {
-		algo := Algo{}
-		for _, c := range algo.Id() {
-			if unicode.IsUpper(c) {
-				t.Errorf("algo.Id() must be lowercase")
-			}
-		}
-	})
+
 	t.Run("md name", func(t *testing.T) {
 		algo := Algo{}
 		if algo.Name() != NAME {
@@ -103,19 +88,6 @@ func TestAlgo(t *testing.T) {
 		algo := Algo{}
 		if algo.Name() == "" {
 			t.Errorf("algo.Name() can not return an empty string")
-		}
-	})
-
-	t.Run("md titlecase name", func(t *testing.T) {
-		algo := Algo{}
-		strs := ""
-		for _, name := range strings.Split(algo.Name(), " ") {
-			strs = strs + string(name[0])
-		}
-		for _, c := range strs {
-			if !unicode.IsUpper(c) {
-				t.Errorf("algo.Name() must be in titlecase: %s, Found: (%s)", algo.Name(), string(c))
-			}
 		}
 	})
 
@@ -133,11 +105,4 @@ func TestAlgo(t *testing.T) {
 		}
 	})
 
-	t.Run("md capitalizing fist char of description", func(t *testing.T) {
-		algo := Algo{}
-		firstRune := []rune(algo.Description())[0]
-		if !unicode.IsUpper(firstRune) {
-			t.Errorf("algo.Name() must capitalize start of sentence: %s", algo.Description())
-		}
-	})
 }

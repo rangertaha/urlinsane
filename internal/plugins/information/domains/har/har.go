@@ -16,11 +16,14 @@ package har
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	"github.com/rangertaha/urlinsane/internal/plugins/information"
 )
 
-const CODE = "har"
+const (
+	CODE        = "har"
+	NAME        = "HAR Browser Contents"
+	DESCRIPTION = "Retrieves HAR Browser Contents"
+)
 
 type None struct {
 	types []string
@@ -31,19 +34,11 @@ func (n *None) Id() string {
 }
 
 func (n *None) Name() string {
-	return "None"
-}
-
-func (n *None) IsType(str string) bool {
-	return algorithms.IsType(n.types, str)
+	return NAME
 }
 
 func (n *None) Description() string {
-	return "Nothing"
-}
-
-func (n *None) Fields() []string {
-	return []string{}
+	return DESCRIPTION
 }
 
 func (n *None) Headers() []string {
@@ -58,8 +53,6 @@ func (n *None) Exec(in internal.Typo) (out internal.Typo) {
 // Register the plugin
 func init() {
 	information.Add(CODE, func() internal.Information {
-		return &None{
-			types: []string{internal.ENTITY, internal.DOMAIN},
-		}
+		return &None{}
 	})
 }
