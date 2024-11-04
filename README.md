@@ -10,7 +10,7 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 
 |   Type   | Decscription |
 |----------|--------|
-| Eamil    | Generating variantions email usernames  |
+| Email    | Generating variations email usernames  |
 | Domains  | Domain-specific typosquatting variants and information gathering  |
 | Usernames| Finding variants of usernames online or on a specific site |
 | Packages | Finding opensource software packages or libraries and variants |
