@@ -173,8 +173,8 @@ func init() {
 	typoCmd.MarkFlagsMutuallyExclusive("domain", "name", "pkg", "email")
 
 	// Filtering
-	// typoCmd.Flags().Bool("live", true, "Only show registered/live targets")
-	typoCmd.Flags().Bool("all", false, "Show all variants not in use")
+	typoCmd.Flags().Bool("all", false, "Scan all variants equivalent to: --ld 100")
+	typoCmd.Flags().Bool("show", false, "Show all variants not in use")
 	typoCmd.Flags().Int("ld", 3, "Minimum levenshtein distance between names")
 
 }
