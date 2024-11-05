@@ -7,6 +7,7 @@ Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hi
 It's inspired by [URLCrazy](https://morningstarsecurity.com/research/urlcrazy), [Dnstwist](https://github.com/elceef/dnstwist), [DomainFuzz](https://github.com/monkeym4ster/DomainFuzz) and a few other libraries and tools I was researching at the time.
 
 
+
 ## Targets
 
  Urlinsane supports typo generation and information collection for **Domains**, **Emails**, **Usernames**, and software **Packages**.
