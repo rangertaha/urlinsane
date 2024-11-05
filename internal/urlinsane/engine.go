@@ -38,71 +38,75 @@ type (
 		progress *progressbar.ProgressBar
 
 		// Metrics
-		total     int64
-		online    int64
-		filtered  int64
-		duplicate int64
-		processed int64
+		total    int64
+		online   int64
+		filtered int64
+		scanned  int64
 	}
 )
-
-// func init() {
-// 	// Log as JSON instead of the default ASCII formatter.
-// 	// log.SetFormatter(&log.JSONFormatter{})
-
-// 	// Output to stdout instead of the default stderr
-// 	// Can be any io.Writer, see below for File example
-// 	logrus.SetOutput(os.Stdout)
-
-// 	// Only log the warning severity or above.
-// 	logrus.SetLevel(logrus.DebugLevel)
-
-// 	// contextLogger := log.WithFields(log.Fields{
-// 	// 	"common": "this is a common field",
-// 	// 	"other": "I also should be logged always",
-// 	//   })
-
-// }
 
 // NewUrlinsane ...
 func New(conf config.Config) (u Urlinsane) {
 	return Urlinsane{
-		total:     0,
-		online:    0,
-		filtered:  0,
-		duplicate: 0,
-		processed: 0,
-		Config:    conf,
-		Typos:     make(map[string]internal.Typo),
-		progress:  progressbar.DefaultSilent(0),
+		total:    0,
+		online:   0,
+		filtered: 0,
+		scanned:  0,
+		Config:   conf,
+		Typos:    make(map[string]internal.Typo),
+		progress: progressbar.DefaultSilent(0),
 	}
 }
 
 // Init
-func (u *Urlinsane) Init() {
+func (u *Urlinsane) Init() <-chan internal.Typo {
 	internal.Banner()
-}
-
-// GenOptions typo config options
-func (t *Urlinsane) Start() <-chan internal.Typo {
 	out := make(chan internal.Typo)
 	go func() {
 		// Initialize information plugins if needed
-		for _, info := range t.Config.Information() {
+		for _, info := range u.Config.Information() {
 			if inf, ok := info.(internal.Initializer); ok {
-				inf.Init(&t.Config)
+				inf.Init(&u.Config)
 			}
 		}
-		for _, algorithm := range t.Config.Algorithms() {
+		for _, algorithm := range u.Config.Algorithms() {
 
 			// Initialize algorithm plugins if needed
 			if al, ok := algorithm.(internal.Initializer); ok {
-				al.Init(&t.Config)
+				al.Init(&u.Config)
 			}
 
 			out <- &Typo{
 				algorithm: algorithm,
-				original:  t.Config.Target(),
+				original:  u.Config.Target(),
+				variant:   &target.Target{},
+			}
+		}
+		close(out)
+	}()
+	return out
+}
+
+// GenOptions typo config options
+func (u *Urlinsane) Start() <-chan internal.Typo {
+	out := make(chan internal.Typo)
+	go func() {
+		// Initialize information plugins if needed
+		for _, info := range u.Config.Information() {
+			if inf, ok := info.(internal.Initializer); ok {
+				inf.Init(&u.Config)
+			}
+		}
+		for _, algorithm := range u.Config.Algorithms() {
+
+			// Initialize algorithm plugins if needed
+			if al, ok := algorithm.(internal.Initializer); ok {
+				al.Init(&u.Config)
+			}
+
+			out <- &Typo{
+				algorithm: algorithm,
+				original:  u.Config.Target(),
 				variant:   &target.Target{},
 			}
 		}
@@ -156,10 +160,9 @@ func (u *Urlinsane) Algorithms(in <-chan internal.Typo) <-chan internal.Typo {
 
 		// Update total after all algorithms complete procducing typos
 		u.total = int64(len(u.Typos))
-		if u.Config.Progress() {
-			// Add a visible progesssbar if -p flag is set
-			u.progress = progressbar.Default(u.total)
-		}
+		// if u.Config.Progress() {
+		// 	u.progress = progressbar.Default(u.total)
+		// }
 		close(out)
 	}()
 
@@ -168,100 +171,49 @@ func (u *Urlinsane) Algorithms(in <-chan internal.Typo) <-chan internal.Typo {
 
 func (u *Urlinsane) Filters(in <-chan internal.Typo) <-chan internal.Typo {
 	out := make(chan internal.Typo)
-	distance := u.Config.Dist()
 
-	go func(dist int) {
+	go func() {
 		for typo := range in {
-			var filtered = false
 			orig := typo.Original()
 			vari := typo.Variant()
 
+			// Removing duplicates
 			if _, ok := u.Typos[vari.Name()]; !ok {
 				u.Typos[vari.Name()] = typo
 
 				// Make sure the variant does not match the original
 				if vari.Name() != orig.Name() {
-					filtered = false
-				}
 
-				if distance < typo.Ld() {
-					filtered = true
+					// Only allow variants with a minimum levenshtein distance
+					if u.Config.Dist() >= typo.Ld() {
+						out <- typo
+						u.scanned++
+					} else {
+						u.filtered++
+					}
 				}
-
-				if !filtered {
-					out <- typo
-				} else {
-					u.filtered++
-				}
-			} else {
-				u.duplicate++
 			}
 		}
+		if u.Config.Progress() {
+			u.progress = progressbar.Default(u.total - u.filtered)
+		}
 		close(out)
-	}(distance)
+	}()
 
 	return out
 }
 
-// func (t *Urlinsane) Analysis(in <-chan internal.Typo) <-chan internal.Typo {
-// 	logrus.Debug("Analysis()")
-// 	// out := make(chan internal.Typo)
-
-// 	// for typo := range in {
-// 	// 	// Dedup typo variants by checking and adding to a map
-// 	// 	if variant, ok := t.Typos[typo.Variant().Name()]; !ok {
-// 	// 		t.Typos[typo.Variant().Name()] = variant
-
-// 	// 		// Make sure the variant does not match the original
-// 	// 		if typo.Variant().Name() != typo.Original().Name() {
-// 	// 			t.count++
-// 	// 			out <- typo
-// 	// 		}
-// 	// 	}
-// 	// }
-
-// 	// for _, typo := range t.Typos {
-// 	// 	out <- typo
-// 	// }
-
-// 	return in
-// }
-
-// func (t *Urlinsane) Cache(in <-chan internal.Typo) <-chan internal.Typo {
-// 	logrus.Debug("Cache()")
-// 	// out := make(chan internal.Typo)
-
-// 	// for typo := range in {
-// 	// 	// Dedup typo variants by checking and adding to a map
-// 	// 	if variant, ok := t.Typos[typo.Variant().Name()]; !ok {
-// 	// 		t.Typos[typo.Variant().Name()] = variant
-
-// 	// 		// Make sure the variant does not match the original
-// 	// 		if typo.Variant().Name() != typo.Original().Name() {
-// 	// 			t.count++
-// 	// 			out <- typo
-// 	// 		}
-// 	// 	}
-// 	// }
-
-// 	// for _, typo := range t.Typos {
-// 	// 	out <- typo
-// 	// }
-
-// 	return in
-// }
-
-func (t *Urlinsane) Information(in <-chan internal.Typo) <-chan internal.Typo {
-	if len(t.Config.Information()) > 0 {
+func (u *Urlinsane) Information(in <-chan internal.Typo) <-chan internal.Typo {
+	if len(u.Config.Information()) > 0 {
 		out := make(chan internal.Typo)
 		var wg sync.WaitGroup
 
-		for w := 1; w <= t.Config.Concurrency(); w++ {
+		for w := 1; w <= u.Config.Concurrency(); w++ {
 			wg.Add(1)
 			go func(in <-chan internal.Typo, out chan<- internal.Typo) {
 				defer wg.Done()
 
-				for c := range t.InfoChain(t.Config.Information(), in) {
+				for c := range u.InfoChain(u.Config.Information(), in) {
 					out <- c
 				}
 			}(in, out)
@@ -276,7 +228,7 @@ func (t *Urlinsane) Information(in <-chan internal.Typo) <-chan internal.Typo {
 }
 
 // InfoChain creates a chain of information-gathering functions
-func (t *Urlinsane) InfoChain(funcs []internal.Information, in <-chan internal.Typo) <-chan internal.Typo {
+func (u *Urlinsane) InfoChain(funcs []internal.Information, in <-chan internal.Typo) <-chan internal.Typo {
 	if len(funcs) == 0 {
 		return in
 	}
@@ -286,77 +238,74 @@ func (t *Urlinsane) InfoChain(funcs []internal.Information, in <-chan internal.T
 	go func() {
 		for i := range in {
 			if fn, ok := xfunc.(internal.Initializer); ok {
-				fn.Init(&t.Config)
+				fn.Init(&u.Config)
 			}
-			time.Sleep(t.Config.Random() * t.Config.Delay())
+			time.Sleep(u.Config.Random() * u.Config.Delay())
 			out <- xfunc.Exec(i)
 		}
 		close(out)
 	}()
 
 	if len(funcs) > 0 {
-		return t.InfoChain(funcs, out)
+		return u.InfoChain(funcs, out)
 	}
 
 	return out
 }
 
-func (t *Urlinsane) Progress(in <-chan internal.Typo) <-chan internal.Typo {
-	out := make(chan internal.Typo)
-	// var wg sync.WaitGroup
-	// wg.Add(1)
-	go func(in <-chan internal.Typo, out chan<- internal.Typo) {
-		// defer wg.Done()
-		for c := range in {
-			out <- c
-			t.progress.Add(1)
-		}
-		// Clear/hide the progress bar after all typos have passed through
-		t.progress.Clear()
-		close(out)
+// Progress adds a visible progesssbar if -p flag is set
+func (u *Urlinsane) Progress(in <-chan internal.Typo) <-chan internal.Typo {
+	if u.Config.Progress() {
+		out := make(chan internal.Typo)
+		go func(in <-chan internal.Typo, out chan<- internal.Typo) {
+			for t := range in {
+				u.progress.Add(1)
+				out <- t
+			}
+			// Clear/hide the progress bar after all typos have passed through
+			u.progress.Clear()
+			close(out)
 
-	}(in, out)
+		}(in, out)
+		return out
+	}
 
-	// go func() {
-	// 	wg.Wait()
-	// 	close(out)
-	// }()
-
-	return out
+	return in
 }
 
-func (t *Urlinsane) Output(in <-chan internal.Typo) {
+func (u *Urlinsane) Output(in <-chan internal.Typo) {
 	// Initialize output plugin if needed and provide config
-	if out, ok := t.Config.Output().(internal.Initializer); ok {
-		out.Init(&t.Config)
+	if out, ok := u.Config.Output().(internal.Initializer); ok {
+		out.Init(&u.Config)
 	}
 
 	// Stream typo records to the output plugin
 	for c := range in {
 
 		if c.Variant().Live() {
-			t.online++
+			u.online++
+		}
+		u.Config.Output().Write(c)
+		if u.Config.ShowAll() {
+			u.Config.Output().Write(c)
+
+		} else if c.Variant().Live() {
+			u.Config.Output().Write(c)
 		}
 
-		if t.Config.All() {
-			t.Config.Output().Write(c)
-		} else {
-			if c.Variant().Live() {
-				t.Config.Output().Write(c)
-			}
-		}
 	}
 
 	// Save typo records collected by the output plugin
-	t.Config.Output().Save()
+	u.Config.Output().Save()
 
 	// Print summary
 	report := map[string]int64{
-		"TOTAL:":   t.total,
-		"LIVE:":    t.online,
-		"FILTERED": t.filtered,
+		"TOTAL:":    u.total,
+		"LIVE:":     u.online,
+		"FILTERED:": u.filtered,
+		"SCANNED:":  u.scanned,
 	}
-	t.Config.Output().Summary(report)
+	u.Config.Output().Summary(report)
 
 }
 
@@ -369,12 +318,19 @@ func (u *Urlinsane) Close() {
 	}
 }
 
-func (t *Urlinsane) Execute() {
-	t.Init()
-	typos := t.Start()
-	typos = t.Algorithms(typos)
-	typos = t.Filters(typos)
-	typos = t.Information(typos)
-	typos = t.Progress(typos)
-	t.Output(typos)
+func (u *Urlinsane) Execute() {
+	typos := u.Init()
+	typos = u.Algorithms(typos)
+	typos = u.Filters(typos)
+	typos = u.Information(typos)
+	typos = u.Progress(typos)
+	u.Output(typos)
+}
+
+func (u *Urlinsane) Stream() <-chan internal.Typo {
+	typos := u.Init()
+	typos = u.Algorithms(typos)
+	typos = u.Filters(typos)
+	typos = u.Information(typos)
+	return typos
 }

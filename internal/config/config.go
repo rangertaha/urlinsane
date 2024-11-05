@@ -58,7 +58,8 @@ type Config struct {
 	verbose  bool
 	format   string
 	file     string
-	all     bool
+	showAll  bool
+	scanAll  bool
 	progress bool
 }
 
@@ -87,6 +88,9 @@ func (c *Config) Output() internal.Output {
 func (c *Config) Concurrency() int {
 	return c.concurrency
 }
+
+// Dist is the Levenshtein_distance
+// See: https://en.wikipedia.org/wiki/Levenshtein_distance
 func (c *Config) Dist() int {
 	return c.levenshtein
 }
@@ -111,8 +115,11 @@ func (c *Config) File() string {
 func (c *Config) Type() int {
 	return c.ctype
 }
-func (c *Config) All() bool {
-	return c.all
+func (c *Config) ScanAll() bool {
+	return c.scanAll
+}
+func (c *Config) ShowAll() bool {
+	return c.showAll
 }
 
 func (c *Config) DnsServers() []string {
@@ -232,8 +239,13 @@ func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 		return c, err
 	}
 
-	if c.all, err = cmd.Flags().GetBool("all"); err != nil {
+	if c.showAll, err = cmd.Flags().GetBool("show"); err != nil {
 		return c, err
+	}
+	if c.scanAll, err = cmd.Flags().GetBool("all"); err != nil {
+		return c, err
+	} else {
+		c.levenshtein = 100
 	}
 
 	return c, err

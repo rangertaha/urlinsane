@@ -40,7 +40,7 @@ func (n *Text) Id() string {
 }
 
 func (n *Text) Description() string {
-	return "Text outputs one record per line and is the default"
+	return DESCRIPTION
 }
 
 func (n *Text) Init(conf internal.Config) {
@@ -107,6 +107,9 @@ func (n *Text) Config() (row table.Row) {
 
 	n.table.SetColumnConfigs(ColumnConfig)
 	return
+}
+func (n *Text) Progress(typo <-chan internal.Typo) <-chan internal.Typo {
+	return typo
 }
 
 func (n *Text) Write(in internal.Typo) {
