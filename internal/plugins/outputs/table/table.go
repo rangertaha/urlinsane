@@ -22,6 +22,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
+	"golang.org/x/term"
 )
 
 const (
@@ -46,9 +47,9 @@ func (n *Text) Init(conf internal.Config) {
 	n.config = conf
 	n.table = table.NewWriter()
 
-	// if width, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil {
-	// 	n.table.SetAllowedRowLength(width - 4)
-	// }
+	if width, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil {
+		n.table.SetAllowedRowLength(width - 4)
+	}
 
 	n.table.SetOutputMirror(os.Stdout)
 	n.table.AppendHeader(n.Header())
