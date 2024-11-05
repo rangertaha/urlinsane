@@ -14,15 +14,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ip
 
-// // ipLookupFunc
-// func ipLookupFunc(tr Result) (results []Result) {
-// 	results = append(results, checkIP(tr))
-// 	return
-// }
-
 import (
+	"net"
+	"strings"
+
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/information"
+	// "github.com/rangertaha/urlinsane/pkg/dns/resolver"
 )
 
 const (
@@ -32,15 +30,17 @@ const (
 )
 
 type Ipaddr struct {
-	types []string
+	// resolver resolver.Client
+	conf internal.Config
 }
 
 func (n *Ipaddr) Id() string {
 	return CODE
 }
 
-func (n *Ipaddr) Name() string {
-	return NAME
+func (i *Ipaddr) Init(c internal.Config) {
+	i.conf = c
+	// i.resolver = resolver.New(c.DnsServers(), 3, 1000, 50)
 }
 
 func (n *Ipaddr) Description() string {
@@ -48,16 +48,44 @@ func (n *Ipaddr) Description() string {
 }
 
 func (n *Ipaddr) Headers() []string {
-	return []string{"Online", "IPv4", "IPv6"}
+	return []string{"A"}
 }
 
-func (n *Ipaddr) Exec(in internal.Typo) (out internal.Typo) {
+func (i *Ipaddr) Exec(in internal.Typo) (out internal.Typo) {
+	if name := in.Variant().Name(); name != "" {
+		ips, err := net.LookupIP(name)
+		// if err != nil {
+		// 	fmt.Fprintf(os.Stderr, "Could not get IPs: %v\n", err)
+		// 	// os.Exit(1)
+		// }
+		// for _, ip := range ips {
+		// 	fmt.Printf("google.com. IN A %s\n", ip.String())
+		// }
+		if err == nil {
+			var answers []string
+			for _, ip := range ips {
+				answers = append(answers, ip.String())
+			}
+			in.Variant().Add("A", strings.Join(answers, "\n"))
+			in.Variant().Live(true)
+		}
 
-	in.Variant().Add("Online", true)
-	in.Variant().Add("IPv4", "100.0.0.0")
-	in.Variant().Add("IPv6", "100.0.0.0")
-	in.Variant().Add("JSON", "{}")
+	}
+
+	// i.resolver = resolver.New(i.conf.DnsServers(), 3, 1000, 50)
+	// domains := []string{in.Variant().Name()}
+	// results := i.resolver.Resolve(domains, resolver.TypeA)
+	// var answers []string
+	// for _, record := range results {
+	// 	answers = append(answers, record.Answer)
+	// }
+	// in.Variant().Add("A", strings.Join(answers, "\n"))
+	// // defer i.resolver.Close()
 	return in
+}
+
+func (i *Ipaddr) Close() {
+	// i.resolver.Close()
 }
 
 // Register the plugin

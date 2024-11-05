@@ -46,7 +46,7 @@ func (n *None) Headers() []string {
 }
 
 func (n *None) Exec(in internal.Typo) (out internal.Typo) {
-	in.Variant().Add("GEO", "1000, 22333")
+	// in.Variant().Add("GEO", "1000, 22333")
 	return in
 }
 

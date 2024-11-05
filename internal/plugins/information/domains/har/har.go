@@ -42,11 +42,11 @@ func (n *None) Description() string {
 }
 
 func (n *None) Headers() []string {
-	return []string{"HAR", "Two", "Three"}
+	return []string{"HAR"}
 }
 
 func (n *None) Exec(in internal.Typo) (out internal.Typo) {
-	in.Variant().Add("HAR", []string{"one", "two"})
+	// in.Variant().Add("HAR", []string{"one", "two"})
 	return in
 }
 

@@ -20,10 +20,8 @@ import (
 	"strings"
 
 	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
-	"golang.org/x/term"
 )
 
 const (
@@ -48,9 +46,9 @@ func (n *Text) Init(conf internal.Config) {
 	n.config = conf
 	n.table = table.NewWriter()
 
-	if width, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil {
-		n.table.SetAllowedRowLength(width - 4)
-	}
+	// if width, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil {
+	// 	n.table.SetAllowedRowLength(width - 4)
+	// }
 
 	n.table.SetOutputMirror(os.Stdout)
 	n.table.AppendHeader(n.Header())
@@ -59,8 +57,8 @@ func (n *Text) Init(conf internal.Config) {
 }
 
 func (n *Text) Header() (row table.Row) {
-	row = append(row, "TYPE")
 	row = append(row, "LD")
+	row = append(row, "TYPE")
 	row = append(row, "TYPO")
 
 	for _, info := range n.config.Information() {
@@ -72,22 +70,24 @@ func (n *Text) Header() (row table.Row) {
 }
 
 func (n *Text) Row(typo internal.Typo) (row table.Row) {
+	row = append(row, typo.Ld())
 	if n.config.Verbose() {
 		row = append(row, typo.Algorithm().Name())
 	} else {
 		row = append(row, strings.ToUpper(typo.Algorithm().Id()))
 	}
-	row = append(row, typo.Ld())
 	row = append(row, typo.String())
 
 	for _, info := range n.config.Information() {
 		for _, header := range info.Headers() {
 			meta := typo.Variant().Meta()
-			row = append(row, meta[header])
+			if col, ok := meta[header]; ok {
+				row = append(row, col)
+			} else {
+				row = append(row, "")
+			}
 		}
-
 	}
-
 	return
 }
 
@@ -95,53 +95,16 @@ func (n *Text) Config() (row table.Row) {
 	n.table.SetStyle(StyleDefault)
 	n.table.AppendFooter(table.Row{})
 
-	nameTransformer := text.Transformer(func(val interface{}) string {
-		if val.(string) == "MD" {
-			return text.Colors{text.BgBlack, text.FgGreen}.Sprint(val)
-		}
-		return fmt.Sprint(val)
-	})
+	// nameTransformer := text.Transformer(func(val interface{}) string {
+	// 	if val.(string) == "MD" {
+	// 		return text.Colors{text.BgBlack, text.FgGreen}.Sprint(val)
+	// 	}
+	// 	return fmt.Sprint(val)
+	// })
 
 	// n.table.SetRowPainter()
 
-	n.table.SetColumnConfigs([]table.ColumnConfig{
-		{
-			Name:        "TYPE",
-			Align:       text.AlignLeft,
-			AlignFooter: text.AlignLeft,
-			AlignHeader: text.AlignLeft,
-			// Colors:       text.Colors{text.BgBlack, text.FgRed},
-			// ColorsHeader: text.Colors{text.BgRed, text.FgBlack, text.Bold},
-			// ColorsFooter: text.Colors{text.BgRed, text.FgBlack},
-			Hidden:      false,
-			Transformer: nameTransformer,
-			// TransformerFooter: nameTransformer,
-			// TransformerHeader: nameTransformer,
-			VAlign:       text.VAlignMiddle,
-			VAlignFooter: text.VAlignTop,
-			VAlignHeader: text.VAlignBottom,
-			WidthMin:     1,
-			WidthMax:     64,
-		},
-		{
-			Name:        "ID",
-			Align:       text.AlignLeft,
-			AlignFooter: text.AlignLeft,
-			AlignHeader: text.AlignLeft,
-			// Colors:       text.Colors{text.BgBlack, text.FgRed},
-			// ColorsHeader: text.Colors{text.BgRed, text.FgBlack, text.Bold},
-			// ColorsFooter: text.Colors{text.BgRed, text.FgBlack},
-			Hidden:      false,
-			Transformer: nameTransformer,
-			// TransformerFooter: nameTransformer,
-			// TransformerHeader: nameTransformer,
-			VAlign:       text.VAlignMiddle,
-			VAlignFooter: text.VAlignTop,
-			VAlignHeader: text.VAlignBottom,
-			WidthMin:     1,
-			WidthMax:     3,
-		},
-	})
+	n.table.SetColumnConfigs(ColumnConfig)
 	return
 }
 

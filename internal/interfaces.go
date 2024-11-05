@@ -29,6 +29,10 @@ type Initializer interface {
 	Init(Config)
 }
 
+type Closer interface {
+	Close()
+}
+
 type Config interface {
 	Target() Target
 	Keyboards() []Keyboard
@@ -37,6 +41,7 @@ type Config interface {
 	Information() []Information
 	Output() Output
 	Concurrency() int
+	DnsServers() []string
 	Delay() time.Duration
 	Random() time.Duration
 	Verbose() bool
@@ -44,6 +49,7 @@ type Config interface {
 	File() string
 	Dist() int
 	Type() int
+	All() bool
 }
 
 type Algorithm interface {
@@ -70,16 +76,13 @@ type ExecAlgorithm interface {
 
 type Information interface {
 	Id() string
-	Name() string
 	Description() string
 	Headers() []string
 	Exec(Typo) Typo
 }
 
 type Storage interface {
-	Id() string
-	Name() string
-	Description() string
+	Init(Config)
 	Read(key string) (error, interface{})
 	Write(key string, value interface{}) error
 }

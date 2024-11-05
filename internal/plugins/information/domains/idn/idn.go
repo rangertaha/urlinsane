@@ -12,35 +12,25 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package idn
 
 // An internationalized domain name (IDN) is a domain name that includes characters
 // outside of the Latin alphabet, such as letters from Arabic, Chinese, Cyrillic, or
 // Devanagari scripts. IDNs allow users to use domain names in their local languages
 // and scripts.
+package idn
 
-// // Idna ...
-// func (d *Domain) Idna() (punycode string) {
-// 	punycode, _ = idna.Punycode.ToASCII(d.String())
-// 	return
-// }
 
-// // idnaFunc
-// func idnaFunc(tr Result) (results []Result) {
-// 	tr.Data["IDNA"] = tr.Variant.Idna()
-// 	tr.Variant.Meta.IDNA = tr.Variant.Idna()
-// 	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Data: tr.Data})
-// 	return
-// }
+
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/information"
+	"golang.org/x/net/idna"
 )
 
 const (
 	CODE        = "idn"
-	NAME        = "HAR Browser Contents"
+	NAME        = "Internationalize"
 	DESCRIPTION = "Internationalized Domain Name"
 )
 
@@ -52,10 +42,6 @@ func (n *None) Id() string {
 	return CODE
 }
 
-func (n *None) Name() string {
-	return NAME
-}
-
 func (n *None) Description() string {
 	return DESCRIPTION
 }
@@ -65,7 +51,10 @@ func (n *None) Headers() []string {
 }
 
 func (n *None) Exec(in internal.Typo) (out internal.Typo) {
-	in.Variant().Add("IDN", "adsf-adfsaf-s-faf")
+
+	if punycode, err := idna.Punycode.ToASCII(in.Variant().Name()); err == nil {
+		in.Variant().Add("IDN", punycode)
+	}
 	return in
 }
 
