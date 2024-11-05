@@ -1147,7 +1147,7 @@ func TestDotHyphenSubstitution(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			variants := DotHyphenSubstitution(test.name, enNumerals)
+			variants := DotHyphenSubstitution(test.name)
 			sort.Strings(variants)
 
 			if !reflect.DeepEqual(variants, test.typos) {
@@ -1175,7 +1175,7 @@ func TestDHUSubstitution(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			variants := DHUSubstitution(test.name, enNumerals)
+			variants := DHUSubstitution(test.name)
 			sort.Strings(variants)
 
 			if !reflect.DeepEqual(variants, test.typos) {

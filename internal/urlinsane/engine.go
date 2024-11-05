@@ -87,6 +87,12 @@ func (u *Urlinsane) Init() {
 func (t *Urlinsane) Start() <-chan internal.Typo {
 	out := make(chan internal.Typo)
 	go func() {
+		// Initialize information plugins if needed
+		for _, info := range t.Config.Information() {
+			if inf, ok := info.(internal.Initializer); ok {
+				inf.Init(&t.Config)
+			}
+		}
 		for _, algorithm := range t.Config.Algorithms() {
 
 			// Initialize algorithm plugins if needed
@@ -162,9 +168,11 @@ func (u *Urlinsane) Algorithms(in <-chan internal.Typo) <-chan internal.Typo {
 
 func (u *Urlinsane) Filters(in <-chan internal.Typo) <-chan internal.Typo {
 	out := make(chan internal.Typo)
+	distance := u.Config.Dist()
 
-	go func() {
+	go func(dist int) {
 		for typo := range in {
+			var filtered = false
 			orig := typo.Original()
 			vari := typo.Variant()
 
@@ -173,14 +181,24 @@ func (u *Urlinsane) Filters(in <-chan internal.Typo) <-chan internal.Typo {
 
 				// Make sure the variant does not match the original
 				if vari.Name() != orig.Name() {
+					filtered = false
+				}
+
+				if distance < typo.Ld() {
+					filtered = true
+				}
+
+				if !filtered {
 					out <- typo
+				} else {
+					u.filtered++
 				}
 			} else {
 				u.duplicate++
 			}
 		}
 		close(out)
-	}()
+	}(distance)
 
 	return out
 }
@@ -315,7 +333,18 @@ func (t *Urlinsane) Output(in <-chan internal.Typo) {
 
 	// Stream typo records to the output plugin
 	for c := range in {
-		t.Config.Output().Write(c)
+
+		if c.Variant().Live() {
+			t.online++
+		}
+
+		if t.Config.All() {
+			t.Config.Output().Write(c)
+		} else {
+			if c.Variant().Live() {
+				t.Config.Output().Write(c)
+			}
+		}
 	}
 
 	// Save typo records collected by the output plugin
@@ -323,11 +352,21 @@ func (t *Urlinsane) Output(in <-chan internal.Typo) {
 
 	// Print summary
 	report := map[string]int64{
-		"TOTAL:": t.total,
-		"LIVE:":  t.online,
+		"TOTAL:":   t.total,
+		"LIVE:":    t.online,
+		"FILTERED": t.filtered,
 	}
 	t.Config.Output().Summary(report)
 
+}
+
+func (u *Urlinsane) Close() {
+	// Initialize information plugins if needed
+	for _, info := range u.Config.Information() {
+		if inf, ok := info.(internal.Closer); ok {
+			inf.Close()
+		}
+	}
 }
 
 func (t *Urlinsane) Execute() {

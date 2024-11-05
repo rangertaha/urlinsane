@@ -17,6 +17,7 @@ package urlinsane
 import (
 	"fmt"
 	"os"
+	"time"
 
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
@@ -174,25 +175,32 @@ func init() {
 	// rootCmd.MarkFlagsMutuallyExclusive("email", "lib", "username", "domain")
 
 	// Plugins
-	rootCmd.PersistentFlags().StringArrayP("languages", "l", []string{"all"}, "IDs of languages to use for linguistic algorithms \n Use --list-languages to view full list of supported languages and thier IDs\n\n")
+	rootCmd.PersistentFlags().StringP("languages", "l", "all", "IDs of languages to use for linguistic algorithms")
 	// rootCmd.PersistentFlags().Bool("list-languages", false, "List languages and thier IDs")
 
-	rootCmd.PersistentFlags().StringArrayP("keyboards", "k", []string{"all"}, "IDs of keyboard layouts to use of the given languages \n Use --list-keyboards to view full list of supported keyboard layouts and thier IDs \n\n")
+	rootCmd.PersistentFlags().StringP("keyboards", "k", "all", "IDs of keyboard layouts to use of the given languages")
 	// rootCmd.PersistentFlags().Bool("list-keyboards", false, "List keyboards and their IDs")
 
-	rootCmd.PersistentFlags().StringArrayP("algorithms", "a", []string{"all"}, "IDs of typo algorithms to use for generating typos \n Use --list-algorithms to view full list of supported algorithms and thier IDs \n\n")
-	rootCmd.PersistentFlags().Bool("list", false, "List plugins/IDs for algorithms, langauages, information, and keyboards")
+	rootCmd.PersistentFlags().StringP("algorithms", "a", "all", "IDs of typo algorithms to use for generating typos")
+	rootCmd.PersistentFlags().Bool("plugins", false, "List plugins/IDs for algorithms, langauages, information, and keyboards")
 
-	// rootCmd.PersistentFlags().StringArrayP("info", "i", []string{"all"}, "IDs of info gathering functions to apply")
+	// rootCmd.PersistentFlags().StringP("info", "i", "all", "IDs of info gathering functions to apply")
 
-	// Processing
-	rootCmd.PersistentFlags().Bool("no-cache", false, "Prevents caching of results")
-	rootCmd.PersistentFlags().Bool("online", false, "Only show domains that are online")
+	// Cache
+	rootCmd.PersistentFlags().Duration("ttl", time.Hour * 24, "Cache duration for expiration")
+
+
 
 	// Timing
 	rootCmd.PersistentFlags().IntP("concurrency", "c", 50, "Number of concurrent workers")
 	rootCmd.PersistentFlags().Duration("random", 1, "Random delay multiplier for network calls")
 	rootCmd.PersistentFlags().Duration("delay", 1, "Duration between network calls")
+
+	// DNS
+	rootCmd.PersistentFlags().String("dns-servers", "", "DNS Servers seperated by commas")
+	rootCmd.PersistentFlags().Int("dns-concurrency", 10, "Max concurrency")
+	rootCmd.PersistentFlags().Int("dns-qps", 10, "Queries Per Second")
+	rootCmd.PersistentFlags().Int("dns-retry", 10, "Query retry count")
 
 	// Outputs
 	rootCmd.PersistentFlags().BoolP("progress", "p", false, "Show progress bar")

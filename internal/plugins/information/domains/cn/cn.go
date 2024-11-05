@@ -15,47 +15,51 @@
 package cn
 
 import (
+	"net"
+
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/information"
 )
 
 const (
-	CODE        = "cn"
-	NAME        = "CNAME"
-	DESCRIPTION = "Retrieve CNAME DNS records"
+	CODE        = "CNAME"
+	NAME        = "Ip Address"
+	DESCRIPTION = "Domain IP addresses"
 )
 
-type None struct {
-	types []string
+type Ipaddr struct {
+	conf internal.Config
 }
 
-func (n *None) Id() string {
+func (n *Ipaddr) Id() string {
 	return CODE
 }
 
-func (n *None) Name() string {
-	return NAME
+func (i *Ipaddr) Init(c internal.Config) {
+	i.conf = c
 }
 
-func (n *None) Description() string {
+func (n *Ipaddr) Description() string {
 	return DESCRIPTION
 }
 
-func (n *None) Headers() []string {
-	return []string{"CNAME", "OLLSD", "LALCOM"}
+func (n *Ipaddr) Headers() []string {
+	return []string{"CNAME"}
 }
 
-func (n *None) Exec(in internal.Typo) (out internal.Typo) {
-	in.Variant().Add("CNAME", 111111)
-	in.Variant().Add("OLLSD", 444444444444)
-	in.Variant().Add("LALCOM", 1115555555555111)
-	in.Variant().Add("JSON", []string{"one", "two"})
+func (i *Ipaddr) Exec(in internal.Typo) (out internal.Typo) {
+	if name := in.Variant().Name(); name != "" {
+		if cname, err := net.LookupCNAME(name); err == nil {
+			in.Variant().Add("CNAME", cname)
+			in.Variant().Live(true)
+		}
+	}
 	return in
 }
 
 // Register the plugin
 func init() {
 	information.Add(CODE, func() internal.Information {
-		return &None{}
+		return &Ipaddr{}
 	})
 }

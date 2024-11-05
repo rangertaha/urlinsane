@@ -199,6 +199,11 @@ These typos are created by changing a dot to a dash.
 
 
 
+## Stem Substitution 
+
+Replacing words with the root form  is the process of reducing inflected (or sometimes derived) words to their word stem, base or root form
+
+
 
 # Typo Algorithms
 

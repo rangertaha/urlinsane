@@ -59,10 +59,6 @@ func (n *None) Id() string {
 	return CODE
 }
 
-func (n *None) Name() string {
-	return NAME
-}
-
 func (n *None) Description() string {
 	return DESCRIPTION
 }
@@ -72,7 +68,7 @@ func (n *None) Headers() []string {
 }
 
 func (n *None) Exec(in internal.Typo) (out internal.Typo) {
-	in.Variant().Add("HTTP", []string{"one", "two"})
+	// in.Variant().Add("HTTP", []string{"one", "two"})
 	return in
 }
 

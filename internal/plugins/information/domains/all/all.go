@@ -3,7 +3,6 @@ package all
 // register all plugins
 import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/cn"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/dns"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/geo"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/har"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/idn"

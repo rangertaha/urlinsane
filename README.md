@@ -89,11 +89,11 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 ### Keyboard Layouts
 
 | Arabic | Armenian | English  | Finnish | Russian   | Spanish | Hebrew | Persian | 
-|--------|----------|----------|---------|-----------|---------|--------|---------|
-|        |          |          |         |           |         |        |         |
-|        |          |          |         |           |         |        |         |   
-|        |          |          |         |           |         |        |         |  
-|        |          |          |         |           |         |        |         |
+|----------|----------|----------|---------|-----------|---------|--------|---------|
+| "غفقثصض" |          |  QWERTY  |         |           |         |        |         |
+|        |          |  AZERTY  |         |           |         |        |         |   
+|        |          |  QWERTZ  |         |           |         |        |         |  
+|        |          |  DVORAK  |         |           |         |        |         |
 |        |          |          |         |           |         |        |         | 
 |        |          |          |         |           |         |        |         |  
 |        |          |          |         |           |         |        |         | 

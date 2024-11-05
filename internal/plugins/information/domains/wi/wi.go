@@ -49,7 +49,7 @@ func (n *None) Headers() []string {
 }
 
 func (n *None) Exec(in internal.Typo) (out internal.Typo) {
-	in.Variant().Add("WHOIS", "11safasdfafd1111")
+	// in.Variant().Add("WHOIS", "11safasdfafd1111")
 	return in
 }
 

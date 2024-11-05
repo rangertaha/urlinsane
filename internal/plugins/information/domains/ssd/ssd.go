@@ -14,32 +14,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ssd
 
-// ssdeep is a program for computing context triggered piecewise hashes (CTPH). Also called fuzzy hashes, CTPH can match inputs that have homologies. Such inputs have sequences of identical bytes in the same order, although bytes in between these sequences may be different in both content and length.
-
-// func ssdeepFunc(tr Result) (results []Result) {
-// 	tr = checkIP(tr)
-// 	if tr.Original.Live {
-// 		var h1, h2 string
-// 		h1, _ = ssdeep.FuzzyBytes([]byte(tr.Original.Meta.HTTP.Body))
-// 		tr.Original.Meta.SSDeep = h1
-
-// 		if tr.Variant.Live {
-// 			h2, _ = ssdeep.FuzzyBytes([]byte(tr.Variant.Meta.HTTP.Body))
-// 			tr.Variant.Meta.SSDeep = h2
-// 		}
-
-// 		if compare, err := ssdeep.Distance(h1, h2); err == nil {
-// 			tr.Data["SIM"] = fmt.Sprintf("%d%s", compare, "%")
-// 			tr.Variant.Meta.Similarity = compare
-// 		}
-// 	}
-// 	results = append(results, tr)
-// 	return
-// }
+// https://github.com/glaslos/ssdeep
 
 import (
+	"os"
+
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/information"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -49,15 +31,22 @@ const (
 )
 
 type None struct {
-	types []string
 }
 
 func (n *None) Id() string {
 	return CODE
 }
 
-func (n *None) Name() string {
-	return NAME
+func (i *None) Init(conf internal.Config) {
+	// Log as JSON instead of the default ASCII formatter.
+	log.SetFormatter(&log.JSONFormatter{})
+
+	// Output to stdout instead of the default stderr
+	// Can be any io.Writer, see below for File example
+	log.SetOutput(os.Stdout)
+
+	// Only log the warning severity or above.
+	log.SetLevel(log.WarnLevel)
 }
 
 func (n *None) Description() string {
@@ -65,11 +54,30 @@ func (n *None) Description() string {
 }
 
 func (n *None) Headers() []string {
-	return []string{"SSDEEP"}
+	return []string{NAME}
 }
 
-func (n *None) Exec(in internal.Typo) (out internal.Typo) {
-	in.Variant().Add("SSDEEP", []string{"one", "two"})
+func (n *None) Exec(in internal.Typo) internal.Typo {
+	// originPage := in.Original().Get("HTML").(string)
+
+	// hash1, err := ssdeep.FuzzyBytes([]byte(Data1))
+	// if err != nil {
+	// 	log.Error(err)
+	// }
+	// hash2, _ := ssdeep.FuzzyBytes([]byte(Data2))
+	// if err != nil {
+	// 	log.Error(err)
+	// }
+	// in.Variant().Add("HASH1", hash1)
+	// in.Variant().Add("HASH2", hash2)
+
+	// dist, err := ssdeep.Distance(hash1, hash2)
+	// if err != nil {
+	// 	log.Error(err)
+	// } else {
+	// 	in.Variant().Add(NAME, dist)
+	// }
+
 	return in
 }
 

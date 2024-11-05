@@ -28,6 +28,7 @@ go.work.sum
 # IDEs
 .idea
 .vscode
+.dev
 
 builds
 build

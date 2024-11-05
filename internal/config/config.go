@@ -48,11 +48,17 @@ type Config struct {
 	random      time.Duration
 	levenshtein int
 
+	// DNS
+	dnsRetryCount       int
+	dnsQueriesPerSecond int
+	dnsConcurrency      int
+	dnsServers          []string
+
 	// Output
 	verbose  bool
 	format   string
 	file     string
-	live     bool
+	all     bool
 	progress bool
 }
 
@@ -105,8 +111,46 @@ func (c *Config) File() string {
 func (c *Config) Type() int {
 	return c.ctype
 }
-func (c *Config) Live() bool {
-	return c.live
+func (c *Config) All() bool {
+	return c.all
+}
+
+func (c *Config) DnsServers() []string {
+	if len(c.dnsServers) != 0 {
+		return c.dnsServers
+	}
+	return []string{
+		"127.0.0.53",
+		"100.64.100.1",
+		"8.8.8.8",         // Google
+		"8.8.4.4",         // Google
+		"1.1.1.1",         // Cloudflare
+		"1.0.0.1",         // Cloudflare
+		"1.1.1.2",         // Cloudflare  malware blocking
+		"1.0.0.2",         // Cloudflare  malware blocking
+		"1.1.1.3",         // Cloudflare  adult blocking
+		"1.0.0.3",         // Cloudflare  adult blocking
+		"9.9.9.9",         // Quad9
+		"149.112.112.112", // Quad9
+		"185.228.168.9",   // Cleanbrowsing
+		"185.228.169.9",   // Cleanbrowsing
+		"8.26.56.26",      // Comodo Secure DNS
+		"8.20.247.20",     // Comodo Secure DNS
+	}
+}
+
+// DnsQps is the queries per second
+func (c *Config) DnsConcurrency() int {
+	return c.dnsConcurrency
+}
+
+func (c *Config) DnsRetry() int {
+	return c.dnsQueriesPerSecond
+}
+
+// DnsQps is the queries per second
+func (c *Config) DnsQps() int {
+	return c.dnsRetryCount
 }
 
 // CobraConfig creates a configuration from a cobra command options and arguments
@@ -136,19 +180,19 @@ func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 	}
 
 	// Plugin options
-	if langs, err := commaSplit(cmd.Flags().GetStringArray("languages")); err == nil {
+	if langs, err := commaSplit(cmd.Flags().GetString("languages")); err == nil {
 		c.languages = languages.Languages(langs...)
 	}
 
-	if keybs, err := commaSplit(cmd.Flags().GetStringArray("keyboards")); err == nil {
+	if keybs, err := commaSplit(cmd.Flags().GetString("keyboards")); err == nil {
 		c.keyboards = languages.Keyboards(keybs...)
 	}
 
-	if typos, err := commaSplit(cmd.Flags().GetStringArray("algorithms")); err == nil {
+	if typos, err := commaSplit(cmd.Flags().GetString("algorithms")); err == nil {
 		c.algorithms = algorithms.List(typos...)
 	}
 
-	if infos, err := commaSplit(cmd.Flags().GetStringArray("info")); err == nil {
+	if infos, err := commaSplit(cmd.Flags().GetString("info")); err == nil {
 		c.information = information.List(infos...)
 	}
 
@@ -188,7 +232,7 @@ func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 		return c, err
 	}
 
-	if c.live, err = cmd.Flags().GetBool("live"); err != nil {
+	if c.all, err = cmd.Flags().GetBool("all"); err != nil {
 		return c, err
 	}
 
@@ -196,6 +240,6 @@ func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 }
 
 // commaSplit splits comma separated values into an array
-func commaSplit(values []string, err error) ([]string, error) {
-	return values, err
+func commaSplit(value string, err error) ([]string, error) {
+	return strings.Split(strings.TrimSpace(value), ","), err
 }

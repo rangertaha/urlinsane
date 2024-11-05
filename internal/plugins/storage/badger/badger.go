@@ -15,88 +15,43 @@
 package text
 
 import (
-	"fmt"
-	"os"
-	"strings"
+	"log"
 
-	"github.com/jedib0t/go-pretty/v6/table"
+	badger "github.com/dgraph-io/badger/v4"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
 )
 
-const CODE = "csv"
-
-type Text struct {
-	table  table.Writer
+type Store struct {
 	config internal.Config
+	db     *badger.DB
 }
 
-func (n *Text) Id() string {
-	return CODE
-}
-
-func (n *Text) Init(conf internal.Config) {
-	n.config = conf
-	n.table = table.NewWriter()
-	n.table.SetOutputMirror(os.Stdout)
-	n.table.AppendHeader(n.getHeader())
-}
-
-func (n *Text) getHeader() (row table.Row) {
-	row = append(row, "ID")
-	row = append(row, "TYPE")
-	row = append(row, "TYPO")
-	for _, info := range n.config.Information() {
-		for _, headers := range info.Headers() {
-			row = append(row, headers)
-		}
+func (s *Store) Init(conf internal.Config) {
+	s.config = conf
+	// Open the Badger database located in the /tmp/badger directory.
+	// It will be created if it doesn't exist.
+	var err error
+	s.db, err = badger.Open(badger.DefaultOptions("/tmp/badger"))
+	if err != nil {
+		log.Fatal(err)
 	}
+	defer s.db.Close()
+}
 
+// Read(key string) (error, interface{})
+// Write(key string, value interface{}) error
+func (n *Store) Read(key string) (err error, i interface{}) {
 	return
 }
 
-func (n *Text) getRow(typo internal.Typo) (row table.Row) {
-	row = append(row, typo.Id())
-	if n.config.Verbose() {
-		row = append(row, typo.Algorithm().Name())
-	} else {
-		row = append(row, strings.ToUpper(typo.Algorithm().Id()))
-	}
-	row = append(row, typo.Variant().Repr())
-	for _, info := range n.config.Information() {
-		for _, header := range info.Headers() {
-			meta := typo.Variant().Meta()
-			row = append(row, meta[header])
-		}
-	}
-
+func (n *Store) Write(key string, value interface{}) (err error) {
 	return
-}
-
-func (n *Text) Description() string {
-	return "CSV (comma-separated values) formatted output"
-}
-
-func (n *Text) Write(in internal.Typo) {
-	n.table.AppendRow(n.getRow(in))
-}
-
-func (n *Text) Save() {
-	n.table.AppendFooter(table.Row{"Total", n.config.Count()})
-	output := n.table.RenderCSV()
-
-	if n.config.File() != "" {
-		results := []byte(output)
-		if err := os.WriteFile(n.config.File(), results, 0644); err != nil {
-			fmt.Printf("Error: %s", err)
-		}
-	}
-
 }
 
 // Register the plugin
 func init() {
-	outputs.Add(CODE, func() internal.Output {
-		return &Text{}
+	outputs.Add("bdb", func() internal.Output {
+		return &Store{}
 	})
 }

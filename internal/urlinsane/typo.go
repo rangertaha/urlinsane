@@ -17,7 +17,7 @@ package urlinsane
 import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg/target"
-	"github.com/rangertaha/urlinsane/pkg/strutils"
+	"github.com/rangertaha/urlinsane/pkg/fuzzy"
 )
 
 type Typo struct {
@@ -48,7 +48,7 @@ func (t *Typo) Ld() int {
 }
 
 func (t *Typo) Clone(name string) internal.Typo {
-	dist := strutils.Levenshtein(t.original.Name(), name)
+	dist := fuzzy.Levenshtein(t.original.Name(), name)
 
 	return &Typo{
 		algorithm: t.algorithm,

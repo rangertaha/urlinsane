@@ -1,0 +1,32 @@
+{
+	"documents": [
+		{
+			"sentence": "Shipment/of gold damaged*in a-fire.",
+			"class":    "d1"
+		},
+		{
+			"sentence": "Delivery/of*silver arrived*in a-silver truck.",
+			"class":    "d2"
+		},
+		{
+			"sentence": "Shipment of gold arrived in a truck.",
+			"class":    "d3"
+		}
+
+        ],
+        "transform": {
+                "map": {
+                      "runes": "/*-",
+                      "to": " "
+                }
+        },
+	"tests": [{
+			"query": "gold silver truck.",
+			"wantClass": "d2"
+		},
+                {
+			"query": "gold damaged*fire.",
+			"wantClass": "d1"
+		}
+	]
+}
