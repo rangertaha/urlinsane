@@ -66,7 +66,7 @@ func (i *Ipaddr) Exec(in internal.Typo) (out internal.Typo) {
 			for _, ip := range ips {
 				answers = append(answers, ip.String())
 			}
-			in.Variant().Add("A", strings.Join(answers, "\n"))
+			in.Variant().Add("A", strings.Join(answers, " "))
 			in.Variant().Live(true)
 		}
 
