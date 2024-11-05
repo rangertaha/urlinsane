@@ -45,11 +45,12 @@ type Config interface {
 	Delay() time.Duration
 	Random() time.Duration
 	Verbose() bool
+	Progress() bool
 	Format() string
 	File() string
 	Dist() int
 	Type() int
-	All() bool
+	ShowAll() bool
 }
 
 type Algorithm interface {
