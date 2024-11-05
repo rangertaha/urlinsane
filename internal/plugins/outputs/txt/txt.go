@@ -12,22 +12,25 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package text
+package txt
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
 )
 
 const (
-	CODE        = "text"
+	CODE        = "txt"
 	DESCRIPTION = "Text outputs one record per line and is the default"
 )
 
 type Text struct {
 	config internal.Config
+	output string
+	typos  []internal.Typo
 }
 
 func (n *Text) Id() string {
@@ -43,7 +46,16 @@ func (n *Text) Init(conf internal.Config) {
 }
 
 func (n *Text) Write(in internal.Typo) {
+	if n.config.Progress() {
+		n.typos = append(n.typos, in)
+	} else {
+		n.Stream(in)
+	}
+}
+
+func (n *Text) Stream(in internal.Typo) {
 	var data []interface{}
+	data = append(data, in.Ld())
 	data = append(data, in.Algorithm().Name())
 	data = append(data, in.Variant().Name())
 
@@ -51,19 +63,31 @@ func (n *Text) Write(in internal.Typo) {
 		data = append(data, v)
 	}
 	fmt.Println(data...)
+	n.output = n.output + fmt.Sprint(data...) + "\n"
 }
 
 func (n *Text) Summary(report map[string]int64) {
-	// footer := table.Row{}
-	// for k, v := range report {
-	// 	footer = append(footer, k, v)
-	// }
-
-	// n.table.AppendFooter(footer)
-	// n.table.SetStyle(StyleDefault)
+	fmt.Println("")
+	for k, v := range report {
+		fmt.Printf("%s %d   ", k, v)
+	}
+	fmt.Println("")
 }
 
-func (n *Text) Save() {}
+func (n *Text) Save() {
+	if n.config.Progress() {
+		for _, typo := range n.typos {
+			n.Stream(typo)
+		}
+	}
+
+	if n.config.File() != "" {
+		results := []byte(n.output)
+		if err := os.WriteFile(n.config.File(), results, 0644); err != nil {
+			fmt.Printf("Error: %s", err)
+		}
+	}
+}
 
 // Register the plugin
 func init() {

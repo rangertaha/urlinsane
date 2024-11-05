@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package text
+package tsv
 
 import (
 	"fmt"
@@ -24,7 +24,10 @@ import (
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
 )
 
-const CODE = "tsv"
+const (
+	CODE        = "tsv"
+	DESCRIPTION = "TSV (tab-separated values) formatted output"
+)
 
 type Text struct {
 	table  table.Writer
@@ -34,16 +37,19 @@ type Text struct {
 func (n *Text) Id() string {
 	return CODE
 }
+func (n *Text) Description() string {
+	return DESCRIPTION
+}
 
 func (n *Text) Init(conf internal.Config) {
 	n.config = conf
 	n.table = table.NewWriter()
 	n.table.SetOutputMirror(os.Stdout)
-	n.table.AppendHeader(n.getHeader())
+	n.table.AppendHeader(n.Header())
 }
 
-func (n *Text) getHeader() (row table.Row) {
-	row = append(row, "ID")
+func (n *Text) Header() (row table.Row) {
+	row = append(row, "LD")
 	row = append(row, "TYPE")
 	row = append(row, "TYPO")
 
@@ -52,40 +58,48 @@ func (n *Text) getHeader() (row table.Row) {
 			row = append(row, headers)
 		}
 	}
-
 	return
 }
 
-func (n *Text) getRow(typo internal.Typo) (row table.Row) {
-	row = append(row, typo.Id())
+func (n *Text) Row(typo internal.Typo) (row table.Row) {
+	row = append(row, typo.Ld())
 	if n.config.Verbose() {
 		row = append(row, typo.Algorithm().Name())
 	} else {
 		row = append(row, strings.ToUpper(typo.Algorithm().Id()))
 	}
-
-	row = append(row, typo.Variant().Repr())
+	row = append(row, typo.String())
 
 	for _, info := range n.config.Information() {
 		for _, header := range info.Headers() {
 			meta := typo.Variant().Meta()
-			row = append(row, meta[header])
+			if col, ok := meta[header]; ok {
+				row = append(row, col)
+			} else {
+				row = append(row, "")
+			}
 		}
 	}
-
 	return
 }
 
-func (n *Text) Description() string {
-	return "TSV (tab-separated values) formatted output"
+func (n *Text) Write(in internal.Typo) {
+	n.table.AppendRow(n.Row(in))
 }
 
-func (n *Text) Write(in internal.Typo) {
-	n.table.AppendRow(n.getRow(in))
+func (n *Text) Progress(typo <-chan internal.Typo) <-chan internal.Typo {
+	return typo
+}
+
+func (n *Text) Summary(report map[string]int64) {
+	fmt.Println("")
+	for k, v := range report {
+		fmt.Printf("%s %d   ", k, v)
+	}
+	fmt.Println("")
 }
 
 func (n *Text) Save() {
-	n.table.AppendFooter(table.Row{"Total", n.config.Count()})
 	output := n.table.RenderTSV()
 
 	if n.config.File() != "" {
