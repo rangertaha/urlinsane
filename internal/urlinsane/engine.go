@@ -41,19 +41,19 @@ type (
 		filtered int64
 		scanned  int64
 	}
-	Infos             []internal.Information
-	InformationsOrder struct{ Infos }
-	InfosReverseOrder struct{ Infos }
+	// Infos             []internal.Information
+	// InformationsOrder struct{ Infos }
+	// InfosReverseOrder struct{ Infos }
 )
 
-func (o Infos) Len() int      { return len(o) }
-func (o Infos) Swap(i, j int) { o[i], o[j] = o[j], o[i] }
-func (l InfosReverseOrder) Less(i, j int) bool {
-	return l.Infos[i].Order() > l.Infos[j].Order()
-}
-func (l InformationsOrder) Less(i, j int) bool {
-	return l.Infos[i].Order() < l.Infos[j].Order()
-}
+// func (o Infos) Len() int      { return len(o) }
+// func (o Infos) Swap(i, j int) { o[i], o[j] = o[j], o[i] }
+// func (l InfosReverseOrder) Less(i, j int) bool {
+// 	return l.Infos[i].Order() > l.Infos[j].Order()
+// }
+// func (l InformationsOrder) Less(i, j int) bool {
+// 	return l.Infos[i].Order() < l.Infos[j].Order()
+// }
 
 // sort.Sort(ProcessorOrder{cfgs})
 
@@ -232,6 +232,7 @@ func (u *Urlinsane) Information(in <-chan internal.Typo) <-chan internal.Typo {
 				defer wg.Done()
 
 				for c := range u.InfoChain(u.Config.Information(), in) {
+					u.scanned++
 					out <- c
 				}
 			}(in, out)
@@ -263,10 +264,6 @@ func (u *Urlinsane) InfoChain(funcs []internal.Information, in <-chan internal.T
 		}
 		close(out)
 	}()
-
-	if len(funcs) == 1 {
-		u.scanned++
-	}
 
 	if len(funcs) > 0 {
 		return u.InfoChain(funcs, out)
