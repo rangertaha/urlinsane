@@ -24,6 +24,7 @@ import (
 )
 
 const (
+	ORDER       = 2
 	CODE        = "wi"
 	NAME        = "Whois"
 	DESCRIPTION = "Whois database search"
@@ -31,6 +32,10 @@ const (
 
 type None struct {
 	types []string
+}
+
+func (n *None) Order() int {
+	return ORDER
 }
 
 func (n *None) Id() string {

@@ -15,6 +15,7 @@
 package config
 
 import (
+	"sort"
 	"strings"
 	"time"
 
@@ -31,37 +32,52 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type Config struct {
-	target internal.Target // Config target
-	ctype  int             // Config type
+type (
+	Config struct {
+		target internal.Target // Config target
+		ctype  int             // Config type
 
-	// Plugins
-	keyboards   []internal.Keyboard
-	languages   []internal.Language
-	algorithms  []internal.Algorithm
-	information []internal.Information
-	output      internal.Output
+		// Plugins
+		keyboards   []internal.Keyboard
+		languages   []internal.Language
+		algorithms  []internal.Algorithm
+		information []internal.Information
+		output      internal.Output
 
-	// Performance
-	concurrency int
-	delay       time.Duration
-	random      time.Duration
-	levenshtein int
+		// Performance
+		concurrency int
+		delay       time.Duration
+		random      time.Duration
+		levenshtein int
 
-	// DNS
-	dnsRetryCount       int
-	dnsQueriesPerSecond int
-	dnsConcurrency      int
-	dnsServers          []string
+		// DNS
+		dnsRetryCount       int
+		dnsQueriesPerSecond int
+		dnsConcurrency      int
+		dnsServers          []string
 
-	// Output
-	verbose  bool
-	format   string
-	filters []string
-	file     string
-	showAll  bool
-	scanAll  bool
-	progress bool
+		// Output
+		verbose  bool
+		format   string
+		filters  []string
+		file     string
+		showAll  bool
+		scanAll  bool
+		progress bool
+	}
+
+	Infos             []internal.Information
+	InfosOrder        struct{ Infos }
+	InfosReverseOrder struct{ Infos }
+)
+
+func (o Infos) Len() int      { return len(o) }
+func (o Infos) Swap(i, j int) { o[i], o[j] = o[j], o[i] }
+func (l InfosReverseOrder) Less(i, j int) bool {
+	return l.Infos[i].Order() > l.Infos[j].Order()
+}
+func (l InfosOrder) Less(i, j int) bool {
+	return l.Infos[i].Order() < l.Infos[j].Order()
 }
 
 func New() Config {
@@ -214,6 +230,7 @@ func CobraConfig(cmd *cobra.Command, args []string, ttype int) (c Config, err er
 
 	if infos, err := commaSplit(cmd.Flags().GetString("info")); err == nil {
 		c.information = information.ListType(c.ctype, infos...)
+		sort.Sort(InfosOrder{c.information})
 	}
 
 	// Output options

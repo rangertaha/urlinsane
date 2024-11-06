@@ -22,6 +22,7 @@ import (
 )
 
 const (
+	ORDER       = 9
 	CODE        = "tp"
 	NAME        = "Topics"
 	DESCRIPTION = "Topics associated with the name"
@@ -33,6 +34,10 @@ type None struct {
 
 func (n *None) Id() string {
 	return CODE
+}
+
+func (n *None) Order() int {
+	return ORDER
 }
 
 func (n *None) Name() string {
@@ -48,7 +53,7 @@ func (n *None) Headers() []string {
 }
 
 func (n *None) Exec(in internal.Typo) (out internal.Typo) {
-	in.Variant().Add("TOPICS", "News")
+	// in.Variant().Add("TOPICS", "News")
 	return in
 }
 
