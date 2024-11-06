@@ -1,4 +1,4 @@
-package outputs
+package storage
 
 import (
 	"fmt"
@@ -6,41 +6,34 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 )
 
-const (
-	ENTITY  = "ENTITY"
-	DOMAINS = "DOMAINS"
-)
+type Creator func() internal.Storage
 
-type Creator func() internal.Output
-
-var Types = []string{"ENTITY", "DOMAINS"}
-
-var Outputs = map[string]Creator{}
+var Stores = map[string]Creator{}
 
 func Add(name string, creator Creator) {
-	Outputs[name] = creator
+	Stores[name] = creator
 }
 
-func Get(name string) (internal.Output, error) {
-	if plugin, ok := Outputs[name]; ok {
+func Get(name string) (internal.Storage, error) {
+	if plugin, ok := Stores[name]; ok {
 		return plugin(), nil
 	}
 
-	return nil, fmt.Errorf("unable to locate outputs/%s plugin", name)
+	return nil, fmt.Errorf("unable to locate storage/%s plugin", name)
 }
 
-func All() (mods []internal.Output) {
-	for _, plugin := range Outputs {
+func All() (mods []internal.Storage) {
+	for _, plugin := range Stores {
 		mods = append(mods, plugin())
 	}
 	return
 }
 
-func List(IDs ...string) (outputs []internal.Output) {
-	for id, output := range Outputs {
+func List(IDs ...string) (stores []internal.Storage) {
+	for id, output := range Stores {
 		for _, aid := range IDs {
 			if id == aid {
-				outputs = append(outputs, output())
+				stores = append(stores, output())
 			}
 		}
 	}
@@ -51,8 +44,8 @@ func List(IDs ...string) (outputs []internal.Output) {
 	}
 
 	if len(IDs) == 0 {
-		for _, output := range Outputs {
-			outputs = append(outputs, output())
+		for _, store := range Stores {
+			stores = append(stores, store())
 		}
 	}
 

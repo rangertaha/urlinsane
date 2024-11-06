@@ -18,6 +18,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"strings"
 	"text/template"
 
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -129,6 +130,7 @@ func init() {
 	domainCmd.Flags().Bool("all", false, "Scan all generated variants equivalent to: --ld 100")
 	domainCmd.Flags().Bool("show", false, "Show all generated variants")
 	domainCmd.Flags().Int("ld", 3, "Minimum levenshtein distance to scan")
+	domainCmd.Flags().String("filter",  DomainInformationFields(), "Output filter options")
 
 }
 
@@ -140,4 +142,14 @@ func DomainInformationTable() string {
 		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
 	}
 	return t.Render()
+}
+
+func DomainInformationFields() (fields string) {
+	headers := []string{}
+	for _, i := range domains.List() {
+		for _, header := range i.Headers(){
+			headers = append(headers, strings.ToLower(header))
+		}
+	}
+	return strings.Join(headers, ",")
 }

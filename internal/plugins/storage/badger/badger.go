@@ -12,14 +12,14 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package text
+package badger
 
 import (
 	"log"
 
 	badger "github.com/dgraph-io/badger/v4"
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
+	"github.com/rangertaha/urlinsane/internal/plugins/storage"
 )
 
 type Store struct {
@@ -51,7 +51,7 @@ func (n *Store) Write(key string, value interface{}) (err error) {
 
 // Register the plugin
 func init() {
-	outputs.Add("bdb", func() internal.Output {
+	storage.Add("bdb", func() internal.Storage {
 		return &Store{}
 	})
 }

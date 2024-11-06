@@ -57,6 +57,7 @@ type Config struct {
 	// Output
 	verbose  bool
 	format   string
+	filters []string
 	file     string
 	showAll  bool
 	scanAll  bool
@@ -87,6 +88,15 @@ func (c *Config) Output() internal.Output {
 }
 func (c *Config) Concurrency() int {
 	return c.concurrency
+}
+func (c *Config) Filters() (fields []string) {
+	for _, field := range fields {
+		field = strings.TrimSpace(field)
+		if field != "" {
+			fields = append(fields, field)
+		}
+	}
+	return c.filters
 }
 
 // Dist is the Levenshtein_distance
@@ -207,6 +217,10 @@ func CobraConfig(cmd *cobra.Command, args []string, ttype int) (c Config, err er
 	}
 
 	// Output options
+	if c.filters, err = commaSplit(cmd.Flags().GetString("filter")); err != nil {
+		return c, err
+	}
+
 	if c.file, err = cmd.Flags().GetString("file"); err != nil {
 		return c, err
 	}
