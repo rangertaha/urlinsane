@@ -25,8 +25,8 @@ import (
 const (
 	ORDER       = 2
 	CODE        = "mx"
-	NAME        = "Ip Address"
-	DESCRIPTION = "Domain IP addresses"
+	NAME        = "MX Records"
+	DESCRIPTION = "DNS MX Records"
 )
 
 type Ipaddr struct {
