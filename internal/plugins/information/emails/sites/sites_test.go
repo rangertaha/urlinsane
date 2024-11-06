@@ -12,19 +12,4 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package nlp
-
-// // TestLevenshtein ...
-// func TestLevenshtein(t *testing.T) {
-// 	var str1 = "Asheville"
-// 	var str2 = "Arizona"
-// 	fmt.Println("Distance between Asheville and Arizona:", Levenshtein(str1, str2))
-
-// 	str1 = "Python"
-// 	str2 = "Peithen"
-// 	fmt.Println("Distance between Python and Peithen:", Levenshtein(str1, str2))
-
-// 	str1 = "Orange"
-// 	str2 = "Apple"
-// 	fmt.Println("Distance between Orange and Apple:", Levenshtein(str1, str2))
-// }
+package sites

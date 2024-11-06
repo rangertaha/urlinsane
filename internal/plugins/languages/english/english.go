@@ -92,8 +92,13 @@ func (l *English) SimilarSounds(word string) []string {
 	return languages.SimilarSounds(l.homophones, word)
 }
 
-func (l *English) Keyboards() []internal.Keyboard {
-	return languages.Keyboards()
+func (l *English) Keyboards() (boards []internal.Keyboard) {
+	for _, b := range languages.Keyboards() {
+		if b.Language() == l.code {
+			boards = append(boards, b)
+		}
+	}
+	return
 }
 
 func (l *English) StopWords() []string {

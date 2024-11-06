@@ -1,22 +1,14 @@
-package information
+package emails
 
 import (
 	"fmt"
 
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
-	"github.com/rangertaha/urlinsane/internal/plugins/information/packages"
-	"github.com/rangertaha/urlinsane/internal/plugins/information/usernames"
 )
 
-// const (
-// 	ENTITY  = "ENTITY"
-// 	DOMAINS = "DOMAINS"
-// )
 
 type Creator func() internal.Information
 
-// var Types = []string{"ENTITY", "DOMAINS"}
 
 var Information = map[string]Creator{}
 
@@ -59,18 +51,5 @@ func List(IDs ...string) (infos []internal.Information) {
 		}
 	}
 
-	return
-}
-
-func ListType(ttype int, IDs ...string) (infos []internal.Information) {
-	if internal.DOMAIN == ttype {
-		return domains.List(IDs...)
-	}
-	if internal.PACKAGE == ttype {
-		return packages.List(IDs...)
-	}
-	if internal.NAME == ttype {
-		return usernames.List(IDs...)
-	}
 	return
 }

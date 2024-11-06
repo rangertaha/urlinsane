@@ -38,7 +38,7 @@ import (
 )
 
 const (
-	CODE        = "dcar"
+	CODE        = "dcr"
 	NAME        = "Double Character Adjacent Replacement"
 	DESCRIPTION = "Double character adjacent replacement typos replace consecutive identical letters with adjacent keys on the keyboard."
 )

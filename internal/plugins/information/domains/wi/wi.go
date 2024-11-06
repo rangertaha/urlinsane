@@ -20,7 +20,7 @@ package wi
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/information"
+	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
 )
 
 const (
@@ -55,7 +55,7 @@ func (n *None) Exec(in internal.Typo) (out internal.Typo) {
 
 // Register the plugin
 func init() {
-	information.Add(CODE, func() internal.Information {
+	domains.Add(CODE, func() internal.Information {
 		return &None{}
 	})
 }

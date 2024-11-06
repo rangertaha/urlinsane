@@ -12,23 +12,28 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package tp
+package sites
 
-// NLP Topic extraction
+// // cnameLookupFunc
+// func cnameLookupFunc(tr Result) (results []Result) {
+// 	records, _ := net.LookupCNAME(tr.Variant.String())
+// 	// tr.Variant.Meta.DNS.CName = records
+// 	for _, record := range records {
+// 		tr.Data["CNAME"] = strings.TrimSuffix(string(record), ".")
+// 		tr.Variant.Meta.DNS.CName = append(tr.Variant.Meta.DNS.CName, string(record))
+// 	}
+// 	results = append(results, Result{Original: tr.Original, Variant: tr.Variant, Typo: tr.Typo, Data: tr.Data})
+// 	return
+// }
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
+	"github.com/rangertaha/urlinsane/internal/plugins/information/usernames"
 )
 
-const (
-	CODE        = "tp"
-	NAME        = "Topics"
-	DESCRIPTION = "Topics associated with the name"
-)
+const CODE = "sites"
 
 type None struct {
-	types []string
 }
 
 func (n *None) Id() string {
@@ -36,25 +41,26 @@ func (n *None) Id() string {
 }
 
 func (n *None) Name() string {
-	return NAME
+	return "CNAME"
 }
 
 func (n *None) Description() string {
-	return DESCRIPTION
+	return "DNS CNAME record"
 }
 
 func (n *None) Headers() []string {
-	return []string{"TOPICS"}
+	return []string{"CNAME"}
 }
 
 func (n *None) Exec(in internal.Typo) (out internal.Typo) {
-	in.Variant().Add("TOPICS", "News")
+	in.Variant().Add("CNAME", 111111)
+	in.Variant().Add("JSON", []string{"one", "two"})
 	return in
 }
 
 // Register the plugin
 func init() {
-	domains.Add(CODE, func() internal.Information {
+	usernames.Add(CODE, func() internal.Information {
 		return &None{}
 	})
 }

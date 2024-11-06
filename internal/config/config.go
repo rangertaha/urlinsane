@@ -161,25 +161,28 @@ func (c *Config) DnsQps() int {
 }
 
 // CobraConfig creates a configuration from a cobra command options and arguments
-func CobraConfig(cmd *cobra.Command) (c Config, err error) {
+func CobraConfig(cmd *cobra.Command, args []string, ttype int) (c Config, err error) {
+	c.ctype = ttype
+
+	c.target = target.New(args[0])
 
 	// Target options
-	if name, err := cmd.Flags().GetString("name"); err == nil && name != "" {
-		c.ctype = internal.NAME
-		c.target = target.New(strings.TrimSpace(name))
-	}
-	if pkg, err := cmd.Flags().GetString("pkg"); err == nil && pkg != "" {
-		c.ctype = internal.PACKAGE
-		c.target = target.New(strings.TrimSpace(pkg))
-	}
-	if email, err := cmd.Flags().GetString("email"); err == nil && email != "" {
-		c.ctype = internal.EMAIL
-		c.target = target.New(strings.TrimSpace(email))
-	}
-	if domain, err := cmd.Flags().GetString("domain"); err == nil && domain != "" {
-		c.ctype = internal.DOMAIN
-		c.target = target.New(strings.TrimSpace(domain))
-	}
+	// if name, err := cmd.Flags().GetString("name"); err == nil && name != "" {
+	// 	c.ctype = internal.NAME
+	// 	c.target = target.New(strings.TrimSpace(name))
+	// }
+	// if pkg, err := cmd.Flags().GetString("pkg"); err == nil && pkg != "" {
+	// 	c.ctype = internal.PACKAGE
+	// 	c.target = target.New(strings.TrimSpace(pkg))
+	// }
+	// if email, err := cmd.Flags().GetString("email"); err == nil && email != "" {
+	// 	c.ctype = internal.EMAIL
+	// 	c.target = target.New(strings.TrimSpace(email))
+	// }
+	// if domain, err := cmd.Flags().GetString("domain"); err == nil && domain != "" {
+	// 	c.ctype = internal.DOMAIN
+	// 	c.target = target.New(strings.TrimSpace(domain))
+	// }
 	if url, err := cmd.Flags().GetString("url"); err == nil && url != "" {
 		if c.target != nil {
 			c.target.Add("url", url)
@@ -200,7 +203,7 @@ func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 	}
 
 	if infos, err := commaSplit(cmd.Flags().GetString("info")); err == nil {
-		c.information = information.List(infos...)
+		c.information = information.ListType(c.ctype, infos...)
 	}
 
 	// Output options
@@ -242,9 +245,12 @@ func CobraConfig(cmd *cobra.Command) (c Config, err error) {
 	if c.showAll, err = cmd.Flags().GetBool("show"); err != nil {
 		return c, err
 	}
+
 	if c.scanAll, err = cmd.Flags().GetBool("all"); err != nil {
 		return c, err
-	} else {
+	}
+
+	if c.scanAll {
 		c.levenshtein = 100
 	}
 
