@@ -1,59 +1,89 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"log"
-
-	"github.com/chromedp/cdproto/cdp"
-	"github.com/chromedp/chromedp"
+	"net"
+	"time"
 )
 
-type Product struct {
-	Url, Image, Name, Price string
-}
-
 func main() {
-	var products []Product
+	host := "facebook.com"
+	// port := os.Args[2]
 
-	// initialize a chrome instance
-	ctx, cancel := chromedp.NewContext(
-		context.Background(),
-		chromedp.WithLogf(log.Printf),
-	)
-	defer cancel()
-
-	// navigate to the target web page and select the HTML elements of interest
-	var nodes []*cdp.Node
-	chromedp.Run(ctx,
-		chromedp.Navigate("https://www.scrapingcourse.com/ecommerce"),
-		chromedp.Nodes(".product", &nodes, chromedp.ByQueryAll),
-	)
-
-	// scraping data from each node
-	var url, image, name, price string
-	for _, node := range nodes {
-		chromedp.Run(ctx,
-			chromedp.AttributeValue("a", "href", &url, nil, chromedp.ByQuery, chromedp.FromNode(node)),
-			chromedp.AttributeValue("img", "src", &image, nil, chromedp.ByQuery, chromedp.FromNode(node)),
-			chromedp.Text(".product-name", &name, chromedp.ByQuery, chromedp.FromNode(node)),
-			chromedp.Text(".price", &price, chromedp.ByQuery, chromedp.FromNode(node)),
-		)
-
-		product := Product{}
-
-		product.Url = url
-		product.Image = image
-		product.Name = name
-		product.Price = price
-
-		products = append(products, product)
+	// Connect to the target host and port
+	conn, err := net.DialTimeout("tcp", host+":80", 5*time.Second)
+	if err != nil {
+		fmt.Println("Error:", err.Error())
+		return
 	}
+	defer conn.Close()
 
-	fmt.Print(products)
+	// Send the request to the server
+	fmt.Fprintf(conn, "GET / HTTP/1.1\r\nHost: %s\r\n\r\n", host)
 
-	//... export logic
+	// Read the response from the server
+	buffer := make([]byte, 1024)
+	n, _ := conn.Read(buffer)
+
+	// Print the response
+	response := string(buffer[:n])
+	fmt.Println(response)
 }
+
+// import (
+// 	"context"
+// 	"fmt"
+// 	"log"
+
+// 	"github.com/chromedp/cdproto/cdp"
+// 	"github.com/chromedp/chromedp"
+// )
+
+// type Product struct {
+// 	Url, Image, Name, Price string
+// }
+
+// func main() {
+// 	var products []Product
+
+// 	// initialize a chrome instance
+// 	ctx, cancel := chromedp.NewContext(
+// 		context.Background(),
+// 		chromedp.WithLogf(log.Printf),
+// 	)
+// 	defer cancel()
+
+// 	// navigate to the target web page and select the HTML elements of interest
+// 	var nodes []*cdp.Node
+// 	chromedp.Run(ctx,
+// 		chromedp.Navigate("https://www.scrapingcourse.com/ecommerce"),
+// 		chromedp.Nodes(".product", &nodes, chromedp.ByQueryAll),
+// 	)
+
+// 	// scraping data from each node
+// 	var url, image, name, price string
+// 	for _, node := range nodes {
+// 		chromedp.Run(ctx,
+// 			chromedp.AttributeValue("a", "href", &url, nil, chromedp.ByQuery, chromedp.FromNode(node)),
+// 			chromedp.AttributeValue("img", "src", &image, nil, chromedp.ByQuery, chromedp.FromNode(node)),
+// 			chromedp.Text(".product-name", &name, chromedp.ByQuery, chromedp.FromNode(node)),
+// 			chromedp.Text(".price", &price, chromedp.ByQuery, chromedp.FromNode(node)),
+// 		)
+
+// 		product := Product{}
+
+// 		product.Url = url
+// 		product.Image = image
+// 		product.Name = name
+// 		product.Price = price
+
+// 		products = append(products, product)
+// 	}
+
+// 	fmt.Print(products)
+
+// 	//... export logic
+// }
 
 // import "github.com/gocolly/colly"
 

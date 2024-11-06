@@ -13,4 +13,5 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/txt"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/web"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/wi"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/bn"
 )
