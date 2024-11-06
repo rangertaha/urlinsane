@@ -45,12 +45,6 @@ func (n *Algo) Init(conf internal.Config) {
 	n.keyboards = conf.Keyboards()
 	n.languages = conf.Languages()
 	n.config = conf
-
-	// Supported targets
-	n.funcs[internal.DOMAIN] = n.domain
-	n.funcs[internal.PACKAGE] = n.name
-	n.funcs[internal.EMAIL] = n.email
-	n.funcs[internal.NAME] = n.name
 }
 
 func (n *Algo) Name() string {
@@ -61,10 +55,10 @@ func (n *Algo) Description() string {
 }
 
 func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
-	return n.funcs[n.config.Type()](typo)
+	return nil
 }
 
-func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
+func (n *Algo) Domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
 
 	for _, language := range n.languages {
@@ -83,7 +77,7 @@ func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	return
 }
 
-func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
+func (n *Algo) Email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
 
 	for _, language := range n.languages {
@@ -99,7 +93,20 @@ func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	return
 }
 
-func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
+func (n *Algo) Username(typo internal.Typo) (typos []internal.Typo) {
+	name := n.config.Target().Name()
+	for _, language := range n.languages {
+		for _, variant := range algo.GraphemeInsertion(name, language.Graphemes()...) {
+
+			if name != variant {
+				typos = append(typos, typo.Clone(variant))
+			}
+		}
+	}
+	return
+}
+
+func (n *Algo) Package(typo internal.Typo) (typos []internal.Typo) {
 	name := n.config.Target().Name()
 	for _, language := range n.languages {
 		for _, variant := range algo.GraphemeInsertion(name, language.Graphemes()...) {

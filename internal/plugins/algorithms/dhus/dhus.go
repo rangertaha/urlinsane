@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	CODE        = "dhus"
+	CODE        = "dhu"
 	NAME        = "Dot Hyphen Underscore Sub"
 	DESCRIPTION = "Omitting a character from the name"
 )

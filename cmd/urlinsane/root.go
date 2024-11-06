@@ -19,82 +19,8 @@ import (
 	"os"
 	"time"
 
-	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
-	// _ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
-	// _ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
-	"github.com/rangertaha/urlinsane/internal/config"
 	"github.com/spf13/cobra"
 )
-
-// const templateBase = `USAGE:{{if .Runnable}}
-//   {{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}
-//   {{.CommandPath}} [command]{{end}}{{if gt (len .Aliases) 0}}
-
-// ALIASES:
-//   {{.NameAndAliases}}{{end}}{{if .HasExample}}
-
-// EXAMPLES:
-// {{.Example}}{{end}}{{if .HasAvailableSubCommands}}
-// Available Commands:{{range .Commands}}{{if (or .IsAvailableCommand (eq .Name "help"))}}
-//   {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableLocalFlags}}
-
-// OPTIONS:
-// {{.LocalFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasAvailableInheritedFlags}}
-
-// GLOBAL OPTIONS:
-// {{.InheritedFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasHelpSubCommands}}
-// Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
-//   {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableSubCommands}}
-
-// Use "{{.CommandPath}} [command] --help" for more information about a command.{{end}}`
-
-// const helpTemplate = `
-
-// ALGORITHMS:
-//     Typosquatting algorithm plugins that generate typos.
-
-//     ID | Name    | Description
-//     -----------------------------------------{{range .Algorithms}}
-//     {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
-
-// INFORMATION:
-//     Information-gathering plugins that collect information on each typo
-
-//     ID | Name    | Description
-//     -----------------------------------------{{range .Information}}
-//     {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
-
-// LANGUAGES:
-//     ID | Name    | Description
-//     -----------------------------------------{{range .Languages}}
-//     {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
-
-// KEYBOARDS:
-//     ID | Name    | Description
-//     -----------------------------------------{{range .Keyboards}}
-//     {{.Id}}{{"\t"}}{{.Name}}{{"\t"}}{{.Description}}{{end}}
-
-// EXAMPLE:
-
-//     urlinsane google.com
-//     urlinsane -t co google.com
-//     urlinsane -t co,oi,oy -i ip,idna,ns google.com
-//     urlinsane -l fr,en -k en1,en2 google.com
-
-// AUTHOR:
-//    Rangertaha (rangertaha@gmail.com)
-
-// `
-
-// type HelpOptions struct {
-// 	Languages   []internal.Language
-// 	Keyboards   []internal.Keyboard
-// 	Algorithms  []internal.Algorithm
-// 	Information []internal.Information
-// }
-
-// var cliOptions bytes.Buffer
-var Config config.Config
 
 // rootCmd represents the typo command
 var rootCmd = &cobra.Command{
@@ -110,32 +36,12 @@ var rootCmd = &cobra.Command{
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 
 	},
-	//   PreRun: func(cmd *cobra.Command, args []string) {
-	// 	fmt.Printf("Inside rootCmd PreRun with args: %v\n", args)
-	//   },
 	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
-		// if len(args) == 0 {
-		// 	cmd.Help()
-		// 	os.Exit(0)
-		// }
-
-		// config, err := config.CobraConfig(cmd, args)
-		// if err != nil {
-		// 	fmt.Printf("%s", err)
-		// 	os.Exit(0)
-		// }
-		// fmt.Print(internal.LOGO)
-		// t := engine.NewDomainTypos(config)
-		// t.Execute()
-
+		if len(args) == 0 {
+			cmd.Help()
+			os.Exit(0)
+		}
 	},
-	//   PostRun: func(cmd *cobra.Command, args []string) {
-	// 	fmt.Printf("Inside rootCmd PostRun with args: %v\n", args)
-	//   },
-	//   PersistentPostRun: func(cmd *cobra.Command, args []string) {
-	// 	fmt.Printf("Inside rootCmd PersistentPostRun with args: %v\n", args)
-	//   },
 }
 
 func Execute() {
@@ -145,34 +51,7 @@ func Execute() {
 	}
 }
 func init() {
-
-	// // fmt.Println(languages.Languages())
-	// helpOptions := HelpOptions{
-	// 	languages.Languages(),
-	// 	languages.Keyboards(),
-	// 	algorithms.List(),
-	// 	information.List(),
-	// }
-
-	// // Create a new template and parse the letter into it.
-	// tmpl := template.Must(template.New("help").Parse(helpTemplate))
-
-	// // Run the template to verify the output.
-	// err := tmpl.Execute(&cliOptions, helpOptions)
-	// if err != nil {
-	// 	fmt.Printf("Execution: %s", err)
-	// }
-
-	// rootCmd.SetUsageTemplate(templateBase + cliOptions.String())
-	// rootCmd.SetVersionTemplate(internal.VERSION)
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
-
-	// Targets
-	// rootCmd.PersistentFlags().Bool("lib", false, "IDs of languages to use for linguistic algorithms")
-	// rootCmd.PersistentFlags().Bool("email", false, "IDs of languages to use for linguistic algorithms")
-	// rootCmd.PersistentFlags().Bool("username", false, "IDs of keyboard layouts to use of the given languages")
-	// rootCmd.PersistentFlags().Bool("domain", false, "IDs of keyboard layouts to use of the given languages")
-	// rootCmd.MarkFlagsMutuallyExclusive("email", "lib", "username", "domain")
 
 	// Plugins
 	rootCmd.PersistentFlags().StringP("languages", "l", "all", "IDs of languages to use for linguistic algorithms")
@@ -182,14 +61,10 @@ func init() {
 	// rootCmd.PersistentFlags().Bool("list-keyboards", false, "List keyboards and their IDs")
 
 	rootCmd.PersistentFlags().StringP("algorithms", "a", "all", "IDs of typo algorithms to use for generating typos")
-	rootCmd.PersistentFlags().Bool("plugins", false, "List plugins/IDs for algorithms, langauages, information, and keyboards")
-
-	// rootCmd.PersistentFlags().StringP("info", "i", "all", "IDs of info gathering functions to apply")
+	// rootCmd.PersistentFlags().Bool("plugins", false, "List plugins/IDs for algorithms, langauages, information, and keyboards")
 
 	// Cache
-	rootCmd.PersistentFlags().Duration("ttl", time.Hour * 24, "Cache duration for expiration")
-
-
+	rootCmd.PersistentFlags().Duration("ttl", time.Hour*24, "Cache duration for expiration")
 
 	// Timing
 	rootCmd.PersistentFlags().IntP("concurrency", "c", 50, "Number of concurrent workers")
@@ -197,15 +72,15 @@ func init() {
 	rootCmd.PersistentFlags().Duration("delay", 1, "Duration between network calls")
 
 	// DNS
-	rootCmd.PersistentFlags().String("dns-servers", "", "DNS Servers seperated by commas")
-	rootCmd.PersistentFlags().Int("dns-concurrency", 10, "Max concurrency")
-	rootCmd.PersistentFlags().Int("dns-qps", 10, "Queries Per Second")
-	rootCmd.PersistentFlags().Int("dns-retry", 10, "Query retry count")
+	// rootCmd.PersistentFlags().String("dns-servers", "", "DNS Servers seperated by commas")
+	// rootCmd.PersistentFlags().Int("dns-concurrency", 10, "Max concurrency")
+	// rootCmd.PersistentFlags().Int("dns-qps", 10, "Queries Per Second")
+	// rootCmd.PersistentFlags().Int("dns-retry", 10, "Query retry count")
 
 	// Outputs
 	rootCmd.PersistentFlags().BoolP("progress", "p", false, "Show progress bar")
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Show more details and remove truncated columns")
 	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename defaults to stdout")
-	rootCmd.PersistentFlags().StringP("format", "o", "table", "Output format: (csv,tsv,table,text,html,md)")
+	rootCmd.PersistentFlags().StringP("format", "o", "table", "Output format: (csv,tsv,table,txt,html,md)")
 
 }

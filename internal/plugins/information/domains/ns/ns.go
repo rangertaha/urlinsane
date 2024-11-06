@@ -19,7 +19,7 @@ import (
 	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/information"
+	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
 	// "github.com/rangertaha/urlinsane/pkg/dns/resolver"
 )
 
@@ -66,7 +66,7 @@ func (i *Ipaddr) Exec(in internal.Typo) (out internal.Typo) {
 			for _, ip := range ips {
 				answers = append(answers, ip.Host)
 			}
-			in.Variant().Add("NS", strings.Join(answers, "\n"))
+			in.Variant().Add("NS", strings.Join(answers, " "))
 			in.Variant().Live(true)
 		}
 
@@ -90,7 +90,7 @@ func (i *Ipaddr) Close() {
 
 // Register the plugin
 func init() {
-	information.Add(CODE, func() internal.Information {
+	domains.Add(CODE, func() internal.Information {
 		return &Ipaddr{}
 	})
 }

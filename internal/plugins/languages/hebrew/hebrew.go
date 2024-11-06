@@ -90,8 +90,13 @@ func (l *Hebrew) SimilarSounds(word string) []string {
 	return languages.SimilarSounds(l.homophones, word)
 }
 
-func (l *Hebrew) Keyboards() []internal.Keyboard {
-	return languages.Keyboards()
+func (l *Hebrew)Keyboards() (boards []internal.Keyboard) {
+	for _, b := range languages.Keyboards() {
+		if b.Language() == l.code {
+			boards = append(boards, b)
+		}
+	}
+	return
 }
 
 var (
