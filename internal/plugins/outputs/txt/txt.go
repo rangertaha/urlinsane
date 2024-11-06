@@ -17,6 +17,7 @@ package txt
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
@@ -24,7 +25,7 @@ import (
 
 const (
 	CODE        = "txt"
-	DESCRIPTION = "Text outputs one record per line and is the default"
+	DESCRIPTION = "Text outputs one record per line"
 )
 
 type Text struct {
@@ -56,14 +57,34 @@ func (n *Text) Write(in internal.Typo) {
 func (n *Text) Stream(in internal.Typo) {
 	var data []interface{}
 	data = append(data, in.Ld())
-	data = append(data, in.Algorithm().Name())
+	if n.config.Verbose() {
+		data = append(data, in.Algorithm().Name())
+	} else {
+		data = append(data, in.Algorithm().Id())
+	}
 	data = append(data, in.Variant().Name())
 
-	for _, v := range in.Variant().Meta() {
-		data = append(data, v)
+	for h, v := range in.Variant().Meta() {
+		if n.Filter(h) {
+			data = append(data, v)
+		}
+
 	}
 	fmt.Println(data...)
 	n.output = n.output + fmt.Sprint(data...) + "\n"
+}
+
+func (n *Text) Filter(header string) bool {
+	header = strings.TrimSpace(header)
+	header = strings.ToLower(header)
+	for _, filter := range n.config.Filters() {
+		filter = strings.TrimSpace(filter)
+		filter = strings.ToLower(filter)
+		if filter == header {
+			return true
+		}
+	}
+	return false
 }
 
 func (n *Text) Summary(report map[string]int64) {

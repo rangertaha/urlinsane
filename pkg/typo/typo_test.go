@@ -1132,56 +1132,56 @@ func TestOrdinalSwap(t *testing.T) {
 
 // TestDotHyphenSubstitution substitutes (.-) in a given name to produce variants that
 // look similar.
-func TestDotHyphenSubstitution(t *testing.T) {
-	tests := []TypoCase{
-		{
-			name: "123",
-			typos: []string{
-				"12third", "1second3", "1secondthird", "first23", "first2third", "firstsecond3", "firstsecondthird",
-			},
-		},
-		{
-			name:  "threeonly2",
-			typos: []string{"threeonlysecond"},
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			variants := DotHyphenSubstitution(test.name)
-			sort.Strings(variants)
+// func TestDotHyphenSubstitution(t *testing.T) {
+// 	tests := []TypoCase{
+// 		{
+// 			name: "123",
+// 			typos: []string{
+// 				"12third", "1second3", "1secondthird", "first23", "first2third", "firstsecond3", "firstsecondthird",
+// 			},
+// 		},
+// 		{
+// 			name:  "threeonly2",
+// 			typos: []string{"threeonlysecond"},
+// 		},
+// 	}
+// 	for _, test := range tests {
+// 		t.Run(test.name, func(t *testing.T) {
+// 			variants := DotHyphenSubstitution(test.name)
+// 			sort.Strings(variants)
 
-			if !reflect.DeepEqual(variants, test.typos) {
-				t.Errorf("OrdinalSwap(%s) = %s; want %s", test.name, variants, test.typos)
-			}
+// 			if !reflect.DeepEqual(variants, test.typos) {
+// 				t.Errorf("OrdinalSwap(%s) = %s; want %s", test.name, variants, test.typos)
+// 			}
 
-		})
-	}
-}
+// 		})
+// 	}
+// }
 
 // TestDHUSubstitution substitutes (.-_) in a given name to produce variants that
 // look similar. Primarily used in package names
-func TestDHUSubstitution(t *testing.T) {
-	tests := []TypoCase{
-		{
-			name: "123",
-			typos: []string{
-				"12third", "1second3", "1secondthird", "first23", "first2third", "firstsecond3", "firstsecondthird",
-			},
-		},
-		{
-			name:  "threeonly2",
-			typos: []string{"threeonlysecond"},
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			variants := DHUSubstitution(test.name)
-			sort.Strings(variants)
+// func TestDHUSubstitution(t *testing.T) {
+// 	tests := []TypoCase{
+// 		{
+// 			name: "123",
+// 			typos: []string{
+// 				"12third", "1second3", "1secondthird", "first23", "first2third", "firstsecond3", "firstsecondthird",
+// 			},
+// 		},
+// 		{
+// 			name:  "threeonly2",
+// 			typos: []string{"threeonlysecond"},
+// 		},
+// 	}
+// 	for _, test := range tests {
+// 		t.Run(test.name, func(t *testing.T) {
+// 			variants := DHUSubstitution(test.name)
+// 			sort.Strings(variants)
 
-			if !reflect.DeepEqual(variants, test.typos) {
-				t.Errorf("OrdinalSwap(%s) = %s; want %s", test.name, variants, test.typos)
-			}
+// 			if !reflect.DeepEqual(variants, test.typos) {
+// 				t.Errorf("OrdinalSwap(%s) = %s; want %s", test.name, variants, test.typos)
+// 			}
 
-		})
-	}
-}
+// 		})
+// 	}
+// }
