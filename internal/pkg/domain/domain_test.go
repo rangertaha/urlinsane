@@ -14,73 +14,69 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package domain
 
-import (
-	"testing"
-)
+// func TestDomain(t *testing.T) {
+// 	tests := []struct {
+// 		input   string
+// 		results []string
+// 	}{
+// 		{
+// 			input: "facebook.com.io.uk",
+// 			results: []string{
+// 				"facebookcom.io.uk",
+// 				"facebook.comio.uk",
+// 				"facebook.com.iouk",
+// 			},
+// 		},
+// 	}
 
-func TestDomain(t *testing.T) {
-	tests := []struct {
-		input   string
-		results []string
-	}{
-		{
-			input: "facebook.com.io.uk",
-			results: []string{
-				"facebookcom.io.uk",
-				"facebook.comio.uk",
-				"facebook.com.iouk",
-			},
-		},
-	}
+// 	// for _, test := range tests {
+// 	// 	t.Run(test.original, func(t *testing.T) {
+// 	// 		algo := Algo{}
+// 	// 		variants := algo.Func(test.original, ".")
 
-	// for _, test := range tests {
-	// 	t.Run(test.original, func(t *testing.T) {
-	// 		algo := Algo{}
-	// 		variants := algo.Func(test.original, ".")
+// 	// 		if !reflect.DeepEqual(variants, test.variants) {
+// 	// 			t.Errorf("algo.Func(%s, '.') = %s; want %s", test.original, variants, test.variants)
+// 	// 		}
+// 	// 	})
+// 	// }
 
-	// 		if !reflect.DeepEqual(variants, test.variants) {
-	// 			t.Errorf("algo.Func(%s, '.') = %s; want %s", test.original, variants, test.variants)
-	// 		}
-	// 	})
-	// }
+// 	// t.Run("md id", func(t *testing.T) {
+// 	// 	algo := Algo{}
+// 	// 	if algo.Id() != CODE {
+// 	// 		t.Errorf("algo.Id() = '%s'; want '%s'", algo.Id(), CODE)
+// 	// 	}
+// 	// })
 
-	// t.Run("md id", func(t *testing.T) {
-	// 	algo := Algo{}
-	// 	if algo.Id() != CODE {
-	// 		t.Errorf("algo.Id() = '%s'; want '%s'", algo.Id(), CODE)
-	// 	}
-	// })
+// 	// t.Run("md empty id", func(t *testing.T) {
+// 	// 	algo := Algo{}
+// 	// 	if algo.Id() == "" {
+// 	// 		t.Errorf("algo.Id() can not return an empty string")
+// 	// 	}
+// 	// })
+// 	// t.Run("md name", func(t *testing.T) {
+// 	// 	algo := Algo{}
+// 	// 	if algo.Name() != NAME {
+// 	// 		t.Errorf("algo.Name() = '%s'; want '%s'", algo.Name(), NAME)
+// 	// 	}
+// 	// })
 
-	// t.Run("md empty id", func(t *testing.T) {
-	// 	algo := Algo{}
-	// 	if algo.Id() == "" {
-	// 		t.Errorf("algo.Id() can not return an empty string")
-	// 	}
-	// })
-	// t.Run("md name", func(t *testing.T) {
-	// 	algo := Algo{}
-	// 	if algo.Name() != NAME {
-	// 		t.Errorf("algo.Name() = '%s'; want '%s'", algo.Name(), NAME)
-	// 	}
-	// })
+// 	// t.Run("md empty name", func(t *testing.T) {
+// 	// 	algo := Algo{}
+// 	// 	if algo.Name() == "" {
+// 	// 		t.Errorf("algo.Name() can not return an empty string")
+// 	// 	}
+// 	// })
+// 	// t.Run("md description", func(t *testing.T) {
+// 	// 	algo := Algo{}
+// 	// 	if algo.Description() != DESCRIPTION {
+// 	// 		t.Errorf("algo.Description() = '%s'; want '%s'", algo.Name(), DESCRIPTION)
+// 	// 	}
+// 	// })
 
-	// t.Run("md empty name", func(t *testing.T) {
-	// 	algo := Algo{}
-	// 	if algo.Name() == "" {
-	// 		t.Errorf("algo.Name() can not return an empty string")
-	// 	}
-	// })
-	// t.Run("md description", func(t *testing.T) {
-	// 	algo := Algo{}
-	// 	if algo.Description() != DESCRIPTION {
-	// 		t.Errorf("algo.Description() = '%s'; want '%s'", algo.Name(), DESCRIPTION)
-	// 	}
-	// })
-
-	// t.Run("md empty description", func(t *testing.T) {
-	// 	algo := Algo{}
-	// 	if algo.Description() == "" {
-	// 		t.Errorf("algo.Description() can not return an empty string")
-	// 	}
-	// })
-}
+// 	// t.Run("md empty description", func(t *testing.T) {
+// 	// 	algo := Algo{}
+// 	// 	if algo.Description() == "" {
+// 	// 		t.Errorf("algo.Description() can not return an empty string")
+// 	// 	}
+// 	// })
+// }
