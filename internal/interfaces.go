@@ -81,6 +81,7 @@ type Information interface {
 	Description() string
 	Headers() []string
 	Exec(Typo) Typo
+	Order() int
 }
 
 type Storage interface {

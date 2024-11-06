@@ -14,38 +14,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package web
 
-// // httpLookupFunc
-// func httpLookupFunc(tr Result) (results []Result) {
-// 	if tr := checkIP(tr); tr.Variant.Live {
-// 		httpReq, gerr := http.Get("http://" + tr.Variant.String())
-// 		if gerr == nil {
-// 			tr.Variant.Meta.HTTP = httpLib.NewResponse(httpReq)
-// 			// spew.Dump(original)
-
-// 			str := httpReq.Request.URL.String()
-// 			subdomain := domainutil.Subdomain(str)
-// 			domain := domainutil.DomainPrefix(str)
-// 			suffix := domainutil.DomainSuffix(str)
-// 			if domain == "" {
-// 				domain = str
-// 			}
-// 			dm := Domain{subdomain, domain, suffix, tr.Variant.Meta, true}
-// 			if tr.Variant.String() != dm.String() {
-// 				tr.Data["Redirect"] = dm.String()
-// 				tr.Variant.Meta.Redirect = dm.String()
-// 			}
-// 		}
-// 	}
-// 	results = append(results, tr)
-// 	return
-// }
-
 import (
+	"context"
+	"fmt"
+	"os"
+	"time"
+
+	"github.com/chromedp/chromedp"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
 )
 
 const (
+	ORDER       = 2
 	CODE        = "web"
 	NAME        = "Download Webpage"
 	DESCRIPTION = "Retrieving the web page contents"
@@ -55,21 +36,74 @@ type None struct {
 	types []string
 }
 
-func (n *None) Id() string {
+func (p *None) Id() string {
 	return CODE
 }
 
-func (n *None) Description() string {
+func (p *None) Order() int {
+	return ORDER
+}
+
+func (p *None) Description() string {
 	return DESCRIPTION
 }
 
-func (n *None) Headers() []string {
-	return []string{"HTTP"}
+func (p *None) Headers() []string {
+	return []string{"IMAGE"}
 }
 
-func (n *None) Exec(in internal.Typo) (out internal.Typo) {
-	// in.Variant().Add("HTTP", []string{"one", "two"})
+func (p *None) Exec(in internal.Typo) (out internal.Typo) {
+	if v := in.Variant(); v.Live() {
+		file := p.Screenshot(v.Name())
+		v.Add("IMAGE", file)
+	}
+
 	return in
+}
+
+func (p *None) Screenshot(domain string) (filename string) {
+	// create context
+	ctx, cancel := chromedp.NewContext(context.Background())
+	defer cancel()
+
+	ctx, cancel = context.WithTimeout(ctx, 25*time.Second)
+	defer cancel()
+
+	var buf []byte
+	url := fmt.Sprintf("http://%s", domain)
+	// capture entire browser viewport, returning png with quality=90
+	if err := chromedp.Run(ctx, fullScreenshot(url, 90, &buf)); err != nil {
+		url := fmt.Sprintf("https://%s", domain)
+		if err := chromedp.Run(ctx, fullScreenshot(url, 90, &buf)); err != nil {
+			// log.Fatal(err)
+			return ""
+		}
+	}
+	filename = fmt.Sprintf("main/files/%s.png", domain)
+	if err := os.WriteFile(filename, buf, 0o644); err != nil {
+		// log.Fatal(err)
+		return ""
+	}
+	return filename
+}
+
+// elementScreenshot takes a screenshot of a specific element.
+func elementScreenshot(urlstr, sel string, res *[]byte) chromedp.Tasks {
+	return chromedp.Tasks{
+		chromedp.Navigate(urlstr),
+		chromedp.Screenshot(sel, res, chromedp.NodeVisible),
+	}
+}
+
+// fullScreenshot takes a screenshot of the entire browser viewport.
+//
+// Note: chromedp.FullScreenshot overrides the device's emulation settings. Use
+// device.Reset to reset the emulation and viewport settings.
+func fullScreenshot(urlstr string, quality int, res *[]byte) chromedp.Tasks {
+	return chromedp.Tasks{
+		chromedp.Navigate(urlstr),
+		chromedp.FullScreenshot(res, quality),
+	}
 }
 
 // Register the plugin

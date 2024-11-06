@@ -19,6 +19,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/rangertaha/urlinsane/cmd/urlinsane/typo"
 	"github.com/spf13/cobra"
 )
 
@@ -52,6 +53,7 @@ func Execute() {
 }
 func init() {
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
+	rootCmd.AddCommand(typo.TypoCmd)
 
 	// Plugins
 	rootCmd.PersistentFlags().StringP("languages", "l", "all", "IDs of languages to use for linguistic algorithms")
