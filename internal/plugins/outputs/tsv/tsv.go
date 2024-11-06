@@ -46,6 +46,7 @@ func (n *Text) Init(conf internal.Config) {
 	n.table = table.NewWriter()
 	n.table.SetOutputMirror(os.Stdout)
 	n.table.AppendHeader(n.Header())
+	n.table.AppendFooter(n.Header())
 }
 
 func (n *Text) Header() (row table.Row) {
@@ -54,8 +55,10 @@ func (n *Text) Header() (row table.Row) {
 	row = append(row, "TYPO")
 
 	for _, info := range n.config.Information() {
-		for _, headers := range info.Headers() {
-			row = append(row, headers)
+		for _, header := range info.Headers() {
+			if n.Filter(header) {
+				row = append(row, header)
+			}
 		}
 	}
 	return
@@ -72,15 +75,30 @@ func (n *Text) Row(typo internal.Typo) (row table.Row) {
 
 	for _, info := range n.config.Information() {
 		for _, header := range info.Headers() {
-			meta := typo.Variant().Meta()
-			if col, ok := meta[header]; ok {
-				row = append(row, col)
-			} else {
-				row = append(row, "")
+			if n.Filter(header) {
+				meta := typo.Variant().Meta()
+				if col, ok := meta[header]; ok {
+					row = append(row, col)
+				} else {
+					row = append(row, "")
+				}
 			}
 		}
 	}
 	return
+}
+
+func (n *Text) Filter(header string) bool {
+	header = strings.TrimSpace(header)
+	header = strings.ToLower(header)
+	for _, filter := range n.config.Filters() {
+		filter = strings.TrimSpace(filter)
+		filter = strings.ToLower(filter)
+		if filter == header {
+			return true
+		}
+	}
+	return false
 }
 
 func (n *Text) Write(in internal.Typo) {

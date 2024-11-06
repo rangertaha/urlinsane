@@ -24,7 +24,10 @@ import (
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
 )
 
-const CODE = "md"
+const (
+	CODE        = "md"
+	DESCRIPTION = "Markdown formatted output"
+)
 
 type Text struct {
 	table  table.Writer
@@ -36,7 +39,7 @@ func (n *Text) Id() string {
 }
 
 func (n *Text) Description() string {
-	return "Markdown formatted output"
+	return DESCRIPTION
 }
 
 func (n *Text) Init(conf internal.Config) {
@@ -47,49 +50,16 @@ func (n *Text) Init(conf internal.Config) {
 }
 
 
-// func (n *Text) getHeader() (row table.Row) {
-// 	row = append(row, "ID")
-// 	row = append(row, "TYPE")
-// 	row = append(row, "TYPO")
-// 	for _, info := range n.config.Information() {
-// 		for _, headers := range info.Headers() {
-// 			row = append(row, headers)
-// 		}
-// 	}
-
-// 	return
-// }
-
-// func (n *Text) getRow(typo internal.Typo) (row table.Row) {
-// 	row = append(row, typo.Id())
-// 	if n.config.Verbose() {
-// 		row = append(row, typo.Algorithm().Name())
-// 	} else {
-// 		row = append(row, strings.ToUpper(typo.Algorithm().Id()))
-// 	}
-// 	row = append(row, typo.Variant().Repr())
-// 	for _, info := range n.config.Information() {
-// 		for _, header := range info.Headers() {
-// 			meta := typo.Variant().Meta()
-// 			row = append(row, meta[header])
-// 		}
-// 	}
-
-// 	return
-// }
-
-// func (n *Text) Write(in internal.Typo) {
-// 	n.table.AppendRow(n.getRow(in))
-// }
-
 func (n *Text) Header() (row table.Row) {
 	row = append(row, "LD")
 	row = append(row, "TYPE")
 	row = append(row, "TYPO")
 
 	for _, info := range n.config.Information() {
-		for _, headers := range info.Headers() {
-			row = append(row, headers)
+		for _, header := range info.Headers() {
+			if n.Filter(header) {
+				row = append(row, header)
+			}
 		}
 	}
 	return
@@ -106,15 +76,30 @@ func (n *Text) Row(typo internal.Typo) (row table.Row) {
 
 	for _, info := range n.config.Information() {
 		for _, header := range info.Headers() {
-			meta := typo.Variant().Meta()
-			if col, ok := meta[header]; ok {
-				row = append(row, col)
-			} else {
-				row = append(row, "")
+			if n.Filter(header) {
+				meta := typo.Variant().Meta()
+				if col, ok := meta[header]; ok {
+					row = append(row, col)
+				} else {
+					row = append(row, "")
+				}
 			}
 		}
 	}
 	return
+}
+
+func (n *Text) Filter(header string) bool {
+	header = strings.TrimSpace(header)
+	header = strings.ToLower(header)
+	for _, filter := range n.config.Filters() {
+		filter = strings.TrimSpace(filter)
+		filter = strings.ToLower(filter)
+		if filter == header {
+			return true
+		}
+	}
+	return false
 }
 
 func (n *Text) Progress(typo <-chan internal.Typo) <-chan internal.Typo {

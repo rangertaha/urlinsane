@@ -51,6 +51,7 @@ type Config interface {
 	Dist() int
 	Type() int
 	ShowAll() bool
+	Filters() []string
 }
 
 type Algorithm interface {
