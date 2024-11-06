@@ -22,6 +22,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
+	"github.com/rangertaha/urlinsane/internal/utils"
 	"golang.org/x/term"
 )
 
@@ -93,7 +94,7 @@ func (n *Text) Row(typo internal.Typo) (row table.Row) {
 }
 
 func (n *Text) Config() (row table.Row) {
-	n.table.SetStyle(StyleDefault)
+	n.table.SetStyle(utils.StyleDefault)
 	n.table.AppendFooter(table.Row{})
 
 	// nameTransformer := text.Transformer(func(val interface{}) string {

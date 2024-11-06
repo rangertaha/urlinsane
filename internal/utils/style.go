@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package table
+package utils
 
 import (
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -354,6 +354,17 @@ var (
 		Size:    SizeOptionsDefault,
 		Title:   TitleOptionsDefault,
 	}
+
+	StyleClear = table.Style{
+		Name:    "styleTest",
+		Box:     styleBoxClear,
+		Color:   ColorOptionsDefault,
+		Format:  FormatOptionsDefault,
+		HTML:    DefaultHTMLOptions,
+		Options: OptionsDefault,
+		Size:    SizeOptionsDefault,
+		Title:   TitleOptionsDefault,
+	}
 )
 
 // // BoxStyle defines the characters/strings to use to render the borders and
@@ -564,6 +575,27 @@ var (
 		TopRight:         ")",
 		TopSeparator:     "^",
 		UnfinishedRow:    " ~~~",
+	}
+
+	styleBoxClear = table.BoxStyle{
+		BottomLeft:       " ",
+		BottomRight:      " ",
+		BottomSeparator:  "",
+		EmptySeparator:   " ",
+		Left:             "",
+		LeftSeparator:    " ",
+		MiddleHorizontal: " ",
+		MiddleSeparator:  " ",
+		MiddleVertical:   " ",
+		PaddingLeft:      " ",
+		PaddingRight:     "",
+		PageSeparator:    "",
+		Right:            " ",
+		RightSeparator:   " ",
+		TopLeft:          " ",
+		TopRight:         " ",
+		TopSeparator:     " ",
+		UnfinishedRow:    " ",
 	}
 )
 

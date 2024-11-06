@@ -20,7 +20,7 @@ import (
 	"os"
 
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/information"
+	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -83,7 +83,7 @@ func (n *None) Exec(in internal.Typo) internal.Typo {
 
 // Register the plugin
 func init() {
-	information.Add(CODE, func() internal.Information {
+	domains.Add(CODE, func() internal.Information {
 		return &None{}
 	})
 }

@@ -87,33 +87,33 @@ func (u *Urlinsane) Init() <-chan internal.Typo {
 	return out
 }
 
-// GenOptions typo config options
-func (u *Urlinsane) Start() <-chan internal.Typo {
-	out := make(chan internal.Typo)
-	go func() {
-		// Initialize information plugins if needed
-		for _, info := range u.Config.Information() {
-			if inf, ok := info.(internal.Initializer); ok {
-				inf.Init(&u.Config)
-			}
-		}
-		for _, algorithm := range u.Config.Algorithms() {
+// // GenOptions typo config options
+// func (u *Urlinsane) Start() <-chan internal.Typo {
+// 	out := make(chan internal.Typo)
+// 	go func() {
+// 		// Initialize information plugins if needed
+// 		for _, info := range u.Config.Information() {
+// 			if inf, ok := info.(internal.Initializer); ok {
+// 				inf.Init(&u.Config)
+// 			}
+// 		}
+// 		for _, algorithm := range u.Config.Algorithms() {
 
-			// Initialize algorithm plugins if needed
-			if al, ok := algorithm.(internal.Initializer); ok {
-				al.Init(&u.Config)
-			}
+// 			// Initialize algorithm plugins if needed
+// 			if al, ok := algorithm.(internal.Initializer); ok {
+// 				al.Init(&u.Config)
+// 			}
 
-			out <- &Typo{
-				algorithm: algorithm,
-				original:  u.Config.Target(),
-				variant:   &target.Target{},
-			}
-		}
-		close(out)
-	}()
-	return out
-}
+// 			out <- &Typo{
+// 				algorithm: algorithm,
+// 				original:  u.Config.Target(),
+// 				variant:   &target.Target{},
+// 			}
+// 		}
+// 		close(out)
+// 	}()
+// 	return out
+// }
 
 // Algorithms generate typo variations using the algorithm plugins
 func (u *Urlinsane) Algorithms(in <-chan internal.Typo) <-chan internal.Typo {
@@ -128,19 +128,26 @@ func (u *Urlinsane) Algorithms(in <-chan internal.Typo) <-chan internal.Typo {
 			for typo := range in {
 				algo := typo.Algorithm()
 				typos := []internal.Typo{}
-
+				ttype = u.Config.Type() == internal.DOMAIN
 				if al, ok := algo.(internal.DomainAlgorithm); ok && ttype {
 					typos = append(typos, al.Domain(typo)...)
 				}
+
+				ttype = u.Config.Type() == internal.PACKAGE
 				if al, ok := algo.(internal.PackageAlgorithm); ok && ttype {
 					typos = append(typos, al.Package(typo)...)
 				}
+
+				ttype = u.Config.Type() == internal.EMAIL
 				if al, ok := algo.(internal.EmailAlgorithm); ok && ttype {
 					typos = append(typos, al.Email(typo)...)
 				}
+
+				ttype = u.Config.Type() == internal.NAME
 				if al, ok := algo.(internal.UserAlgorithm); ok && ttype {
 					typos = append(typos, al.Username(typo)...)
 				}
+
 				if al, ok := algo.(internal.ExecAlgorithm); ok {
 					typos = append(typos, al.Exec(typo)...)
 				}
@@ -187,7 +194,6 @@ func (u *Urlinsane) Filters(in <-chan internal.Typo) <-chan internal.Typo {
 					// Only allow variants with a minimum levenshtein distance
 					if u.Config.Dist() >= typo.Ld() {
 						out <- typo
-						u.scanned++
 					} else {
 						u.filtered++
 					}
@@ -246,6 +252,10 @@ func (u *Urlinsane) InfoChain(funcs []internal.Information, in <-chan internal.T
 		close(out)
 	}()
 
+	if len(funcs) == 1 {
+		u.scanned++
+	}
+
 	if len(funcs) > 0 {
 		return u.InfoChain(funcs, out)
 	}
@@ -285,7 +295,7 @@ func (u *Urlinsane) Output(in <-chan internal.Typo) {
 		if c.Variant().Live() {
 			u.online++
 		}
-		u.Config.Output().Write(c)
+		// u.Config.Output().Write(c)
 		if u.Config.ShowAll() {
 			u.Config.Output().Write(c)
 
