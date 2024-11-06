@@ -18,13 +18,12 @@ import (
 	"net"
 
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/information"
+	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
 )
 
 const (
-	CODE        = "CNAME"
-	NAME        = "Ip Address"
-	DESCRIPTION = "Domain IP addresses"
+	CODE        = "cn"
+	DESCRIPTION = "DNS CNAME records"
 )
 
 type Ipaddr struct {
@@ -59,7 +58,7 @@ func (i *Ipaddr) Exec(in internal.Typo) (out internal.Typo) {
 
 // Register the plugin
 func init() {
-	information.Add(CODE, func() internal.Information {
+	domains.Add(CODE, func() internal.Information {
 		return &Ipaddr{}
 	})
 }
