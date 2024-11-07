@@ -113,9 +113,9 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 | mx  | DNS MX     | DNS Mail Exchange (MX) records|
 | txt | DNS TXT    | DNS TXT records records |
 | aa  | DNS AAAA   | Host IPv6 address|
-| cn  | DNS CName  | DNS CName Records |
-| ns  | DNS NS     | Checks DNS NS records |
-| geo | GeoIP Info | Show country location of IP address via MaxMind |
+| cn  | DNS CName  | CName records are used to maps one domain to another |
+| ns  | DNS NS     | Checks NS records specifying the authoritative name server for a domain |
+| geo | GeoIP Info | Show country location of IP address via MaxMind database|
 | ssd | SSDeep     | Get domain similarity % using fuzzy hashing with ssdeep|
 | 301 | Redirects  | Get domains redirects |
 | idn | IDN        | Get international domain name |
