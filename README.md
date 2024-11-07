@@ -170,20 +170,25 @@ With structured outputs, users can seamlessly incorporate findings into their ex
 
 ## TODO
 
-- [LLM](https://en.wikipedia.org/wiki/Large_language_model): I’m interested in exploring the use of Large Language Models (LLMs) to replace our individual natural language processing (NLP) algorithms and to automatically generate language datasets.
+- **[LLM](https://en.wikipedia.org/wiki/Large_language_model)**: I’m interested in utilizing Large Language Models (LLMs) to replace our existing natural language processing (NLP) algorithms and to automatically generate language datasets.
 
-- I’d like to explore ways to reduce the program’s size, which is currently 11MB. Reusing existing datasets from the operating system, such as the MaxMind GeoIP database, TLD suffix lists, LLMs, and vector databases, could help minimize storage requirements.
+- I want to explore options for reducing the program’s size, currently at 11MB. By reusing existing operating system datasets, such as MaxMind GeoIP, TLD suffix lists, LLMs, and vector databases, we can minimize storage usage.
 
-- I’d like to explore restructuring the information-gathering functions using a DAG execution pattern with dependencies, rather than chaining plugins in a linear pipeline. This approach, similar to how Terraform handles plugin execution, would enable more flexible and efficient processing of interdependent tasks.
+- I’m considering restructuring the information-gathering functions to follow a Directed Acyclic Graph (DAG) execution pattern with dependencies, instead of chaining plugins in a linear pipeline. This would allow more efficient and flexible handling of interdependent tasks, similar to how Terraform manages plugin execution.
 
-- I’d like to explore adding an analysis plugin that compares data between two domains and can be run as a separate CLI command.
+- I plan to add an analysis plugin that compares data between two domains and can be executed as a separate CLI command.
 
-- Create a script to download and build keyboard layouts from [kbdlayout.info](http://kbdlayout.info/)
+- Develop a script to download and build keyboard layouts from [kbdlayout.info](http://kbdlayout.info/).
 
-- Create a more advanced model for a keyboard that includes layer-shifting 
+- Work on creating an advanced keyboard model that incorporates layer-shifting functionality.
 
+- Implement functionality for sending DNS queries to multiple DNS servers.
 
+- Store records in an embedded database, enabling plugins to access the data efficiently.
 
+- Download dataset updates from [urlinsane.com](https://github.com/rangertaha/urlinsane) 
+
+- The ability for anyone to report typosquatting domains could help build a large dataset of potential typosquatting cases. With enough data and domain reports, an AI classifier could be developed to automatically identify typosquatting domains. The larger the dataset, the more accurately the AI could detect and classify these domains.
 
 
 ###  Other Tools
