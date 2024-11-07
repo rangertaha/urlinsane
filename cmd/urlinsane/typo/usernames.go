@@ -94,7 +94,7 @@ var unameCmd = &cobra.Command{
 }
 
 func init() {
-	TypoCmd.AddCommand(unameCmd)
+	// TypoCmd.AddCommand(unameCmd)
 	unameHelpOptions := HelpOptions{
 		LanguageTable(),
 		KeyboardTable(),

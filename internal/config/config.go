@@ -15,6 +15,7 @@
 package config
 
 import (
+	"path/filepath"
 	"sort"
 	"strings"
 	"time"
@@ -36,6 +37,7 @@ type (
 	Config struct {
 		target internal.Target // Config target
 		ctype  int             // Config type
+		appDir string
 
 		// Plugins
 		keyboards   []internal.Keyboard
@@ -49,6 +51,8 @@ type (
 		delay       time.Duration
 		random      time.Duration
 		levenshtein int
+
+		screenShot bool
 
 		// DNS
 		dnsRetryCount       int
@@ -87,6 +91,11 @@ func New() Config {
 func (c *Config) Target() internal.Target {
 	return c.target
 }
+
+func (c *Config) Dir() string {
+	return filepath.Join(c.appDir, strings.ToLower(c.target.Name()))
+}
+
 func (c *Config) Keyboards() []internal.Keyboard {
 	return c.keyboards
 }
@@ -106,12 +115,12 @@ func (c *Config) Concurrency() int {
 	return c.concurrency
 }
 func (c *Config) Filters() (fields []string) {
-	for _, field := range fields {
-		field = strings.TrimSpace(field)
-		if field != "" {
-			fields = append(fields, field)
-		}
-	}
+	// for _, field := range fields {
+	// 	field = strings.TrimSpace(field)
+	// 	if field != "" {
+	// 		fields = append(fields, field)
+	// 	}
+	// }
 	return c.filters
 }
 
@@ -147,29 +156,11 @@ func (c *Config) ScanAll() bool {
 func (c *Config) ShowAll() bool {
 	return c.showAll
 }
-
+func (c *Config) Screenshot() bool {
+	return c.screenShot
+}
 func (c *Config) DnsServers() []string {
-	if len(c.dnsServers) != 0 {
-		return c.dnsServers
-	}
-	return []string{
-		"127.0.0.53",
-		"100.64.100.1",
-		"8.8.8.8",         // Google
-		"8.8.4.4",         // Google
-		"1.1.1.1",         // Cloudflare
-		"1.0.0.1",         // Cloudflare
-		"1.1.1.2",         // Cloudflare  malware blocking
-		"1.0.0.2",         // Cloudflare  malware blocking
-		"1.1.1.3",         // Cloudflare  adult blocking
-		"1.0.0.3",         // Cloudflare  adult blocking
-		"9.9.9.9",         // Quad9
-		"149.112.112.112", // Quad9
-		"185.228.168.9",   // Cleanbrowsing
-		"185.228.169.9",   // Cleanbrowsing
-		"8.26.56.26",      // Comodo Secure DNS
-		"8.20.247.20",     // Comodo Secure DNS
-	}
+	return c.dnsServers
 }
 
 // DnsQps is the queries per second
@@ -188,27 +179,14 @@ func (c *Config) DnsQps() int {
 
 // CobraConfig creates a configuration from a cobra command options and arguments
 func CobraConfig(cmd *cobra.Command, args []string, ttype int) (c Config, err error) {
+	if err, appDir := NewAppDir(); err == nil {
+		c = appDir.Config(c)
+	}
+
 	c.ctype = ttype
 
 	c.target = target.New(args[0])
 
-	// Target options
-	// if name, err := cmd.Flags().GetString("name"); err == nil && name != "" {
-	// 	c.ctype = internal.NAME
-	// 	c.target = target.New(strings.TrimSpace(name))
-	// }
-	// if pkg, err := cmd.Flags().GetString("pkg"); err == nil && pkg != "" {
-	// 	c.ctype = internal.PACKAGE
-	// 	c.target = target.New(strings.TrimSpace(pkg))
-	// }
-	// if email, err := cmd.Flags().GetString("email"); err == nil && email != "" {
-	// 	c.ctype = internal.EMAIL
-	// 	c.target = target.New(strings.TrimSpace(email))
-	// }
-	// if domain, err := cmd.Flags().GetString("domain"); err == nil && domain != "" {
-	// 	c.ctype = internal.DOMAIN
-	// 	c.target = target.New(strings.TrimSpace(domain))
-	// }
 	if url, err := cmd.Flags().GetString("url"); err == nil && url != "" {
 		if c.target != nil {
 			c.target.Add("url", url)
@@ -278,6 +256,10 @@ func CobraConfig(cmd *cobra.Command, args []string, ttype int) (c Config, err er
 	}
 
 	if c.scanAll, err = cmd.Flags().GetBool("all"); err != nil {
+		return c, err
+	}
+
+	if c.screenShot, err = cmd.Flags().GetBool("image"); err != nil {
 		return c, err
 	}
 

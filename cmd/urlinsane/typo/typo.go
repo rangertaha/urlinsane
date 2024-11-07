@@ -78,6 +78,7 @@ espionage, URLInsane also enhances threat intelligence capabilities.`,
 
 func init() {
 	// rootCmd.AddCommand(typoCmd)
+	TypoCmd.PersistentFlags().Bool("image", false, "Take screenshot of domain saved to .urlinsane/domains/")
 }
 
 func AlgorithmTable() string {

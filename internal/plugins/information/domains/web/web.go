@@ -33,7 +33,11 @@ const (
 )
 
 type None struct {
-	types []string
+	config internal.Config
+}
+
+func (p *None) Init(conf internal.Config) {
+	p.config = conf
 }
 
 func (p *None) Id() string {
@@ -54,8 +58,10 @@ func (p *None) Headers() []string {
 
 func (p *None) Exec(in internal.Typo) (out internal.Typo) {
 	if v := in.Variant(); v.Live() {
-		file := p.Screenshot(v.Name())
-		v.Add("IMAGE", file)
+		if p.config.Screenshot() {
+			file := p.Screenshot(v.Name())
+			v.Add("IMAGE", file)
+		}
 	}
 
 	return in

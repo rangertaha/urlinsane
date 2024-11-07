@@ -12,20 +12,21 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package bn
+package npm
 
 import (
-	"net"
-	"time"
+	"fmt"
+	"net/http"
+	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
+	"github.com/rangertaha/urlinsane/internal/plugins/information/packages"
 )
 
 const (
-	ORDER       = 8
-	CODE        = "bn"
-	DESCRIPTION = "Banner grabbing "
+	ORDER       = 1
+	CODE        = "npm"
+	DESCRIPTION = "Node packages repository"
 )
 
 type Plugin struct {
@@ -49,46 +50,37 @@ func (n *Plugin) Description() string {
 }
 
 func (p *Plugin) Headers() []string {
-	return []string{"BANNER"}
+	return []string{"NPM"}
 }
 
 func (p *Plugin) Exec(in internal.Typo) (out internal.Typo) {
-	// if v := in.Variant(); v.Live() {
-	banner := p.Banner(in.Variant().Name())
-	in.Variant().Add("BANNER", banner)
-	// }
+	if p.Exists(in.Variant().Name()) {
+		in.Variant().Add("NPM", "YES")
+	}
+
 	return in
 }
 
-func (p *Plugin) Banner(domain string) (out string) {
-
-	// host := os.Args[1]
-	// port := os.Args[2]
-
-	// Connect to the target host and port
-	conn, err := net.DialTimeout("tcp", domain+":80", 5*time.Second)
+func (p *Plugin) Exists(name string) (out bool) {
+	name = strings.TrimSpace(name)
+	url := fmt.Sprintf("https://www.npmjs.com/package/%s", name)
+	resp, err := http.Get(url)
 	if err != nil {
-		// fmt.Println("Error:", err.Error())
-		return
+		// handle error
+		fmt.Println(err)
 	}
-	defer conn.Close()
+	defer resp.Body.Close()
+	if resp.StatusCode == 200 {
+		return true
+	}
+	// fmt.Println(string(body))
 
-	// Send the request to the server
-	// fmt.Fprintf(conn, "GET / HTTP/1.1\r\nHost: %s\r\n\r\n", domain)
-
-	// Read the response from the server
-	buffer := make([]byte, 1024)
-	n, _ := conn.Read(buffer)
-
-	// Print the response
-	response := string(buffer[:n])
-	// fmt.Println(response)
-	return response
+	return false
 }
 
 // Register the plugin
 func init() {
-	domains.Add(CODE, func() internal.Information {
+	packages.Add(CODE, func() internal.Information {
 		return &Plugin{}
 	})
 }

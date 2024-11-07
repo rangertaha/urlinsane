@@ -11,7 +11,7 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/ns"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/ssd"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/txt"
-	// _ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/web"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/web"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/wi"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/bn"
+	// _ "github.com/rangertaha/urlinsane/internal/plugins/information/domains/bn"
 )
