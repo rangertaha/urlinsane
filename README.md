@@ -143,6 +143,10 @@ Information gathering on target domains enables a detailed comparison of similar
 | lm  | [LLM](https://en.wikipedia.org/wiki/Large_language_model) | **TODO**: Use LLMs for keyword extraction, stemming, named entity recognition, and other NLP tasks. |
 | ng  | [N-Gram](https://en.wikipedia.org/wiki/N-gram) | **TODO**: Generate domain variants using the domain's most common N-grams.                        |
 | har | [HAR](https://en.wikipedia.org/wiki/HAR_(file_format)) | **TODO**: Retrieve HAR file from browser interaction for in-depth data analysis.
+| pop | Popularity  | **TODO**: Retrieve domain popularity estimate like [Urlcrazy](https://github.com/urbanadventurer/urlcrazy)
+
+
+
 
 ## Outputs
 
@@ -184,8 +188,11 @@ With structured outputs, users can seamlessly incorporate findings into their ex
 
 ###  Other Tools
 
-
-
+| Name  | Language | Description                    |
+|-------|-------------------------------------------|
+| [Urlcrazy](https://github.com/urbanadventurer/urlcrazy) |    |  URLCrazy is an OSINT tool to generate and test domain typos or variations to detect or perform typo squatting, URL hijacking, phishing, and corporate espionage.  |
+| [DNSTwist](https://github.com/elceef/dnstwist) |    |     |
+| [DomainFuzz](https://github.com/monkeym4ster/DomainFuzz) |    |    |
 
 
 
