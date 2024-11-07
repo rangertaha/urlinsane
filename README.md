@@ -57,6 +57,11 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 ### Keyboard Layouts
 
+Keyboard layouts are central to typosquatting because certain common typing errors are directly related to the physical arrangement of keys. For example, in the QWERTY layout, adjacent letters (like "e" and "r" or "i" and "o") are frequently mistyped, leading to common typos. Urlinsane can exploit these patterns by generating alternative domain names that reflect plausible mistakes, relying on users inadvertently typing close-but-incorrect keys.
+
+Additionally, different keyboard layouts (such as AZERTY, QWERTZ, or Dvorak) produce unique typo patterns, allowing cybercriminals to target users in specific regions or with particular typing habits. By understanding these layout-specific errors, typosquatters can increase the likelihood of catching misdirected traffic, making keyboard layouts a significant factor in effective typosquatting strategies.
+
+
 |  Arabic | Armenian  | English  | Finnish |  French   | Russian | Spanish | Hebrew  | Persian | 
 |----------|----------|----------|---------|-----------|---------|--------|----------|---------|
 | غفقثصض   | QWERTY   |  QWERTY  | QWERTY  | ACNOR     | ЯШЕРТЫ  | QWERTY | Standard | Farsi   |
@@ -64,10 +69,15 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 | غفقثصض   |          |  QWERTZ  |         |           | ЙЦУКЕН  |        |         |  |
 | QWERTY   |          |  DVORAK  |         |           |         |        |         ||
 
+* **TODO**: Create a script to download and build keyboard layouts from [kbdlayout.info](http://kbdlayout.info/)
+* **TODO**: It would be nice to create a better model for a keyboard that includes shifting between layers
+
+
 
 
 ## Algorithms
 
+Algorithms systematically generate plausible misspelled domain variations by analyzing common typing errors and linguistic patterns. These algorithms account for mistakes like adjacent key errors, omitted letters, and character swaps to create likely typo-based domains. More advanced algorithms leverage multi-lingual datasets, enabling the detection of typographical errors across different languages and keyboard layouts. This approach broadens the scope of potential typos, increasing protection against international typosquatting attempts.
 
 | ID | Name                         | Description |
 |----|------------------------------|-------------|
@@ -101,8 +111,13 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 | st | [Stem](https://en.wikipedia.org/wiki/Stemming) Substitution       | **TODO**: Substituting words with there root form |
 | ks | Keyboard Substitution       | **TODO**: Changing international keyboard layouts while assuming the user is typing in his/her native layout.           |
 
+* **TODO**: 
+
+
 
 ## Information
+
+Information gathering on target domains enables a detailed comparison of similar-looking domains to determine if they are being typosquatted by cybercriminals. By collecting data on domain ownership, registration dates, hosting locations, and site content, algorithms can analyze whether these variations are likely to be malicious. This approach helps identify suspicious patterns and potential connections to phishing, fraud, or brand impersonation attempts. With thorough data collection, organizations can better detect and respond to typosquatting threats in real time.
 
 
 | ID  | Name       | Description  |
@@ -128,6 +143,8 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 
 ## Outputs
+
+With structured outputs, users can seamlessly incorporate findings into their existing defenses, strengthening their protection against typosquatting threats.
 
 | Name  | Description | 
 |-------|-------------|
