@@ -54,7 +54,6 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 
 
-
 ### Keyboard Layouts
 
 Keyboard layouts are central to typosquatting because certain common typing errors are directly related to the physical arrangement of keys. For example, in the QWERTY layout, adjacent letters (like "e" and "r" or "i" and "o") are frequently mistyped, leading to common typos. Urlinsane can exploit these patterns by generating alternative domain names that reflect plausible mistakes, relying on users inadvertently typing close-but-incorrect keys.
@@ -70,7 +69,7 @@ Additionally, different keyboard layouts (such as AZERTY, QWERTZ, or Dvorak) pro
 | QWERTY   |          |  DVORAK  |         |           |         |        |         ||
 
 * **TODO**: Create a script to download and build keyboard layouts from [kbdlayout.info](http://kbdlayout.info/)
-* **TODO**: It would be nice to create a better model for a keyboard that includes shifting between layers
+* **TODO**: Create a more advanced model for a keyboard that includes layer-shifting 
 
 
 
@@ -139,8 +138,8 @@ Information gathering on target domains enables a detailed comparison of similar
 | kw  | Keywords   | **TODO**: Extracting keywords use the [RAKE](https://www.mathworks.com/help/textanalytics/ug/extract-keywords-from-documents-using-rake.html) algorithm |
 | tp  | NLP Topics | **TODO**: Extracting topics via [LDA](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation) algorithm |
 | vc  | [VSM](https://en.wikipedia.org/wiki/Vector_space_model)    | **TODO**: Comparing domains vector space for cosin similarity |
-| lm  | [LLM]()    | **TODO**: Using LLMs for keywork extraction, stemming, named entity extraction and a lot more NLP functionality |
-
+| lm  | [LLM](https://en.wikipedia.org/wiki/Large_language_model)    | **TODO**: Using LLMs for keywork extraction, stemming, named entity extraction and a lot more NLP functionality |
+| lm  | [N-Gram](https://en.wikipedia.org/wiki/N-gram)    | **TODO**: Using a domains's most used N-Grams to generate a domain variant |
 
 ## Outputs
 
@@ -157,6 +156,11 @@ With structured outputs, users can seamlessly incorporate findings into their ex
 | MD    | Markdown formatted output         |   
 
 
+
+
+## Research
+
+I’m interested in exploring the use of Large Language Models (LLMs) to replace our individual natural language processing (NLP) algorithms and to automatically generate language datasets.
 
 
 
