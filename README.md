@@ -68,9 +68,6 @@ Additionally, different keyboard layouts (such as AZERTY, QWERTZ, or Dvorak) pro
 | غفقثصض   |          |  QWERTZ  |         |           | ЙЦУКЕН  |        |         |  |
 | QWERTY   |          |  DVORAK  |         |           |         |        |         ||
 
-* **TODO**: Create a script to download and build keyboard layouts from [kbdlayout.info](http://kbdlayout.info/)
-* **TODO**: Create a more advanced model for a keyboard that includes layer-shifting 
-
 
 
 
@@ -110,7 +107,7 @@ Algorithms systematically generate plausible misspelled domain variations by ana
 | st | [Stem](https://en.wikipedia.org/wiki/Stemming) Substitution       | **TODO**: Substituting words with there root form |
 | ks | Keyboard Substitution       | **TODO**: Changing international keyboard layouts while assuming the user is typing in his/her native layout.           |
 
-* **TODO**: 
+
 
 
 
@@ -119,53 +116,66 @@ Algorithms systematically generate plausible misspelled domain variations by ana
 Information gathering on target domains enables a detailed comparison of similar-looking domains to determine if they are being typosquatted by cybercriminals. By collecting data on domain ownership, registration dates, hosting locations, and site content, algorithms can analyze whether these variations are likely to be malicious. This approach helps identify suspicious patterns and potential connections to phishing, fraud, or brand impersonation attempts. With thorough data collection, organizations can better detect and respond to typosquatting threats in real time.
 
 
-| ID  | Name       | Description  |
-|-----|-------------------|--------------|
-|     | [Levenshtein](https://en.wikipedia.org/wiki/Levenshtein_distance)     | Levenshtein distance bettween domains is created by defualt and used internally to limit the number of scans |
-| a   | DNS A      | Host IPv4 addresses |
-| mx  | DNS MX     | DNS Mail Exchange (MX) records|
-| txt | DNS TXT    | DNS TXT records records |
-| aa  | DNS AAAA   | Host IPv6 addresses |
-| cn  | DNS CName  | CName records are used to maps one domain to another |
-| ns  | DNS NS     | Checks NS records specifying the authoritative name server for a domain |
-| geo | GeoIP Info | Show country location of IP address via MaxMind database|
-| ssd | SSDeep     | Domain similarity using fuzzy hashing with ssdeep, only works with pages with enough content|
-| 301 | Redirects  | Get domains redirects |
-| idn | IDN        | Get international domain names |
-| bn  | Banner     | HTTP/SMTP Banner using a simple TCP connection |
-| png | Screenshot | Screenshot of the domain via headless browser and stores locally |
-| wi  | Whois      | **TODO**: Whois domain loookup info |
-| kw  | Keywords   | **TODO**: Extracting keywords use the [RAKE](https://www.mathworks.com/help/textanalytics/ug/extract-keywords-from-documents-using-rake.html) algorithm |
-| tp  | NLP Topics | **TODO**: Extracting topics via [LDA](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation) algorithm |
-| vc  | [VSM](https://en.wikipedia.org/wiki/Vector_space_model)    | **TODO**: Comparing domains vector space for cosin similarity |
-| lm  | [LLM](https://en.wikipedia.org/wiki/Large_language_model)    | **TODO**: Using LLMs for keywork extraction, stemming, named entity extraction and a lot more NLP functionality |
-| lm  | [N-Gram](https://en.wikipedia.org/wiki/N-gram)    | **TODO**: Using a domains's most used N-Grams to generate a domain variant |
-| har  | [HAR](https://en.wikipedia.org/wiki/HAR_(file_format))    | **TODO**: Retrieve the HAR file from the browser interaction to obtain a wealth of data for analysis. |
+
+| ID  | Name              | Description                                                                                                    |
+|-----|-------------------|------------------------------------------------------------------------------------------------|
+|     | [Levenshtein](https://en.wikipedia.org/wiki/Levenshtein_distance) | Calculates Levenshtein distance between domains by default to limit scan scope.                   |
+| a   | DNS A             | Retrieves host IPv4 addresses.                                                                      |
+| mx  | DNS MX            | Retrieves DNS Mail Exchange (MX) records.                                                           |
+| txt | DNS TXT           | Retrieves DNS TXT records.                                                                         |
+| aa  | DNS AAAA          | Retrieves host IPv6 addresses.                                                                     |
+| cn  | DNS CName         | Maps one domain to another via CNAME records.                                                      |
+| ns  | DNS NS            | Checks NS records to identify the authoritative name server for a domain.                          |
+| geo | GeoIP Info        | Provides IP location information via MaxMind database.                                             |
+| ssd | SSDeep            | Uses fuzzy hashing with ssdeep to determine domain similarity, for pages with substantial content. |
+| 301 | Redirects         | Retrieves domain redirects.                                                                        |
+| idn | IDN               | Retrieves internationalized domain names.                                                          |
+| bn  | Banner            | Captures HTTP/SMTP banner using a basic TCP connection.                                            |
+| png | Screenshot        | Takes a domain screenshot via a headless browser and stores it locally.                            |
+| wi  | Whois             | **TODO**: Perform Whois lookup for domain information.                                             |
+| kw  | Keywords          | **TODO**: Extract keywords using the [RAKE](https://www.mathworks.com/help/textanalytics/ug/extract-keywords-from-documents-using-rake.html) algorithm. |
+| tp  | NLP Topics        | **TODO**: Extract topics using the [LDA](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation) algorithm. |
+| vc  | [VSM](https://en.wikipedia.org/wiki/Vector_space_model) | **TODO**: Compare domains' vector spaces for cosine similarity.                                    |
+| lm  | [LLM](https://en.wikipedia.org/wiki/Large_language_model) | **TODO**: Use LLMs for keyword extraction, stemming, named entity recognition, and other NLP tasks. |
+| ng  | [N-Gram](https://en.wikipedia.org/wiki/N-gram) | **TODO**: Generate domain variants using the domain's most common N-grams.                        |
+| har | [HAR](https://en.wikipedia.org/wiki/HAR_(file_format)) | **TODO**: Retrieve HAR file from browser interaction for in-depth data analysis.
 
 ## Outputs
 
 With structured outputs, users can seamlessly incorporate findings into their existing defenses, strengthening their protection against typosquatting threats.
 
-| Name  | Description | 
-|-------|-------------|
-| TABLE |Pretty table output format with color         |  
-| HTML  | HTML formatted output        |   
-| JSON  | **TODO**: JSON outputs format        |  
-| TXT   | Text outputs streams one record per line        | 
-| CSV   | CSV (comma-separated values) formatted output        |    
-| TSV   | TSV (tab-separated values) formatted output        |   
-| MD    | Markdown formatted output         |   
+
+| Name  | Description                               |
+|-------|-------------------------------------------|
+| TABLE | Pretty table format with color styling    |
+| HTML  | HTML-formatted output                     |
+| JSON  | **TODO**: JSON output format              |
+| TXT   | Plain text output, one record per line    |
+| CSV   | Comma-separated values format             |
+| TSV   | Tab-separated values format               |
+| MD    | Markdown-formatted output                 |
+
+## In Progress
+
+- I’m working on creating a `.urlinsane` directory to store screenshots, data dumps, and cache, along with a configuration file to provide additional tool customization options.
 
 
-
-
-## Research
+## TODO
 
 - [LLM](https://en.wikipedia.org/wiki/Large_language_model): I’m interested in exploring the use of Large Language Models (LLMs) to replace our individual natural language processing (NLP) algorithms and to automatically generate language datasets.
+
 - I’d like to explore ways to reduce the program’s size, which is currently 11MB. Reusing existing datasets from the operating system, such as the MaxMind GeoIP database, TLD suffix lists, LLMs, and vector databases, could help minimize storage requirements.
+
 - I’d like to explore restructuring the information-gathering functions using a DAG execution pattern with dependencies, rather than chaining plugins in a linear pipeline. This approach, similar to how Terraform handles plugin execution, would enable more flexible and efficient processing of interdependent tasks.
 
 - I’d like to explore adding an analysis plugin that compares data between two domains and can be run as a separate CLI command.
+
+- Create a script to download and build keyboard layouts from [kbdlayout.info](http://kbdlayout.info/)
+
+- Create a more advanced model for a keyboard that includes layer-shifting 
+
+
+
 
 
 ###  Other Tools
