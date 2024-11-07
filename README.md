@@ -42,6 +42,13 @@ urlinsane typo example.com
 ![](docs/vids/1.mkv)
 
 
+<video width="1280" height="720" controls autoplay muted loop>
+<source src="https://youtu.be/7yzyYHoJqp4" type="video/mp4">
+ Your browser does not support the video tag.
+</video>
+
+
+
 <div align="center">
   <a href="https://youtu.be/7yzyYHoJqp4" style="float:left"><img width="" src="https://i.ytimg.com/vi/7yzyYHoJqp4/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFbyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLDB7XIfclBY8a9J5RGR_ckVs5nIFg" alt="Urlinsane"></a>
 </div>
