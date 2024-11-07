@@ -97,9 +97,9 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 |    | Ordinal Number Sub             |             |
 |    | Cardinal Number Sub           |             | 
 |    | Subdomain insertion             |             |
-|    | Combosquatting (Keywords)       | TODO            |
+|    | Combosquatting (Keywords)       | **TODO**: Combining keywords extracted via NLP and HTML meta tags |
 |    | [Stem](https://en.wikipedia.org/wiki/Stemming) Substitution       | TODO            |
-|    | Keyboard        | TODO            |
+|    | Keyboard Substitution       | **TODO**: Changing international keyboard layouts while assuming the user is typing in his/her native layout.           |
 
 
 ## Information
@@ -107,23 +107,24 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 | ID  | Name       | Description  |
 |-----|-------------------|--------------|
-| ld   | [Levenshtein](https://en.wikipedia.org/wiki/Levenshtein_distance)     | Levenshtein distance bettween domains is created by defualt and  internally to limit processing|
-| a   | DNS A      | Host IPv4 address |
+| ld   | [Levenshtein](https://en.wikipedia.org/wiki/Levenshtein_distance)     | Levenshtein distance bettween domains is created by defualt and used internally to limit the number of scans |
+| a   | DNS A      | Host IPv4 addresses |
 | mx  | DNS MX     | DNS Mail Exchange (MX) records|
 | txt | DNS TXT    | DNS TXT records records |
-| aa  | DNS AAAA   | Host IPv6 address|
+| aa  | DNS AAAA   | Host IPv6 addresses |
 | cn  | DNS CName  | CName records are used to maps one domain to another |
 | ns  | DNS NS     | Checks NS records specifying the authoritative name server for a domain |
 | geo | GeoIP Info | Show country location of IP address via MaxMind database|
-| ssd | SSDeep     | Get domain similarity % using fuzzy hashing with ssdeep|
+| ssd | SSDeep     | Domain similarity using fuzzy hashing with ssdeep, only works with pages with enough content|
 | 301 | Redirects  | Get domains redirects |
-| idn | IDN        | Get international domain name |
+| idn | IDN        | Get international domain names |
 | bn  | Banner     | HTTP/SMTP Banner using a simple TCP connection |
 | png | Screenshot | Screenshot of the domain via headless browser and stores locally |
-| wi  | Whois      | TODO: Whois domain loookup info |
-| kw  | Keywords   | Extracting keywords use the RAKE algorithm |
-| tp  | NLP Topics | TODO: Extracting topics via [LDA](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation) algorithm |
-| vc  | [VSM](https://en.wikipedia.org/wiki/Vector_space_model)    | TODO: Comparing domains vector space for cosin similarity |
+| wi  | Whois      | **TODO**: Whois domain loookup info |
+| kw  | Keywords   | **TODO**: Extracting keywords use the [RAKE](https://www.mathworks.com/help/textanalytics/ug/extract-keywords-from-documents-using-rake.html) algorithm |
+| tp  | NLP Topics | **TODO**: Extracting topics via [LDA](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation) algorithm |
+| vc  | [VSM](https://en.wikipedia.org/wiki/Vector_space_model)    | **TODO**: Comparing domains vector space for cosin similarity |
+| lm  | [LLM]()    | **TODO**: Using LLMs for keywork extraction, stemming, named entity extraction and a lot more NLP functionality |
 
 
 ## Outputs
@@ -132,11 +133,11 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 |-------|-------------|
 | TABLE |Pretty table output format with color         |  
 | HTML  | HTML formatted output        |   
-| JSON  | TODO: JSON outputs format        |  
+| JSON  | **TODO**: JSON outputs format        |  
 | TXT   | Text outputs streams one record per line        | 
 | CSV   | CSV (comma-separated values) formatted output        |    
 | TSV   | TSV (tab-separated values) formatted output        |   
-| MD    |Markdown formatted output         |   
+| MD    | Markdown formatted output         |   
 
 
 
