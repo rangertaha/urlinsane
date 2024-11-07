@@ -196,8 +196,8 @@ With structured outputs, users can seamlessly incorporate findings into their ex
 | Name  | Language | Description                    |
 |-------|-----------|--------------------------------|
 | [Urlcrazy](https://github.com/urbanadventurer/urlcrazy) |    |  URLCrazy is an OSINT tool to generate and test domain typos or variations to detect or perform typo squatting, URL hijacking, phishing, and corporate espionage.  |
-| [DNSTwist](https://github.com/elceef/dnstwist) |    |     |
-| [DomainFuzz](https://github.com/monkeym4ster/DomainFuzz) |    |    |
+| [DNSTwist](https://github.com/elceef/dnstwist) | Python   | Domain name permutation engine for detecting homograph phishing attacks, typo squatting, and brand impersonation     |
+| [DomainFuzz](https://github.com/monkeym4ster/DomainFuzz) | JavaScript   | Domain name permutation engine for detecting typo squatting, phishing and corporate espionage   |
 
 
 
