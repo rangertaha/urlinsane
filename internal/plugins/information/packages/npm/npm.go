@@ -17,6 +17,7 @@ package npm
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
@@ -63,8 +64,12 @@ func (p *Plugin) Exec(in internal.Typo) (out internal.Typo) {
 
 func (p *Plugin) Exists(name string) (out bool) {
 	name = strings.TrimSpace(name)
-	url := fmt.Sprintf("https://www.npmjs.com/package/%s", name)
-	resp, err := http.Get(url)
+	parse, err := url.Parse("https://www.npmjs.com/package")
+	url := parse.JoinPath(name)
+
+	// url := fmt.Sprintf("https://www.npmjs.com/package/%s", name)
+	fmt.Println(url.String())
+	resp, err := http.Get(url.String())
 	if err != nil {
 		// handle error
 		fmt.Println(err)
