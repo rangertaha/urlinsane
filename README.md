@@ -38,10 +38,9 @@ urlinsane typo example.com
 
 [![Watch the video](https://youtu.be/7yzyYHoJqp4?si=42DEzK7ooi_x1xeY)]()
 
-[Vid](docs/vids/1.gif)
-![](docs/vids/1.mkv)
 
-![Urlinsane](https://github.com/rangertaha/urlinsane/blob/develop/docs/vids/1.gif)
+
+![Urlinsane](https://github.com/rangertaha/urlinsane/blob/develop/docs/vids/001.gif)
 
 <video width="1280" height="720" controls autoplay muted loop>
 <source src="https://youtu.be/7yzyYHoJqp4" type="video/mp4">
