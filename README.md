@@ -69,17 +69,17 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 
 
-|ID| NAME        | GLYPHS      |HOMOPHONES  |ANTONYMS      |TYPOS  |CARDINAL  |ORDINAL  |STEMS |
-|-----------|-------------|-------------|------------|--------------|-------|----------|---------|------|                                                         
-|hy| Armenian |    38      |    1     |   1  |   1  |     24   |    0  |   0|
-|fi| Finnish  |    29      |    1     |   1  |   1   |    11   |    1  |   0|
-|fr| French    |   27      |    1      |  1  |   1   |    11  |    10   |  0|
-|iw| Hebrew    |   22      |    2      |  1  |   5   |    11  |     0   |  0|
-|fa| Persian   |   28      |    1      |  1  |   1    |   11  |     0  |   0|
-|ru| Russian   |   41     |     1     |   1  |   1    |   44  |    10  |   0|
-|ar |Arabic    |   28     |     1     |   1  |   0    |   11  |    11  |   0|
-|en| English   |   26     |   485     |  93 | 4256    |   10  |     9  |   0|
-|es| Spanish   |   27     |     1     |   1  |   1    |   31 |      4  |   0|
+|ID| NAME | GLYPHS |HOMOPHONES |ANTONYMS |TYPOS  |CARDINAL |ORDINAL  |STEMS |
+|--|------|--------|-----------|---------|-------|---------|---------|------|                                                         
+|hy| Armenian| 38 | 1  |   1  |   1  |     24   |    0  |   0|
+|fi| Finnish | 29 | 1  |   1  |   1   |    11   |    1  |   0|
+|fr| French  | 27 | 1  |  1  |   1   |    11  |    10   |  0|
+|iw| Hebrew  | 22 | 2  |  1  |   5   |    11  |     0   |  0|
+|fa| Persian | 28 | 1  |  1  |   1    |   11  |     0  |   0|
+|ru| Russian | 41 | 1  |   1  |   1    |   44  |    10  |   0|
+|ar |Arabic  | 28 | 1  |   1  |   0    |   11  |    11  |   0|
+|en| English | 26 | 485|  93 | 4256    |   10  |     9  |   0|
+|es| Spanish | 27 | 1 |   1  |   1    |   31 |      4  |   0|
 
 
 
