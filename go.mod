@@ -8,6 +8,7 @@ require (
 	github.com/agonopol/go-stem v0.0.0-20150630113328-985885018250
 	github.com/arpitgogia/rake v0.0.0-20180919172115-eef46a94533f
 	github.com/bobesa/go-domain-util v0.0.0-20190911083921-4033b5f7dd89
+	github.com/chromedp/chromedp v0.11.1
 	github.com/cybint/hackingo v0.0.0-20190908192737-924ede13fbff
 	github.com/d3mondev/resolvermt v0.3.2
 	github.com/dgraph-io/badger/v4 v4.3.1
@@ -25,6 +26,7 @@ require (
 	golang.org/x/net v0.29.0
 	golang.org/x/term v0.25.0
 	golang.org/x/text v0.18.0
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -37,7 +39,6 @@ require (
 	github.com/benbjohnson/clock v1.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/chromedp/cdproto v0.0.0-20241030022559-23c28aebe8cb // indirect
-	github.com/chromedp/chromedp v0.11.1 // indirect
 	github.com/chromedp/sysutil v1.1.0 // indirect
 	github.com/cloudflare/circl v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -77,5 +78,4 @@ require (
 	golang.org/x/tools v0.22.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
