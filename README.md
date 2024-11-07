@@ -188,14 +188,14 @@ With structured outputs, users can seamlessly incorporate findings into their ex
 
 - Download dataset updates from [urlinsane.com](https://github.com/rangertaha/urlinsane) 
 
-- The ability for anyone to report typosquatting domains could help build a large dataset of potential typosquatting cases. With enough data and domain reports, an AI classifier could be developed to automatically identify typosquatting domains. The larger the dataset, the more accurately the AI could detect and classify these domains.
+- A CLI command to report or retrieve typosquatting domains to/from (urlinsane.com) could help build a comprehensive dataset of potential typosquatting cases. With sufficient data and domain reports, an AI classifier could be developed to automatically identify typosquatting domains. The larger the dataset grows, the more accurately the AI would be able to detect and classify these domains.
 
 
 ###  Other Tools
 
 | Name  | Language | Description                    |
 |-------|-----------|--------------------------------|
-| [Urlcrazy](https://github.com/urbanadventurer/urlcrazy) |    |  URLCrazy is an OSINT tool to generate and test domain typos or variations to detect or perform typo squatting, URL hijacking, phishing, and corporate espionage.  |
+| [Urlcrazy](https://github.com/urbanadventurer/urlcrazy) |  Ruby  |  URLCrazy is an OSINT tool to generate and test domain typos or variations to detect or perform typo squatting, URL hijacking, phishing, and corporate espionage.  |
 | [DNSTwist](https://github.com/elceef/dnstwist) | Python   | Domain name permutation engine for detecting homograph phishing attacks, typo squatting, and brand impersonation     |
 | [DomainFuzz](https://github.com/monkeym4ster/DomainFuzz) | JavaScript   | Domain name permutation engine for detecting typo squatting, phishing and corporate espionage   |
 
