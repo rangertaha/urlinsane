@@ -189,7 +189,7 @@ With structured outputs, users can seamlessly incorporate findings into their ex
 ###  Other Tools
 
 | Name  | Language | Description                    |
-|-------|-------------------------------------------|
+|-------|-----------|--------------------------------|
 | [Urlcrazy](https://github.com/urbanadventurer/urlcrazy) |    |  URLCrazy is an OSINT tool to generate and test domain typos or variations to detect or perform typo squatting, URL hijacking, phishing, and corporate espionage.  |
 | [DNSTwist](https://github.com/elceef/dnstwist) |    |     |
 | [DomainFuzz](https://github.com/monkeym4ster/DomainFuzz) |    |    |
