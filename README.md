@@ -2,45 +2,10 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/rangertaha/urlinsane?style=flat-square)](https://goreportcard.com/report/github.com/rangertaha/urlinsane) [![Go Doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](http://godoc.org/github.com/rangertaha/urlinsane) [![PkgGoDev](https://pkg.go.dev/badge/github.com/rangertaha/urlinsane)](https://pkg.go.dev/github.com/github.com/rangertaha/urlinsane) [![Release](https://img.shields.io/github/release/rangertaha/urlinsane.svg?style=flat-square)](https://github.com/rangertaha/urlinsane/releases/latest) [![Build Status](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml/badge.svg)](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml)
 
-Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage, supply chain attacks, and threat intelligence. It's a command-line tool for detecting typosquatting across domains, usernames, and software packages. It scans for potential typosquatting variants by applying advanced typo squatting algorithms, information gathering, and data analysis.  It identifies potentially harmful variations of a victim's domain name, arbitrary names, and software packages that cybercriminals might exploit. 
+Urlinsane is used to aid in the detection of typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, corporate espionage, supply chain attacks, and threat intelligence. It's a command-line tool for detecting typosquatting domains. It scans for potential typosquatting variants by applying advanced typo squatting algorithms, information gathering, and data analysis.  It identifies potentially harmful variations of a victim's domain name that cybercriminals might exploit. 
 
 It's inspired by [URLCrazy](https://morningstarsecurity.com/research/urlcrazy), [Dnstwist](https://github.com/elceef/dnstwist), [DomainFuzz](https://github.com/monkeym4ster/DomainFuzz) and a few other libraries and tools I was researching at the time.
 
-
-## Targets
-
- Urlinsane supports typo generation and information collection for **Domains**, **Emails**, **Usernames**, and software **Packages**.
-## Domain 
-
-```bash
-urlinsane typo -d example.com 
-```
-
-## Email 
-```bash
-urlinsane typo -e username@example.com 
-```
-
-## Username 
-
-```bash
-urlinsane typo -n urlinsane
-```
-
-```bash
-urlinsane typo -n urlinsane -u https://github.com/rangertaha/urlinsane
-```
-
-## Packages 
-
-```bash
-urlinsane typo -g express
-```
-
-
-```bash
-urlinsane typo -g express -u https://www.npmjs.com/package/express
-```
 
 
 
@@ -48,6 +13,11 @@ urlinsane typo -g express -u https://www.npmjs.com/package/express
 
 
 ## Usage
+
+```bash
+urlinsane typo -d example.com 
+```
+
 
 
 
@@ -73,29 +43,49 @@ Plugins play a crucial role in extending the functionality, flexibility, and cus
 
 In typosquatting, language plays a significant role in manipulating legitimate terms and names to create deceptive variations that appear familiar to the target audience. Attackers use linguistic techniques to construct these variations in ways that exploit the visual similarity or familiarity of certain languages and alphabets.
 
-| Languages | Keyboards | Homoglyphs | Homophones | Antonyms | Misspellings | Cardinal | Ordinal | Vowels | Graphemes  | 
-|-----------|-----------|-----------|------------|-----------|--------------|--------|-----------|---------|-----------|
-| Arabic    |    4      |           |            |           |              |   |   |   |    | 
-| Armenian  |    3      |           |            |           |              |   |   |   |    | 
-| English   |    4      |           |            |           |              |   |   |   |    | 
-| Finnish   |    1      |           |            |           |              |   |   |   |    | 
-| Russian   |    3      |           |            |           |              |   |   |   |    | 
-| Spanish   |    2      |           |            |           |              |   |   |   |    | 
-| Hebrew    |    1      |           |            |           |              |   |   |   |    | 
-| Persian   |    1      |           |            |           |              |   |   |   |    | 
+| Languages | Homoglyphs | Homophones  | Antonyms   | Misspellings | Stems | Cardinal |  Ordinal  | Vowels  | Graphemes  | 
+|-----------|------------|-------------|------------|--------------|-------|----------|-----------|---------|------------|
+| Arabic    |           |            |           |              |   |   |   |    | 
+| Armenian  |           |            |           |              |   |   |   |    | 
+| English   |           |            |           |              |   |   |   |    | 
+| Finnish   |           |            |           |              |   |   |   |    | 
+| Russian   |           |            |           |              |   |   |   |    | 
+| Spanish   |           |            |           |              |   |   |   |    | 
+| Hebrew    |           |            |           |              |   |   |   |    | 
+| Persian   |           |            |           |              |   |   |   |    | 
+
+
+
+    ID NAME     GLYPHS HOMOPHONES ANTONYMS TYPOS CARDINAL ORDINAL STEMS
+                                                             
+    hy Armenian     38          1        1     1       24       0     0
+    fi Finnish      29          1        1     1       11       1     0
+    fr French       27          1        1     1       11      10     0
+    iw Hebrew       22          2        1     5       11       0     0
+    fa Persian      28          1        1     1       11       0     0
+    ru Russian      41          1        1     1       44      10     0
+    ar Arabic       28          1        1     0       11      11     0
+    en English      26        485       93  4256       10       9     0
+    es Spanish      27          1        1     1       31       4     0
+
+
+
 
 ### Keyboard Layouts
 
-| Arabic | Armenian | English  | Finnish | Russian   | Spanish | Hebrew | Persian | 
-|----------|----------|----------|---------|-----------|---------|--------|---------|
-| "غفقثصض" |          |  QWERTY  |         |           |         |        |         |
-|        |          |  AZERTY  |         |           |         |        |         |   
-|        |          |  QWERTZ  |         |           |         |        |         |  
-|        |          |  DVORAK  |         |           |         |        |         |
-|        |          |          |         |           |         |        |         | 
-|        |          |          |         |           |         |        |         |  
-|        |          |          |         |           |         |        |         | 
-|        |          |          |         |           |         |        |         | 
+|  Arabic | Armenian  | English  | Finnish |  French   | Russian | Spanish | Hebrew  | Persian | 
+|----------|----------|----------|---------|-----------|---------|--------|----------|---------|
+| غفقثصض   | QWERTY   |  QWERTY  | QWERTY  | ACNOR     | ЯШЕРТЫ  | QWERTY | Standard | Farsi   |
+| AZERTY   | QWERTY   |  AZERTY  |         |           | ЙЦУКЕН  | QWERTY |         |   |
+| غفقثصض   |          |  QWERTZ  |         |           | ЙЦУКЕН  |        |         |  |
+| QWERTY   |          |  DVORAK  |         |           |         |        |         ||
+|          |          |          |         |           |         |        |         | |
+|          |          |          |         |           |         |        |         |  |
+|          |          |          |         |           |         |        |         | |
+|          |          |          |         |           |         |        |         | |
+
+
+ 
 
 
 ## Algorithms
