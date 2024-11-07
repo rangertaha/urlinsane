@@ -22,6 +22,10 @@ import (
 )
 
 const (
+<<<<<<< HEAD
+=======
+	ORDER       = 3
+>>>>>>> develop
 	CODE        = "cn"
 	DESCRIPTION = "DNS CNAME records"
 )
@@ -32,6 +36,10 @@ type Ipaddr struct {
 
 func (n *Ipaddr) Id() string {
 	return CODE
+}
+
+func (n *Ipaddr) Order() int {
+	return ORDER
 }
 
 func (i *Ipaddr) Init(c internal.Config) {

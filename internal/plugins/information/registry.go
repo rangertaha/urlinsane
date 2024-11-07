@@ -8,6 +8,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal/plugins/information/packages"
 	"github.com/rangertaha/urlinsane/internal/plugins/information/usernames"
 )
+<<<<<<< HEAD
 
 // const (
 // 	ENTITY  = "ENTITY"
@@ -18,6 +19,11 @@ type Creator func() internal.Information
 
 // var Types = []string{"ENTITY", "DOMAINS"}
 
+=======
+
+type Creator func() internal.Information
+
+>>>>>>> develop
 var Information = map[string]Creator{}
 
 func Add(name string, creator Creator) {

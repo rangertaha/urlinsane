@@ -46,6 +46,10 @@ type Config interface {
 	Random() time.Duration
 	Verbose() bool
 	Progress() bool
+<<<<<<< HEAD
+=======
+	Screenshot() bool
+>>>>>>> develop
 	Format() string
 	File() string
 	Dist() int
@@ -81,6 +85,7 @@ type Information interface {
 	Description() string
 	Headers() []string
 	Exec(Typo) Typo
+	Order() int
 }
 
 type Storage interface {
