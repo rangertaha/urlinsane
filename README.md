@@ -47,12 +47,12 @@ urlinsane typo example.com
 
 
 <div align="center">
-  <a href="https://youtu.be/7yzyYHoJqp4" style="float:left" width="150">
-  <img width="" src="https://i.ytimg.com/vi/7yzyYHoJqp4/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFbyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLDB7XIfclBY8a9J5RGR_ckVs5nIFg" alt="Urlinsane"></a>
-  <a href="https://youtu.be/7yzyYHoJqp4" style="float:left" width="150">
-  <img width="" src="https://i.ytimg.com/vi/7yzyYHoJqp4/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFbyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLDB7XIfclBY8a9J5RGR_ckVs5nIFg" alt="Urlinsane"></a>
-  <a href="https://youtu.be/7yzyYHoJqp4" style="float:left" width="150">
-  <img width="" src="https://i.ytimg.com/vi/7yzyYHoJqp4/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFbyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLDB7XIfclBY8a9J5RGR_ckVs5nIFg" alt="Urlinsane"></a>
+  <a href="https://youtu.be/7yzyYHoJqp4" style="float:left">
+  <img width="100" src="https://i.ytimg.com/vi/7yzyYHoJqp4/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFbyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLDB7XIfclBY8a9J5RGR_ckVs5nIFg" alt="Urlinsane"></a>
+  <a href="https://youtu.be/7yzyYHoJqp4" style="float:left">
+  <img width="100" src="https://i.ytimg.com/vi/7yzyYHoJqp4/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFbyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLDB7XIfclBY8a9J5RGR_ckVs5nIFg" alt="Urlinsane"></a>
+  <a href="https://youtu.be/7yzyYHoJqp4" style="float:left">
+  <img width="100" src="https://i.ytimg.com/vi/7yzyYHoJqp4/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFbyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLDB7XIfclBY8a9J5RGR_ckVs5nIFg" alt="Urlinsane"></a>
 </div>
 
 
