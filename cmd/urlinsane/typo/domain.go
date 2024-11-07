@@ -14,143 +14,143 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package typo
 
-import (
-	"bytes"
-	"fmt"
-	"os"
-	"strings"
-	"text/template"
+// import (
+// 	"bytes"
+// 	"fmt"
+// 	"os"
+// 	"strings"
+// 	"text/template"
 
-	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/config"
+// 	"github.com/jedib0t/go-pretty/v6/table"
+// 	"github.com/rangertaha/urlinsane/internal"
+// 	"github.com/rangertaha/urlinsane/internal/config"
 
-	_ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
-	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
-	"github.com/rangertaha/urlinsane/internal/urlinsane"
-	"github.com/rangertaha/urlinsane/internal/utils"
-	"github.com/spf13/cobra"
-)
+// 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
+// 	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
+// 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
+// 	"github.com/rangertaha/urlinsane/internal/urlinsane"
+// 	"github.com/rangertaha/urlinsane/internal/utils"
+// 	"github.com/spf13/cobra"
+// )
 
-const domainHelpTemplate = `
+// const domainHelpTemplate = `
 
-ALGORITHMS:
-    Typosquatting algorithm plugins that generate typos.
+// ALGORITHMS:
+//     Typosquatting algorithm plugins that generate typos.
 
-{{.Algorithms}}
-
-
-INFORMATION:
-    Information-gathering plugins that collect information on each domain
-
-{{.Information}}
+// {{.Algorithms}}
 
 
-LANGUAGES:
+// INFORMATION:
+//     Information-gathering plugins that collect information on each domain
 
-{{.Languages}}
-
-
-KEYBOARDS:
-
-{{.Keyboards}}
+// {{.Information}}
 
 
-EXAMPLE:
+// LANGUAGES:
 
-    urlinsane typo domain google.com
-    urlinsane typo domain  -a co google.com
-    urlinsane typo domain  -t co,oi,oy -i ip,idna,ns google.com
-    urlinsane typo domain -l fr,en -k en1,en2 google.com
+// {{.Languages}}
 
-AUTHOR:
-   Rangertaha (rangertaha@gmail.com)
 
-`
+// KEYBOARDS:
 
-type DomainHelpOptions struct {
-	Languages   string
-	Keyboards   string
-	Algorithms  string
-	Information string
-}
+// {{.Keyboards}}
 
-var domainCliOptions bytes.Buffer
 
-// rootCmd represents the typo command
-var domainCmd = &cobra.Command{
-	Use:   "domain [flags] [name]",
-	Short: "Detects domain typosquatting",
-	Long:  `Detects domain typosquatting`,
-	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		// if len(args) == 0 {
-		// 	cmd.Help()
-		// }
+// EXAMPLE:
 
-		config, err := config.CobraConfig(cmd, args, internal.DOMAIN)
-		if err != nil {
-			fmt.Printf("%s", err)
-			os.Exit(0)
-		}
-		config.Type()
+//     urlinsane typo domain google.com
+//     urlinsane typo domain  -a co google.com
+//     urlinsane typo domain  -t co,oi,oy -i ip,idna,ns google.com
+//     urlinsane typo domain -l fr,en -k en1,en2 google.com
 
-		t := urlinsane.New(config)
-		t.Execute()
+// AUTHOR:
+//    Rangertaha (rangertaha@gmail.com)
 
-	},
-}
+// `
 
-func init() {
-	TypoCmd.AddCommand(domainCmd)
-	domainHelpOptions := DomainHelpOptions{
-		LanguageTable(),
-		KeyboardTable(),
-		AlgorithmTable(),
-		DomainInformationTable(),
-	}
+// type DomainHelpOptions struct {
+// 	Languages   string
+// 	Keyboards   string
+// 	Algorithms  string
+// 	Information string
+// }
 
-	// Create a new template and parse into it.
-	tmpl := template.Must(template.New("help").Parse(domainHelpTemplate))
+// var domainCliOptions bytes.Buffer
 
-	// Run the template to verify the output.
-	err := tmpl.Execute(&domainCliOptions, domainHelpOptions)
-	if err != nil {
-		fmt.Printf("Execution: %s", err)
-	}
+// // rootCmd represents the typo command
+// var domainCmd = &cobra.Command{
+// 	Use:   "domain [flags] [name]",
+// 	Short: "Detects domain typosquatting",
+// 	Long:  `Detects domain typosquatting`,
+// 	Args:  cobra.ExactArgs(1),
+// 	Run: func(cmd *cobra.Command, args []string) {
+// 		// if len(args) == 0 {
+// 		// 	cmd.Help()
+// 		// }
 
-	domainCmd.SetUsageTemplate(templateBase + domainCliOptions.String())
-	domainCmd.CompletionOptions.DisableDefaultCmd = true
+// 		config, err := config.CobraConfig(cmd, args, internal.DOMAIN)
+// 		if err != nil {
+// 			fmt.Printf("%s", err)
+// 			os.Exit(0)
+// 		}
+// 		config.Type()
 
-	// Plugins
-	domainCmd.Flags().StringP("info", "i", "all", "Information plugin IDs to apply")
+// 		t := urlinsane.New(config)
+// 		t.Execute()
+
+// 	},
+// }
+
+// func init() {
+// 	TypoCmd.AddCommand(domainCmd)
+// 	domainHelpOptions := DomainHelpOptions{
+// 		LanguageTable(),
+// 		KeyboardTable(),
+// 		AlgorithmTable(),
+// 		DomainInformationTable(),
+// 	}
+
+// 	// Create a new template and parse into it.
+// 	tmpl := template.Must(template.New("help").Parse(domainHelpTemplate))
+
+// 	// Run the template to verify the output.
+// 	err := tmpl.Execute(&domainCliOptions, domainHelpOptions)
+// 	if err != nil {
+// 		fmt.Printf("Execution: %s", err)
+// 	}
+
+// 	domainCmd.SetUsageTemplate(templateBase + domainCliOptions.String())
+// 	domainCmd.CompletionOptions.DisableDefaultCmd = true
+
+// 	// Plugins
+// 	domainCmd.Flags().StringP("info", "i", "all", "Information plugin IDs to apply")
 	
 
-	// Filtering
-	domainCmd.Flags().Bool("all", false, "Scan all generated variants equivalent to: --ld 100")
-	domainCmd.Flags().Bool("show", false, "Show all generated variants")
-	domainCmd.Flags().Int("ld", 3, "Minimum levenshtein distance to scan")
-	domainCmd.Flags().String("filter",  DomainInformationFields(), "Output filter options")
+// 	// Filtering
+// 	domainCmd.Flags().Bool("all", false, "Scan all generated variants equivalent to: --ld 100")
+// 	domainCmd.Flags().Bool("show", false, "Show all generated variants")
+// 	domainCmd.Flags().Int("ld", 3, "Minimum levenshtein distance to scan")
+// 	domainCmd.Flags().String("filter",  DomainInformationFields(), "Output filter options")
 
-}
+// }
 
-func DomainInformationTable() string {
-	t := table.NewWriter()
-	t.SetStyle(utils.StyleClear)
-	t.AppendHeader(table.Row{"  ", "ID", "Description"})
-	for _, p := range domains.List() {
-		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
-	}
-	return t.Render()
-}
+// func DomainInformationTable() string {
+// 	t := table.NewWriter()
+// 	t.SetStyle(utils.StyleClear)
+// 	t.AppendHeader(table.Row{"  ", "ID", "Description"})
+// 	for _, p := range domains.List() {
+// 		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
+// 	}
+// 	return t.Render()
+// }
 
-func DomainInformationFields() (fields string) {
-	headers := []string{}
-	for _, i := range domains.List() {
-		for _, header := range i.Headers(){
-			headers = append(headers, strings.ToLower(header))
-		}
-	}
-	return strings.Join(headers, ",")
-}
+// func DomainInformationFields() (fields string) {
+// 	headers := []string{}
+// 	for _, i := range domains.List() {
+// 		for _, header := range i.Headers(){
+// 			headers = append(headers, strings.ToLower(header))
+// 		}
+// 	}
+// 	return strings.Join(headers, ",")
+// }
