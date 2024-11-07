@@ -191,6 +191,9 @@ With structured outputs, users can seamlessly incorporate findings into their ex
 | TSV   | Tab-separated values format               |
 | MD    | Markdown-formatted output                 |
 
+A major limitation of the output format is its restricted display in the terminal, where data is primarily shown in columns and rows. Although the `--filter` flag lets you choose specific columns, and the `--output/-o txt` type enables streaming output directly to the terminal without table formatting, only a fraction of the collected information is shown. The new JSON output option overcomes this by allowing the complete, highly nested JSON document to be dumped, which can then be filtered using tools like [jq](https://jqlang.github.io/jq/) for more detailed analysis.
+
+
 ## In Progress
 
 - I’m working on creating a `.urlinsane` directory in the user's home directory to store screenshots, data dumps, and cache, along with a configuration file to provide additional tool customization options.
