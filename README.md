@@ -42,6 +42,12 @@ urlinsane typo example.com
 ![](docs/vids/1.mkv)
 
 
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=_IU1ADTBKVU" style="float:left"><img width="350" src="https://img.youtube.com/vi/_IU1ADTBKVU/0.jpg" alt="URLInsane Demo1"></a>
+   <a href="https://www.youtube.com/watch?v=HgMV0NqMCm0" style="float:left"><img width="350"  src="https://img.youtube.com/vi/HgMV0NqMCm0/0.jpg" alt="URLInsane Demo2"></a>
+</div>
+
+
 ## Plugins
 
 Plugins play a crucial role in extending the functionality, flexibility, and customization of Urlinsane and allow it to evolve alongside changing needs and technological advancements. Here's a structured summary of the plugin types and their roles in Urlinsane:
