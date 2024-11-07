@@ -95,7 +95,7 @@ var emailCmd = &cobra.Command{
 }
 
 func init() {
-	TypoCmd.AddCommand(emailCmd)
+	// TypoCmd.AddCommand(emailCmd)
 	emailHelpOptions := HelpOptions{
 		LanguageTable(),
 		KeyboardTable(),

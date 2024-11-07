@@ -2,33 +2,50 @@ package main
 
 import (
 	"fmt"
-	"net"
-	"time"
+	"io"
+	"net/http"
 )
 
 func main() {
-	host := "facebook.com"
-	// port := os.Args[2]
-
-	// Connect to the target host and port
-	conn, err := net.DialTimeout("tcp", host+":80", 5*time.Second)
+	resp, err := http.Get("https://www.npmjs.com/package/api-server")
 	if err != nil {
-		fmt.Println("Error:", err.Error())
-		return
+		// handle error
 	}
-	defer conn.Close()
-
-	// Send the request to the server
-	fmt.Fprintf(conn, "GET / HTTP/1.1\r\nHost: %s\r\n\r\n", host)
-
-	// Read the response from the server
-	buffer := make([]byte, 1024)
-	n, _ := conn.Read(buffer)
-
-	// Print the response
-	response := string(buffer[:n])
-	fmt.Println(response)
+	defer resp.Body.Close()
+	_, err = io.ReadAll(resp.Body)
+	fmt.Println(resp.StatusCode)
+	// fmt.Println(string(body))
 }
+
+// import (
+// 	"fmt"
+// 	"net"
+// 	"time"
+// )
+
+// func main() {
+// 	host := "facebook.com"
+// 	// port := os.Args[2]
+
+// 	// Connect to the target host and port
+// 	conn, err := net.DialTimeout("tcp", host+":80", 5*time.Second)
+// 	if err != nil {
+// 		fmt.Println("Error:", err.Error())
+// 		return
+// 	}
+// 	defer conn.Close()
+
+// 	// Send the request to the server
+// 	fmt.Fprintf(conn, "GET / HTTP/1.1\r\nHost: %s\r\n\r\n", host)
+
+// 	// Read the response from the server
+// 	buffer := make([]byte, 1024)
+// 	n, _ := conn.Read(buffer)
+
+// 	// Print the response
+// 	response := string(buffer[:n])
+// 	fmt.Println(response)
+// }
 
 // import (
 // 	"context"

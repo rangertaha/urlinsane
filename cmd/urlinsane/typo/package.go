@@ -18,6 +18,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"strings"
 	"text/template"
 
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -31,7 +32,6 @@ import (
 	"github.com/rangertaha/urlinsane/internal/utils"
 	"github.com/spf13/cobra"
 )
-
 
 const pkgHelpTemplate = `
 
@@ -95,7 +95,7 @@ var pkgCmd = &cobra.Command{
 }
 
 func init() {
-	TypoCmd.AddCommand(pkgCmd)
+	// TypoCmd.AddCommand(pkgCmd)
 	pkgHelpOptions := HelpOptions{
 		LanguageTable(),
 		KeyboardTable(),
@@ -122,6 +122,7 @@ func init() {
 	pkgCmd.Flags().Bool("all", false, "Scan all generated variants equivalent to: --ld 100")
 	pkgCmd.Flags().Bool("show", false, "Show all generated variants")
 	pkgCmd.Flags().Int("ld", 3, "Minimum levenshtein distance to scan")
+	pkgCmd.Flags().String("filter", PackageInformationFields(), "Output filter options")
 
 }
 
@@ -133,4 +134,14 @@ func PackageInformationTable() string {
 		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
 	}
 	return t.Render()
+}
+
+func PackageInformationFields() (fields string) {
+	headers := []string{}
+	for _, i := range packages.List() {
+		for _, header := range i.Headers() {
+			headers = append(headers, strings.ToLower(header))
+		}
+	}
+	return strings.Join(headers, ",")
 }
