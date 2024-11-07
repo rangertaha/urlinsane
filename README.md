@@ -140,6 +140,7 @@ Information gathering on target domains enables a detailed comparison of similar
 | vc  | [VSM](https://en.wikipedia.org/wiki/Vector_space_model)    | **TODO**: Comparing domains vector space for cosin similarity |
 | lm  | [LLM](https://en.wikipedia.org/wiki/Large_language_model)    | **TODO**: Using LLMs for keywork extraction, stemming, named entity extraction and a lot more NLP functionality |
 | lm  | [N-Gram](https://en.wikipedia.org/wiki/N-gram)    | **TODO**: Using a domains's most used N-Grams to generate a domain variant |
+| har  | [HAR](https://en.wikipedia.org/wiki/HAR_(file_format))    | **TODO**: Retrieve the HAR file from the browser interaction to obtain a wealth of data for analysis. |
 
 ## Outputs
 
@@ -160,9 +161,11 @@ With structured outputs, users can seamlessly incorporate findings into their ex
 
 ## Research
 
-I’m interested in exploring the use of Large Language Models (LLMs) to replace our individual natural language processing (NLP) algorithms and to automatically generate language datasets.
+- [LLM](https://en.wikipedia.org/wiki/Large_language_model): I’m interested in exploring the use of Large Language Models (LLMs) to replace our individual natural language processing (NLP) algorithms and to automatically generate language datasets.
+- I’d like to explore ways to reduce the program’s size, which is currently 11MB. Reusing existing datasets from the operating system, such as the MaxMind GeoIP database, TLD suffix lists, LLMs, and vector databases, could help minimize storage requirements.
+- I’d like to explore restructuring the information-gathering functions using a DAG execution pattern with dependencies, rather than chaining plugins in a linear pipeline. This approach, similar to how Terraform handles plugin execution, would enable more flexible and efficient processing of interdependent tasks.
 
-
+- I’d like to explore adding an analysis plugin that compares data between two domains and can be run as a separate CLI command.
 
 
 ###  Other Tools
