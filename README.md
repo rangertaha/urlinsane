@@ -36,9 +36,6 @@ mv urlinsane-0.6.0-linux-amd64  /usr/local/bin/urlinsane
 urlinsane typo example.com 
 ```
 
-[![Watch the video](https://youtu.be/7yzyYHoJqp4?si=42DEzK7ooi_x1xeY)]()
-
-
 
 ![Urlinsane](https://github.com/rangertaha/urlinsane/blob/develop/docs/vids/001.gif)
 
@@ -50,7 +47,9 @@ urlinsane typo example.com
 
 
 <div align="center">
-  <a href="https://youtu.be/7yzyYHoJqp4" style="float:left"><img width="" src="https://i.ytimg.com/vi/7yzyYHoJqp4/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFbyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLDB7XIfclBY8a9J5RGR_ckVs5nIFg" alt="Urlinsane"></a>
+  <a href="https://youtu.be/7yzyYHoJqp4" style="float:left"><img width="" src="https://youtu.be/7yzyYHoJqp4" alt="Urlinsane"></a>
+   <a href="https://youtu.be/7yzyYHoJqp4" style="float:left"><img width="" src="https://youtu.be/7yzyYHoJqp4" alt="Urlinsane"></a>
+    <a href="https://youtu.be/7yzyYHoJqp4" style="float:left"><img width="" src="https://youtu.be/7yzyYHoJqp4" alt="Urlinsane"></a>
 </div>
 
 
