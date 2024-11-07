@@ -108,6 +108,7 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 | ID  | Name       | Description  |
 |-----|-------------------|--------------|
+| ld   | [Levenshtein](https://en.wikipedia.org/wiki/Levenshtein_distance)     | Levenshtein distance bettween domains is always create and used with the Urlinsane to limit processing|
 | a   | DNS A      | Host IPv4 address |
 | mx  | DNS MX     | DNS Mail Exchange (MX) records|
 | txt | DNS TXT    | DNS TXT records records |
@@ -115,15 +116,15 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 | cn  | DNS CName  | DNS CName Records |
 | ns  | DNS NS     | Checks DNS NS records |
 | geo | GeoIP Info | Show country location of IP address via MaxMind |
-| ssd | SSDeep     | Show domain similarity % using fuzzy hashing with ssdeep|
-| 301 | Redirects  | Show domains redirects |
-| idn | IDN        | Show international domain name (Default) |
-| bn  | Banner     | HTTP/SMTP Banner|
-| png | Screenshot | Screenshot of the domain via headless browser  |
+| ssd | SSDeep     | Get domain similarity % using fuzzy hashing with ssdeep|
+| 301 | Redirects  | Get domains redirects |
+| idn | IDN        | Get international domain name |
+| bn  | Banner     | HTTP/SMTP Banner using a simple TCP connection |
+| png | Screenshot | Screenshot of the domain via headless browser and stores locally |
 | wi  | Whois      | Whois domain loookup info |
 | kw  | Keywords   | Extracting keywords use the RAKE algorithm |
 | tp  | NLP Topics | Extracting topics via [LDA](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation) algorithm |
-| vc  | NLP [VSM](https://en.wikipedia.org/wiki/Vector_space_model)    | Comparing domains with vector space modeling |
+| vc  | [VSM](https://en.wikipedia.org/wiki/Vector_space_model)    | Comparing domains vector space for cosin similarity |
 
 
 ## Outputs
