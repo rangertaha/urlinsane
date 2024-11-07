@@ -38,10 +38,8 @@ urlinsane typo example.com
 
 [![Watch the video](docs/vids/1.mkv)]()
 
-[Surface Gradient](https://blogs.unity3d.com/2019/11/20/normal-map-compositing-using-the-surface-gradient-framework-in-shader-graph/) powered normal map operations.
-![](docs/docfx/images/NormalBlend.gif)
-
-docs/vids/1.mkv
+[Vid](docs/vids/1.mkv)
+![](docs/vids/1.mkv)
 
 
 ## Plugins
