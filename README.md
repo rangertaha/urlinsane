@@ -89,14 +89,14 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 |dcar| Double Char Adjacent Repl    | Double character adjacent replacement typos replace consecutive identical letters with adjacent keys on the keyboard  |
 |cm  | Common Misspellings             | Created from a dictionary of commonly misspelled words in each language            |
 | hs | Homophones Substitution |Substitutes words that sound the same but have different spellings |
-|vs  | Vowel Substitution  |             |
+|vs  | Vowel Substitution  | Vowel Swapping replaces vowels in the domain name with other vowels to create variations |
 |bf  | Bitsquatting | Relies on random bit-errors to redirect connections |
-|tld | Wrong Top Level Domain          |             | 
-|tld2| Wrong Second Level Domain       |             | 
-|tld3| Wrong Third Level Domain        |             |
-|ons | Ordinal Number Sub | Substituting digital numbers and ordinal numbers            |
+|tld | Wrong TLD    | Wrong top level domain (TLD)            | 
+|tld2| Wrong SLD | Wrong second level domain (TLD2) | 
+|tld3| Wrong TLD3  | Wrong third level domain (TLD3) |
+|ons | Ordinal Number Sub | Substituting digital numbers and ordinal numbers |
 |cns | Cardinal Number Sub | Substituting digial numbers and carninal numbers  | 
-| si | Subdomain insertion | Inserts common subdomain at the beginning of the domain |
+| si | Subdomain Insertion | Inserts common subdomain at the beginning of the domain |
 |com | Combosquatting | **TODO**: Combining keywords extracted via NLP and HTML meta tags |
 | st | [Stem](https://en.wikipedia.org/wiki/Stemming) Substitution       | **TODO**: Substituting words with there root form |
 | ks | Keyboard Substitution       | **TODO**: Changing international keyboard layouts while assuming the user is typing in his/her native layout.           |
