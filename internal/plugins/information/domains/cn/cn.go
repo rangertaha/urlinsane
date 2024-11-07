@@ -22,10 +22,7 @@ import (
 )
 
 const (
-<<<<<<< HEAD
-=======
 	ORDER       = 3
->>>>>>> develop
 	CODE        = "cn"
 	DESCRIPTION = "DNS CNAME records"
 )
