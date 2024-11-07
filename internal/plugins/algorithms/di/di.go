@@ -40,7 +40,7 @@ import (
 const (
 	CODE        = "di"
 	NAME        = "Dot Insertion"
-	DESCRIPTION = "Inserting periods in the target name"
+	DESCRIPTION = "Inserting periods in the target domain name"
 )
 
 type Algo struct {

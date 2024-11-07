@@ -29,8 +29,8 @@ Plugins play a crucial role in extending the functionality, flexibility, and cus
 |-------------|--------|--------------|
 | Languages   |    9   | Language plugins provide data for it's linguistic capability. |
 | Keyboards   |    19  | Keyboard plugins provide layouts for international keyboads |
-| Algorithms  |    24  | They generate typo variants for each target type |
-| Information |    13  | Collects information on target types |
+| Algorithms  |    24  | They generate typo variants for each target domain |
+| Information |    13  | Collects information on target domains |
 | Outputs     |    6   | Formats and saves results  |
 
 
@@ -71,34 +71,34 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 | ID | Name                         | Description |
 |----|------------------------------|-------------|
-| di | Dot Insertion                 |             |
-| do | Dot Omission                 |             |
-| dh | Dot/Hyphen Substitution                 |             |
-| hi | Hyphen Insertion               |             |
-| ho | Hyphen Omission                |             |
-| co | Character Omission           |             |
-| cs | Character Substitution                  |             |
+| di | Dot Insertion   | Inserting periods in the target domain name  |
+| do | Dot Omission   | Omission periods in the target name   |
+| dh | Dot/Hyphen Substitution  |  Swapping Dot and hyphen in a domain |
+| hi | Hyphen Insertion | Inserting hyphens in the target domain            |
+| ho | Hyphen Omission  | Created by removing hyphens from the domain|
+| co | Character Omission | Omitting a character from the name            |
+| cs | Character Substitution   |  Swapping two consecutive characters in a name |
 |acs | Adjacent Char Sub |             |
 |aci | Adjacent Char Ins    |             |
-|gi  | Grapheme Insertion                      |             |
-|gr  | Grapheme Replacement                      |             |
-| hr | Homoglyphs Replacement                      |             |
-|sps | Singular Pluralise              |             |
-| cr | Character Repeat                |             |
-| dcr| Double Char Replacement    |             |
-|dcar| Double Char Adjacent Repl    |             |
-|cs  | Common Misspellings             |             |
-| hs | Homophones Substitution                     |             |
-|vs  | Vowel Substitution                  |             |
-|bf  | Bitsquatting                    |             |
+|gi  | Grapheme Insertion |Inserting the language-specific alphabet in the target domain |
+|gr  | Grapheme Replacement | Replaces an alphabet in the target domain|
+| hr | Homoglyphs Replacement | Replaces characters with characters that look similar|
+|sps | Singular Pluralise  | Singular forms of words are swapped for plural forms |
+| cr | Character Repeat | Character Repeat Repeats a character of the domain name twice |
+| dcr| Double Char Replacement    | Created by replacing identical, consecutive letters in the name.            |
+|dcar| Double Char Adjacent Repl    | Double character adjacent replacement typos replace consecutive identical letters with adjacent keys on the keyboard  |
+|cm  | Common Misspellings             | Created from a dictionary of commonly misspelled words in each language            |
+| hs | Homophones Substitution |Substitutes words that sound the same but have different spellings |
+|vs  | Vowel Substitution  |             |
+|bf  | Bitsquatting | Relies on random bit-errors to redirect connections |
 |tld | Wrong Top Level Domain          |             | 
 |tld2| Wrong Second Level Domain       |             | 
 |tld3| Wrong Third Level Domain        |             |
-|ons | Ordinal Number Sub             |             |
-|cns | Cardinal Number Sub           |             | 
-| si | Subdomain insertion             |             |
-|com | Combosquatting        | **TODO**: Combining keywords extracted via NLP and HTML meta tags |
-| st | [Stem](https://en.wikipedia.org/wiki/Stemming) Substitution       | TODO            |
+|ons | Ordinal Number Sub | Substituting digital numbers and ordinal numbers            |
+|cns | Cardinal Number Sub | Substituting digial numbers and carninal numbers  | 
+| si | Subdomain insertion | Inserts common subdomain at the beginning of the domain |
+|com | Combosquatting | **TODO**: Combining keywords extracted via NLP and HTML meta tags |
+| st | [Stem](https://en.wikipedia.org/wiki/Stemming) Substitution       | **TODO**: Substituting words with there root form |
 | ks | Keyboard Substitution       | **TODO**: Changing international keyboard layouts while assuming the user is typing in his/her native layout.           |
 
 
@@ -107,7 +107,7 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 | ID  | Name       | Description  |
 |-----|-------------------|--------------|
-| ld   | [Levenshtein](https://en.wikipedia.org/wiki/Levenshtein_distance)     | Levenshtein distance bettween domains is created by defualt and used internally to limit the number of scans |
+|     | [Levenshtein](https://en.wikipedia.org/wiki/Levenshtein_distance)     | Levenshtein distance bettween domains is created by defualt and used internally to limit the number of scans |
 | a   | DNS A      | Host IPv4 addresses |
 | mx  | DNS MX     | DNS Mail Exchange (MX) records|
 | txt | DNS TXT    | DNS TXT records records |
