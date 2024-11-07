@@ -36,6 +36,18 @@ mv urlinsane-0.6.0-linux-amd64  /usr/local/bin/urlinsane
 urlinsane typo example.com 
 ```
 
+Starts the output with the banner:
+```
+
+ _   _  ____   _      ___
+| | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
+| | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
+| |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
+ \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
+
+ Version: 0.6.0
+...
+```
 
 
 ## Plugins
