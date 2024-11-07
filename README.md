@@ -36,7 +36,7 @@ mv urlinsane-0.6.0-linux-amd64  /usr/local/bin/urlinsane
 urlinsane typo example.com 
 ```
 
-[![Watch the video](docs/vids/1.mkv)]()
+[![Watch the video](https://youtu.be/7yzyYHoJqp4?si=42DEzK7ooi_x1xeY)]()
 
 [Vid](docs/vids/1.mkv)
 ![](docs/vids/1.mkv)
