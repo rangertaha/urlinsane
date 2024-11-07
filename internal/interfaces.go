@@ -46,10 +46,7 @@ type Config interface {
 	Random() time.Duration
 	Verbose() bool
 	Progress() bool
-<<<<<<< HEAD
-=======
 	Screenshot() bool
->>>>>>> develop
 	Format() string
 	File() string
 	Dist() int
