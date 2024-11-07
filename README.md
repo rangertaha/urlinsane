@@ -34,25 +34,13 @@ Plugins play a crucial role in extending the functionality, flexibility, and cus
 | Languages   |    9   | Language plugins provide data for it's linguistic capability. |
 | Keyboards   |    19  | Keyboard plugins provide layouts for international keyboads |
 | Algorithms  |    24  | They generate typo variants for each target type |
-| Information |    8   | Collects information on target types |
-| Database    |    1   | TODO: Caches and saves results for analysis |
+| Information |    13  | Collects information on target types |
 | Outputs     |    6   | Formats and saves results  |
 
 
 ### Languages
 
 In typosquatting, language plays a significant role in manipulating legitimate terms and names to create deceptive variations that appear familiar to the target audience. Attackers use linguistic techniques to construct these variations in ways that exploit the visual similarity or familiarity of certain languages and alphabets.
-
-| Languages | Homoglyphs | Homophones  | Antonyms   | Misspellings | Stems | Cardinal |  Ordinal  |
-|-----------|------------|-------------|------------|--------------|-------|----------|-----------|
-| Arabic    |           |            |           |              |   |   |   |    | 
-| Armenian  |           |            |           |              |   |   |   |    | 
-| English   |           |            |           |              |   |   |   |    | 
-| Finnish   |           |            |           |              |   |   |   |    | 
-| Russian   |           |            |           |              |   |   |   |    | 
-| Spanish   |           |            |           |              |   |   |   |    | 
-| Hebrew    |           |            |           |              |   |   |   |    | 
-| Persian   |           |            |           |              |   |   |   |    | 
 
 
 
@@ -118,56 +106,42 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 |    | Subdomain insertion             |             |
 |    | Period Insertion                |             | 
 |    | Combosquatting (Keywords)       |             |
-
+|    | Stem Substitution       |             |
 
 
 ## Information
 
-### Domain Information
 
 | ID |  Name             | Description  |
 |----|-------------------|--------------|
-|    | DNS A Records     | Retrieving IPv4 and IPv6 IP host addresses |
-|    | DNS MX Records    | Retrieving Mail Exchange (MX) records|
-|    | DNS TXT Records   | Retrieving TXT records storing arbitrary data associated with a domain |
-|    | DNS AAAA Records  | |
-|    | DNS CName Records | |
-|    | DNS NS Records    | Checks DNS NS records |
-|    | Geographic Info   | Show country location of IP address|
-|    | Domain Similarity | Show domain similarity % using fuzzy hashing with ssdeep|
-|    | Domain Redirects  | Show domains redirects |
-|    | IDNA Format       | Show international domain name (Default) |
-|    | HTTP/SMTP Banner  | |
-
-### Package Information
-
-| ID |  Name                | Description  |
-|----|----------------------|--------------|
-| py | Python Package Index | Checks PyPi servers for pacakges |
-| js | Node Package Manager | Checks NPM servers for pacakges |
-| gh | Github               | Checks NPM servers for pacakges |
-
-
-
-### Username Information
-
-| ID |  Name             | Description  |
-|----|-------------------|--------------|
-|    |                   |              |
-
-
-
+| a  | DNS A      | Host IPv4 address |
+| mx | DNS MX     | DNS Mail Exchange (MX) records|
+| txt| DNS TXT    | DNS TXT records records |
+|    | DNS AAAA   | Host IPv6 address|
+| cn | DNS CName  | DNS CName Records |
+| ns | DNS NS     | Checks DNS NS records |
+| geo | GeoIP Info   | Show country location of IP address via MaxMind |
+| ssd | SSDeep | Show domain similarity % using fuzzy hashing with ssdeep|
+| 301 | Redirects  | Show domains redirects |
+| idn | IDNA Format       | Show international domain name (Default) |
+| bn  | HTTP/SMTP Banner  | |
+| png | Screenshot  | Screenshot of the domain via headless browser  |
+| wi  | Whois | Whois domain loookup info |
+| tp  | NLP Topics | Extracting topics via LDA |
+| vc  | NLP VSM | Comparing domains with vector space modeling |
 
 
 ## Outputs
 
 | Name  | Description | 
 |-------|-------------|
-| TABLE |         |  
-| TEXT  |         |  
-| CSV   |         |    
-| TSV   |         |   
-| MD    |         |   
+| TABLE |Pretty table output format with color         |  
+| HTML  | HTML formatted output        |   
+| JSON  | JSON outputs format        |  
+| TXT   | Text outputs streams one record per line        | 
+| CSV   | CSV (comma-separated values) formatted output        |    
+| TSV   | TSV (tab-separated values) formatted output        |   
+| MD    |Markdown formatted output         |   
 
 
 ## Database
