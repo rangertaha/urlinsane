@@ -30,7 +30,7 @@ import (
 
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/si"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/dhs"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/dhus"
+	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/dhus"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/tld"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/tld2"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/tld3"
