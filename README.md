@@ -15,7 +15,7 @@ It's inspired by [URLCrazy](https://morningstarsecurity.com/research/urlcrazy), 
 ## Usage
 
 ```bash
-urlinsane typo -d example.com 
+urlinsane typo example.com 
 ```
 
 
