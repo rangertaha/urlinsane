@@ -38,7 +38,7 @@ urlinsane typo example.com
 
 [![Watch the video](https://youtu.be/7yzyYHoJqp4?si=42DEzK7ooi_x1xeY)]()
 
-[Vid](docs/vids/1.mkv)
+[Vid](docs/vids/1.gif)
 ![](docs/vids/1.mkv)
 
 
