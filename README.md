@@ -87,8 +87,8 @@ Algorithms systematically generate plausible misspelled domain variations by ana
 | ho | Hyphen Omission  | Created by removing hyphens from the domain|
 | co | Character Omission | Omitting a character from the name            |
 | cs | Character Substitution   |  Swapping two consecutive characters in a name |
-|acs | Adjacent Char Sub |             |
-|aci | Adjacent Char Ins    |             |
+|acs | Adjacent Char Sub | Replaces adjacent character from the keyboard    |
+|aci | Adjacent Char Ins    |Inserting adjacent character from the keyboard |
 |gi  | Grapheme Insertion |Inserting the language-specific alphabet in the target domain |
 |gr  | Grapheme Replacement | Replaces an alphabet in the target domain|
 | hr | Homoglyphs Replacement | Replaces characters with characters that look similar|
