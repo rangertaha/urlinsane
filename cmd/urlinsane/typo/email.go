@@ -14,123 +14,123 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package typo
 
-import (
-	"bytes"
-	"fmt"
-	"os"
-	"text/template"
+// import (
+// 	"bytes"
+// 	"fmt"
+// 	"os"
+// 	"text/template"
 
-	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/config"
+// 	"github.com/jedib0t/go-pretty/v6/table"
+// 	"github.com/rangertaha/urlinsane/internal"
+// 	"github.com/rangertaha/urlinsane/internal/config"
 
-	_ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
-	"github.com/rangertaha/urlinsane/internal/plugins/information/emails"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
-	"github.com/rangertaha/urlinsane/internal/urlinsane"
-	"github.com/rangertaha/urlinsane/internal/utils"
-	"github.com/spf13/cobra"
-)
-
-
-const emailHelpTemplate = `
-
-ALGORITHMS:
-    Typosquatting algorithm plugins that generate typos.
-
-{{.Algorithms}}
+// 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
+// 	"github.com/rangertaha/urlinsane/internal/plugins/information/emails"
+// 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
+// 	"github.com/rangertaha/urlinsane/internal/urlinsane"
+// 	"github.com/rangertaha/urlinsane/internal/utils"
+// 	"github.com/spf13/cobra"
+// )
 
 
-INFORMATION:
-    Information-gathering plugins that collect information on each domain
+// const emailHelpTemplate = `
 
-{{.Information}}
+// ALGORITHMS:
+//     Typosquatting algorithm plugins that generate typos.
 
-
-LANGUAGES:
-
-{{.Languages}}
+// {{.Algorithms}}
 
 
-KEYBOARDS:
+// INFORMATION:
+//     Information-gathering plugins that collect information on each domain
 
-{{.Keyboards}}
-
-
-EXAMPLE:
-
-    urlinsane typo email username@example.com
+// {{.Information}}
 
 
-AUTHOR:
-   Rangertaha (rangertaha@gmail.com)
+// LANGUAGES:
 
-`
+// {{.Languages}}
 
-var emailCliOptions bytes.Buffer
 
-// rootCmd represents the typo command
-var emailCmd = &cobra.Command{
-	Use:   "email [flags] [name]",
-	Aliases: []string{"mail", "e"},
-	Short: "Detects email typosquatting",
-	Long:  `Detects email typosquatting`,
-	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		// if len(args) == 0 {
-		// 	cmd.Help()
-		// }
+// KEYBOARDS:
 
-		config, err := config.CobraConfig(cmd, args, internal.EMAIL)
-		if err != nil {
-			fmt.Printf("%s", err)
-			os.Exit(0)
-		}
-		config.Type()
+// {{.Keyboards}}
 
-		t := urlinsane.New(config)
-		t.Execute()
 
-	},
-}
+// EXAMPLE:
 
-func init() {
-	// TypoCmd.AddCommand(emailCmd)
-	emailHelpOptions := HelpOptions{
-		LanguageTable(),
-		KeyboardTable(),
-		AlgorithmTable(),
-		EmailInformationTable(),
-	}
+//     urlinsane typo email username@example.com
 
-	// Create a new template and parse into it.
-	tmpl := template.Must(template.New("help").Parse(emailHelpTemplate))
 
-	// Run the template to verify the output.
-	err := tmpl.Execute(&emailCliOptions, emailHelpOptions)
-	if err != nil {
-		fmt.Printf("Execution: %s", err)
-	}
+// AUTHOR:
+//    Rangertaha (rangertaha@gmail.com)
 
-	emailCmd.SetUsageTemplate(templateBase + emailCliOptions.String())
-	emailCmd.CompletionOptions.DisableDefaultCmd = true
+// `
 
-	// Plugins
-	emailCmd.Flags().StringP("info", "i", "all", "Information plugin IDs to apply")
+// var emailCliOptions bytes.Buffer
 
-	// Filtering
-	emailCmd.Flags().Bool("all", false, "Scan all generated variants equivalent to: --ld 100")
-	emailCmd.Flags().Bool("show", false, "Show all generated variants")
-	emailCmd.Flags().Int("ld", 3, "Minimum levenshtein distance to scan")
+// // rootCmd represents the typo command
+// var emailCmd = &cobra.Command{
+// 	Use:   "email [flags] [name]",
+// 	Aliases: []string{"mail", "e"},
+// 	Short: "Detects email typosquatting",
+// 	Long:  `Detects email typosquatting`,
+// 	Args:  cobra.ExactArgs(1),
+// 	Run: func(cmd *cobra.Command, args []string) {
+// 		// if len(args) == 0 {
+// 		// 	cmd.Help()
+// 		// }
 
-}
+// 		config, err := config.CobraConfig(cmd, args, internal.EMAIL)
+// 		if err != nil {
+// 			fmt.Printf("%s", err)
+// 			os.Exit(0)
+// 		}
+// 		config.Type()
 
-func EmailInformationTable() string {
-	t := table.NewWriter()
-	t.SetStyle(utils.StyleClear)
-	t.AppendHeader(table.Row{"  ", "ID", "Description"})
-	for _, p := range emails.List() {
-		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
-	}
-	return t.Render()
-}
+// 		t := urlinsane.New(config)
+// 		t.Execute()
+
+// 	},
+// }
+
+// func init() {
+// 	// TypoCmd.AddCommand(emailCmd)
+// 	emailHelpOptions := HelpOptions{
+// 		LanguageTable(),
+// 		KeyboardTable(),
+// 		AlgorithmTable(),
+// 		EmailInformationTable(),
+// 	}
+
+// 	// Create a new template and parse into it.
+// 	tmpl := template.Must(template.New("help").Parse(emailHelpTemplate))
+
+// 	// Run the template to verify the output.
+// 	err := tmpl.Execute(&emailCliOptions, emailHelpOptions)
+// 	if err != nil {
+// 		fmt.Printf("Execution: %s", err)
+// 	}
+
+// 	emailCmd.SetUsageTemplate(templateBase + emailCliOptions.String())
+// 	emailCmd.CompletionOptions.DisableDefaultCmd = true
+
+// 	// Plugins
+// 	emailCmd.Flags().StringP("info", "i", "all", "Information plugin IDs to apply")
+
+// 	// Filtering
+// 	emailCmd.Flags().Bool("all", false, "Scan all generated variants equivalent to: --ld 100")
+// 	emailCmd.Flags().Bool("show", false, "Show all generated variants")
+// 	emailCmd.Flags().Int("ld", 3, "Minimum levenshtein distance to scan")
+
+// }
+
+// func EmailInformationTable() string {
+// 	t := table.NewWriter()
+// 	t.SetStyle(utils.StyleClear)
+// 	t.AppendHeader(table.Row{"  ", "ID", "Description"})
+// 	for _, p := range emails.List() {
+// 		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
+// 	}
+// 	return t.Render()
+// }
