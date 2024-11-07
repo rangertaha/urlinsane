@@ -21,11 +21,6 @@ urlinsane typo example.com
 
 
 
-
-
-# Internals
-
-
 ## Plugins
 
 Plugins play a crucial role in extending the functionality, flexibility, and customization of Urlinsane and allow it to evolve alongside changing needs and technological advancements. Here's a structured summary of the plugin types and their roles in Urlinsane:
@@ -112,7 +107,7 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 | ID  | Name       | Description  |
 |-----|-------------------|--------------|
-| ld   | [Levenshtein](https://en.wikipedia.org/wiki/Levenshtein_distance)     | Levenshtein distance bettween domains is always create and used with the Urlinsane to limit processing|
+| ld   | [Levenshtein](https://en.wikipedia.org/wiki/Levenshtein_distance)     | Levenshtein distance bettween domains is created by defualt and  internally to limit processing|
 | a   | DNS A      | Host IPv4 address |
 | mx  | DNS MX     | DNS Mail Exchange (MX) records|
 | txt | DNS TXT    | DNS TXT records records |
