@@ -20,10 +20,6 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
-<<<<<<< HEAD
-	// "github.com/rangertaha/urlinsane/pkg/dns/resolver"
-=======
->>>>>>> develop
 )
 
 const (
