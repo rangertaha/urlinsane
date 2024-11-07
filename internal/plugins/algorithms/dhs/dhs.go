@@ -26,7 +26,7 @@ import (
 const (
 	CODE        = "dh"
 	NAME        = "Dot Hyphen Substitution"
-	DESCRIPTION = "Dot hyphen substitution"
+	DESCRIPTION = "Swapping Dot and hyphen in a domain"
 )
 
 type Algo struct{}

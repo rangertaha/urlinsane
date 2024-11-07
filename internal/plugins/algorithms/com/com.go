@@ -38,7 +38,7 @@ import (
 const (
 	CODE        = "com"
 	NAME        = "Combo Squatting"
-	DESCRIPTION = "Kreating domain names combining a legitimate brand or word with another keyword"
+	DESCRIPTION = "Creating domain names by combining a legitimate brand or word with another keyword"
 )
 
 type Algo struct {

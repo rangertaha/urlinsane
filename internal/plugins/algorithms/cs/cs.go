@@ -25,7 +25,7 @@ import (
 
 const (
 	CODE        = "cs"
-	NAME        = "Character Swapping"
+	NAME        = "Character Substitution"
 	DESCRIPTION = "Swapping two consecutive characters in a name"
 )
 
