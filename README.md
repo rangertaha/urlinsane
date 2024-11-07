@@ -40,7 +40,7 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 
 
-| ID        | NAME        | GLYPHS      |HOMOPHONES  |ANTONYMS      |TYPOS  |CARDINAL  |ORDINAL  |STEMS |
+|ID| NAME        | GLYPHS      |HOMOPHONES  |ANTONYMS      |TYPOS  |CARDINAL  |ORDINAL  |STEMS |
 |-----------|-------------|-------------|------------|--------------|-------|----------|---------|------|                                                         
 |hy| Armenian |    38      |    1     |   1  |   1  |     24   |    0  |   0|
 |fi| Finnish  |    29      |    1     |   1  |   1   |    11   |    1  |   0|
@@ -71,35 +71,35 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 
 | ID | Name                         | Description |
 |----|------------------------------|-------------|
-|    | Dot Insertion                 |             |
-|    | Dot Omission                 |             |
-|    | Dot Hyphen Substitution                 |             |
-|    | Hyphen Insertion               |             |
-|    | Hyphen Omission                |             |
-|    | Character Omission           |             |
-|    | Character Substitution                  |             |
-|    | Adjacent Char Sub |             |
-|    | Adjacent Char Ins    |             |
-|    | Grapheme Insertion                      |             |
-|    | Grapheme Replacement                      |             |
-|    | Homoglyphs Replacement                      |             |
-|    | Singular Pluralise              |             |
-|    | Character Repeat                |             |
-|    | Double Char Replacement    |             |
-|    | Double Char Adjacent Repl    |             |
-|    | Common Misspellings             |             |
-|    | Homophones Substitution                     |             |
-|    | Vowel Substitution                  |             |
-|    | Bitsquatting                    |             |
-|    | Wrong Top Level Domain          |             | 
-|    | Wrong Second Level Domain       |             | 
-|    | Wrong Third Level Domain        |             |
-|    | Ordinal Number Sub             |             |
-|    | Cardinal Number Sub           |             | 
-|    | Subdomain insertion             |             |
-|    | Combosquatting (Keywords)       | **TODO**: Combining keywords extracted via NLP and HTML meta tags |
-|    | [Stem](https://en.wikipedia.org/wiki/Stemming) Substitution       | TODO            |
-|    | Keyboard Substitution       | **TODO**: Changing international keyboard layouts while assuming the user is typing in his/her native layout.           |
+| di | Dot Insertion                 |             |
+| do | Dot Omission                 |             |
+| dh | Dot/Hyphen Substitution                 |             |
+| hi | Hyphen Insertion               |             |
+| ho | Hyphen Omission                |             |
+| co | Character Omission           |             |
+| cs | Character Substitution                  |             |
+|acs | Adjacent Char Sub |             |
+|aci | Adjacent Char Ins    |             |
+|gi  | Grapheme Insertion                      |             |
+|gr  | Grapheme Replacement                      |             |
+| hr | Homoglyphs Replacement                      |             |
+|sps | Singular Pluralise              |             |
+| cr | Character Repeat                |             |
+| dcr| Double Char Replacement    |             |
+|dcar| Double Char Adjacent Repl    |             |
+|cs  | Common Misspellings             |             |
+| hs | Homophones Substitution                     |             |
+|vs  | Vowel Substitution                  |             |
+|bf  | Bitsquatting                    |             |
+|tld | Wrong Top Level Domain          |             | 
+|tld2| Wrong Second Level Domain       |             | 
+|tld3| Wrong Third Level Domain        |             |
+|ons | Ordinal Number Sub             |             |
+|cns | Cardinal Number Sub           |             | 
+| si | Subdomain insertion             |             |
+|com | Combosquatting        | **TODO**: Combining keywords extracted via NLP and HTML meta tags |
+| st | [Stem](https://en.wikipedia.org/wiki/Stemming) Substitution       | TODO            |
+| ks | Keyboard Substitution       | **TODO**: Changing international keyboard layouts while assuming the user is typing in his/her native layout.           |
 
 
 ## Information
