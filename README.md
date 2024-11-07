@@ -43,18 +43,30 @@ Plugins play a crucial role in extending the functionality, flexibility, and cus
 
 In typosquatting, language plays a significant role in manipulating legitimate terms and names to create deceptive variations that appear familiar to the target audience. Attackers use linguistic techniques to construct these variations in ways that exploit the visual similarity or familiarity of certain languages and alphabets.
 
+| Languages | Homoglyphs | Homophones  | Antonyms   | Misspellings | Stems | Cardinal |  Ordinal  |
+|-----------|------------|-------------|------------|--------------|-------|----------|-----------|
+| Arabic    |           |            |           |              |   |   |   |    | 
+| Armenian  |           |            |           |              |   |   |   |    | 
+| English   |           |            |           |              |   |   |   |    | 
+| Finnish   |           |            |           |              |   |   |   |    | 
+| Russian   |           |            |           |              |   |   |   |    | 
+| Spanish   |           |            |           |              |   |   |   |    | 
+| Hebrew    |           |            |           |              |   |   |   |    | 
+| Persian   |           |            |           |              |   |   |   |    | 
 
-ID NAME     GLYPHS HOMOPHONES ANTONYMS TYPOS CARDINAL ORDINAL STEMS
-                                                            
-hy Armenian     38          1        1     1       24       0     0
-fi Finnish      29          1        1     1       11       1     0
-fr French       27          1        1     1       11      10     0
-iw Hebrew       22          2        1     5       11       0     0
-fa Persian      28          1        1     1       11       0     0
-ru Russian      41          1        1     1       44      10     0
-ar Arabic       28          1        1     0       11      11     0
-en English      26        485       93  4256       10       9     0
-es Spanish      27          1        1     1       31       4     0
+
+
+| ID        | NAME        | GLYPHS      |HOMOPHONES  |ANTONYMS      |TYPOS  |CARDINAL  |ORDINAL  |STEMS |
+|-----------|-------------|-------------|------------|--------------|-------|----------|---------|------|                                                         
+|hy| Armenian |    38      |    1     |   1  |   1  |     24   |    0  |   0|
+|fi| Finnish  |    29      |    1     |   1  |   1   |    11   |    1  |   0|
+|fr| French    |   27      |    1      |  1  |   1   |    11  |    10   |  0|
+|iw| Hebrew    |   22      |    2      |  1  |   5   |    11  |     0   |  0|
+|fa| Persian   |   28      |    1      |  1  |   1    |   11  |     0  |   0|
+|ru| Russian   |   41     |     1     |   1  |   1    |   44  |    10  |   0|
+|ar |Arabic    |   28     |     1     |   1  |   0    |   11  |    11  |   0|
+|en| English   |   26     |   485     |  93 | 4256    |   10  |     9  |   0|
+|es| Spanish   |   27     |     1     |   1  |   1    |   31 |      4  |   0|
 
 
 
