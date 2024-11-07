@@ -90,8 +90,8 @@ Algorithms systematically generate plausible misspelled domain variations by ana
 | hi   | Hyphen Insertion              | Inserting hyphens into the target domain name.                                                   |
 | ho   | Hyphen Omission               | Removing hyphens from the target domain name.                                                    |
 | co   | Character Omission            | Omitting a character from the domain name.                                                       |
-| cs   | Character Substitution        | Swapping two consecutive characters in the domain name.                                          |
-| acs  | Adjacent Char Substitution    | Replacing adjacent characters from the keyboard in the domain name.                              |
+| cs   | [Character Swapping](https://github.com/rangertaha/urlinsane/tree/master/pkg/typo#cs-character-swapping)        | Swapping two consecutive characters in the domain name.                                          |
+| acs  | [Adjacent Char Substitution](https://github.com/rangertaha/urlinsane/blob/master/pkg/typo/README.md#acs-adjacent-character-substitution)    | Replacing adjacent characters from the keyboard in the domain name.                              |
 | aci  | Adjacent Char Insertion       | Inserting adjacent characters from the keyboard into the domain name.                            |
 | gi   | Grapheme Insertion            | Inserting language-specific characters into the target domain name.                              |
 | gr   | Grapheme Replacement          | Replacing characters with similar-looking characters in the domain name.                         |
