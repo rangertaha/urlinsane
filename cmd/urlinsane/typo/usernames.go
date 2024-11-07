@@ -14,122 +14,122 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package typo
 
-import (
-	"bytes"
-	"fmt"
-	"os"
-	"text/template"
+// import (
+// 	"bytes"
+// 	"fmt"
+// 	"os"
+// 	"text/template"
 
-	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/config"
+// 	"github.com/jedib0t/go-pretty/v6/table"
+// 	"github.com/rangertaha/urlinsane/internal"
+// 	"github.com/rangertaha/urlinsane/internal/config"
 
-	_ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
-	"github.com/rangertaha/urlinsane/internal/plugins/information/usernames"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
-	"github.com/rangertaha/urlinsane/internal/urlinsane"
-	"github.com/rangertaha/urlinsane/internal/utils"
-	"github.com/spf13/cobra"
-)
+// 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
+// 	"github.com/rangertaha/urlinsane/internal/plugins/information/usernames"
+// 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
+// 	"github.com/rangertaha/urlinsane/internal/urlinsane"
+// 	"github.com/rangertaha/urlinsane/internal/utils"
+// 	"github.com/spf13/cobra"
+// )
 
-const unameHelpTemplate = `
+// const unameHelpTemplate = `
 
-ALGORITHMS:
-    Typosquatting algorithm plugins that generate typos.
+// ALGORITHMS:
+//     Typosquatting algorithm plugins that generate typos.
 
-{{.Algorithms}}
-
-
-INFORMATION:
-    Information-gathering plugins that collect information on each domain
-
-{{.Information}}
+// {{.Algorithms}}
 
 
-LANGUAGES:
+// INFORMATION:
+//     Information-gathering plugins that collect information on each domain
 
-{{.Languages}}
-
-
-KEYBOARDS:
-
-{{.Keyboards}}
+// {{.Information}}
 
 
-EXAMPLE:
+// LANGUAGES:
 
-    urlinsane typo user example
+// {{.Languages}}
 
 
-AUTHOR:
-   Rangertaha (rangertaha@gmail.com)
+// KEYBOARDS:
 
-`
+// {{.Keyboards}}
 
-var unameCliOptions bytes.Buffer
 
-// rootCmd represents the typo command
-var unameCmd = &cobra.Command{
-	Use:     "user [flags] [name]",
-	Aliases: []string{"uname", "username", "u"},
-	Short:   "Detects username typosquatting",
-	Long:    `Detects username typosquatting`,
-	Args:    cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		// if len(args) == 0 {
-		// 	cmd.Help()
-		// }
+// EXAMPLE:
 
-		config, err := config.CobraConfig(cmd, args, internal.PACKAGE)
-		if err != nil {
-			fmt.Printf("%s", err)
-			os.Exit(0)
-		}
-		config.Type()
+//     urlinsane typo user example
 
-		t := urlinsane.New(config)
-		t.Execute()
 
-	},
-}
+// AUTHOR:
+//    Rangertaha (rangertaha@gmail.com)
 
-func init() {
-	// TypoCmd.AddCommand(unameCmd)
-	unameHelpOptions := HelpOptions{
-		LanguageTable(),
-		KeyboardTable(),
-		AlgorithmTable(),
-		UsernameInformationTable(),
-	}
+// `
 
-	// Create a new template and parse into it.
-	tmpl := template.Must(template.New("help").Parse(unameHelpTemplate))
+// var unameCliOptions bytes.Buffer
 
-	// Run the template to verify the output.
-	err := tmpl.Execute(&unameCliOptions, unameHelpOptions)
-	if err != nil {
-		fmt.Printf("Execution: %s", err)
-	}
+// // rootCmd represents the typo command
+// var unameCmd = &cobra.Command{
+// 	Use:     "user [flags] [name]",
+// 	Aliases: []string{"uname", "username", "u"},
+// 	Short:   "Detects username typosquatting",
+// 	Long:    `Detects username typosquatting`,
+// 	Args:    cobra.ExactArgs(1),
+// 	Run: func(cmd *cobra.Command, args []string) {
+// 		// if len(args) == 0 {
+// 		// 	cmd.Help()
+// 		// }
 
-	unameCmd.SetUsageTemplate(templateBase + unameCliOptions.String())
-	unameCmd.CompletionOptions.DisableDefaultCmd = true
+// 		config, err := config.CobraConfig(cmd, args, internal.PACKAGE)
+// 		if err != nil {
+// 			fmt.Printf("%s", err)
+// 			os.Exit(0)
+// 		}
+// 		config.Type()
 
-	// Plugins
-	unameCmd.Flags().StringP("info", "i", "all", "Information plugin IDs to apply")
+// 		t := urlinsane.New(config)
+// 		t.Execute()
 
-	// Filtering
-	unameCmd.Flags().Bool("all", false, "Scan all generated variants equivalent to: --ld 100")
-	unameCmd.Flags().Bool("show", false, "Show all generated variants")
-	unameCmd.Flags().Int("ld", 3, "Minimum levenshtein distance to scan")
+// 	},
+// }
 
-}
+// func init() {
+// 	// TypoCmd.AddCommand(unameCmd)
+// 	unameHelpOptions := HelpOptions{
+// 		LanguageTable(),
+// 		KeyboardTable(),
+// 		AlgorithmTable(),
+// 		UsernameInformationTable(),
+// 	}
 
-func UsernameInformationTable() string {
-	t := table.NewWriter()
-	t.SetStyle(utils.StyleClear)
-	t.AppendHeader(table.Row{"  ", "ID", "Description"})
-	for _, p := range usernames.List() {
-		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
-	}
-	return t.Render()
-}
+// 	// Create a new template and parse into it.
+// 	tmpl := template.Must(template.New("help").Parse(unameHelpTemplate))
+
+// 	// Run the template to verify the output.
+// 	err := tmpl.Execute(&unameCliOptions, unameHelpOptions)
+// 	if err != nil {
+// 		fmt.Printf("Execution: %s", err)
+// 	}
+
+// 	unameCmd.SetUsageTemplate(templateBase + unameCliOptions.String())
+// 	unameCmd.CompletionOptions.DisableDefaultCmd = true
+
+// 	// Plugins
+// 	unameCmd.Flags().StringP("info", "i", "all", "Information plugin IDs to apply")
+
+// 	// Filtering
+// 	unameCmd.Flags().Bool("all", false, "Scan all generated variants equivalent to: --ld 100")
+// 	unameCmd.Flags().Bool("show", false, "Show all generated variants")
+// 	unameCmd.Flags().Int("ld", 3, "Minimum levenshtein distance to scan")
+
+// }
+
+// func UsernameInformationTable() string {
+// 	t := table.NewWriter()
+// 	t.SetStyle(utils.StyleClear)
+// 	t.AppendHeader(table.Row{"  ", "ID", "Description"})
+// 	for _, p := range usernames.List() {
+// 		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
+// 	}
+// 	return t.Render()
+// }
