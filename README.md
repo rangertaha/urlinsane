@@ -12,13 +12,12 @@ It's inspired by [URLCrazy](https://morningstarsecurity.com/research/urlcrazy), 
 
 ## Installation
 
-This tools is primarly ment for Linux operating systems. 
 
 * [urlinsane-0.6.0-darwin-amd64](https://github.com/rangertaha/urlinsane/releases/download/0.6.0/urlinsane-0.6.0-darwin-amd64)
 * [urlinsane-0.6.0-linux-amd64](https://github.com/rangertaha/urlinsane/releases/download/0.6.0/urlinsane-0.6.0-linux-amd64)
 * [urlinsane-0.6.0-windows-amd64.exe](https://github.com/rangertaha/urlinsane/releases/download/0.6.0/urlinsane-0.6.0-windows-amd64.exe)
 
-
+This tool is primarily intended for Linux operating systems.
 
 
 ## Usage
@@ -33,13 +32,13 @@ urlinsane typo example.com
 
 Plugins play a crucial role in extending the functionality, flexibility, and customization of Urlinsane and allow it to evolve alongside changing needs and technological advancements. Here's a structured summary of the plugin types and their roles in Urlinsane:
 
-|    Type     | Number  | Description |
-|-------------|--------|--------------|
-| Languages   |    9   | Language plugins provide data for it's linguistic capability. |
-| Keyboards   |    19  | Keyboard plugins provide layouts for international keyboads |
-| Algorithms  |    24  | They generate typo variants for each target domain |
-| Information |    13  | Collects information on target domains |
-| Outputs     |    6   | Formats and saves results  |
+|    Type       | Number | Description                                                             |
+|---------------|--------|-------------------------------------------------------------------------|
+| Languages     |    9   | Language plugins that support linguistic capabilities.                  |
+| Keyboards     |    19  | Keyboard plugins offering layouts for various international keyboards.  |
+| Algorithms    |    24  | Generate typo variants for each target domain.                          |
+| Information   |    13  | Gather information on target domains.                                   |
+| Outputs       |    6   | Format and save results in various output formats.                      |
 
 
 ### Languages
@@ -83,40 +82,37 @@ Additionally, different keyboard layouts (such as AZERTY, QWERTZ, or Dvorak) pro
 
 Algorithms systematically generate plausible misspelled domain variations by analyzing common typing errors and linguistic patterns. These algorithms account for mistakes like adjacent key errors, omitted letters, and character swaps to create likely typo-based domains. More advanced algorithms leverage multi-lingual datasets, enabling the detection of typographical errors across different languages and keyboard layouts. This approach broadens the scope of potential typos, increasing protection against international typosquatting attempts.
 
-| ID | Name                         | Description |
-|----|------------------------------|-------------|
-| di | Dot Insertion   | Inserting periods in the target domain name  |
-| do | Dot Omission   | Omission periods in the target name   |
-| dh | Dot/Hyphen Substitution  |  Swapping Dot and hyphen in a domain |
-| hi | Hyphen Insertion | Inserting hyphens in the target domain            |
-| ho | Hyphen Omission  | Created by removing hyphens from the domain|
-| co | Character Omission | Omitting a character from the name            |
-| cs | Character Substitution   |  Swapping two consecutive characters in a name |
-|acs | Adjacent Char Sub | Replaces adjacent character from the keyboard    |
-|aci | Adjacent Char Ins    |Inserting adjacent character from the keyboard |
-|gi  | Grapheme Insertion |Inserting the language-specific alphabet in the target domain |
-|gr  | Grapheme Replacement | Replaces an alphabet in the target domain|
-| hr | Homoglyphs Replacement | Replaces characters with characters that look similar|
-|sps | Singular Pluralise  | Singular forms of words are swapped for plural forms |
-| cr | Character Repeat | Character Repeat Repeats a character of the domain name twice |
-| dcr| Double Char Replacement    | Created by replacing identical, consecutive letters in the name.            |
-|dcar| Double Char Adjacent Repl    | Double character adjacent replacement typos replace consecutive identical letters with adjacent keys on the keyboard  |
-|cm  | Common Misspellings             | Created from a dictionary of commonly misspelled words in each language            |
-| hs | Homophones Substitution |Substitutes words that sound the same but have different spellings |
-|vs  | Vowel Substitution  | Vowel Swapping replaces vowels in the domain name with other vowels to create variations |
-|bf  | Bitsquatting | Relies on random bit-errors to redirect connections |
-|tld | Wrong TLD    | Wrong top level domain (TLD)            | 
-|tld2| Wrong SLD | Wrong second level domain (TLD2) | 
-|tld3| Wrong TLD3  | Wrong third level domain (TLD3) |
-|ons | Ordinal Number Sub | Substituting digital numbers and ordinal numbers |
-|cns | Cardinal Number Sub | Substituting digial numbers and carninal numbers  | 
-| si | Subdomain Insertion | Inserts common subdomain at the beginning of the domain |
-|com | Combosquatting | **TODO**: Combining keywords extracted via NLP and HTML meta tags |
-| st | [Stem](https://en.wikipedia.org/wiki/Stemming) Substitution       | **TODO**: Substituting words with there root form |
-| ks | Keyboard Substitution       | **TODO**: Changing international keyboard layouts while assuming the user is typing in his/her native layout.           |
-
-
-
+| ID   | Name                          | Description                                                                                      |
+|------|-------------------------------|--------------------------------------------------------------------------------------------------|
+| di   | Dot Insertion                 | Inserting periods into the target domain name.                                                    |
+| do   | Dot Omission                  | Omitting periods from the target domain name.                                                    |
+| dh   | Dot/Hyphen Substitution        | Swapping dots and hyphens in the domain name.                                                    |
+| hi   | Hyphen Insertion              | Inserting hyphens into the target domain name.                                                   |
+| ho   | Hyphen Omission               | Removing hyphens from the target domain name.                                                    |
+| co   | Character Omission            | Omitting a character from the domain name.                                                       |
+| cs   | Character Substitution        | Swapping two consecutive characters in the domain name.                                          |
+| acs  | Adjacent Char Substitution    | Replacing adjacent characters from the keyboard in the domain name.                              |
+| aci  | Adjacent Char Insertion       | Inserting adjacent characters from the keyboard into the domain name.                            |
+| gi   | Grapheme Insertion            | Inserting language-specific characters into the target domain name.                              |
+| gr   | Grapheme Replacement          | Replacing characters with similar-looking characters in the domain name.                         |
+| hr   | Homoglyphs Replacement        | Replacing characters with visually similar homoglyphs in the domain name.                        |
+| sps  | Singular Pluralisation        | Swapping singular forms of words with plural forms in the domain name.                           |
+| cr   | Character Repeat              | Repeating a character from the domain name twice.                                                |
+| dcr  | Double Char Replacement       | Replacing identical, consecutive letters in the domain name with other characters.               |
+| dcar | Double Char Adjacent Repl     | Replacing consecutive identical letters with adjacent keys on the keyboard in the domain name.    |
+| cm   | Common Misspellings           | Generated from a dictionary of commonly misspelled words in various languages.                    |
+| hs   | Homophones Substitution       | Substituting words that sound the same but have different spellings in the domain name.           |
+| vs   | Vowel Substitution            | Replacing vowels in the domain name with other vowels to create variations.                      |
+| bf   | Bitsquatting                  | Leveraging random bit-errors to redirect connections.                                            |
+| tld  | Wrong TLD                     | Using the wrong top-level domain (TLD) for the domain name.                                      |
+| tld2 | Wrong SLD                     | Using the wrong second-level domain (TLD2) for the domain name.                                  |
+| tld3 | Wrong TLD3                    | Using the wrong third-level domain (TLD3) for the domain name.                                   |
+| ons  | Ordinal Number Substitution   | Substituting ordinal numbers (1st, 2nd) with digital numbers in the domain name.                 |
+| cns  | Cardinal Number Substitution  | Substituting cardinal numbers (1, 2, 3) with digital numbers in the domain name.                 |
+| si   | Subdomain Insertion           | Inserting common subdomains at the beginning of the domain name.                                 |
+| com  | Combosquatting                 | **TODO**: Combining keywords extracted via NLP and HTML meta tags into domain variants.           |
+| st   | [Stem](https://en.wikipedia.org/wiki/Stemming) Substitution | **TODO**: Replacing words with their root form (stemming) in the domain name.                    |
+| ks   | Keyboard Substitution         | **TODO**: Changing international keyboard layouts, assuming the user is typing in their native layout. |
 
 
 ## Information
