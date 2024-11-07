@@ -12,6 +12,14 @@ It's inspired by [URLCrazy](https://morningstarsecurity.com/research/urlcrazy), 
 
 ## Installation
 
+This tools is primarly ment for Linux operating systems. 
+
+* [urlinsane-0.6.0-darwin-amd64](https://github.com/rangertaha/urlinsane/releases/download/0.6.0/urlinsane-0.6.0-darwin-amd64)
+* [urlinsane-0.6.0-linux-amd64](https://github.com/rangertaha/urlinsane/releases/download/0.6.0/urlinsane-0.6.0-linux-amd64)
+* [urlinsane-0.6.0-windows-amd64.exe](https://github.com/rangertaha/urlinsane/releases/download/0.6.0/urlinsane-0.6.0-windows-amd64.exe)
+
+
+
 
 ## Usage
 
@@ -157,7 +165,7 @@ With structured outputs, users can seamlessly incorporate findings into their ex
 
 ## In Progress
 
-- I’m working on creating a `.urlinsane` directory to store screenshots, data dumps, and cache, along with a configuration file to provide additional tool customization options.
+- I’m working on creating a `.urlinsane` directory in the user's home directory to store screenshots, data dumps, and cache, along with a configuration file to provide additional tool customization options.
 
 
 ## TODO
