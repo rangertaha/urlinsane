@@ -19,9 +19,6 @@
 // and scripts.
 package idn
 
-
-
-
 import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
@@ -29,6 +26,7 @@ import (
 )
 
 const (
+	ORDER       = 3
 	CODE        = "idn"
 	NAME        = "Internationalize"
 	DESCRIPTION = "Internationalized Domain Name"
@@ -40,6 +38,10 @@ type None struct {
 
 func (n *None) Id() string {
 	return CODE
+}
+
+func (n *None) Order() int {
+	return ORDER
 }
 
 func (n *None) Description() string {

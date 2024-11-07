@@ -18,13 +18,17 @@ version: ## Returns the version number
 	@echo $(VERSION)
 
 
-build: deps ## Build the binaries for Windows, OSX, and Linux
+build: deps test ## Build the binaries for Windows, OSX, and Linux
 	mkdir -p build
 	cd cmd; $(GOBUILD) -o ../$(BDIR)/$(BINARY_NAME) -v
 	cd cmd; env GOOS=darwin GOARCH=amd64 $(GOBUILD) -o ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 -v
+	cd cmd; sha512sum ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 > ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64.sha512
+
 	cd cmd; env GOOS=linux GOARCH=amd64 $(GOBUILD) -o ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64 -v
+	cd cmd; sha512sum ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64 > ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64.sha512
+
 	cd cmd; env GOOS=windows GOARCH=amd64 $(GOBUILD) -o ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe -v
-	md5sum $(BDIR)/$(BINARY_NAME)
+	cd cmd; sha512sum ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe > ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe.sha512
 
 dpkg: ## Create the Linux debian package
 	debuild -us -uc

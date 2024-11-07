@@ -20,6 +20,7 @@ import (
 )
 
 const (
+	ORDER       = 8
 	CODE        = "har"
 	NAME        = "HAR Browser Contents"
 	DESCRIPTION = "Retrieves HAR Browser Contents"
@@ -31,6 +32,10 @@ type None struct {
 
 func (n *None) Id() string {
 	return CODE
+}
+
+func (n *None) Order() int {
+	return ORDER
 }
 
 func (n *None) Name() string {

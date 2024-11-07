@@ -20,6 +20,7 @@ import (
 )
 
 const (
+	ORDER       = 5
 	CODE        = "geo"
 	NAME        = "GEOIP Lookup"
 	DESCRIPTION = "Retrieves Location of IP addresses"
@@ -31,6 +32,10 @@ type None struct {
 
 func (n *None) Id() string {
 	return CODE
+}
+
+func (n *None) Order() int {
+	return ORDER
 }
 
 func (n *None) Name() string {
@@ -46,7 +51,27 @@ func (n *None) Headers() []string {
 }
 
 func (n *None) Exec(in internal.Typo) (out internal.Typo) {
-	// in.Variant().Add("GEO", "1000, 22333")
+	// db, err := maxminddb.Open("../GeoLite2-City.mmdb")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer db.Close()
+
+	// addr := netip.MustParseAddr("81.2.69.142")
+
+	// var record struct {
+	// 	Country struct {
+	// 		ISOCode string `maxminddb:"iso_code"`
+	// 	} `maxminddb:"country"`
+	// } // Or any appropriate struct
+
+	// err = db.Lookup(addr).Decode(&record)
+	// if err != nil {
+	// 	log.Panic(err)
+	// }
+	// fmt.Print(record.Country.ISOCode)
+	// // Output:
+	// // GB
 	return in
 }
 

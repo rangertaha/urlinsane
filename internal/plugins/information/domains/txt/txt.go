@@ -20,17 +20,20 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
+<<<<<<< HEAD
 	// "github.com/rangertaha/urlinsane/pkg/dns/resolver"
+=======
+>>>>>>> develop
 )
 
 const (
+	ORDER       = 2
 	CODE        = "txt"
-	NAME        = "Ip Address"
-	DESCRIPTION = "Domain IP addresses"
+	NAME        = "TXT Records"
+	DESCRIPTION = "DNS MX Records"
 )
 
 type Ipaddr struct {
-	// resolver resolver.Client
 	conf internal.Config
 }
 
@@ -38,9 +41,12 @@ func (n *Ipaddr) Id() string {
 	return CODE
 }
 
+func (n *Ipaddr) Order() int {
+	return ORDER
+}
+
 func (i *Ipaddr) Init(c internal.Config) {
 	i.conf = c
-	// i.resolver = resolver.New(c.DnsServers(), 3, 1000, 50)
 }
 
 func (n *Ipaddr) Description() string {
@@ -54,13 +60,6 @@ func (n *Ipaddr) Headers() []string {
 func (i *Ipaddr) Exec(in internal.Typo) (out internal.Typo) {
 	if name := in.Variant().Name(); name != "" {
 		ips, err := net.LookupTXT(name)
-		// if err != nil {
-		// 	fmt.Fprintf(os.Stderr, "Could not get IPs: %v\n", err)
-		// 	// os.Exit(1)
-		// }
-		// for _, ip := range ips {
-		// 	fmt.Printf("google.com. IN A %s\n", ip.String())
-		// }
 		if err == nil {
 			var answers []string
 			for _, ip := range ips {
@@ -71,22 +70,10 @@ func (i *Ipaddr) Exec(in internal.Typo) (out internal.Typo) {
 		}
 
 	}
-
-	// i.resolver = resolver.New(i.conf.DnsServers(), 3, 1000, 50)
-	// domains := []string{in.Variant().Name()}
-	// results := i.resolver.Resolve(domains, resolver.TypeA)
-	// var answers []string
-	// for _, record := range results {
-	// 	answers = append(answers, record.Answer)
-	// }
-	// in.Variant().Add("A", strings.Join(answers, "\n"))
-	// // defer i.resolver.Close()
 	return in
 }
 
-func (i *Ipaddr) Close() {
-	// i.resolver.Close()
-}
+func (i *Ipaddr) Close() {}
 
 // Register the plugin
 func init() {

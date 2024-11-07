@@ -17,10 +17,31 @@ package urlinsane
 import (
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/spf13/cobra"
 )
+
+const templateBase = `USAGE:{{if .Runnable}}
+  {{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}
+  {{.CommandPath}} [command]{{end}}{{if gt (len .Aliases) 0}}
+
+ALIASES:
+  {{.NameAndAliases}}{{end}}{{if .HasExample}}
+
+EXAMPLES:
+{{.Example}}{{end}}{{if .HasAvailableSubCommands}}
+Available Commands:{{range .Commands}}{{if (or .IsAvailableCommand (eq .Name "help"))}}
+  {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableLocalFlags}}
+
+OPTIONS:
+{{.LocalFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasAvailableInheritedFlags}}
+
+GLOBAL OPTIONS:
+{{.InheritedFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasHelpSubCommands}}
+Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
+  {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableSubCommands}}
+
+Use "{{.CommandPath}} [command] --help" for more information about a command.{{end}}`
 
 // rootCmd represents the typo command
 var rootCmd = &cobra.Command{
@@ -52,6 +73,7 @@ func Execute() {
 }
 func init() {
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
+	rootCmd.AddCommand(domainCmd)
 
 	// Plugins
 	rootCmd.PersistentFlags().StringP("languages", "l", "all", "IDs of languages to use for linguistic algorithms")
@@ -64,18 +86,12 @@ func init() {
 	// rootCmd.PersistentFlags().Bool("plugins", false, "List plugins/IDs for algorithms, langauages, information, and keyboards")
 
 	// Cache
-	rootCmd.PersistentFlags().Duration("ttl", time.Hour*24, "Cache duration for expiration")
+	// rootCmd.PersistentFlags().Duration("ttl", time.Hour*24, "Cache duration for expiration")
 
 	// Timing
 	rootCmd.PersistentFlags().IntP("concurrency", "c", 50, "Number of concurrent workers")
 	rootCmd.PersistentFlags().Duration("random", 1, "Random delay multiplier for network calls")
 	rootCmd.PersistentFlags().Duration("delay", 1, "Duration between network calls")
-
-	// DNS
-	// rootCmd.PersistentFlags().String("dns-servers", "", "DNS Servers seperated by commas")
-	// rootCmd.PersistentFlags().Int("dns-concurrency", 10, "Max concurrency")
-	// rootCmd.PersistentFlags().Int("dns-qps", 10, "Queries Per Second")
-	// rootCmd.PersistentFlags().Int("dns-retry", 10, "Query retry count")
 
 	// Outputs
 	rootCmd.PersistentFlags().BoolP("progress", "p", false, "Show progress bar")

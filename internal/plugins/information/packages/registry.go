@@ -6,14 +6,9 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 )
 
-const (
-	ENTITY  = "ENTITY"
-	DOMAINS = "DOMAINS"
-)
 
 type Creator func() internal.Information
 
-var Types = []string{"ENTITY", "DOMAINS"}
 
 var Information = map[string]Creator{}
 

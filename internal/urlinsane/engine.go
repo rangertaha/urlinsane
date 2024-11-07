@@ -31,10 +31,8 @@ type (
 		Config config.Config
 		Typos  map[string]internal.Typo
 
-		// algoWG sync.WaitGroup
-		infoWG sync.WaitGroup
-
-		// ..
+		// Processing
+		infoWG   sync.WaitGroup
 		progress *progressbar.ProgressBar
 
 		// Metrics
@@ -43,7 +41,21 @@ type (
 		filtered int64
 		scanned  int64
 	}
+	// Infos             []internal.Information
+	// InformationsOrder struct{ Infos }
+	// InfosReverseOrder struct{ Infos }
 )
+
+// func (o Infos) Len() int      { return len(o) }
+// func (o Infos) Swap(i, j int) { o[i], o[j] = o[j], o[i] }
+// func (l InfosReverseOrder) Less(i, j int) bool {
+// 	return l.Infos[i].Order() > l.Infos[j].Order()
+// }
+// func (l InformationsOrder) Less(i, j int) bool {
+// 	return l.Infos[i].Order() < l.Infos[j].Order()
+// }
+
+// sort.Sort(ProcessorOrder{cfgs})
 
 // NewUrlinsane ...
 func New(conf config.Config) (u Urlinsane) {
@@ -220,6 +232,7 @@ func (u *Urlinsane) Information(in <-chan internal.Typo) <-chan internal.Typo {
 				defer wg.Done()
 
 				for c := range u.InfoChain(u.Config.Information(), in) {
+					u.scanned++
 					out <- c
 				}
 			}(in, out)

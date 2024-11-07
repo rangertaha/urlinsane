@@ -25,6 +25,7 @@ import (
 )
 
 const (
+	ORDER       = 9
 	CODE        = "ssd"
 	NAME        = "SSDeep"
 	DESCRIPTION = "SSDeep contents comparison"
@@ -35,6 +36,10 @@ type None struct {
 
 func (n *None) Id() string {
 	return CODE
+}
+
+func (n *None) Order() int {
+	return ORDER
 }
 
 func (i *None) Init(conf internal.Config) {
