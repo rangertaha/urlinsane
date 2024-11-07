@@ -100,29 +100,30 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 |    | Subdomain insertion             |             |
 |    | Period Insertion                |             | 
 |    | Combosquatting (Keywords)       |             |
-|    | Stem Substitution       |             |
+|    | [Stemmming](https://en.wikipedia.org/wiki/Stemming)       |             |
 
 
 ## Information
 
 
-| ID |  Name             | Description  |
-|----|-------------------|--------------|
-| a  | DNS A      | Host IPv4 address |
-| mx | DNS MX     | DNS Mail Exchange (MX) records|
-| txt| DNS TXT    | DNS TXT records records |
-|    | DNS AAAA   | Host IPv6 address|
-| cn | DNS CName  | DNS CName Records |
-| ns | DNS NS     | Checks DNS NS records |
-| geo | GeoIP Info   | Show country location of IP address via MaxMind |
-| ssd | SSDeep | Show domain similarity % using fuzzy hashing with ssdeep|
+| ID  | Name       | Description  |
+|-----|-------------------|--------------|
+| a   | DNS A      | Host IPv4 address |
+| mx  | DNS MX     | DNS Mail Exchange (MX) records|
+| txt | DNS TXT    | DNS TXT records records |
+| aa  | DNS AAAA   | Host IPv6 address|
+| cn  | DNS CName  | DNS CName Records |
+| ns  | DNS NS     | Checks DNS NS records |
+| geo | GeoIP Info | Show country location of IP address via MaxMind |
+| ssd | SSDeep     | Show domain similarity % using fuzzy hashing with ssdeep|
 | 301 | Redirects  | Show domains redirects |
-| idn | IDNA Format       | Show international domain name (Default) |
-| bn  | HTTP/SMTP Banner  | |
-| png | Screenshot  | Screenshot of the domain via headless browser  |
-| wi  | Whois | Whois domain loookup info |
-| tp  | NLP Topics | Extracting topics via LDA |
-| vc  | NLP VSM | Comparing domains with vector space modeling |
+| idn | IDN        | Show international domain name (Default) |
+| bn  | Banner     | HTTP/SMTP Banner|
+| png | Screenshot | Screenshot of the domain via headless browser  |
+| wi  | Whois      | Whois domain loookup info |
+| kw  | Keywords   | Extracting keywords use the RAKE algorithm |
+| tp  | NLP Topics | Extracting topics via [LDA](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation) algorithm |
+| vc  | NLP [VSM](https://en.wikipedia.org/wiki/Vector_space_model)    | Comparing domains with vector space modeling |
 
 
 ## Outputs
