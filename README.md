@@ -43,8 +43,7 @@ urlinsane typo example.com
 
 
 <div align="center">
-  <a href="https://www.youtube.com/watch?v=_IU1ADTBKVU" style="float:left"><img width="350" src="https://img.youtube.com/vi/_IU1ADTBKVU/0.jpg" alt="URLInsane Demo1"></a>
-   <a href="https://www.youtube.com/watch?v=HgMV0NqMCm0" style="float:left"><img width="350"  src="https://img.youtube.com/vi/HgMV0NqMCm0/0.jpg" alt="URLInsane Demo2"></a>
+  <a href="https://youtu.be/7yzyYHoJqp4" style="float:left"><img width="350" src="https://i.ytimg.com/vi/7yzyYHoJqp4/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFbyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLDB7XIfclBY8a9J5RGR_ckVs5nIFg" alt="Urlinsane"></a>
 </div>
 
 
