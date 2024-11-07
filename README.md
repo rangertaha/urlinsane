@@ -67,13 +67,7 @@ In typosquatting, language plays a significant role in manipulating legitimate t
 | AZERTY   | QWERTY   |  AZERTY  |         |           | ЙЦУКЕН  | QWERTY |         |   |
 | غفقثصض   |          |  QWERTZ  |         |           | ЙЦУКЕН  |        |         |  |
 | QWERTY   |          |  DVORAK  |         |           |         |        |         ||
-|          |          |          |         |           |         |        |         | |
-|          |          |          |         |           |         |        |         |  |
-|          |          |          |         |           |         |        |         | |
-|          |          |          |         |           |         |        |         | |
 
-
- 
 
 
 ## Algorithms
