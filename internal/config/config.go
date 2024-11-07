@@ -54,16 +54,6 @@ type (
 
 		screenShot bool
 
-<<<<<<< HEAD
-	// Output
-	verbose  bool
-	format   string
-	filters []string
-	file     string
-	showAll  bool
-	scanAll  bool
-	progress bool
-=======
 		// DNS
 		dnsRetryCount       int
 		dnsQueriesPerSecond int
@@ -92,7 +82,6 @@ func (l InfosReverseOrder) Less(i, j int) bool {
 }
 func (l InfosOrder) Less(i, j int) bool {
 	return l.Infos[i].Order() < l.Infos[j].Order()
->>>>>>> develop
 }
 
 func New() Config {
