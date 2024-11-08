@@ -32,10 +32,8 @@ package aci
 // practices.
 
 import (
-	"fmt"
-
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/pkg/domain"
+	"github.com/rangertaha/urlinsane/internal/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
@@ -62,12 +60,6 @@ func (n *Algo) Init(conf internal.Config) {
 	n.keyboards = conf.Keyboards()
 	n.languages = conf.Languages()
 	n.config = conf
-
-	// Supported targets
-	n.funcs[internal.DOMAIN] = n.domain
-	n.funcs[internal.PACKAGE] = n.name
-	n.funcs[internal.EMAIL] = n.email
-	n.funcs[internal.NAME] = n.name
 }
 
 func (n *Algo) Name() string {
@@ -77,47 +69,14 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
-	return n.funcs[n.config.Type()](typo)
-}
-
-func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
-	sub, prefix, suffix := typo.Original().Domain()
+func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
+	orig, vari := typo.Get()
 
 	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterInsertion(prefix, keyboard.Layouts()...) {
-			if prefix != variant {
-				d := domain.New(sub, variant, suffix)
-				new := typo.Clone(d.String())
-
+		for _, variant := range algo.AdjacentCharacterInsertion(vari.Name, keyboard.Layouts()...) {
+			if vari.Name != variant {
+				new := typo.New(n, orig, domain.Parse(variant))
 				typos = append(typos, new)
-			}
-		}
-	}
-	return
-}
-
-func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
-	username, domain := typo.Original().Email()
-
-	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterInsertion(username, keyboard.Layouts()...) {
-			if username != variant {
-				new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
-
-				typos = append(typos, new)
-			}
-		}
-	}
-	return
-}
-
-func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
-	name := n.config.Target().Name()
-	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterInsertion(name, keyboard.Layouts()...) {
-			if name != variant {
-				typos = append(typos, typo.Clone(variant))
 			}
 		}
 	}

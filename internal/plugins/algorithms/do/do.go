@@ -63,7 +63,19 @@ func (n *Algo) Description() string {
 func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
 	return n.funcs[n.config.Type()](typo)
 }
+func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
+	orig, vari := typo.Get()
 
+	for _, variant := range algo.BitFlipping(vari.Name) {
+		if vari.Name != variant {
+
+			new := typo.New(n, orig, domain.Parse(variant))
+			typos = append(typos, new)
+		}
+	}
+
+	return
+}
 func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	sub, prefix, suffix := typo.Original().Domain()
 	for _, variant := range algo.DotOmission(prefix) {
