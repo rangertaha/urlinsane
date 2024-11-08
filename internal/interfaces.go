@@ -16,14 +16,16 @@ package internal
 
 import (
 	"time"
+
+	"github.com/rangertaha/urlinsane/internal/models"
 )
 
-const (
-	PACKAGE = iota
-	DOMAIN
-	EMAIL
-	NAME
-)
+// const (
+// 	PACKAGE = iota
+// 	DOMAIN
+// 	EMAIL
+// 	NAME
+// )
 
 type Initializer interface {
 	Init(Config)
@@ -34,14 +36,14 @@ type Closer interface {
 }
 
 type Config interface {
-	Target() Target
+	// Target() Target
 	Keyboards() []Keyboard
 	Languages() []Language
 	Algorithms() []Algorithm
 	Information() []Information
 	Output() Output
 	Concurrency() int
-	DnsServers() []string
+	// DnsServers() []string
 	Delay() time.Duration
 	Random() time.Duration
 	Verbose() bool
@@ -50,7 +52,6 @@ type Config interface {
 	Format() string
 	File() string
 	Dist() int
-	Type() int
 	ShowAll() bool
 	Filters() []string
 }
@@ -59,23 +60,27 @@ type Algorithm interface {
 	Id() string
 	Name() string
 	Description() string
-}
-
-type DomainAlgorithm interface {
-	Domain(Typo) []Typo
-}
-type PackageAlgorithm interface {
-	Package(Typo) []Typo
-}
-type EmailAlgorithm interface {
-	Email(Typo) []Typo
-}
-type UserAlgorithm interface {
-	Username(Typo) []Typo
-}
-type ExecAlgorithm interface {
 	Exec(Typo) []Typo
 }
+
+//	type DomainAlgorithm interface {
+//		Domain(Typo) []Typo
+//	}
+//
+//	type PackageAlgorithm interface {
+//		Package(Typo) []Typo
+//	}
+//
+//	type EmailAlgorithm interface {
+//		Email(Typo) []Typo
+//	}
+//
+//	type UserAlgorithm interface {
+//		Username(Typo) []Typo
+//	}
+// type Algorithm interface {
+// 	Exec(Typo) []Typo
+// }
 
 type Information interface {
 	Id() string
@@ -99,27 +104,50 @@ type Output interface {
 	Save()
 }
 
-type Target interface {
-	Meta() map[string]interface{}
-	Add(string, interface{})
-	Get(string) interface{}
-	Ready(...bool) bool
-	Live(...bool) bool
-	Name() string
-	Domain() (string, string, string)
-	Email() (string, string)
-	Json() ([]byte, error)
-}
+// type Target interface {
+// 	Meta() map[string]interface{}
+// 	Add(string, interface{})
+// 	Get(string) interface{}
+// 	Ready(...bool) bool
+// 	Live(...bool) bool
+// 	Name() string
+// 	Domain() (string, string, string)
+// 	Email() (string, string)
+// 	Json() ([]byte, error)
+// }
+
+// type Table interface {
+// 	Metatable() map[string]interface{}
+// 	Set(key string, value interface{})
+// 	Get(key string) interface{}
+// }
 
 type Typo interface {
-	Algorithm() Algorithm
-	Original() Target
-	Variant() Target
-	Active() bool
-	Clone(string) Typo
+	Algo() Algorithm
+	Set(models.Domain, models.Domain)
+	Get() (models.Domain, models.Domain)
+	New(algo Algorithm, original models.Domain, variant models.Domain) Typo
+
 	String() string
-	Ld() int
+	Dist() int
+	// Threat() int
+	Live() bool
+
+	// Metatable
+	Metatable() map[string]interface{}
+	SetMeta(key string, value interface{})
+	GetMeta(key string) interface{}
 }
+
+// type Typo interface {
+// 	Algorithm() Algorithm
+// 	Original() Target
+// 	Variant() Target
+// 	Active() bool
+// 	Clone(string) Typo
+// 	String() string
+// 	Ld() int
+// }
 
 // type Result interface {
 // 	Keyboards() []Keyboard
@@ -130,29 +158,29 @@ type Typo interface {
 // 	Data() map[string]string
 // }
 
-type Domain interface {
-	GetMeta() map[string]interface{}
-	AddMeta(string, interface{})
+// type Domain interface {
+// 	GetMeta() map[string]interface{}
+// 	AddMeta(string, interface{})
 
-	GetUsername() string
-	SetUsername(string)
+// 	GetUsername() string
+// 	SetUsername(string)
 
-	GetSubdomain() string
-	SetSubdomain(string)
+// 	GetSubdomain() string
+// 	SetSubdomain(string)
 
-	GetDomain() string
-	SetDomain(string)
+// 	GetDomain() string
+// 	SetDomain(string)
 
-	GetSuffix() string
-	SetSuffix(string)
+// 	GetSuffix() string
+// 	SetSuffix(string)
 
-	GetUrl() string
-	SetUrl(string)
+// 	GetUrl() string
+// 	SetUrl(string)
 
-	Live() bool
-	Name() string
-	String() string
-}
+// 	Live() bool
+// 	Name() string
+// 	String() string
+// }
 
 type Language interface {
 	Id() string

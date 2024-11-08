@@ -30,8 +30,6 @@ go.work.sum
 .vscode
 .dev
 
-# GeoIP DB files
-*.mmdb
 
 builds
 build

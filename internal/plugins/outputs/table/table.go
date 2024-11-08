@@ -46,6 +46,7 @@ func (n *Text) Description() string {
 
 func (n *Text) Init(conf internal.Config) {
 	n.config = conf
+	internal.Banner()
 	n.table = table.NewWriter()
 
 	if width, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil {
@@ -74,18 +75,20 @@ func (n *Text) Header() (row table.Row) {
 }
 
 func (n *Text) Row(typo internal.Typo) (row table.Row) {
-	row = append(row, typo.Ld())
+	// orig, vari := typo.Get()
+
+	row = append(row, typo.Dist())
 	if n.config.Verbose() {
-		row = append(row, typo.Algorithm().Name())
+		row = append(row, typo.Algo().Name())
 	} else {
-		row = append(row, strings.ToUpper(typo.Algorithm().Id()))
+		row = append(row, strings.ToUpper(typo.Algo().Id()))
 	}
 	row = append(row, typo.String())
 
 	for _, info := range n.config.Information() {
 		for _, header := range info.Headers() {
 			if n.Filter(header) {
-				meta := typo.Variant().Meta()
+				meta := typo.Metatable()
 				if col, ok := meta[header]; ok {
 					row = append(row, col)
 				} else {
