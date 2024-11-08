@@ -22,12 +22,11 @@ import (
 	"text/template"
 
 	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/config"
 
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	"github.com/rangertaha/urlinsane/internal/plugins/information"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
-	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
 	"github.com/rangertaha/urlinsane/internal/plugins/languages"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
 	"github.com/rangertaha/urlinsane/internal/urlinsane"
@@ -84,7 +83,7 @@ var domainCliOptions bytes.Buffer
 var domainCmd = &cobra.Command{
 	Use:   "typo [flags] [name]",
 	Short: "Detects potential typosquatting domains by generating and checking misspelled variations of a given domain name.",
-	Long:  `URLInsane is designed to detect domain typosquatting by using advanced algorithms, information-gathering 
+	Long: `URLInsane is designed to detect domain typosquatting by using advanced algorithms, information-gathering 
   techniques, and data analysis to identify potentially harmful variations of targeted domains that cybercriminals 
   might exploit. This tool is essential for defending against threats like typosquatting, brandjacking, URL hijacking, 
   fraud, phishing, and corporate espionage. By detecting malicious domain variations, it provides an added layer of 
@@ -92,18 +91,17 @@ var domainCmd = &cobra.Command{
   strengthening proactive cybersecurity measures.
 	
 `,
-	Args:  cobra.ExactArgs(1),
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		// if len(args) == 0 {
 		// 	cmd.Help()
 		// }
 
-		config, err := config.CobraConfig(cmd, args, internal.DOMAIN)
+		config, err := config.CobraConfig(cmd, args)
 		if err != nil {
 			fmt.Printf("%s", err)
 			os.Exit(0)
 		}
-		config.Type()
 
 		t := urlinsane.New(config)
 		t.Execute()
@@ -132,7 +130,7 @@ func init() {
 	domainCmd.CompletionOptions.DisableDefaultCmd = true
 
 	// Plugins
-	domainCmd.Flags().StringP("info", "i", "all", "Information plugin IDs to apply")
+	domainCmd.Flags().StringP("info", "i", "txt,ns,mx,idn,ip,geo", "Information plugin IDs to apply")
 	domainCmd.PersistentFlags().Bool("image", false, "Take screenshot of domain saved to .urlinsane/domains/")
 
 	// Filtering
@@ -147,7 +145,7 @@ func InformationTable() string {
 	t := table.NewWriter()
 	t.SetStyle(utils.StyleClear)
 	t.AppendHeader(table.Row{"  ", "ID", "Description"})
-	for _, p := range domains.List() {
+	for _, p := range information.List() {
 		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
 	}
 	return t.Render()
@@ -155,7 +153,7 @@ func InformationTable() string {
 
 func InformationFields() (fields string) {
 	headers := []string{}
-	for _, i := range domains.List() {
+	for _, i := range information.List() {
 		for _, header := range i.Headers() {
 			headers = append(headers, strings.ToLower(header))
 		}

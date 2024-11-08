@@ -69,6 +69,7 @@ Plugins play a crucial role in extending the functionality, flexibility, and cus
 | Outputs       |    6   | Format and save results in various output formats.                      |
 
 
+
 ### Languages
 
 In typosquatting, language plays a significant role in manipulating legitimate terms and names to create deceptive variations that appear familiar to the target audience. Attackers use linguistic techniques to construct these variations in ways that exploit the visual similarity or familiarity of certain languages and alphabets.
@@ -103,6 +104,16 @@ Additionally, different keyboard layouts (such as AZERTY, QWERTZ, or Dvorak) pro
 | غفقثصض   |          |  QWERTZ  |         |           | ЙЦУКЕН  |        |         |  |
 | QWERTY   |          |  DVORAK  |         |           |         |        |         ||
 
+
+### Additional Datasets
+
+
+| NAME               |  RECORDS  |   UPDATED  |
+|--------------------|-----------|------------|                                                          
+| TLDs               |           |            |
+| Subdomains         |           |            |
+| Top Domains        | 1,000,000 |            |
+| MaxMind GeoIP City |    ?      | 2024/11/10 |
 
 
 

@@ -50,6 +50,8 @@ func New(sub, prefix, suffix string) (d *Domain) {
 	// 	d.Suffix = domainutil.DomainSuffix(domain)
 	// }
 	name := fmt.Sprintf("%s.%s.%s", sub, prefix, suffix)
+	name = strings.ReplaceAll(name, "..", ".")
+	name = strings.Trim(name, ".")
 
 	return &Domain{
 		Subdomain: domainutil.Subdomain(name),

@@ -4,8 +4,9 @@ import (
 	"fmt"
 
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/information/domains"
 )
+
+var HEAVY = []string{"img", "bn"}
 
 type Creator func() internal.Information
 
@@ -50,12 +51,5 @@ func List(IDs ...string) (infos []internal.Information) {
 		}
 	}
 
-	return
-}
-
-func ListType(ttype int, IDs ...string) (infos []internal.Information) {
-	if internal.DOMAIN == ttype {
-		return domains.List(IDs...)
-	}
 	return
 }

@@ -43,6 +43,7 @@ func (n *Text) Description() string {
 
 func (n *Text) Init(conf internal.Config) {
 	n.config = conf
+	internal.Banner()
 	n.table = table.NewWriter()
 	n.table.SetOutputMirror(os.Stdout)
 	n.table.AppendHeader(n.Header())

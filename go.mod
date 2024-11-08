@@ -23,9 +23,9 @@ require (
 	github.com/stretchr/testify v1.9.0
 	github.com/weppos/publicsuffix-go v0.40.2
 	go.uber.org/ratelimit v0.3.1
-	golang.org/x/net v0.29.0
-	golang.org/x/term v0.25.0
-	golang.org/x/text v0.18.0
+	golang.org/x/net v0.31.0
+	golang.org/x/term v0.26.0
+	golang.org/x/text v0.20.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -58,6 +58,9 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/klauspost/compress v1.17.10 // indirect
+	github.com/likexian/gokit v0.25.15 // indirect
+	github.com/likexian/whois v1.15.5 // indirect
+	github.com/likexian/whois-parser v1.24.20 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect
@@ -65,16 +68,17 @@ require (
 	github.com/oschwald/maxminddb-golang/v2 v2.0.0-beta.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/rainycape/geoip v0.0.0-20170217195415-79e9946b7c4c // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/temoto/robotstxt v1.1.2 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	golang.org/x/crypto v0.27.0 // indirect
+	golang.org/x/crypto v0.29.0 // indirect
 	golang.org/x/mod v0.18.0 // indirect
 	golang.org/x/oauth2 v0.23.0 // indirect
-	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.26.0 // indirect
+	golang.org/x/sync v0.9.0 // indirect
+	golang.org/x/sys v0.27.0 // indirect
 	golang.org/x/tools v0.22.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect

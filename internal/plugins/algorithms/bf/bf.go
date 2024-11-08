@@ -14,12 +14,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package bf
 
-
 import (
 	"fmt"
 
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/pkg/domain"
+	"github.com/rangertaha/urlinsane/internal/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
@@ -34,7 +33,6 @@ type Algo struct {
 	config    internal.Config
 	languages []internal.Language
 	keyboards []internal.Keyboard
-	funcs     map[int]func(internal.Typo) []internal.Typo
 }
 
 func (n *Algo) Id() string {
@@ -42,16 +40,9 @@ func (n *Algo) Id() string {
 }
 
 func (n *Algo) Init(conf internal.Config) {
-	n.funcs = make(map[int]func(internal.Typo) []internal.Typo)
 	n.keyboards = conf.Keyboards()
 	n.languages = conf.Languages()
 	n.config = conf
-
-	// Supported targets
-	n.funcs[internal.DOMAIN] = n.domain
-	n.funcs[internal.PACKAGE] = n.name
-	n.funcs[internal.EMAIL] = n.email
-	n.funcs[internal.NAME] = n.name
 }
 
 func (n *Algo) Name() string {
@@ -61,43 +52,20 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
-	return n.funcs[n.config.Type()](typo)
-}
+func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
+	orig, vari := typo.Get()
 
-func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
-	sub, prefix, suffix := typo.Original().Domain()
-	for _, variant := range algo.BitFlipping(prefix) {
-		if prefix != variant {
-			d := domain.New(sub, variant, suffix)
-			new := typo.Clone(d.String())
+	for _, variant := range algo.BitFlipping(vari.Name) {
+		if vari.Name != variant {
+
+			new := typo.New(n, orig, domain.Parse(variant))
 			typos = append(typos, new)
 		}
 	}
+
 	return
 }
 
-func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
-	username, domain := typo.Original().Email()
-	for _, variant := range algo.BitFlipping(username) {
-		if username != variant {
-			new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
-
-			typos = append(typos, new)
-		}
-	}
-	return
-}
-
-func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
-	name := n.config.Target().Name()
-	for _, variant := range algo.BitFlipping(name) {
-		if name != variant {
-			typos = append(typos, typo.Clone(variant))
-		}
-	}
-	return
-}
 
 // Register the plugin
 func init() {
