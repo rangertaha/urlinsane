@@ -15,12 +15,16 @@
 package urlinsane
 
 import (
+	"context"
+	"fmt"
 	"sync"
 	"time"
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/config"
-	"github.com/rangertaha/urlinsane/internal/pkg/target"
+	"github.com/rangertaha/urlinsane/internal/domain"
+	"github.com/rangertaha/urlinsane/internal/models"
+	"github.com/rangertaha/urlinsane/internal/typo"
 	"github.com/schollz/progressbar/v3"
 )
 
@@ -32,7 +36,7 @@ type (
 		Typos  map[string]internal.Typo
 
 		// Processing
-		infoWG   sync.WaitGroup
+		// infoWG   sync.WaitGroup
 		progress *progressbar.ProgressBar
 
 		// Metrics
@@ -41,21 +45,7 @@ type (
 		filtered int64
 		scanned  int64
 	}
-	// Infos             []internal.Information
-	// InformationsOrder struct{ Infos }
-	// InfosReverseOrder struct{ Infos }
 )
-
-// func (o Infos) Len() int      { return len(o) }
-// func (o Infos) Swap(i, j int) { o[i], o[j] = o[j], o[i] }
-// func (l InfosReverseOrder) Less(i, j int) bool {
-// 	return l.Infos[i].Order() > l.Infos[j].Order()
-// }
-// func (l InformationsOrder) Less(i, j int) bool {
-// 	return l.Infos[i].Order() < l.Infos[j].Order()
-// }
-
-// sort.Sort(ProcessorOrder{cfgs})
 
 // NewUrlinsane ...
 func New(conf config.Config) (u Urlinsane) {
@@ -72,7 +62,6 @@ func New(conf config.Config) (u Urlinsane) {
 
 // Init
 func (u *Urlinsane) Init() <-chan internal.Typo {
-	internal.Banner()
 	out := make(chan internal.Typo)
 	go func() {
 		// Initialize information plugins if needed
@@ -81,95 +70,53 @@ func (u *Urlinsane) Init() <-chan internal.Typo {
 				inf.Init(&u.Config)
 			}
 		}
-		for _, algorithm := range u.Config.Algorithms() {
 
-			// Initialize algorithm plugins if needed
+		// Initialize algorithm plugins if needed
+		for _, algorithm := range u.Config.Algorithms() {
 			if al, ok := algorithm.(internal.Initializer); ok {
 				al.Init(&u.Config)
 			}
-
-			out <- &Typo{
-				algorithm: algorithm,
-				original:  u.Config.Target(),
-				variant:   &target.Target{},
+			if u.Config.Target() != "" {
+				// fmt.Println(domain.Parse(u.Config.Target()))
+				out <- &typo.Typo{
+					Algorithm: algorithm,
+					Original:  domain.Parse(u.Config.Target()),
+					Variant:   models.Domain{},
+				}
+			} else {
+				fmt.Println("Need to proved a domain name")
 			}
+
 		}
 		close(out)
 	}()
 	return out
 }
 
-// // GenOptions typo config options
-// func (u *Urlinsane) Start() <-chan internal.Typo {
-// 	out := make(chan internal.Typo)
-// 	go func() {
-// 		// Initialize information plugins if needed
-// 		for _, info := range u.Config.Information() {
-// 			if inf, ok := info.(internal.Initializer); ok {
-// 				inf.Init(&u.Config)
-// 			}
-// 		}
-// 		for _, algorithm := range u.Config.Algorithms() {
-
-// 			// Initialize algorithm plugins if needed
-// 			if al, ok := algorithm.(internal.Initializer); ok {
-// 				al.Init(&u.Config)
-// 			}
-
-// 			out <- &Typo{
-// 				algorithm: algorithm,
-// 				original:  u.Config.Target(),
-// 				variant:   &target.Target{},
-// 			}
-// 		}
-// 		close(out)
-// 	}()
-// 	return out
-// }
-
 // Algorithms generate typo variations using the algorithm plugins
 func (u *Urlinsane) Algorithms(in <-chan internal.Typo) <-chan internal.Typo {
 	out := make(chan internal.Typo)
 	var wg sync.WaitGroup
-	var ttype = u.Config.Type() == internal.DOMAIN
+	// var ttype = u.Config.Type() == internal.DOMAIN
 
 	for w := 1; w <= u.Config.Concurrency(); w++ {
 		wg.Add(1)
 		go func(id int, in <-chan internal.Typo, out chan<- internal.Typo) {
 			defer wg.Done()
 			for typo := range in {
-				algo := typo.Algorithm()
-				typos := []internal.Typo{}
-				ttype = u.Config.Type() == internal.DOMAIN
-				if al, ok := algo.(internal.DomainAlgorithm); ok && ttype {
-					typos = append(typos, al.Domain(typo)...)
-				}
-
-				ttype = u.Config.Type() == internal.PACKAGE
-				if al, ok := algo.(internal.PackageAlgorithm); ok && ttype {
-					typos = append(typos, al.Package(typo)...)
-				}
-
-				ttype = u.Config.Type() == internal.EMAIL
-				if al, ok := algo.(internal.EmailAlgorithm); ok && ttype {
-					typos = append(typos, al.Email(typo)...)
-				}
-
-				ttype = u.Config.Type() == internal.NAME
-				if al, ok := algo.(internal.UserAlgorithm); ok && ttype {
-					typos = append(typos, al.Username(typo)...)
-				}
-
-				if al, ok := algo.(internal.ExecAlgorithm); ok {
-					typos = append(typos, al.Exec(typo)...)
+				algo := typo.Algo()
+				for _, typ := range algo.Exec(typo) {
+					if typ != nil {
+						out <- typ
+					}
 				}
 
 				// Execute typo algorith returning typos
-				for _, variant := range typos {
-					if variant != nil {
-						out <- variant
-					}
-				}
+				// for _, variant := range typos {
+				// 	if variant != nil {
+				// 		out <- variant
+				// 	}
+				// }
 			}
 		}(w, in, out)
 	}
@@ -193,18 +140,19 @@ func (u *Urlinsane) Filters(in <-chan internal.Typo) <-chan internal.Typo {
 
 	go func() {
 		for typo := range in {
-			orig := typo.Original()
-			vari := typo.Variant()
+			orig, vari := typo.Get()
+			// fmt.Println(orig, vari.FQDN)
 
 			// Removing duplicates
-			if _, ok := u.Typos[vari.Name()]; !ok {
-				u.Typos[vari.Name()] = typo
+			if _, ok := u.Typos[vari.Name]; !ok {
+				u.Typos[vari.Name] = typo
 
 				// Make sure the variant does not match the original
-				if vari.Name() != orig.Name() {
+				if vari.Fqdn() != orig.Fqdn() {
 
 					// Only allow variants with a minimum levenshtein distance
-					if u.Config.Dist() >= typo.Ld() {
+					if u.Config.Dist() >= typo.Dist() {
+						// fmt.Println(orig, vari.FQDN)
 						out <- typo
 					} else {
 						u.filtered++
@@ -230,7 +178,6 @@ func (u *Urlinsane) Information(in <-chan internal.Typo) <-chan internal.Typo {
 			wg.Add(1)
 			go func(in <-chan internal.Typo, out chan<- internal.Typo) {
 				defer wg.Done()
-
 				for c := range u.InfoChain(u.Config.Information(), in) {
 					u.scanned++
 					out <- c
@@ -260,7 +207,21 @@ func (u *Urlinsane) InfoChain(funcs []internal.Information, in <-chan internal.T
 				fn.Init(&u.Config)
 			}
 			time.Sleep(u.Config.Random() * u.Config.Delay())
-			out <- xfunc.Exec(i)
+
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+
+			func(ctx context.Context) {
+				select {
+				case <-time.After(1 * time.Second):
+
+					out <- xfunc.Exec(i)
+					// fmt.Println("Function completed successfully")
+				case <-ctx.Done():
+					// fmt.Println("Function timed out:", ctx.Err())
+				}
+			}(ctx)
+
 		}
 		close(out)
 	}()
@@ -304,15 +265,15 @@ func (u *Urlinsane) Output(in <-chan internal.Typo) {
 
 	// Stream typo records to the output plugin
 	for c := range in {
-
-		if c.Variant().Live() {
+		_, vari := c.Get()
+		if vari.Live {
 			u.online++
 		}
 		// u.Config.Output().Write(c)
 		if u.Config.ShowAll() {
 			u.Config.Output().Write(c)
 
-		} else if c.Variant().Live() {
+		} else if vari.Live {
 			u.Config.Output().Write(c)
 		}
 

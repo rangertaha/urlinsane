@@ -50,10 +50,8 @@ package co
 //  TOTAL  4
 
 import (
-	"fmt"
-
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/pkg/domain"
+	"github.com/rangertaha/urlinsane/internal/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
@@ -68,71 +66,51 @@ type Algo struct {
 	config internal.Config
 	// languages []internal.Language
 	// keyboards []internal.Keyboard
-	funcs map[int]func(internal.Typo) []internal.Typo
 }
 
-func (n *Algo) Id() string {
+func (a *Algo) Id() string {
 	return CODE
 }
 
-func (n *Algo) Init(conf internal.Config) {
-	n.funcs = make(map[int]func(internal.Typo) []internal.Typo)
+func (a *Algo) Init(conf internal.Config) {
 	// n.keyboards = conf.Keyboards()
 	// n.languages = conf.Languages()
-	n.config = conf
-
-	// Supported targets
-	n.funcs[internal.DOMAIN] = n.domain
-	n.funcs[internal.PACKAGE] = n.name
-	n.funcs[internal.EMAIL] = n.email
-	n.funcs[internal.NAME] = n.name
+	a.config = conf
 }
 
-func (n *Algo) Name() string {
+func (a *Algo) Name() string {
 	return NAME
 }
-func (n *Algo) Description() string {
+func (a *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
-	return n.funcs[n.config.Type()](typo)
-}
+func (a *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
+	origin, vari := typo.Get()
 
-func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
-	sub, prefix, suffix := typo.Original().Domain()
-	for _, variant := range algo.CharacterOmission(prefix) {
-		if prefix != variant {
-			d := domain.New(sub, variant, suffix)
-			new := typo.Clone(d.String())
+	// sub, prefix, suffix := typo.Original().Domain()
+	for _, variant := range algo.CharacterOmission(origin.Name) {
+		if origin.Name != vari.Name {
+			// d := domain.New(sub, variant, suffix)
+			new := typo.New(a, origin, domain.New(origin.Prefix, variant, origin.Suffix))
 			typos = append(typos, new)
 		}
 	}
 	return
 }
+func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
+	orig, vari := typo.Get()
 
-func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
-	username, domain := typo.Original().Email()
-	for _, variant := range algo.CharacterOmission(username) {
-		if username != variant {
-			new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
+	for _, variant := range algo.BitFlipping(vari.Name) {
+		if vari.Name != variant {
 
+			new := typo.New(n, orig, domain.Parse(variant))
 			typos = append(typos, new)
 		}
 	}
+
 	return
 }
-
-func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
-	name := n.config.Target().Name()
-	for _, variant := range algo.CharacterOmission(name) {
-		if name != variant {
-			typos = append(typos, typo.Clone(variant))
-		}
-	}
-	return
-}
-
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {

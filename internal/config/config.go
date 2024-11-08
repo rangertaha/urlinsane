@@ -15,13 +15,12 @@
 package config
 
 import (
-	"path/filepath"
+	"fmt"
 	"sort"
 	"strings"
 	"time"
 
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/pkg/target"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/information"
@@ -34,10 +33,17 @@ import (
 )
 
 type (
+	Dns struct {
+		RetryCount       int      `yaml:"retry"`
+		QueriesPerSecond int      `yaml:"qps"`
+		Concurrency      int      `yaml:"concurrency"`
+		Servers          []string `yaml:"servers"`
+	}
+
 	Config struct {
-		target internal.Target // Config target
-		ctype  int             // Config type
-		appDir string
+		domain string // Config target
+		// ctype  int    // Config type
+		appDir *AppDir
 
 		// Plugins
 		keyboards   []internal.Keyboard
@@ -47,27 +53,24 @@ type (
 		output      internal.Output
 
 		// Performance
-		concurrency int
-		delay       time.Duration
-		random      time.Duration
-		levenshtein int
+		concurrency int           `yaml:"concurrency"`
+		delay       time.Duration `yaml:"delay"`
+		random      time.Duration `yaml:"random"`
+		levenshtein int           `yaml:"levenshtein"`
 
-		screenShot bool
+		screenShot bool `yaml:"screenShot"`
 
 		// DNS
-		dnsRetryCount       int
-		dnsQueriesPerSecond int
-		dnsConcurrency      int
-		dnsServers          []string
+		Dns Dns `yaml:"dns"`
 
 		// Output
-		verbose  bool
-		format   string
-		filters  []string
-		file     string
-		showAll  bool
-		scanAll  bool
-		progress bool
+		verbose  bool     `yaml:"verbose"`
+		format   string   `yaml:"format"`
+		filters  []string `yaml:"filters"`
+		file     string   `yaml:"file"`
+		showAll  bool     `yaml:"showAll"`
+		scanAll  bool     `yaml:"scanAll"`
+		progress bool     `yaml:"progress"`
 	}
 
 	Infos             []internal.Information
@@ -85,15 +88,20 @@ func (l InfosOrder) Less(i, j int) bool {
 }
 
 func New() Config {
-	return Config{}
+	c := Config{}
+	// if dir, err = NewAppDir(c); err != nil {
+	// 	return c, err
+	// }
+
+	return c
 }
 
-func (c *Config) Target() internal.Target {
-	return c.target
+func (c *Config) Target() string {
+	return c.domain
 }
 
-func (c *Config) Dir() string {
-	return filepath.Join(c.appDir, strings.ToLower(c.target.Name()))
+func (c *Config) Dir() *AppDir {
+	return c.appDir
 }
 
 func (c *Config) Keyboards() []internal.Keyboard {
@@ -106,6 +114,7 @@ func (c *Config) Algorithms() []internal.Algorithm {
 	return c.algorithms
 }
 func (c *Config) Information() []internal.Information {
+	sort.Sort(InfosReverseOrder{c.information})
 	return c.information
 }
 func (c *Config) Output() internal.Output {
@@ -115,12 +124,6 @@ func (c *Config) Concurrency() int {
 	return c.concurrency
 }
 func (c *Config) Filters() (fields []string) {
-	// for _, field := range fields {
-	// 	field = strings.TrimSpace(field)
-	// 	if field != "" {
-	// 		fields = append(fields, field)
-	// 	}
-	// }
 	return c.filters
 }
 
@@ -147,9 +150,10 @@ func (c *Config) Format() string {
 func (c *Config) File() string {
 	return c.file
 }
-func (c *Config) Type() int {
-	return c.ctype
-}
+
+//	func (c *Config) Type() int {
+//		return c.ctype
+//	}
 func (c *Config) ScanAll() bool {
 	return c.scanAll
 }
@@ -159,39 +163,42 @@ func (c *Config) ShowAll() bool {
 func (c *Config) Screenshot() bool {
 	return c.screenShot
 }
-func (c *Config) DnsServers() []string {
-	return c.dnsServers
-}
 
-// DnsQps is the queries per second
-func (c *Config) DnsConcurrency() int {
-	return c.dnsConcurrency
-}
+// func (c *Config) DnsServers() []string {
+// 	return c.dnsServers
+// }
 
-func (c *Config) DnsRetry() int {
-	return c.dnsQueriesPerSecond
-}
+// // DnsQps is the queries per second
+// func (c *Config) DnsConcurrency() int {
+// 	return c.dnsConcurrency
+// }
 
-// DnsQps is the queries per second
-func (c *Config) DnsQps() int {
-	return c.dnsRetryCount
-}
+// func (c *Config) DnsRetry() int {
+// 	return c.dnsQueriesPerSecond
+// }
+
+// // DnsQps is the queries per second
+// func (c *Config) DnsQps() int {
+// 	return c.dnsRetryCount
+// }
 
 // CobraConfig creates a configuration from a cobra command options and arguments
-func CobraConfig(cmd *cobra.Command, args []string, ttype int) (c Config, err error) {
-	if err, appDir := NewAppDir(); err == nil {
-		c = appDir.Config(c)
+func CobraConfig(cmd *cobra.Command, args []string) (c Config, err error) {
+	if len(args) == 0 {
+		return c, fmt.Errorf("At least one argument required")
 	}
+	c.domain = args[0]
+	// if c.appDir, err = NewAppDir(); err != nil {
+	// 	return c, err
+	// }
 
-	c.ctype = ttype
+	// c.target = target.New(args[0])
 
-	c.target = target.New(args[0])
-
-	if url, err := cmd.Flags().GetString("url"); err == nil && url != "" {
-		if c.target != nil {
-			c.target.Add("url", url)
-		}
-	}
+	// if url, err := cmd.Flags().GetString("url"); err == nil && url != "" {
+	// 	if c.target != nil {
+	// 		c.target.Add("url", url)
+	// 	}
+	// }
 
 	// Plugin options
 	if langs, err := commaSplit(cmd.Flags().GetString("languages")); err == nil {
@@ -207,8 +214,7 @@ func CobraConfig(cmd *cobra.Command, args []string, ttype int) (c Config, err er
 	}
 
 	if infos, err := commaSplit(cmd.Flags().GetString("info")); err == nil {
-		c.information = information.ListType(c.ctype, infos...)
-		sort.Sort(InfosOrder{c.information})
+		c.information = information.List(infos...)
 	}
 
 	// Output options

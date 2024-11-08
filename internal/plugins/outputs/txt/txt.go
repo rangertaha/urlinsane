@@ -44,6 +44,7 @@ func (n *Text) Description() string {
 
 func (n *Text) Init(conf internal.Config) {
 	n.config = conf
+	internal.Banner()
 }
 
 func (n *Text) Write(in internal.Typo) {

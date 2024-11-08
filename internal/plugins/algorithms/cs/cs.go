@@ -78,7 +78,19 @@ func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
 	}
 	return
 }
+func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
+	orig, vari := typo.Get()
 
+	for _, variant := range algo.BitFlipping(vari.Name) {
+		if vari.Name != variant {
+
+			new := typo.New(n, orig, domain.Parse(variant))
+			typos = append(typos, new)
+		}
+	}
+
+	return
+}
 func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
 	username, domain := typo.Original().Email()
 
