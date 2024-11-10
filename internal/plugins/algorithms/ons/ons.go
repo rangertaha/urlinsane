@@ -56,10 +56,8 @@ package ons
 //
 
 import (
-	"fmt"
-
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/pkg/domain"
+	"github.com/rangertaha/urlinsane/internal/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
@@ -74,7 +72,6 @@ type Algo struct {
 	config    internal.Config
 	languages []internal.Language
 	keyboards []internal.Keyboard
-	funcs     map[int]func(internal.Typo) []internal.Typo
 }
 
 func (n *Algo) Id() string {
@@ -82,16 +79,9 @@ func (n *Algo) Id() string {
 }
 
 func (n *Algo) Init(conf internal.Config) {
-	n.funcs = make(map[int]func(internal.Typo) []internal.Typo)
 	n.keyboards = conf.Keyboards()
 	n.languages = conf.Languages()
 	n.config = conf
-
-	// Supported targets
-	n.funcs[internal.DOMAIN] = n.domain
-	n.funcs[internal.PACKAGE] = n.name
-	n.funcs[internal.EMAIL] = n.email
-	n.funcs[internal.NAME] = n.name
 }
 
 func (n *Algo) Name() string {
@@ -101,50 +91,20 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
-	return n.funcs[n.config.Type()](typo)
-}
+func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
+	orig, _ := typo.Get()
 
-func (n *Algo) domain(typo internal.Typo) (typos []internal.Typo) {
-	sub, prefix, suffix := typo.Original().Domain()
-	original := n.config.Target().Name()
 	for _, language := range n.languages {
-		for _, variant := range algo.OrdinalSwap(prefix, language.Numerals()) {
+		for _, variant := range algo.OrdinalSwap(orig.Name, language.Numerals()) {
 
-			if original != variant {
-				d := domain.New(sub, variant, suffix)
-				new := typo.Clone(d.String())
+			if orig.Name != variant {
 
+				new := typo.New(n, orig, domain.New(orig.Prefix, variant, orig.Suffix))
 				typos = append(typos, new)
 			}
 		}
 	}
-	return
-}
 
-func (n *Algo) email(typo internal.Typo) (typos []internal.Typo) {
-	username, domain := typo.Original().Email()
-	for _, language := range n.languages {
-		for _, variant := range algo.OrdinalSwap(username, language.Numerals()) {
-			if username != variant {
-				new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
-
-				typos = append(typos, new)
-			}
-		}
-	}
-	return
-}
-
-func (n *Algo) name(typo internal.Typo) (typos []internal.Typo) {
-	original := n.config.Target().Name()
-	for _, language := range n.languages {
-		for _, variant := range algo.OrdinalSwap(original, language.Numerals()) {
-			if original != variant {
-				typos = append(typos, typo.Clone(variant))
-			}
-		}
-	}
 	return
 }
 

@@ -12,46 +12,36 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package dhus
+package badger
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
-	algo "github.com/rangertaha/urlinsane/pkg/typo"
+	"github.com/rangertaha/urlinsane/internal/plugins/databases"
 )
 
 const (
-	CODE        = "dhu"
-	NAME        = "Dot Hyphen Underscore Sub"
-	DESCRIPTION = "Omitting a character from the name"
+	CODE = "badger"
 )
 
-type Algo struct{}
-
-func (n *Algo) Id() string {
-	return CODE
+type Plugin struct {
+	config internal.Config
 }
 
-func (n *Algo) Name() string {
-	return NAME
-}
-func (n *Algo) Description() string {
-	return DESCRIPTION
+func (n *Plugin) Init(conf internal.Config) {
+	n.config = conf
 }
 
-func (n *Algo) Package(typo internal.Typo) (typos []internal.Typo) {
-	name := typo.Original().Name()
-	for _, variant := range algo.CharacterOmission(name) {
-		if name != variant {
-			typos = append(typos, typo.Clone(variant))
-		}
-	}
+func (n *Plugin) Read(key string) (i interface{}, err error) {
+	return
+}
+
+func (n *Plugin) Write(key string, i interface{}) (err error) {
 	return
 }
 
 // Register the plugin
 func init() {
-	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{}
+	databases.Add(CODE, func() internal.Database {
+		return &Plugin{}
 	})
 }

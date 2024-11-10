@@ -96,7 +96,7 @@ func (n *Json) Filter(header string) bool {
 	return false
 }
 
-func (n *Json) Summary(report map[string]int64) {
+func (n *Json) Summary(report []internal.Typo) {
 	//
 }
 

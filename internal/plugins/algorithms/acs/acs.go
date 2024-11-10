@@ -65,13 +65,13 @@ func (n *Algo) Description() string {
 }
 
 func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
-	orig, vari := typo.Get()
+	orig, _ := typo.Get()
 
 	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterSubstitution(vari.Name, keyboard.Layouts()...) {
-			if vari.Name != variant {
+		for _, variant := range algo.AdjacentCharacterSubstitution(orig.Name, keyboard.Layouts()...) {
+			if orig.Name != variant {
 
-				new := typo.New(n, orig, domain.Parse(variant))
+				new := typo.New(n, orig, domain.New(orig.Prefix, variant, orig.Suffix))
 				typos = append(typos, new)
 			}
 		}

@@ -60,11 +60,9 @@ func (p *Plugin) Exec(in internal.Typo) (out internal.Typo) {
 	fmt.Println("IMAGE: adfadfsfadaffdfaf")
 	orig, vari := in.Get()
 	if in.Live() {
-		if p.config.Screenshot() {
-			file := p.Screenshot(vari.Fqdn())
-			in.SetMeta("IMAGE", file)
-			vari.Screenshot = file
-		}
+		file := p.Screenshot(vari.Fqdn())
+		in.SetMeta("IMAGE", file)
+		vari.Screenshot = file
 	}
 	in.Set(orig, vari)
 	return in

@@ -15,8 +15,6 @@
 package bf
 
 import (
-	"fmt"
-
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
@@ -53,19 +51,18 @@ func (n *Algo) Description() string {
 }
 
 func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
-	orig, vari := typo.Get()
+	orig, _ := typo.Get()
 
-	for _, variant := range algo.BitFlipping(vari.Name) {
-		if vari.Name != variant {
+	for _, variant := range algo.BitFlipping(orig.Name) {
+		if orig.Name != variant {
 
-			new := typo.New(n, orig, domain.Parse(variant))
+			new := typo.New(n, orig, domain.New(orig.Prefix , variant, orig.Suffix))
 			typos = append(typos, new)
 		}
 	}
 
 	return
 }
-
 
 // Register the plugin
 func init() {

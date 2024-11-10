@@ -17,7 +17,6 @@ package table
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/rangertaha/urlinsane/internal"
@@ -31,22 +30,21 @@ const (
 	DESCRIPTION = "Pretty table output format with color"
 )
 
-type Text struct {
+type Plugin struct {
 	table  table.Writer
 	config internal.Config
 }
 
-func (n *Text) Id() string {
+func (n *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Text) Description() string {
+func (n *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Text) Init(conf internal.Config) {
+func (n *Plugin) Init(conf internal.Config) {
 	n.config = conf
-	internal.Banner()
 	n.table = table.NewWriter()
 
 	if width, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil {
@@ -59,61 +57,61 @@ func (n *Text) Init(conf internal.Config) {
 	n.Config()
 }
 
-func (n *Text) Header() (row table.Row) {
-	row = append(row, "LD")
-	row = append(row, "TYPE")
-	row = append(row, "TYPO")
+func (n *Plugin) Header() (row table.Row) {
+	// row = append(row, "LD")
+	// row = append(row, "TYPE")
+	// row = append(row, "TYPO")
 
-	for _, info := range n.config.Information() {
-		for _, header := range info.Headers() {
-			if n.Filter(header) {
-				row = append(row, header)
-			}
-		}
-	}
+	// for _, info := range n.config.Information() {
+	// 	for _, header := range info.Headers() {
+	// 		// if n.Filter(header) {
+	// 		row = append(row, header)
+	// 		// }
+	// 	}
+	// }
 	return
 }
 
-func (n *Text) Row(typo internal.Typo) (row table.Row) {
-	// orig, vari := typo.Get()
+func (n *Plugin) Row(typo internal.Domain) (row table.Row) {
+	// // orig, vari := typo.Get()
 
-	row = append(row, typo.Dist())
-	if n.config.Verbose() {
-		row = append(row, typo.Algo().Name())
-	} else {
-		row = append(row, strings.ToUpper(typo.Algo().Id()))
-	}
-	row = append(row, typo.String())
+	// row = append(row, typo.Dist())
+	// if n.config.Verbose() {
+	// 	row = append(row, typo.Algo().Name())
+	// } else {
+	// 	row = append(row, strings.ToUpper(typo.Algo().Id()))
+	// }
+	// row = append(row, typo.String())
 
-	for _, info := range n.config.Information() {
-		for _, header := range info.Headers() {
-			if n.Filter(header) {
-				meta := typo.Metatable()
-				if col, ok := meta[header]; ok {
-					row = append(row, col)
-				} else {
-					row = append(row, "")
-				}
-			}
-		}
-	}
+	// for _, info := range n.config.Information() {
+	// 	for _, header := range info.Headers() {
+	// 		// if n.Filter(header) {
+	// 		meta := typo.Metatable()
+	// 		if col, ok := meta[header]; ok {
+	// 			row = append(row, col)
+	// 		} else {
+	// 			row = append(row, "")
+	// 		}
+	// 		// }
+	// 	}
+	// }
 	return
 }
 
-func (n *Text) Filter(header string) bool {
-	header = strings.TrimSpace(header)
-	header = strings.ToLower(header)
-	for _, filter := range n.config.Filters() {
-		filter = strings.TrimSpace(filter)
-		filter = strings.ToLower(filter)
-		if filter == header {
-			return true
-		}
-	}
-	return false
-}
+// func (n *Plugin) Filter(header string) bool {
+// 	header = strings.TrimSpace(header)
+// 	header = strings.ToLower(header)
+// 	for _, filter := range n.config.Filters() {
+// 		filter = strings.TrimSpace(filter)
+// 		filter = strings.ToLower(filter)
+// 		if filter == header {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }
 
-func (n *Text) Config() (row table.Row) {
+func (n *Plugin) Config() (row table.Row) {
 	n.table.SetStyle(utils.StyleDefault)
 
 	// nameTransformer := text.Transformer(func(val interface{}) string {
@@ -128,15 +126,20 @@ func (n *Text) Config() (row table.Row) {
 	n.table.SetColumnConfigs(ColumnConfig)
 	return
 }
-func (n *Text) Progress(typo <-chan internal.Typo) <-chan internal.Typo {
+func (n *Plugin) Progress(typo <-chan internal.Typo) <-chan internal.Typo {
 	return typo
 }
 
-func (n *Text) Write(in internal.Typo) {
+func (n *Plugin) Write(in internal.Domain) {
+	// orig, vari := in.Get()
+	// fmt.Println(orig.Name)
+	// fmt.Println(vari.Name)
+	// fmt.Println()
+
 	n.table.AppendRow(n.Row(in))
 }
 
-func (n *Text) Summary(report map[string]int64) {
+func (n *Plugin) Summary(report []internal.Typo) {
 	fmt.Println("")
 	for k, v := range report {
 		fmt.Printf("%s %d   ", k, v)
@@ -144,7 +147,7 @@ func (n *Text) Summary(report map[string]int64) {
 	fmt.Println("")
 }
 
-func (n *Text) Save() {
+func (n *Plugin) Save() {
 	// We need a little space between the progress bar and this output
 	fmt.Println("")
 	output := n.table.Render()
@@ -160,6 +163,6 @@ func (n *Text) Save() {
 // Register the plugin
 func init() {
 	outputs.Add(CODE, func() internal.Output {
-		return &Text{}
+		return &Plugin{}
 	})
 }
