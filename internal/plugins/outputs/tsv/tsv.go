@@ -110,7 +110,7 @@ func (n *Text) Progress(typo <-chan internal.Typo) <-chan internal.Typo {
 	return typo
 }
 
-func (n *Text) Summary(report map[string]int64) {
+func (n *Text) Summary(report []internal.Typo) {
 	fmt.Println("")
 	for k, v := range report {
 		fmt.Printf("%s %d   ", k, v)

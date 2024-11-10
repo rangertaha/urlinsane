@@ -98,6 +98,7 @@ func HyphenInsertion(name string) (names []string) {
 		variant := name[:i] + "-" + string(char) + name[i+1:]
 		if i == len(name)-1 {
 			variant = name[:i] + string(char) + "-" + name[i+1:]
+			// variant = strings.Trim(variant, "-")
 		}
 		names = append(names, variant)
 	}
@@ -186,7 +187,7 @@ func GraphemeReplacement(name string, graphemes ...string) (names []string) {
 // CharacterRepetition
 // Character repetition typos are created by repeating a letter in the name.
 // For example: "eexample", "exaample", "exammple", "examplee", "examplle"
-func CharacterRepetition(name string) (names []string) {
+func DoubleCharacterInsertion(name string) (names []string) {
 	for i := range name {
 		if i <= len(name) {
 			variant := fmt.Sprint(name[:i], string(name[i]), string(name[i]), name[i+1:])

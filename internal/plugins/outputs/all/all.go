@@ -8,5 +8,5 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/outputs/table"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/outputs/tsv"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/outputs/text"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/outputs/json"
+	// _ "github.com/rangertaha/urlinsane/internal/plugins/outputs/json"
 )

@@ -16,10 +16,21 @@ package urlinsane
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"path/filepath"
 
+	"github.com/knadh/koanf/parsers/hcl"
+	"github.com/knadh/koanf/providers/file"
+	"github.com/knadh/koanf/v2"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
+
+var DefualtConfig = []byte(``)
+
+const CONFIG_DIR = ".urlinsane"
+const CONFIG_FILE = "urlinsane"
 
 const templateBase = `USAGE:{{if .Runnable}}
   {{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}
@@ -72,18 +83,19 @@ func Execute() {
 	}
 }
 func init() {
+	var k = koanf.New(".")
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
-	rootCmd.AddCommand(domainCmd)
+	// rootCmd.AddCommand(domainCmd)
 
 	// Plugins
 	rootCmd.PersistentFlags().StringP("languages", "l", "all", "IDs of languages to use for linguistic algorithms")
-	// rootCmd.PersistentFlags().Bool("list-languages", false, "List languages and thier IDs")
+	viper.BindPFlag("languages", rootCmd.Flags().Lookup("languages"))
 
 	rootCmd.PersistentFlags().StringP("keyboards", "k", "all", "IDs of keyboard layouts to use of the given languages")
-	// rootCmd.PersistentFlags().Bool("list-keyboards", false, "List keyboards and their IDs")
+	viper.BindPFlag("keyboards", rootCmd.Flags().Lookup("keyboards"))
 
 	rootCmd.PersistentFlags().StringP("algorithms", "a", "all", "IDs of typo algorithms to use for generating typos")
-	// rootCmd.PersistentFlags().Bool("plugins", false, "List plugins/IDs for algorithms, langauages, information, and keyboards")
+	viper.BindPFlag("algorithms", rootCmd.Flags().Lookup("algorithms"))
 
 	// Cache
 	// rootCmd.PersistentFlags().Duration("ttl", time.Hour*24, "Cache duration for expiration")
@@ -99,4 +111,98 @@ func init() {
 	rootCmd.PersistentFlags().StringP("file", "f", "", "Output filename defaults to stdout")
 	rootCmd.PersistentFlags().StringP("format", "o", "table", "Output format: (csv,tsv,table,txt,html,md)")
 
+	viper.SetConfigName(CONFIG_FILE) // name of config file (without extension)
+	viper.SetConfigType("hcl")       // REQUIRED if the config file does not have the extension in the name
+	// viper.AddConfigPath("/etc/urlinsane/")  // path to look for the config file in
+	viper.AddConfigPath("$HOME/" + CONFIG_DIR) // call multiple times to add many search paths
+	// viper.AddConfigPath(".")                // optionally look for config in the working directory
+	// err := viper.ReadInConfig()             // Find and read the config file
+	// if err != nil {                         // Handle errors reading the config file
+	// 	panic(fmt.Errorf("fatal error config file: %w", err))
+	// }
+
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			// Config file not found; ignore error if desired
+			if err := CreateConfigPath(CONFIG_DIR); err != nil {
+				fmt.Print(err)
+			}
+
+			// viper.ReadConfig(bytes.NewBuffer(DefualtConfig))
+			// appDir := filepath.Join(userDir, appdir)
+			if err := k.Load(file.Provider(c), hcl.Parser(true)); err != nil {
+				log.Fatalf("error loading file: %v", err)
+			}
+
+			if err := viper.SafeWriteConfig(); err != nil {
+				fmt.Print(err)
+			}
+
+		} else {
+			// Config file was found but another error was produced
+		}
+	}
 }
+
+func CreateConfigPath(appdir string) (err error) {
+	var userDir string
+
+	if userDir, err = os.UserHomeDir(); err != nil {
+		if userDir, err = os.Getwd(); err != nil {
+			userDir = ""
+		}
+	}
+
+	appDir := filepath.Join(userDir, appdir)
+	err = os.MkdirAll(appDir, 0750)
+	if err != nil {
+		return err
+	}
+
+	return
+}
+
+// viper.SetConfigType("yaml") // or viper.SetConfigType("YAML")
+
+// // any approach to require this configuration into your program.
+// var yamlExample = []byte(`
+// Hacker: true
+// name: steve
+// hobbies:
+// - skateboarding
+// - snowboarding
+// - go
+// clothing:
+//   jacket: leather
+//   trousers: denim
+// age: 35
+// eyes : brown
+// beard: true
+// `)
+
+// viper.ReadConfig(bytes.NewBuffer(yamlExample))
+
+// func (c *AppDir) Init() (err error) {
+// 	if c.homeDir == "" {
+// 		if c.homeDir, err = os.UserHomeDir(); err != nil {
+// 			if c.homeDir, err = os.Getwd(); err != nil {
+// 				c.homeDir = ""
+// 			}
+// 		}
+// 	}
+// 	if c.appDir == "" {
+// 		c.appDir = filepath.Join(c.homeDir, ".urlinsane")
+// 	}
+// 	if c.appCfg == "" {
+// 		c.appCfg = filepath.Join(c.appDir, "config.yml")
+// 	}
+
+// 	return c.getOrCreate()
+// }
+
+// func (c *AppDir) getOrCreate() (err error) {
+// 	// Create app directory in user's home directory or local directory
+// 	err = os.MkdirAll(c.appDir, 0750)
+// 	if err != nil {
+// 		return err
+// 	}
