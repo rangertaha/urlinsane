@@ -26,7 +26,7 @@ import (
 )
 
 const (
-	ORDER       = 1
+	ORDER       = 0
 	CODE        = "idn"
 	NAME        = "Internationalize"
 	DESCRIPTION = "Internationalized Domain Name"
@@ -51,11 +51,13 @@ func (n *Plugin) Headers() []string {
 }
 
 func (n *Plugin) Exec(in internal.Typo) (out internal.Typo) {
-	orig, vari := in.Get()
 
+	orig, vari := in.Get()
 	if punycode, err := idna.Punycode.ToASCII(vari.Fqdn()); err == nil {
 		in.SetMeta("IDN", punycode)
 		vari.Punycode = punycode
+		// fmt.Println(vari.Punycode)
+
 	}
 	in.Set(orig, vari)
 	return in

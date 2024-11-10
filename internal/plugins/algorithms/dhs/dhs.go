@@ -15,10 +15,8 @@
 package dhs
 
 import (
-	"fmt"
-
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/pkg/domain"
+	"github.com/rangertaha/urlinsane/internal/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
@@ -42,46 +40,16 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Domain(typo internal.Typo) (typos []internal.Typo) {
-	sub, prefix, suffix := typo.Original().Domain()
-	for _, variant := range algo.DotHyphenSubstitution(prefix) {
-		if prefix != variant {
-			d := domain.New(sub, variant, suffix)
-			new := typo.Clone(d.String())
+func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
+	orig, _ := typo.Get()
+
+	for _, variant := range algo.DotHyphenSubstitution(orig.Name) {
+		if orig.Name != variant {
+			new := typo.New(n, orig, domain.New(orig.Prefix, variant, orig.Suffix))
 			typos = append(typos, new)
 		}
 	}
-	return
-}
 
-func (n *Algo) Email(typo internal.Typo) (typos []internal.Typo) {
-	username, domain := typo.Original().Email()
-	for _, variant := range algo.DotHyphenSubstitution(username) {
-		if username != variant {
-			new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
-
-			typos = append(typos, new)
-		}
-	}
-	return
-}
-func (n *Algo) Username(typo internal.Typo) (typos []internal.Typo) {
-	name := typo.Original().Name()
-	for _, variant := range algo.DotHyphenSubstitution(name) {
-		if name != variant {
-			typos = append(typos, typo.Clone(variant))
-		}
-	}
-	return
-}
-
-func (n *Algo) Package(typo internal.Typo) (typos []internal.Typo) {
-	name := typo.Original().Name()
-	for _, variant := range algo.DotHyphenSubstitution(name) {
-		if name != variant {
-			typos = append(typos, typo.Clone(variant))
-		}
-	}
 	return
 }
 

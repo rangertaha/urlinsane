@@ -19,43 +19,69 @@ import (
 	"strings"
 
 	"github.com/bobesa/go-domain-util/domainutil"
-	"github.com/rangertaha/urlinsane/internal/models"
+	"github.com/rangertaha/urlinsane/internal"
 )
 
-// // Domain ...
-// type Domain struct {
-// 	Subdomain string
-// 	Prefix    string
-// 	Suffix    string
-// }
-
-func New(prefix, name, suffix string) (d models.Domain) {
-	name = fmt.Sprintf("%s.%s.%s", prefix, name, suffix)
-	name = strings.ReplaceAll(name, "..", ".")
-	name = strings.Trim(name, ".")
-
-	domain := models.Domain{
-		Prefix: domainutil.Subdomain(name),
-		Name:   domainutil.DomainPrefix(name),
-		Suffix: domainutil.DomainSuffix(name),
-	}
-	domain.Fqdn()
-	return domain
+// Domain ...
+type Domain struct {
+	prefix string
+	name   string
+	suffix string
 }
 
-func Parse(name string) (d models.Domain) {
-	domain := models.Domain{
-		FQDN: name,
-		Prefix: domainutil.Subdomain(name),
-		Name:   domainutil.DomainPrefix(name),
-		Suffix: domainutil.DomainSuffix(name),
+//	type Domain interface {
+//		Prefix(...string) string
+//		Name(...string) string
+//		Suffix(...string) string
+//		String() string
+//		Valid() bool
+//		Live() bool
+//	}
+func New(name string) internal.Domain {
+	return &Domain{
+		prefix: domainutil.Subdomain(name),
+		name:   domainutil.DomainPrefix(name),
+		suffix: domainutil.DomainSuffix(name),
 	}
-	return domain
 }
 
-// func (d *Domain) String() (name string) {
-// 	name = fmt.Sprintf("%s.%s.%s", d.Subdomain, d.Prefix, d.Suffix)
+// func New(prefix, name, suffix string) internal.Domain {
+// 	name = fmt.Sprintf("%s.%s.%s", prefix, name, suffix)
 // 	name = strings.ReplaceAll(name, "..", ".")
 // 	name = strings.Trim(name, ".")
-// 	return
+
+// 	domain := &Domain{
+// 		prefix: domainutil.Subdomain(name),
+// 		name:   domainutil.DomainPrefix(name),
+// 		suffix: domainutil.DomainSuffix(name),
+// 	}
+// 	// domain.Fqdn()
+// 	return domain
 // }
+
+func (d *Domain) Prefix(labels ...string) (name string) {
+	return d.prefix
+}
+
+func (d *Domain) Name(labels ...string) (name string) {
+	return d.name
+}
+
+func (d *Domain) Suffix(labels ...string) (name string) {
+	return d.suffix
+}
+
+func (d *Domain) Valid() bool {
+	return d.name != ""
+}
+
+func (d *Domain) String(labels ...string) (name string) {
+	name = fmt.Sprintf("%s.%s.%s", d.prefix, d.name, d.suffix)
+	name = strings.ReplaceAll(name, "..", ".")
+	name = strings.Trim(name, ".")
+	return
+}
+
+func (d *Domain) Live() (ip bool) {
+	return true
+}

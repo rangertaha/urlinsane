@@ -22,7 +22,7 @@ type Domain struct {
 	Ssdeep     string `json:"ssdeep,omitempty"`
 
 	Dns   []DnsRecord   `json:"dns,omitempty"`
-	Whois []WhoisRecord `json:"dns,omitempty"`
+	Whois []WhoisRecord `json:"whois,omitempty"`
 }
 
 type DnsRecord struct {

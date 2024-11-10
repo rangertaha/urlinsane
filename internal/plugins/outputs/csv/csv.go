@@ -110,7 +110,7 @@ func (n *Text) Write(in internal.Typo) {
 	n.table.AppendRow(n.Row(in))
 }
 
-func (n *Text) Summary(report map[string]int64) {
+func (n *Text) Summary(report []internal.Typo) {
 	fmt.Println("")
 	for k, v := range report {
 		fmt.Printf("%s %d   ", k, v)

@@ -64,8 +64,6 @@ const (
 
 type Algo struct {
 	config internal.Config
-	// languages []internal.Language
-	// keyboards []internal.Keyboard
 }
 
 func (a *Algo) Id() string {
@@ -73,8 +71,6 @@ func (a *Algo) Id() string {
 }
 
 func (a *Algo) Init(conf internal.Config) {
-	// n.keyboards = conf.Keyboards()
-	// n.languages = conf.Languages()
 	a.config = conf
 }
 
@@ -85,32 +81,20 @@ func (a *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (a *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
-	origin, vari := typo.Get()
-
-	// sub, prefix, suffix := typo.Original().Domain()
-	for _, variant := range algo.CharacterOmission(origin.Name) {
-		if origin.Name != vari.Name {
-			// d := domain.New(sub, variant, suffix)
-			new := typo.New(a, origin, domain.New(origin.Prefix, variant, origin.Suffix))
-			typos = append(typos, new)
-		}
-	}
-	return
-}
 func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
-	orig, vari := typo.Get()
+	orig, _ := typo.Get()
 
-	for _, variant := range algo.BitFlipping(vari.Name) {
-		if vari.Name != variant {
+	for _, variant := range algo.CharacterOmission(orig.Name) {
+		if orig.Name != variant {
 
-			new := typo.New(n, orig, domain.Parse(variant))
+			new := typo.New(n, orig, domain.New(orig.Prefix, variant, orig.Suffix))
 			typos = append(typos, new)
 		}
 	}
 
 	return
 }
+
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {

@@ -15,17 +15,12 @@
 package ip
 
 import (
-	"log"
-	"net"
-	"strings"
-
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/models"
 	"github.com/rangertaha/urlinsane/internal/plugins/information"
 )
 
 const (
-	ORDER       = 0 // We need this to run first
+	ORDER       = 1 // We need this to run first
 	CODE        = "ip"
 	NAME        = "Ip Address"
 	DESCRIPTION = "Domain IP addresses"
@@ -57,39 +52,45 @@ func (n *Plugin) Headers() []string {
 }
 
 func (i *Plugin) Exec(in internal.Typo) (out internal.Typo) {
-	orig, vari := in.Get()
-	var As []string
-	var AAAAs []string
+	// ip, err := i.db.Get("IPv4")
+	// if err != nil {
+	// 	// Lookup IP
+	// }
 
-	vari.IPv4 = []models.IP{}
-	vari.IPv6 = []models.IP{}
-	vari.Dns = []models.DnsRecord{}
-	ips, err := net.LookupIP(vari.Fqdn())
-	if err != nil {
-		log.Print(err)
-	}
-	for _, ip := range ips {
-		dr := models.DnsRecord{}
-		vari.Live = true
-		if strings.Contains(ip.String(), ":") {
-			AAAAs = append(AAAAs, ip.String())
-			dr.Type = "AAAA"
-			dr.Value = ip.String()
-			vari.IPv6 = append(vari.IPv6, models.IP{Address: ip.String()})
-			vari.Dns = append(vari.Dns, dr)
+	// vari := in.Derived()
+	// var As []string
+	// var AAAAs []string
 
-		} else if strings.Contains(ip.String(), ".") {
-			As = append(As, ip.String())
-			dr.Type = "A"
-			dr.Value = ip.String()
-			vari.IPv4 = append(vari.IPv6, models.IP{Address: ip.String()})
-			vari.Dns = append(vari.Dns, dr)
-		}
-	}
+	// vari.IPv4 = []models.IP{}
+	// vari.IPv6 = []models.IP{}
+	// vari.Dns = []models.DnsRecord{}
+	// ips, err := net.LookupIP(vari.Fqdn())
+	// if err != nil {
+	// 	// log.Print(err)
+	// 	return nil
+	// }
+	// for _, ip := range ips {
+	// 	dr := models.DnsRecord{}
+	// 	vari.Live = true
+	// 	if strings.Contains(ip.String(), ":") {
+	// 		AAAAs = append(AAAAs, ip.String())
+	// 		dr.Type = "AAAA"
+	// 		dr.Value = ip.String()
+	// 		vari.IPv6 = append(vari.IPv6, models.IP{Address: ip.String()})
+	// 		vari.Dns = append(vari.Dns, dr)
 
-	in.Set(orig, vari)
-	in.SetMeta("IPv4", strings.Join(As, " "))
-	in.SetMeta("IPv6", strings.Join(AAAAs, " "))
+	// 	} else if strings.Contains(ip.String(), ".") {
+	// 		As = append(As, ip.String())
+	// 		dr.Type = "A"
+	// 		dr.Value = ip.String()
+	// 		vari.IPv4 = append(vari.IPv6, models.IP{Address: ip.String()})
+	// 		vari.Dns = append(vari.Dns, dr)
+	// 	}
+	// }
+
+	// // in.Set(orig, vari)
+	// in.SetMeta("IPv4", strings.Join(As, " "))
+	// in.SetMeta("IPv6", strings.Join(AAAAs, " "))
 
 	return in
 }

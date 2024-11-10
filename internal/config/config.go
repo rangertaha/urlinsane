@@ -15,21 +15,50 @@
 package config
 
 import (
-	"fmt"
+	"log"
+	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 	"time"
 
+	badger "github.com/dgraph-io/badger/v4"
+	"github.com/knadh/koanf/parsers/hcl"
+	"github.com/knadh/koanf/providers/file"
+	"github.com/knadh/koanf/v2"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
-	"github.com/rangertaha/urlinsane/internal/plugins/information"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/information/all"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/analyzers/all"
+	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/all"
+	"github.com/rangertaha/urlinsane/internal/plugins/databases"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/databases/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/languages"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/outputs/all"
-	"github.com/spf13/cobra"
+)
+
+const DIR = ".urlinsane"
+const FILE = "urlinsane.hcl"
+
+var (
+	Conf = koanf.New(".")
+
+	DefualtConfig = []byte(`
+database = "badger"
+algorithms = "all"
+concurrency = 25
+delay = 1 
+format = "table"
+keyboards = "all"
+languages = "all"
+progress = false
+random = 1
+verbose = false
+banner = true
+`)
 )
 
 type (
@@ -41,16 +70,16 @@ type (
 	}
 
 	Config struct {
-		domain string // Config target
-		// ctype  int    // Config type
-		appDir *AppDir
+		domain string // Target domain
 
 		// Plugins
-		keyboards   []internal.Keyboard
-		languages   []internal.Language
-		algorithms  []internal.Algorithm
-		information []internal.Information
-		output      internal.Output
+		keyboards  []internal.Keyboard
+		languages  []internal.Language
+		algorithms []internal.Algorithm
+		collectors []internal.Collector
+		database   internal.Database
+		analyzers  []internal.Analyzer
+		output     internal.Output
 
 		// Performance
 		concurrency int           `yaml:"concurrency"`
@@ -58,22 +87,21 @@ type (
 		random      time.Duration `yaml:"random"`
 		levenshtein int           `yaml:"levenshtein"`
 
-		screenShot bool `yaml:"screenShot"`
-
 		// DNS
 		Dns Dns `yaml:"dns"`
 
 		// Output
-		verbose  bool     `yaml:"verbose"`
-		format   string   `yaml:"format"`
-		filters  []string `yaml:"filters"`
-		file     string   `yaml:"file"`
-		showAll  bool     `yaml:"showAll"`
-		scanAll  bool     `yaml:"scanAll"`
-		progress bool     `yaml:"progress"`
+		verbose bool     `yaml:"verbose"`
+		banner  bool     `yaml:"verbose"`
+		format  string   `yaml:"format"`
+		filters []string `yaml:"filters"`
+		file    string   `yaml:"file"`
+		// showAll  bool     `yaml:"showAll"`
+		// scanAll  bool     `yaml:"scanAll"`
+		progress bool `yaml:"progress"`
 	}
 
-	Infos             []internal.Information
+	Infos             []internal.Collector
 	InfosOrder        struct{ Infos }
 	InfosReverseOrder struct{ Infos }
 )
@@ -88,22 +116,18 @@ func (l InfosOrder) Less(i, j int) bool {
 }
 
 func New() Config {
-	c := Config{}
-	// if dir, err = NewAppDir(c); err != nil {
-	// 	return c, err
-	// }
-
-	return c
+	return Config{}
 }
 
 func (c *Config) Target() string {
 	return c.domain
 }
 
-func (c *Config) Dir() *AppDir {
-	return c.appDir
-}
+// func (c *Config) Dir() *AppDir {
+// 	return c.appDir
+// }
 
+// Plugins
 func (c *Config) Keyboards() []internal.Keyboard {
 	return c.keyboards
 }
@@ -113,170 +137,129 @@ func (c *Config) Languages() []internal.Language {
 func (c *Config) Algorithms() []internal.Algorithm {
 	return c.algorithms
 }
-func (c *Config) Information() []internal.Information {
-	sort.Sort(InfosReverseOrder{c.information})
-	return c.information
+func (c *Config) Collectors() []internal.Collector {
+	sort.Sort(InfosReverseOrder{c.collectors})
+	return c.collectors
+}
+func (c *Config) Analyzers() []internal.Analyzer {
+	return c.analyzers
 }
 func (c *Config) Output() internal.Output {
 	return c.output
 }
-func (c *Config) Concurrency() int {
-	return c.concurrency
-}
-func (c *Config) Filters() (fields []string) {
-	return c.filters
+func (c *Config) Database() internal.Database {
+	return c.database
 }
 
 // Dist is the Levenshtein_distance
 // See: https://en.wikipedia.org/wiki/Levenshtein_distance
-func (c *Config) Dist() int {
-	return c.levenshtein
+// func (c *Config) Dist() int {
+// 	return c.levenshtein
+// }
+
+// Performance
+func (c *Config) Concurrency() int {
+	return c.concurrency
 }
+
 func (c *Config) Delay() time.Duration {
 	return c.delay
 }
 func (c *Config) Random() time.Duration {
 	return c.random
 }
+
+// Outputs
+func (c *Config) Filters() (fields []string) {
+	return c.filters
+}
+
 func (c *Config) Verbose() bool {
 	return c.verbose
 }
+
+func (c *Config) Banner() bool {
+	return c.banner
+}
+
 func (c *Config) Progress() bool {
 	return c.progress
 }
+
 func (c *Config) Format() string {
 	return c.format
 }
+
 func (c *Config) File() string {
 	return c.file
 }
 
-//	func (c *Config) Type() int {
-//		return c.ctype
-//	}
-func (c *Config) ScanAll() bool {
-	return c.scanAll
+func (c *Config) BadgerOptions() badger.Options {
+	return badger.DefaultOptions(Conf.String("database.file"))
 }
-func (c *Config) ShowAll() bool {
-	return c.showAll
-}
-func (c *Config) Screenshot() bool {
-	return c.screenShot
-}
-
-// func (c *Config) DnsServers() []string {
-// 	return c.dnsServers
-// }
-
-// // DnsQps is the queries per second
-// func (c *Config) DnsConcurrency() int {
-// 	return c.dnsConcurrency
-// }
-
-// func (c *Config) DnsRetry() int {
-// 	return c.dnsQueriesPerSecond
-// }
-
-// // DnsQps is the queries per second
-// func (c *Config) DnsQps() int {
-// 	return c.dnsRetryCount
-// }
 
 // CobraConfig creates a configuration from a cobra command options and arguments
-func CobraConfig(cmd *cobra.Command, args []string) (c Config, err error) {
-	if len(args) == 0 {
-		return c, fmt.Errorf("At least one argument required")
-	}
-	c.domain = args[0]
-	// if c.appDir, err = NewAppDir(); err != nil {
-	// 	return c, err
-	// }
+func CliConfig(target string) (c Config, err error) {
+	c.domain = target
 
-	// c.target = target.New(args[0])
-
-	// if url, err := cmd.Flags().GetString("url"); err == nil && url != "" {
-	// 	if c.target != nil {
-	// 		c.target.Add("url", url)
-	// 	}
-	// }
-
-	// Plugin options
-	if langs, err := commaSplit(cmd.Flags().GetString("languages")); err == nil {
-		c.languages = languages.Languages(langs...)
-	}
-
-	if keybs, err := commaSplit(cmd.Flags().GetString("keyboards")); err == nil {
-		c.keyboards = languages.Keyboards(keybs...)
-	}
-
-	if typos, err := commaSplit(cmd.Flags().GetString("algorithms")); err == nil {
-		c.algorithms = algorithms.List(typos...)
-	}
-
-	if infos, err := commaSplit(cmd.Flags().GetString("info")); err == nil {
-		c.information = information.List(infos...)
-	}
-
-	// Output options
-	if c.filters, err = commaSplit(cmd.Flags().GetString("filter")); err != nil {
+	c.languages = languages.Languages(csSplit(Conf.String("languages"))...)
+	c.keyboards = languages.Keyboards(csSplit(Conf.String("keyboards"))...)
+	c.algorithms = algorithms.List(csSplit(Conf.String("algorithms"))...)
+	c.collectors = collectors.List(csSplit(Conf.String("collectors"))...)
+	// c.languages = languages.Languages(csSplit(Conf.String("languages"))...)
+	if c.database, err = databases.Get(Conf.String("database")); err != nil {
 		return c, err
 	}
 
-	if c.file, err = cmd.Flags().GetString("file"); err != nil {
+	if c.output, err = outputs.Get(Conf.String("format")); err != nil {
 		return c, err
 	}
 
-	if c.format, err = cmd.Flags().GetString("format"); err == nil {
-		if c.output, err = outputs.Get(c.format); err != nil {
-			return c, err
-		}
-	}
-
-	if c.verbose, err = cmd.Flags().GetBool("verbose"); err != nil {
-		return c, err
-	}
-
-	if c.progress, err = cmd.Flags().GetBool("progress"); err != nil {
-		return c, err
-	}
-
-	// Performance and processing options
-	if c.concurrency, err = cmd.Flags().GetInt("concurrency"); err != nil {
-		return c, err
-	}
-
-	if c.random, err = cmd.Flags().GetDuration("random"); err != nil {
-		return c, err
-	}
-
-	if c.delay, err = cmd.Flags().GetDuration("delay"); err != nil {
-		return c, err
-	}
-
-	if c.levenshtein, err = cmd.Flags().GetInt("ld"); err != nil {
-		return c, err
-	}
-
-	if c.showAll, err = cmd.Flags().GetBool("show"); err != nil {
-		return c, err
-	}
-
-	if c.scanAll, err = cmd.Flags().GetBool("all"); err != nil {
-		return c, err
-	}
-
-	if c.screenShot, err = cmd.Flags().GetBool("image"); err != nil {
-		return c, err
-	}
-
-	if c.scanAll {
-		c.levenshtein = 100
-	}
+	c.file = Conf.String("file")
+	c.verbose = Conf.Bool("verbose")
+	c.progress = Conf.Bool("progress")
+	c.concurrency = Conf.Int("concurrency")
+	c.random = Conf.Duration("random")
+	c.delay = Conf.Duration("delay")
+	c.banner = Conf.Bool("banner")
 
 	return c, err
 }
 
-// commaSplit splits comma separated values into an array
-func commaSplit(value string, err error) ([]string, error) {
-	return strings.Split(strings.TrimSpace(value), ","), err
+func csSplit(value string) []string {
+	value = strings.TrimSpace(value)
+	value = strings.ReplaceAll(value, " ", ",")
+	return strings.Split(value, ",")
+}
+
+func LoadOrCreateConfig(conf *koanf.Koanf, dirname, filename string, defaultFile []byte) (err error) {
+	var userDir string
+
+	if userDir, err = os.UserHomeDir(); err != nil {
+		if userDir, err = os.Getwd(); err != nil {
+			userDir = ""
+		}
+	}
+	configDir := filepath.Join(userDir, dirname)
+	configFile := filepath.Join(configDir, filename)
+
+	databaseDir := filepath.Join(userDir, DIR, "badger")
+
+	if err := conf.Load(file.Provider(configFile), hcl.Parser(true)); err != nil {
+		log.Printf("Unable to load config file: %s, Error: %s", configFile, err)
+		if err = os.MkdirAll(databaseDir, 0750); err != nil {
+			return err
+		}
+		_, err := os.Stat(configFile)
+		if os.IsNotExist(err) {
+			err = os.WriteFile(configFile, defaultFile, 0644)
+			if err != nil {
+				panic(err)
+			}
+		}
+	}
+
+	// conf.Print()
+
+	return
 }

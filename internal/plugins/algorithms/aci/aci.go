@@ -33,9 +33,7 @@ package aci
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
-	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 const (
@@ -46,9 +44,7 @@ const (
 
 type Algo struct {
 	config    internal.Config
-	languages []internal.Language
 	keyboards []internal.Keyboard
-	funcs     map[int]func(internal.Typo) []internal.Typo
 }
 
 func (n *Algo) Id() string {
@@ -56,9 +52,7 @@ func (n *Algo) Id() string {
 }
 
 func (n *Algo) Init(conf internal.Config) {
-	n.funcs = make(map[int]func(internal.Typo) []internal.Typo)
 	n.keyboards = conf.Keyboards()
-	n.languages = conf.Languages()
 	n.config = conf
 }
 
@@ -69,17 +63,19 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
-	orig, vari := typo.Get()
+func (n *Algo) Exec(typo internal.Domain, variant internal.Domain, acc internal.Accumulator) (err error) {
+	// orig, _ := typo.Get()
 
-	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterInsertion(vari.Name, keyboard.Layouts()...) {
-			if vari.Name != variant {
-				new := typo.New(n, orig, domain.Parse(variant))
-				typos = append(typos, new)
-			}
-		}
-	}
+	// for _, keyboard := range n.keyboards {
+	// 	for _, variant := range algo.AdjacentCharacterInsertion(orig.Name, keyboard.Layouts()...) {
+	// 		// log.Println(orig.Name, variant)
+	// 		if orig.Name != variant {
+	// 			// log.Println(orig.Name, variant, domain.New(orig.Prefix, variant, orig.Suffix))
+	// 			new := typo.New(n, orig, domain.New(orig.Prefix, variant, orig.Suffix))
+	// 			typos = append(typos, new)
+	// 		}
+	// 	}
+	// }
 	return
 }
 

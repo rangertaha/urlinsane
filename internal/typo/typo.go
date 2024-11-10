@@ -15,6 +15,11 @@
 package typo
 
 import (
+	"encoding/json"
+	"fmt"
+	"strings"
+
+	"github.com/bobesa/go-domain-util/domainutil"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/models"
 	"github.com/rangertaha/urlinsane/pkg/fuzzy"
@@ -22,9 +27,11 @@ import (
 
 type Typo struct {
 	Algorithm internal.Algorithm `json:"-"`
-	Original  models.Domain      `json:"original"`
-	Variant   models.Domain      `json:"variant"`
-	Distance  int                `json:"distance"`
+	// Algorithm  string        `json:"algorithm"`
+	Original   models.Domain `json:"original"`
+	Variant    models.Domain `json:"variant"`
+	Distance   int           `json:"distance"`
+	Similarity int           `json:"similarity"`
 
 	meta map[string]interface{}
 }
@@ -60,7 +67,37 @@ func (t *Typo) Set(origin, variant models.Domain) {
 }
 
 func (t *Typo) Get() (origin, variant models.Domain) {
+	fmt.Println(t.Original.Name, len(t.Original.Name), "-", t.Variant.Name, len(t.Variant.Name), t.Valid())
 	return t.Original, t.Variant
+}
+
+// "Origin" refers to the starting point or source of something, while "derive"
+
+func (t *Typo) Derived(labels ...string) models.Domain {
+	if len(labels) > 0 {
+		name := strings.Join(labels, ".")
+		t.Variant = models.Domain{
+			Prefix: domainutil.Subdomain(name),
+			Name:   domainutil.DomainPrefix(name),
+			Suffix: domainutil.DomainSuffix(name),
+		}
+		// domainutil.SplitDomain()
+	}
+
+	return t.Variant
+}
+
+func (t *Typo) Origin(labels ...string) models.Domain {
+	if len(labels) > 0 {
+		name := strings.Join(labels, ".")
+		t.Original = models.Domain{
+			Prefix: domainutil.Subdomain(name),
+			Name:   domainutil.DomainPrefix(name),
+			Suffix: domainutil.DomainSuffix(name),
+		}
+	}
+
+	return t.Original
 }
 
 func (t *Typo) New(algo internal.Algorithm, origin, variant models.Domain) internal.Typo {
@@ -87,19 +124,23 @@ func (t *Typo) Live() bool {
 	return t.Variant.Live
 }
 
+func (t *Typo) Valid() bool {
+	return t.Variant.Name != ""
+}
+
 func (t *Typo) Dist() int {
 	return t.Distance
 }
 
-// func (t *Typo) Json() string {
-// 	// Marshal the struct into JSON
-// 	jsonData, err := json.Marshal(t)
-// 	if err != nil {
-// 		fmt.Println("Error:", err)
-// 		return ""
-// 	}
-// 	return string(jsonData)
-// }
+func (t *Typo) Json() string {
+	// Marshal the struct into JSON
+	jsonData, err := json.Marshal(t)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return ""
+	}
+	return string(jsonData)
+}
 
 // type Typo struct {
 // 	algorithm internal.Algorithm
