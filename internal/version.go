@@ -14,7 +14,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package internal
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+
+	"github.com/jedib0t/go-pretty/v6/text"
+)
 
 const (
 	// VERSION format is loosely based on
@@ -29,13 +34,17 @@ const (
 | | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
 | | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
 | |_| ||  _ < | |___  | | | | | |\__ \| (_| || | | ||  __/
- \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|
-
- Version: %s
+ \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|   
+ v%s
+    
+TIME:   %s
+DOMAIN: %s
  
-`
-)
+`)
 
-func Banner() {
-	fmt.Printf(LOGO, VERSION)
+func Banner(name string) {
+	t := time.Now()
+	timetamp := t.Format("2006-01-02 15:04:05")
+	name = text.FgRed.Sprint(name)
+	fmt.Printf(LOGO, VERSION, timetamp, name)
 }

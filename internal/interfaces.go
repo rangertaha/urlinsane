@@ -20,13 +20,6 @@ import (
 	"github.com/rangertaha/urlinsane/internal/models"
 )
 
-// const (
-// 	PACKAGE = iota
-// 	DOMAIN
-// 	EMAIL
-// 	NAME
-// )
-
 type Initializer interface {
 	Init(Config)
 }
@@ -37,22 +30,29 @@ type Closer interface {
 
 type Config interface {
 	// Target() Target
+
+	// Plugins
 	Keyboards() []Keyboard
 	Languages() []Language
 	Algorithms() []Algorithm
-	Information() []Information
+	Collectors() []Collector
+	Analyzers() []Analyzer
 	Output() Output
+
+	// ...
 	Concurrency() int
 	// DnsServers() []string
 	Delay() time.Duration
 	Random() time.Duration
+
+	// Output
 	Verbose() bool
 	Progress() bool
-	Screenshot() bool
+	Banner() bool
 	Format() string
 	File() string
-	Dist() int
-	ShowAll() bool
+	// Dist() int
+	// ShowAll() bool
 	Filters() []string
 }
 
@@ -60,7 +60,7 @@ type Algorithm interface {
 	Id() string
 	Name() string
 	Description() string
-	Exec(Typo) []Typo
+	Exec(origin Domain, variant Domain, acc Accumulator) error
 }
 
 //	type DomainAlgorithm interface {
@@ -82,45 +82,75 @@ type Algorithm interface {
 // 	Exec(Typo) []Typo
 // }
 
-type Information interface {
-	Id() string
-	Description() string
-	Headers() []string
-	Exec(Typo) Typo
-	Order() int
+// type Information interface {
+// 	Id() string
+// 	Description() string
+// 	Headers() []string
+// 	Exec(Typo) Typo
+// 	Order() int
+// }
+
+type Cache interface {
+	Get(models.Domain, Accumulator) error
+	Set(models.Domain) error
 }
 
-type Storage interface {
+type Analyzer interface {
+	Id() string
+	Order() int
+	Description() string
+	Headers() []string
+	Exec(origin Domain, variant Domain, acc Accumulator) error
+}
+
+type Collector interface {
+	Id() string
+	Order() int
+	Description() string
+	Headers() []string
+	Exec(Domain, Accumulator) error
+}
+
+// type InfoCache interface {
+// 	Get(models.Domain, Accumulator)
+// }
+
+// type Information interface {
+// 	Id() string
+// 	Order() int
+// 	Description() string
+// 	Headers() []string
+// 	Get(models.Domain, Accumulator)
+// 	Exec(models.Domain, Accumulator) models.Domain
+// }
+
+type Database interface {
 	Init(Config)
-	Read(key string) (error, interface{})
+	Read(key string) (interface{}, error)
 	Write(key string, value interface{}) error
 }
 
 type Output interface {
 	Id() string
 	Description() string
-	Write(Typo)
-	Summary(map[string]int64)
+	Write(Domain)
 	Save()
 }
 
-// type Target interface {
-// 	Meta() map[string]interface{}
-// 	Add(string, interface{})
-// 	Get(string) interface{}
-// 	Ready(...bool) bool
-// 	Live(...bool) bool
-// 	Name() string
-// 	Domain() (string, string, string)
-// 	Email() (string, string)
-// 	Json() ([]byte, error)
-// }
+type Domain interface {
+	Prefix(...string) string
+	Name(...string) string
+	Suffix(...string) string
+	String(...string) string
+	Valid() bool
+	Live() bool
+}
 
-// type Table interface {
-// 	Metatable() map[string]interface{}
-// 	Set(key string, value interface{})
-// 	Get(key string) interface{}
-// }
+type Table interface {
+	Metatable() map[string]interface{}
+	Set(key string, value interface{})
+	Get(key string) interface{}
+}
 
 type Typo interface {
 	Algo() Algorithm
@@ -132,11 +162,19 @@ type Typo interface {
 	Dist() int
 	// Threat() int
 	Live() bool
+	Valid() bool
+
+	Origin(...string) models.Domain
+	Derived(...string) models.Domain
 
 	// Metatable
 	Metatable() map[string]interface{}
 	SetMeta(key string, value interface{})
 	GetMeta(key string) interface{}
+}
+
+type Accumulator interface {
+	Add(models.Domain)
 }
 
 // type Typo interface {

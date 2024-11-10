@@ -25,19 +25,19 @@ By default, gofmt prints the reformatted sources to standard output.
 
 Usage:
 
-    gofmt [flags] [path ...]
+	gofmt [flags] [path ...]
 
 The flags are:
 
-    -d
-        Do not print reformatted sources to standard output.
-        If a file's formatting is different than gofmt's, print diffs
-        to standard output.
-    -w
-        Do not print reformatted sources to standard output.
-        If a file's formatting is different from gofmt's, overwrite it
-        with gofmt's version. If an error occurred during overwriting,
-        the original file is restored from an automatic backup.
+	-d
+	    Do not print reformatted sources to standard output.
+	    If a file's formatting is different than gofmt's, print diffs
+	    to standard output.
+	-w
+	    Do not print reformatted sources to standard output.
+	    If a file's formatting is different from gofmt's, overwrite it
+	    with gofmt's version. If an error occurred during overwriting,
+	    the original file is restored from an automatic backup.
 
 When gofmt reads from standard input, it accepts either a full Go program
 or a program fragment. A program fragment must be a syntactically
@@ -48,8 +48,112 @@ formatted by piping them through gofmt.
 */
 package main
 
-import "github.com/rangertaha/urlinsane/cmd/urlinsane"
+// import "github.com/rangertaha/urlinsane/cmd/urlinsane"
+
+// func main() {
+// 	urlinsane.Execute()
+// }
+
+// package main
+
+import (
+	"fmt"
+	"log"
+	"os"
+	"time"
+
+	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/config"
+	"github.com/urfave/cli/v2"
+)
 
 func main() {
-	urlinsane.Execute()
+	config.LoadOrCreateConfig(config.Conf, config.DIR, config.FILE, config.DefualtConfig)
+
+	// EXAMPLE: Append to an existing template
+
+	// // EXAMPLE: Override a template
+	// cli.AppHelpTemplate = `NAME:
+	//     {{.Name}} - {{.Usage}}
+	//  USAGE:
+	//     {{.HelpName}} {{if .VisibleFlags}}[global options]{{end}}{{if .Commands}} command [command options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}
+	//     {{if len .Authors}}
+	//  AUTHOR:
+	//     {{range .Authors}}{{ . }}{{end}}
+	//     {{end}}{{if .Commands}}
+	//  COMMANDS:
+	//  {{range .Commands}}{{if not .HideHelp}}   {{join .Names ", "}}{{ "\t"}}{{.Usage}}{{ "\n" }}{{end}}{{end}}{{end}}{{if .VisibleFlags}}
+	//  GLOBAL OPTIONS:
+	//     {{range .VisibleFlags}}{{.}}
+	//     {{end}}{{end}}{{if .Copyright }}
+	//  COPYRIGHT:
+	//     {{.Copyright}}
+	//     {{end}}{{if .Version}}
+	//  VERSION:
+	//     {{.Version}}
+	//     {{end}}
+	//  `
+	cli.AppHelpTemplate = fmt.Sprintf(`%s
+EXAMPLE:
+
+    urlinsane typo example.com
+    urlinsane typo -a co example.com
+    urlinsane typo -t co,oi,oy -i ip,idna,ns example.com
+    urlinsane typo -l fr,en -k en1,en2 example.com
+
+AUTHOR:
+   Rangertaha (rangertaha@gmail.com)
+
+     
+     `, cli.AppHelpTemplate)
+
+	// // EXAMPLE: Replace the `HelpPrinter` func
+	// cli.HelpPrinter = func(w io.Writer, templ string, data interface{}) {
+	// 	fmt.Println("Ha HA.  I pwnd the help!!1")
+	// }
+
+	cli.VersionFlag = &cli.BoolFlag{
+		Name:    "version",
+		Aliases: []string{"V"},
+		Usage:   "print the version",
+	}
+
+	app := &cli.App{
+		Name:     "urlinsane",
+		Version:  internal.VERSION,
+		Compiled: time.Now(),
+		Suggest:  true,
+		// Authors: []*cli.Author{
+		// 	{
+		// 		Name:  "Rangertaha",
+		// 		Email: "rangertaha@gmail.com",
+		// 	},
+		// },
+		// Copyright: "(c) 2024 Rangertaha <rangertaha@gmail.com>",
+		HelpName:    "urlinsane",
+		Usage:       "Urlinsane is an advanced cybersecurity typosquatting tool",
+		Description: "",
+		UsageText:   "urlinsane [command] [options..]",
+		Flags:       []cli.Flag{
+			// &cli.BoolFlag{
+			// 	Name:     "ll",
+			// 	Aliases:  []string{"p"},
+			// 	Value:    false,
+			// 	Category: "OUTPUT",
+			// 	Usage:    "Show progress bar",
+			// },
+		},
+		Action: func(ctx *cli.Context) error {
+			cli.ShowAppHelpAndExit(ctx, 0)
+			return nil
+		},
+		Commands: TypoCmd,
+	}
+
+	// man, _ := app.ToMan()
+	// fmt.Println(man)
+
+	if err := app.Run(os.Args); err != nil {
+		log.Fatal(err)
+	}
 }

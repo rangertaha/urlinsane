@@ -12,46 +12,48 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package badger
+package none
 
 import (
-	"log"
-
-	badger "github.com/dgraph-io/badger/v4"
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/storage"
+	"github.com/rangertaha/urlinsane/internal/plugins/analyzers"
 )
 
-type Store struct {
-	config internal.Config
-	db     *badger.DB
+const (
+	CODE        = "a"
+	ORDER       = 1
+	DESCRIPTION = "Default "
+)
+
+type Plugin struct{}
+
+func (n *Plugin) Id() string {
+	return CODE
 }
 
-func (s *Store) Init(conf internal.Config) {
-	s.config = conf
-	// Open the Badger database located in the /tmp/badger directory.
-	// It will be created if it doesn't exist.
-	var err error
-	s.db, err = badger.Open(badger.DefaultOptions("/tmp/badger"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer s.db.Close()
+func (n *Plugin) Order() int {
+	return ORDER
 }
 
-// Read(key string) (error, interface{})
-// Write(key string, value interface{}) error
-func (n *Store) Read(key string) (err error, i interface{}) {
-	return
+func (n *Plugin) Description() string {
+	return DESCRIPTION
 }
 
-func (n *Store) Write(key string, value interface{}) (err error) {
+func (n *Plugin) Init(conf internal.Config) {
+
+}
+
+func (n *Plugin) Headers() []string {
+	return []string{"NONE"}
+}
+
+func (n *Plugin) Exec(original, variant internal.Domain, acc internal.Accumulator) (err error) {
 	return
 }
 
 // Register the plugin
 func init() {
-	storage.Add("bdb", func() internal.Storage {
-		return &Store{}
+	analyzers.Add(CODE, func() internal.Analyzer {
+		return &Plugin{}
 	})
 }

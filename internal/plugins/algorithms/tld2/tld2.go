@@ -16,7 +16,7 @@ package tld2
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/pkg/domain"
+	"github.com/rangertaha/urlinsane/internal/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	"github.com/rangertaha/urlinsane/internal/utils/datasets"
 	algo "github.com/rangertaha/urlinsane/pkg/typo"
@@ -41,15 +41,17 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Domain(typo internal.Typo) (typos []internal.Typo) {
-	sub, prefix, suffix := typo.Original().Domain()
-	for _, variant := range algo.SecondLevelDomain(suffix, datasets.TLD...) {
-		if prefix != variant {
-			d := domain.New(sub, prefix, variant)
-			new := typo.Clone(d.String())
+func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
+	orig, _ := typo.Get()
+
+	for _, variant := range algo.SecondLevelDomain(orig.Suffix, datasets.TLD...) {
+		if orig.Suffix != variant {
+
+			new := typo.New(n, orig, domain.New(orig.Prefix, orig.Name, variant))
 			typos = append(typos, new)
 		}
 	}
+
 	return
 }
 

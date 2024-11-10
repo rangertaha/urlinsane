@@ -583,7 +583,7 @@ func TestGraphemeReplacement(t *testing.T) {
 	}
 }
 
-func TestCharacterRepetition(t *testing.T) {
+func TestDoubleCharacterInsertion(t *testing.T) {
 	tests := []TypoCase{
 		{
 			name:   "example",
@@ -599,11 +599,11 @@ func TestCharacterRepetition(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			for _, keyboard := range enKeyboards {
 				if keyboard.name == test.layout {
-					variants := CharacterRepetition(test.name)
+					variants := DoubleCharacterInsertion(test.name)
 					sort.Strings(variants)
 
 					if !reflect.DeepEqual(variants, test.typos) {
-						t.Errorf("CharacterRepetition(%s) = %s; want %s", test.name, variants, test.typos)
+						t.Errorf("DoubleCharacterInsertion(%s) = %s; want %s", test.name, variants, test.typos)
 					}
 				}
 

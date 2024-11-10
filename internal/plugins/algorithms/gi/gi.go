@@ -15,10 +15,8 @@
 package gi
 
 import (
-	"fmt"
-
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/pkg/domain"
+	"github.com/rangertaha/urlinsane/internal/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
@@ -54,68 +52,19 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(typo internal.Typo) []internal.Typo {
-	return nil
-}
-
-func (n *Algo) Domain(typo internal.Typo) (typos []internal.Typo) {
-	sub, prefix, suffix := typo.Original().Domain()
+func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
+	orig, _ := typo.Get()
 
 	for _, language := range n.languages {
-		for _, variant := range algo.GraphemeInsertion(prefix, language.Graphemes()...) {
-			if prefix != variant {
-				d := domain.New(sub, variant, suffix)
-				// fmt.Println(sub, variant, suffix)
+		for _, variant := range algo.GraphemeInsertion(orig.Name, language.Graphemes()...) {
+			if orig.Name != variant {
 
-				new := typo.Clone(d.String())
-
+				new := typo.New(n, orig, domain.New(orig.Prefix, variant, orig.Suffix))
 				typos = append(typos, new)
 			}
 		}
 	}
 
-	return
-}
-
-func (n *Algo) Email(typo internal.Typo) (typos []internal.Typo) {
-	username, domain := typo.Original().Email()
-
-	for _, language := range n.languages {
-		for _, variant := range algo.GraphemeInsertion(username, language.Graphemes()...) {
-
-			if username != variant {
-				new := typo.Clone(fmt.Sprintf("%s@%s", variant, domain))
-
-				typos = append(typos, new)
-			}
-		}
-	}
-	return
-}
-
-func (n *Algo) Username(typo internal.Typo) (typos []internal.Typo) {
-	name := n.config.Target().Name()
-	for _, language := range n.languages {
-		for _, variant := range algo.GraphemeInsertion(name, language.Graphemes()...) {
-
-			if name != variant {
-				typos = append(typos, typo.Clone(variant))
-			}
-		}
-	}
-	return
-}
-
-func (n *Algo) Package(typo internal.Typo) (typos []internal.Typo) {
-	name := n.config.Target().Name()
-	for _, language := range n.languages {
-		for _, variant := range algo.GraphemeInsertion(name, language.Graphemes()...) {
-
-			if name != variant {
-				typos = append(typos, typo.Clone(variant))
-			}
-		}
-	}
 	return
 }
 
