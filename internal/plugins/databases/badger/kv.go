@@ -23,7 +23,7 @@ import (
 )
 
 type KV struct {
-	db *badger.DB
+	db  *badger.DB
 	ttl time.Duration
 }
 

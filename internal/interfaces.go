@@ -65,7 +65,6 @@ type Algorithm interface {
 	Exec(origin Domain, acc Accumulator) error
 }
 
-
 type Analyzer interface {
 	Id() string
 	Order() int
@@ -144,7 +143,6 @@ type Typo interface {
 type Accumulator interface {
 	Add(Domain)
 }
-
 
 type Language interface {
 	Id() string

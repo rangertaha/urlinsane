@@ -61,11 +61,14 @@ banner = true
 )
 
 type (
-	DnsConf struct {
-		RetryCount       int      `yaml:"retry"`
-		QueriesPerSecond int      `yaml:"qps"`
-		Concurrency      int      `yaml:"concurrency"`
-		Servers          []string `yaml:"servers"`
+	HTTPConfig struct {
+	}
+
+	DNSConfig struct {
+		RetryCount       int
+		QueriesPerSecond int
+		Concurrency      int
+		Servers          []string
 	}
 
 	Config struct {
@@ -99,7 +102,8 @@ type (
 		progress bool
 
 		// DNS
-		Dns DnsConf
+		// dns  DNSConfig
+		// http HTTPConfig
 	}
 
 	Infos             []internal.Collector

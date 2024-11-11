@@ -16,7 +16,7 @@ func RegexSplitSentences() *regexp.Regexp {
 	return regexp.MustCompile(`[.,\/#!$%\^&\*;:{}=\-_~()]`)
 }
 
-//RegexStopWords builds "stop-words" regex based on a slice of "stop-words"
+// RegexStopWords builds "stop-words" regex based on a slice of "stop-words"
 func RegexStopWords(stopWordsSlice []string) *regexp.Regexp {
 	stopWordRegexList := []string{}
 

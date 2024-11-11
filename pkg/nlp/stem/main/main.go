@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/agonopol/go-stem"
 	"bufio"
+	"github.com/agonopol/go-stem"
 	"os"
 )
 

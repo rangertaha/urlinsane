@@ -49,7 +49,6 @@ func (k *Keyboard) Languages() []internal.Language {
 	return languages.Languages(k.lang)
 }
 
-
 // http://kbdlayout.info/kbdhebl3?arrangement=ISO105
 var Keyboards = []Keyboard{
 	{

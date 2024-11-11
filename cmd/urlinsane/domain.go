@@ -41,22 +41,18 @@ package urlinsane
 
 // {{.Algorithms}}
 
-
 // COLLECTORS:
 //     Collector plugins collect information on each domain
 
 // {{.Collector}}
 
-
 // LANGUAGES:
 
 // {{.Languages}}
 
-
 // KEYBOARDS:
 
 // {{.Keyboards}}
-
 
 // EXAMPLE:
 
@@ -83,13 +79,13 @@ package urlinsane
 // var domainCmd = &cobra.Command{
 // 	Use:   "typo [flags] [name]",
 // 	Short: "Detects potential typosquatting domains by generating and checking misspelled variations of a given domain name.",
-// 	Long: `URLInsane is designed to detect domain typosquatting by using advanced algorithms, information-gathering 
-//   techniques, and data analysis to identify potentially harmful variations of targeted domains that cybercriminals 
-//   might exploit. This tool is essential for defending against threats like typosquatting, brandjacking, URL hijacking, 
-//   fraud, phishing, and corporate espionage. By detecting malicious domain variations, it provides an added layer of 
-//   protection to brand integrity and user trust. Additionally, URLInsane enhances threat intelligence capabilities, 
+// 	Long: `URLInsane is designed to detect domain typosquatting by using advanced algorithms, information-gathering
+//   techniques, and data analysis to identify potentially harmful variations of targeted domains that cybercriminals
+//   might exploit. This tool is essential for defending against threats like typosquatting, brandjacking, URL hijacking,
+//   fraud, phishing, and corporate espionage. By detecting malicious domain variations, it provides an added layer of
+//   protection to brand integrity and user trust. Additionally, URLInsane enhances threat intelligence capabilities,
 //   strengthening proactive cybersecurity measures.
-	
+
 // `,
 // 	Args: cobra.ExactArgs(1),
 // 	Run: func(cmd *cobra.Command, args []string) {

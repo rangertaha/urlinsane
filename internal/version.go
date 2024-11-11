@@ -34,6 +34,7 @@ DOMAIN:    %s
 LANGUAGES: %s 
 KEYBOARDS: %s
 ALGORITMS: %s
+OUTPUT:    %s
 TIME:      %s
 
 `

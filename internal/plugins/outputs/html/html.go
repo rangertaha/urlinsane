@@ -50,7 +50,6 @@ func (n *Text) Init(conf internal.Config) {
 	n.table.AppendHeader(n.Header())
 }
 
-
 func (n *Text) Header() (row table.Row) {
 	row = append(row, "LD")
 	row = append(row, "TYPE")

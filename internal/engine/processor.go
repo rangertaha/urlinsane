@@ -35,7 +35,7 @@ type (
 	Urlinsane struct {
 		cfg config.Config
 
-		// Domains
+		// Domain
 		target internal.Domain
 
 		// Metrics
@@ -43,9 +43,6 @@ type (
 		started  time.Time
 		elapsed  time.Duration
 		total    int64
-		// online   int64
-		// filtered int64
-		// scanned  int64
 	}
 )
 
@@ -55,7 +52,7 @@ func New(conf config.Config) (u Urlinsane) {
 		total:    0,
 		cfg:      conf,
 		started:  time.Now(),
-		progress: progressbar.DefaultSilent(0),
+		progress: progressbar.DefaultSilent(1000),
 	}
 }
 
@@ -171,12 +168,6 @@ func (u *Urlinsane) Algorithms(in <-chan internal.Domain) <-chan internal.Domain
 
 	go func() {
 		wg.Wait()
-
-		// Update total after all algorithms complete procducing typos
-		// u.total = int64(len(u.typos))
-		// if u.cfg.Progress() {
-		// 	u.progress = progressbar.Default(u.total)
-		// }
 		close(out)
 	}()
 
@@ -334,7 +325,6 @@ func (u *Urlinsane) Close() {
 }
 
 func (u *Urlinsane) Mkdir(dir string) (err error) {
-	// time.Sleep(5 * time.Second)
 
 	return
 }
@@ -381,6 +371,7 @@ func Banner(cfg config.Config) {
 		strings.Join(lang, ","),
 		strings.Join(board, ","),
 		strings.Join(algo, ","),
+		cfg.Output().Id(),
 		timestamp,
 	)
 }

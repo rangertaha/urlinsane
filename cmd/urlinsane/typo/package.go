@@ -40,27 +40,22 @@ package typo
 
 // {{.Algorithms}}
 
-
 // INFORMATION:
 //     Information-gathering plugins that collect information on each domain
 
 // {{.Information}}
 
-
 // LANGUAGES:
 
 // {{.Languages}}
-
 
 // KEYBOARDS:
 
 // {{.Keyboards}}
 
-
 // EXAMPLE:
 
 //     urlinsane typo pkg example
-
 
 // AUTHOR:
 //    Rangertaha (rangertaha@gmail.com)
