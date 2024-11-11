@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package txt
+package list
 
 import (
 	"fmt"
@@ -24,29 +24,29 @@ import (
 )
 
 const (
-	CODE        = "txt"
-	DESCRIPTION = "Text outputs one record per line"
+	CODE        = "list"
+	DESCRIPTION = "List outputs one record per line"
 )
 
-type Text struct {
+type Plugin struct {
 	config internal.Config
 	output string
 	typos  []internal.Domain
 }
 
-func (n *Text) Id() string {
+func (n *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Text) Description() string {
+func (n *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Text) Init(conf internal.Config) {
+func (n *Plugin) Init(conf internal.Config) {
 	n.config = conf
 }
 
-func (n *Text) Write(in internal.Domain) {
+func (n *Plugin) Write(in internal.Domain) {
 	if n.config.Progress() {
 		n.typos = append(n.typos, in)
 	} else {
@@ -54,13 +54,13 @@ func (n *Text) Write(in internal.Domain) {
 	}
 }
 
-func (n *Text) Stream(in internal.Domain) {
+func (n *Plugin) Stream(in internal.Domain) {
 	var data []interface{}
 	// data = append(data, in.Ld())
 	if n.config.Verbose() {
 		data = append(data, in.Algorithm().Name())
 	} else {
-		data = append(data, in.Algorithm().Id())
+		data = append(data, strings.ToUpper(in.Algorithm().Id()))
 	}
 	data = append(data, in.String())
 
@@ -74,7 +74,7 @@ func (n *Text) Stream(in internal.Domain) {
 	n.output = n.output + fmt.Sprint(data...) + "\n"
 }
 
-func (n *Text) Filter(header string) bool {
+func (n *Plugin) Filter(header string) bool {
 	header = strings.TrimSpace(header)
 	header = strings.ToLower(header)
 	for _, filter := range n.config.Filters() {
@@ -87,7 +87,7 @@ func (n *Text) Filter(header string) bool {
 	return false
 }
 
-func (n *Text) Summary(report map[string]string) {
+func (n *Plugin) Summary(report map[string]string) {
 	fmt.Println("")
 	for k, v := range report {
 		fmt.Printf("%s %s   ", k, v)
@@ -95,7 +95,7 @@ func (n *Text) Summary(report map[string]string) {
 	fmt.Println("")
 }
 
-func (n *Text) Save() {
+func (n *Plugin) Save() {
 	if n.config.Progress() {
 		for _, typo := range n.typos {
 			n.Stream(typo)
@@ -113,6 +113,6 @@ func (n *Text) Save() {
 // Register the plugin
 func init() {
 	outputs.Add(CODE, func() internal.Output {
-		return &Text{}
+		return &Plugin{}
 	})
 }

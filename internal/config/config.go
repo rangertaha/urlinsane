@@ -39,6 +39,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+const DIR_PRIMARY = ".urlinsane"
 const DIR = ".urlinsane"
 const FILE = "urlinsane.hcl"
 
@@ -94,12 +95,14 @@ type (
 		ttl     time.Duration
 
 		// Output
-		verbose  bool
-		banner   bool
-		format   string
-		filters  []string
-		file     string
-		progress bool
+		verbose      bool
+		banner       bool
+		format       string
+		filters      []string
+		file         string
+		progress     bool
+		registered   bool
+		unregistered bool
 
 		// DNS
 		// dns  DNSConfig
@@ -196,6 +199,13 @@ func (c *Config) Verbose() bool {
 	return c.verbose
 }
 
+func (c *Config) Registered() bool {
+	return c.registered
+}
+func (c *Config) nregistered() bool {
+	return c.unregistered
+}
+
 func (c *Config) Banner() bool {
 	return c.banner
 }
@@ -261,6 +271,8 @@ func CliConfig(cli *cli.Context) (c Config, err error) {
 	c.delay = cli.Duration("delay")
 	c.ttl = cli.Duration("ttl")
 	c.timeout = cli.Duration("timeout")
+	c.registered = cli.Bool("registered")
+	c.unregistered = cli.Bool("unregistered")
 	c.banner = true
 	if cli.Bool("debug") {
 		log.SetOutput(os.Stdout)

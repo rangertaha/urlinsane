@@ -25,6 +25,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/config"
 	"github.com/rangertaha/urlinsane/internal/domain"
+	"github.com/rangertaha/urlinsane/pkg/fuzzy"
 	"github.com/schollz/progressbar/v3"
 	log "github.com/sirupsen/logrus"
 )
@@ -161,7 +162,9 @@ func (u *Urlinsane) Algorithms(in <-chan internal.Domain) <-chan internal.Domain
 			for domain := range in {
 
 				acc := NewAccumulator(out)
-				domain.Algorithm().Exec(u.target, acc)
+				if err := domain.Algorithm().Exec(u.target, acc); err != nil {
+					log.Error("Algorithm failed: ", err)
+				}
 			}
 		}(w, in, out)
 	}
@@ -186,6 +189,12 @@ func (u *Urlinsane) Filters(in <-chan internal.Domain) <-chan internal.Domain {
 
 				// Make sure the variant does not match the original
 				if typo.String() != u.target.String() {
+
+					// Set Levenshtein distance
+					//   https://en.wikipedia.org/wiki/Levenshtein_distance
+					dist := fuzzy.Levenshtein(typo.String(), u.target.String())
+					typo.Ld(dist)
+
 					out <- typo
 				}
 			}

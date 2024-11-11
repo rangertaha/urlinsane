@@ -29,20 +29,20 @@ const (
 	DESCRIPTION = "HTML formatted output"
 )
 
-type Text struct {
+type Plugin struct {
 	table  table.Writer
 	config internal.Config
 }
 
-func (n *Text) Id() string {
+func (n *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Text) Description() string {
+func (n *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Text) Init(conf internal.Config) {
+func (n *Plugin) Init(conf internal.Config) {
 	n.config = conf
 	internal.Banner()
 	n.table = table.NewWriter()
@@ -50,7 +50,7 @@ func (n *Text) Init(conf internal.Config) {
 	n.table.AppendHeader(n.Header())
 }
 
-func (n *Text) Header() (row table.Row) {
+func (n *Plugin) Header() (row table.Row) {
 	row = append(row, "LD")
 	row = append(row, "TYPE")
 	row = append(row, "TYPO")
@@ -65,7 +65,7 @@ func (n *Text) Header() (row table.Row) {
 	return
 }
 
-func (n *Text) Row(typo internal.Typo) (row table.Row) {
+func (n *Plugin) Row(typo internal.Domain) (row table.Row) {
 	row = append(row, typo.Ld())
 	if n.config.Verbose() {
 		row = append(row, typo.Algorithm().Name())
@@ -89,7 +89,7 @@ func (n *Text) Row(typo internal.Typo) (row table.Row) {
 	return
 }
 
-func (n *Text) Filter(header string) bool {
+func (n *Plugin) Filter(header string) bool {
 	header = strings.TrimSpace(header)
 	header = strings.ToLower(header)
 	for _, filter := range n.config.Filters() {
@@ -102,15 +102,15 @@ func (n *Text) Filter(header string) bool {
 	return false
 }
 
-func (n *Text) Progress(typo <-chan internal.Typo) <-chan internal.Typo {
+func (n *Plugin) Progress(typo <-chan internal.Domain) <-chan internal.Domain {
 	return typo
 }
 
-func (n *Text) Write(in internal.Typo) {
+func (n *Plugin) Write(in internal.Domain) {
 	n.table.AppendRow(n.Row(in))
 }
 
-func (n *Text) Summary(report []internal.Typo) {
+func (n *Plugin) Summary(report []internal.Domain) {
 	fmt.Println("")
 	for k, v := range report {
 		fmt.Printf("%s %d   ", k, v)
@@ -118,7 +118,7 @@ func (n *Text) Summary(report []internal.Typo) {
 	fmt.Println("")
 }
 
-func (n *Text) Save() {
+func (n *Plugin) Save() {
 	output := n.table.RenderHTML()
 
 	if n.config.File() != "" {
@@ -132,6 +132,6 @@ func (n *Text) Save() {
 // Register the plugin
 func init() {
 	outputs.Add(CODE, func() internal.Output {
-		return &Text{}
+		return &Plugin{}
 	})
 }
