@@ -136,7 +136,6 @@ AUTHOR:
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:    "debug",
-				Aliases: []string{"d"},
 				Value:   false,
 				Usage:   "Log debug messags for development",
 				Action: func(ctx *cli.Context, v bool) error {

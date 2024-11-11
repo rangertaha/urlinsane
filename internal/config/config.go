@@ -103,6 +103,8 @@ type (
 		progress     bool
 		registered   bool
 		unregistered bool
+		levenshtein  int
+		summary      bool
 
 		// DNS
 		// dns  DNSConfig
@@ -195,6 +197,10 @@ func (c *Config) Filters() (fields []string) {
 	return c.filters
 }
 
+func (c *Config) Distance() int {
+	return c.levenshtein
+}
+
 func (c *Config) Verbose() bool {
 	return c.verbose
 }
@@ -214,10 +220,15 @@ func (c *Config) Progress() bool {
 	return c.progress
 }
 
+func (c *Config) Summary() bool {
+	return c.summary
+}
+
 func (c *Config) Format() string {
 	return c.format
 }
 
+// File is the output destination
 func (c *Config) File() string {
 	return c.file
 }
@@ -273,6 +284,7 @@ func CliConfig(cli *cli.Context) (c Config, err error) {
 	c.timeout = cli.Duration("timeout")
 	c.registered = cli.Bool("registered")
 	c.unregistered = cli.Bool("unregistered")
+	c.summary = cli.Bool("summary")
 	c.banner = true
 	if cli.Bool("debug") {
 		log.SetOutput(os.Stdout)
