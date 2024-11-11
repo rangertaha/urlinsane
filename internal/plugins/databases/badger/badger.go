@@ -65,7 +65,6 @@ func (n *Plugin) Write(value string, keys ...string) (err error) {
 	return
 }
 
-
 func (n *Plugin) Close() {
 	n.db.Close()
 }

@@ -6,9 +6,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 )
 
-
 type Creator func() internal.Output
-
 
 var Outputs = map[string]Creator{}
 

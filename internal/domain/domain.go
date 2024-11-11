@@ -15,7 +15,6 @@
 package domain
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/bobesa/go-domain-util/domainutil"
@@ -104,7 +103,8 @@ func (d *Domain) Valid() bool {
 }
 
 func (d *Domain) String(labels ...string) (name string) {
-	name = fmt.Sprintf("%s.%s.%s", d.prefix, d.name, d.suffix)
+	names := []string{d.prefix, d.name, d.suffix}
+	name = strings.Join(names, ".")
 	name = strings.ReplaceAll(name, "..", ".")
 	name = strings.Trim(name, ".")
 	return

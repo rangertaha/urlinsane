@@ -20,7 +20,6 @@ import (
 	"github.com/bobesa/go-domain-util/domainutil"
 )
 
-
 // Domain ...
 type Domain struct {
 	subdomain string

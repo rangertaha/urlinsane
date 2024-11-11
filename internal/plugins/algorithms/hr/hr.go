@@ -80,7 +80,6 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-
 func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
 	for _, language := range n.languages {
 		for _, variant := range algo.HomoglyphSwapping(original.Name(), language.Homoglyphs()) {

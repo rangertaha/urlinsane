@@ -97,7 +97,7 @@ EXAMPLE:
 
     urlinsane typo example.com
     urlinsane typo -a co example.com
-    urlinsane typo -t co,oi,oy -i ip,idna,ns example.com
+    urlinsane typo -a co,oi,oy -c ip,idna,ns example.com
     urlinsane typo -l fr,en -k en1,en2 example.com
 
 AUTHOR:
@@ -132,13 +132,13 @@ AUTHOR:
 		HelpName:    "urlinsane",
 		Usage:       "Urlinsane is an advanced cybersecurity typosquatting tool",
 		Description: "",
-		UsageText:   "urlinsane [command] [options..]",
+		UsageText:   "urlinsane [global opts..] [command] [opts..]",
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
-				Name:  "debug",
-                Aliases:  []string{"d"},
-				Value: false,
-				Usage: "Log debug messags for development",
+				Name:    "debug",
+				Aliases: []string{"d"},
+				Value:   false,
+				Usage:   "Log debug messags for development",
 				Action: func(ctx *cli.Context, v bool) error {
 					config.Conf.Set("debug", v)
 					return nil
@@ -149,7 +149,9 @@ AUTHOR:
 			cli.ShowAppHelpAndExit(ctx, 0)
 			return nil
 		},
-		Commands: TypoCmd,
+		Commands: []*cli.Command{
+			&TypoCmd,
+		},
 	}
 
 	// man, _ := app.ToMan()
