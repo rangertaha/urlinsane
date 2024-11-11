@@ -40,22 +40,18 @@ package typo
 
 // {{.Algorithms}}
 
-
 // INFORMATION:
 //     Information-gathering plugins that collect information on each domain
 
 // {{.Information}}
 
-
 // LANGUAGES:
 
 // {{.Languages}}
 
-
 // KEYBOARDS:
 
 // {{.Keyboards}}
-
 
 // EXAMPLE:
 
@@ -125,7 +121,6 @@ package typo
 
 // 	// Plugins
 // 	domainCmd.Flags().StringP("info", "i", "all", "Information plugin IDs to apply")
-	
 
 // 	// Filtering
 // 	domainCmd.Flags().Bool("all", false, "Scan all generated variants equivalent to: --ld 100")

@@ -6,9 +6,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 )
 
-
 type Creator func() internal.Database
-
 
 var Databases = map[string]Creator{}
 

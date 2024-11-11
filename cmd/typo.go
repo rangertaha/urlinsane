@@ -13,155 +13,262 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 package main
 
 import (
 	"fmt"
-	"os"
+	"strings"
 	"time"
 
+	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/rangertaha/urlinsane/internal/config"
 	"github.com/rangertaha/urlinsane/internal/engine"
+	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
+	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/all"
+	"github.com/rangertaha/urlinsane/internal/plugins/languages"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
+	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/outputs/all"
+	"github.com/rangertaha/urlinsane/internal/utils"
 	"github.com/urfave/cli/v2"
 )
 
-var TypoCmd = []*cli.Command{
-	{
-		Name:        "typo",
-		Aliases:     []string{"t"},
-		Usage:       "Generate domain variations and collect information on them",
-		Description: "URLInsane is designed to detect domain typosquatting by using advanced algorithms, information-gathering techniques, and data analysis to identify potentially harmful variations of targeted domains that cybercriminals might exploit. This tool is essential for defending against threats like typosquatting, brandjacking, URL hijacking, fraud, phishing, and corporate espionage. By detecting malicious domain variations, it provides an added layer of protection to brand integrity and user trust. Additionally, URLInsane enhances threat intelligence capabilities, strengthening proactive cybersecurity measures.",
-		UsageText:   "urlinsane typo [options..] [domain]",
-		Flags: []cli.Flag{
-			&cli.StringFlag{
-				Name:    "languages",
-				Aliases: []string{"l"},
-				Value:   "all",
-				Usage:   "language IDs to use",
-			},
-			&cli.StringFlag{
-				Name:    "keyboards",
-				Aliases: []string{"k"},
-				Value:   "all",
-				Usage:   "keyboard layout IDs to use",
-			},
-			&cli.StringFlag{
-				Name:    "algorithms",
-				Aliases: []string{"a"},
-				Value:   "all",
-				Usage:   "algorithm IDs to use",
-			},
-			&cli.StringFlag{
-				Name:    "collectors",
-				Aliases: []string{"c"},
-				Value:   "all",
-				Usage:   "collectors IDs to use",
-			},
-			&cli.IntFlag{
-				Name:     "workers",
-				Aliases:  []string{"w"},
-				Value:    50,
-				Category: "PERFORMANCE",
-				Usage:    "number of concurrent workers",
-			},
-			&cli.IntFlag{
-				Name:     "random",
-				Value:    1,
-				Category: "PERFORMANCE",
-				Usage:    "random network delay multiplier",
-			},
-			&cli.IntFlag{
-				Name:     "delay",
-				Value:    1,
-				Category: "PERFORMANCE",
-				Usage:    "delay between network calls",
-			},
-			&cli.DurationFlag{
-				Name:     "timeout",
-				Aliases:  []string{"t"},
-				Value:    5 * time.Second,
-				Category: "PERFORMANCE",
-				Usage:    "Maximim duration tasks need to complete",
-			},
-			&cli.DurationFlag{
-				Name:     "ttl",
-				Value:    168 * time.Hour,
-				Category: "PERFORMANCE",
-				Usage:    "Maximim duration to cache results",
-			},
-			&cli.BoolFlag{
-				Name:     "progress",
-				Aliases:  []string{"p"},
-				Value:    false,
-				Category: "OUTPUT",
-				Usage:    "show progress bar",
-			},
-			&cli.BoolFlag{
-				Name:     "verbose",
-				Aliases:  []string{"v"},
-				Value:    false,
-				Category: "OUTPUT",
-				Usage:    "more details in the output",
-			},
-			&cli.StringFlag{
-				Name:     "file",
-				Aliases:  []string{"o"},
-				Value:    "",
-				Category: "OUTPUT",
-				Usage:    "output filename defaults to stdout",
-			},
-			&cli.StringFlag{
-				Name:     "format",
-				Aliases:  []string{"f"},
-				Value:    "table",
-				Category: "OUTPUT",
-				Usage:    "output format: (csv,tsv,table,txt,html,md,json)",
-			},
+var TypoCmd = cli.Command{
+	Name:                   "typo",
+	Aliases:                []string{"t"},
+	Usage:                  "Generate domain variations and collect information on them",
+	Description:            "URLInsane is designed to detect domain typosquatting by using advanced algorithms, information-gathering techniques, and data analysis to identify potentially harmful variations of targeted domains that cybercriminals might exploit. This tool is essential for defending against threats like typosquatting, brandjacking, URL hijacking, fraud, phishing, and corporate espionage. By detecting malicious domain variations, it provides an added layer of protection to brand integrity and user trust. Additionally, URLInsane enhances threat intelligence capabilities, strengthening proactive cybersecurity measures.",
+	UsageText:              "urlinsane [g opts..] typo [opts..] [domain]",
+	UseShortOptionHandling: true,
+	Flags: []cli.Flag{
+		&cli.StringFlag{
+			Name:    "languages",
+			Aliases: []string{"l"},
+			Value:   "en",
+			Usage:   "language IDs to use",
 		},
-		Action: func(cCtx *cli.Context) error {
-			if cCtx.NArg() == 0 {
-				fmt.Println(text.FgRed.Sprint("\n  a domain name is needed!\n"))
-				cli.ShowAppHelpAndExit(cCtx, 0)
-
-			}
-			if cCtx.NArg() > 1 {
-				fmt.Println(text.FgRed.Sprint("\n  only one domain name at at time!\n"))
-			}
-
-			// Target domain
-			// config.Conf.Set("target", )
-
-			// // PLUGINS
-			// config.Conf.Set("languages", cCtx.String("languages"))
-			// config.Conf.Set("keyboards", cCtx.String("keyboards"))
-			// config.Conf.Set("algorithms", cCtx.String("algorithms"))
-			// config.Conf.Set("collectors", cCtx.String("collectors"))
-			// config.Conf.Set("database", "badger")
-
-			// // PERFORMANCE
-			// config.Conf.Set("workers", cCtx.String("workers"))
-			// config.Conf.Set("random", cCtx.String("random"))
-			// config.Conf.Set("delay", cCtx.String("delay"))
-			// config.Conf.Set("timeout", cCtx.String("timeout"))
-			// config.Conf.Set("ttl", cCtx.String("ttl"))
-
-			// // OUTPUT
-			// config.Conf.Set("verbose", cCtx.String("verbose"))
-			// config.Conf.Set("file", cCtx.String("file"))
-			// config.Conf.Set("format", cCtx.String("format"))
-			// config.Conf.Set("progress", cCtx.String("progress"))
-
-			cfg, err := config.CliConfig(cCtx)
-			if err != nil {
-				fmt.Printf("%s", err)
-				os.Exit(0)
-			}
-
-
-			t := engine.New(cfg)
-			return t.Execute()
+		&cli.StringFlag{
+			Name:    "keyboards",
+			Aliases: []string{"k"},
+			Value:   "en1,en2,en3,en4",
+			Usage:   "keyboard layout IDs to use",
+		},
+		&cli.StringFlag{
+			Name:    "algorithms",
+			Aliases: []string{"a"},
+			Value:   "all",
+			Usage:   "algorithm IDs to use",
+		},
+		&cli.StringFlag{
+			Name:    "collectors",
+			Aliases: []string{"c"},
+			Value:   "ip,idn",
+			Usage:   "collectors IDs to use",
+		},
+		&cli.IntFlag{
+			Name:     "workers",
+			Aliases:  []string{"w"},
+			Value:    50,
+			Category: "PERFORMANCE",
+			Usage:    "number of concurrent workers",
+		},
+		&cli.IntFlag{
+			Name:     "random",
+			Value:    1,
+			Category: "PERFORMANCE",
+			Usage:    "random network delay multiplier",
+		},
+		&cli.IntFlag{
+			Name:     "delay",
+			Value:    1,
+			Category: "PERFORMANCE",
+			Usage:    "delay between network calls",
+		},
+		&cli.DurationFlag{
+			Name:     "timeout",
+			Aliases:  []string{"t"},
+			Value:    5 * time.Second,
+			Category: "PERFORMANCE",
+			Usage:    "Maximim duration tasks need to complete",
+		},
+		&cli.DurationFlag{
+			Name:     "ttl",
+			Value:    168 * time.Hour,
+			Category: "PERFORMANCE",
+			Usage:    "Maximim duration to cache results",
+		},
+		&cli.BoolFlag{
+			Name:     "progress",
+			Aliases:  []string{"p"},
+			Value:    false,
+			Category: "OUTPUT",
+			Usage:    "show progress bar",
+		},
+		&cli.BoolFlag{
+			Name:     "verbose",
+			Aliases:  []string{"v"},
+			Value:    false,
+			Category: "OUTPUT",
+			Usage:    "more details in the output",
+		},
+		&cli.StringFlag{
+			Name:     "file",
+			Aliases:  []string{"o"},
+			Value:    "",
+			Category: "OUTPUT",
+			Usage:    "output filename defaults to stdout",
+		},
+		&cli.StringFlag{
+			Name:     "format",
+			Aliases:  []string{"f"},
+			Value:    "table",
+			Category: "OUTPUT",
+			Usage:    "output format: (csv,tsv,table,txt,html,md,json)",
 		},
 	},
+	Action: func(cCtx *cli.Context) error {
+		if cCtx.NArg() == 0 {
+			fmt.Println(text.FgRed.Sprint("\n  a domain name is needed!\n"))
+			cli.ShowSubcommandHelpAndExit(cCtx, 1)
+
+		}
+		if cCtx.NArg() > 1 {
+			fmt.Println(text.FgRed.Sprint("\n  only one domain name at at time!\n"))
+			cli.ShowSubcommandHelpAndExit(cCtx, 1)
+		}
+
+		cfg, err := config.CliConfig(cCtx)
+		if err != nil {
+			fmt.Printf("%s", err)
+			cli.ShowSubcommandHelpAndExit(cCtx, 1)
+		}
+
+		t := engine.New(cfg)
+		return t.Execute()
+	},
+	CustomHelpTemplate: ShowSubcommandHelp(cli.SubcommandHelpTemplate),
+}
+
+func init() {
+
+}
+
+func ShowSubcommandHelp(template string) string {
+	collectors := CollectorTable()
+	algorithms := AlgorithmTable()
+	languages := LanguageTable()
+	keyboards := KeyboardTable()
+	outputs := OutputTable()
+
+	return fmt.Sprintf(`%sKEYBOARDS:
+%s
+
+			eg: urlinsane typo -k en1,en2,en3,en4 example.com
+
+LANGUAGES:
+%s
+
+			eg: urlinsane typo -l ru,hy,en example.com
+
+ALGORITHMS:
+%s
+
+			eg: urlinsane typo -a cs,gr,cm example.com
+
+COLLECTORS:
+%s
+
+			eg: urlinsane typo -c ip,idn example.com
+
+OUTPUTS:
+%s
+
+			eg: urlinsane typo -f txt example.com
+
+EXAMPLE:
+
+    urlinsane typo example.com
+    urlinsane typo -a co example.com
+    urlinsane typo -a co,oi,oy -c ip,idna,ns example.com
+    urlinsane typo -l fr,en -k en1,en2 example.com
+
+AUTHOR:
+   Rangertaha (rangertaha@gmail.com)
+     
+     `, template, keyboards, languages, algorithms, collectors, outputs)
+}
+
+func CollectorTable() string {
+	t := table.NewWriter()
+	t.SetStyle(utils.StyleClear)
+	t.AppendHeader(table.Row{"  ", "ID", "Description"})
+	for _, p := range collectors.List() {
+		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
+	}
+	return t.Render()
+}
+
+func CollectorFields() (fields string) {
+	headers := []string{}
+	for _, i := range collectors.List() {
+		for _, header := range i.Headers() {
+			headers = append(headers, strings.ToLower(header))
+		}
+	}
+	return strings.Join(headers, ",")
+}
+
+func AlgorithmTable() string {
+	t := table.NewWriter()
+	t.SetStyle(utils.StyleClear)
+	t.AppendHeader(table.Row{"  ", "ID", "Name"})
+	for _, p := range algorithms.List() {
+		t.AppendRow([]interface{}{"  ", p.Id(), p.Name()})
+	}
+	return t.Render()
+}
+
+func LanguageTable() string {
+	t := table.NewWriter()
+	t.SetStyle(utils.StyleClear)
+	t.AppendHeader(table.Row{"  ", "ID", "Name", "Glyphs", "Homophones",
+		"Antonyms", "Typos", "Cardinal", "Ordinal", "Stems"})
+	for _, p := range languages.Languages() {
+		t.AppendRow([]interface{}{"  ", p.Id(), p.Name(), len(p.Homoglyphs()),
+			len(p.Homophones()), len(p.Antonyms()), len(p.Misspellings()),
+			len(p.Cardinal()), len(p.Ordinal()), 0})
+	}
+	return t.Render()
+}
+
+func KeyboardTable() string {
+	t := table.NewWriter()
+	t.SetStyle(utils.StyleClear)
+	rows := []table.Row{}
+	for _, lang := range languages.Languages() {
+		row := table.Row{" "}
+		row = append(row, strings.ToUpper(lang.Name()))
+		for _, board := range lang.Keyboards() {
+			row = append(row, fmt.Sprintf("%s: %s", board.Id(), board.Name()))
+		}
+		rows = append(rows, row)
+	}
+	t.AppendHeader(table.Row{" ", "LANGUAGE", "ID:NAME..."})
+	for _, row := range rows {
+		t.AppendRow(row)
+	}
+	return t.Render()
+}
+
+func OutputTable() string {
+	t := table.NewWriter()
+	t.SetStyle(utils.StyleClear)
+	t.AppendHeader(table.Row{"  ", "ID", "Name"})
+	for _, p := range outputs.List() {
+		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
+	}
+	return t.Render()
 }

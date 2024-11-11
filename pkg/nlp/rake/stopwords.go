@@ -1,6 +1,6 @@
 package rake
 
-//stop word list from SMART (Salton,1971).  Available at ftp://ftp.cs.cornell.edu/pub/smart/english.stop
+// stop word list from SMART (Salton,1971).  Available at ftp://ftp.cs.cornell.edu/pub/smart/english.stop
 var StopWordsSlice = []string{
 	"a",
 	"a's",
