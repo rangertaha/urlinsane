@@ -64,15 +64,11 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
-	orig, _ := typo.Get()
-
+func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
 	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterSubstitution(orig.Name, keyboard.Layouts()...) {
-			if orig.Name != variant {
-
-				new := typo.New(n, orig, domain.New(orig.Prefix, variant, orig.Suffix))
-				typos = append(typos, new)
+		for _, variant := range algo.AdjacentCharacterSubstitution(original.Name(), keyboard.Layouts()...) {
+			if original.Name() != variant {
+				acc.Add(domain.NewVariant(n, original.Prefix(), variant, original.Suffix()))
 			}
 		}
 	}

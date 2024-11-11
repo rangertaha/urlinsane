@@ -15,8 +15,12 @@
 package ip
 
 import (
+	"net"
+	"strings"
+
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -29,6 +33,7 @@ const (
 type Plugin struct {
 	// resolver resolver.Client
 	conf internal.Config
+	db   internal.Database
 }
 
 func (n *Plugin) Id() string {
@@ -40,6 +45,7 @@ func (n *Plugin) Order() int {
 }
 
 func (i *Plugin) Init(c internal.Config) {
+	i.db = c.Database()
 	i.conf = c
 }
 
@@ -51,11 +57,50 @@ func (n *Plugin) Headers() []string {
 	return []string{"IPv4", "IPv6"}
 }
 
-func (i *Plugin) Exec(in internal.Domain, acc internal.Accumulator) (err error) {
-	return err
+func (i *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
+	ipv4, _ := i.db.Read(domain.String(), "IPv4")
+	ipv6, _ := i.db.Read(domain.String(), "IPv6")
+	if ipv4 != "" {
+		domain.SetMeta("IPv4", ipv4)
+		domain.SetMeta("IPv6", ipv6)
+		domain.Live(true)
+		acc.Add(domain)
+
+		return
+	}
+
+	ipv4, ipv6 = i.getIp(domain.String())
+	domain.SetMeta("IPv4", ipv4)
+	domain.SetMeta("IPv6", ipv6)
+	domain.Live(true)
+	acc.Add(domain)
+
+	_ = i.db.Write(ipv4, domain.String(), "IPv4")
+	err = i.db.Write(ipv6, domain.String(), "IPv6")
+
+	return
 }
 
 func (i *Plugin) Close() {}
+
+func (i *Plugin) getIp(d string) (v4, v6 string) {
+	var As []string
+	var AAAAs []string
+
+	ips, err := net.LookupIP(d)
+	if err != nil {
+		log.Error("IP Lookup: ", err)
+	}
+	for _, ip := range ips {
+		if strings.Contains(ip.String(), ":") {
+			AAAAs = append(AAAAs, ip.String())
+
+		} else if strings.Contains(ip.String(), ".") {
+			As = append(As, ip.String())
+		}
+	}
+	return strings.Join(As, " "), strings.Join(AAAAs, " ")
+}
 
 // Register the plugin
 func init() {

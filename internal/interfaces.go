@@ -29,7 +29,7 @@ type Closer interface {
 }
 
 type Config interface {
-	// Target() Target
+	Target() string
 
 	// Plugins
 	Keyboards() []Keyboard
@@ -37,30 +37,32 @@ type Config interface {
 	Algorithms() []Algorithm
 	Collectors() []Collector
 	Analyzers() []Analyzer
+	Database() Database
 	Output() Output
 
-	// ...
+	// Performance
 	Concurrency() int
-	// DnsServers() []string
 	Delay() time.Duration
 	Random() time.Duration
+	Timeout() time.Duration
+	TTL() time.Duration
 
 	// Output
 	Verbose() bool
 	Progress() bool
 	Banner() bool
 	Format() string
-	File() string
-	// Dist() int
-	// ShowAll() bool
 	Filters() []string
+
+	Dir() string
+	File() string
 }
 
 type Algorithm interface {
 	Id() string
 	Name() string
 	Description() string
-	Exec(origin Domain, variant Domain, acc Accumulator) error
+	Exec(origin Domain, acc Accumulator) error
 }
 
 //	type DomainAlgorithm interface {
@@ -89,11 +91,6 @@ type Algorithm interface {
 // 	Exec(Typo) Typo
 // 	Order() int
 // }
-
-type Cache interface {
-	Get(models.Domain, Accumulator) error
-	Set(models.Domain) error
-}
 
 type Analyzer interface {
 	Id() string
@@ -125,15 +122,18 @@ type Collector interface {
 // }
 
 type Database interface {
+	Id() string
 	Init(Config)
-	Read(key string) (interface{}, error)
-	Write(key string, value interface{}) error
+	Read(key ...string) (string, error)
+	Write(value string, key ...string) error
+	Close()
 }
 
 type Output interface {
 	Id() string
 	Description() string
 	Write(Domain)
+	Summary(map[string]int)
 	Save()
 }
 
@@ -142,8 +142,15 @@ type Domain interface {
 	Name(...string) string
 	Suffix(...string) string
 	String(...string) string
+
+	// Metatable
+	Meta() map[string]interface{}
+	SetMeta(key string, value interface{})
+	GetMeta(key string) interface{}
+
+	Algorithm() Algorithm
 	Valid() bool
-	Live() bool
+	Live(...bool) bool
 }
 
 type Table interface {
@@ -174,7 +181,7 @@ type Typo interface {
 }
 
 type Accumulator interface {
-	Add(models.Domain)
+	Add(Domain)
 }
 
 // type Typo interface {

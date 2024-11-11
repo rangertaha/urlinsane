@@ -2,7 +2,7 @@ package engine
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/models"
+	log "github.com/sirupsen/logrus"
 )
 
 // type MetricMaker interface {
@@ -12,15 +12,18 @@ import (
 // }
 
 type accumulator struct {
-	domains chan<- models.Domain
+	domains chan<- internal.Domain
 }
 
-func NewAccumulator(domains chan<- models.Domain) internal.Accumulator {
+func NewAccumulator(domains chan<- internal.Domain) internal.Accumulator {
 	acc := accumulator{domains: domains}
 	return &acc
 }
 
-func (ac *accumulator) Add(domain models.Domain) {
+func (ac *accumulator) Add(domain internal.Domain) {
+	log.WithFields(log.Fields{
+		"domain": domain.String(),
+	}).Debug("Accumulator:Add()")
 	ac.domains <- domain
 }
 
