@@ -24,10 +24,10 @@ import (
 )
 
 const (
-	ORDER       = 1 // We need this to run first
+	ORDER       = 0 // We need this to run first
 	CODE        = "ip"
 	NAME        = "Ip Address"
-	DESCRIPTION = "Domain IP addresses"
+	DESCRIPTION = "Domain IPv4 and IPv6 addresses"
 )
 
 type Plugin struct {

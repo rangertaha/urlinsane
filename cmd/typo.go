@@ -92,19 +92,20 @@ var TypoCmd = cli.Command{
 			Aliases:  []string{"t"},
 			Value:    5 * time.Second,
 			Category: "PERFORMANCE",
-			Usage:    "Maximim duration tasks need to complete",
+			Usage:    "maximim duration tasks need to complete",
 		},
 		&cli.DurationFlag{
 			Name:     "ttl",
 			Value:    168 * time.Hour,
 			Category: "PERFORMANCE",
-			Usage:    "Maximim duration to cache results",
+			Usage:    "maximim duration to cache results",
 		},
 		&cli.BoolFlag{
 			Name:     "progress",
 			Aliases:  []string{"p"},
 			Value:    false,
 			Category: "OUTPUT",
+			Hidden:   true,
 			Usage:    "show progress bar",
 		},
 		&cli.BoolFlag{
@@ -124,9 +125,45 @@ var TypoCmd = cli.Command{
 		&cli.StringFlag{
 			Name:     "format",
 			Aliases:  []string{"f"},
-			Value:    "table",
+			Value:    "list",
 			Category: "OUTPUT",
-			Usage:    "output format: (csv,tsv,table,txt,html,md,json)",
+			Usage:    "output format: (csv,tsv,table,list,html,md,json)",
+		},
+		&cli.StringFlag{
+			Name:     "nameservers",
+			Aliases:  []string{"n"},
+			Value:    "",
+			Hidden:   true,
+			Category: "PERFORMANCE",
+			Usage:    "DNS or DoH servers to query (separated with commas)",
+		},
+		&cli.StringFlag{
+			Name:     "dir",
+			Value:    "",
+			Hidden:   true,
+			Category: "OUTPUT",
+			Usage:    "directory place downloaded files into defaults to .urlinsane",
+		},
+		&cli.BoolFlag{
+			Name:     "registered",
+			Aliases:  []string{"r"},
+			Value:    false,
+			Category: "OUTPUT",
+			Usage:    "show only registered domain names",
+		},
+		&cli.BoolFlag{
+			Name:     "unregistered",
+			Aliases:  []string{"u"},
+			Value:    true,
+			Category: "OUTPUT",
+			Usage:    "show only unregistered domain names",
+		},
+		&cli.BoolFlag{
+			Name:     "rua",
+			Value:    true,
+			Hidden:   true,
+			Category: "PERFORMANCE",
+			Usage:    "use random user agent for HTTP requests",
 		},
 	},
 	Action: func(cCtx *cli.Context) error {
@@ -186,7 +223,7 @@ COLLECTORS:
 OUTPUTS:
 %s
 
-			eg: urlinsane typo -f txt example.com
+			eg: urlinsane typo -f table example.com
 
 EXAMPLE:
 
