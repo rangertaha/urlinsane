@@ -60,23 +60,26 @@ func (n *Plugin) Headers() []string {
 func (i *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
 	ipv4, _ := i.db.Read(domain.String(), "IPv4")
 	ipv6, _ := i.db.Read(domain.String(), "IPv6")
-	if ipv4 != "" {
+	if ipv4 != "" || ipv6 != "" {
 		domain.SetMeta("IPv4", ipv4)
 		domain.SetMeta("IPv6", ipv6)
 		domain.Live(true)
 		acc.Add(domain)
-
 		return
 	}
 
 	ipv4, ipv6 = i.getIp(domain.String())
-	domain.SetMeta("IPv4", ipv4)
-	domain.SetMeta("IPv6", ipv6)
-	domain.Live(true)
+
+	if ipv4 != "" || ipv6 != "" {
+		domain.SetMeta("IPv4", ipv4)
+		domain.SetMeta("IPv6", ipv6)
+		domain.Live(true)
+		_ = i.db.Write(ipv4, domain.String(), "IPv4")
+		err = i.db.Write(ipv6, domain.String(), "IPv6")
+	}
 	acc.Add(domain)
 
-	_ = i.db.Write(ipv4, domain.String(), "IPv4")
-	err = i.db.Write(ipv6, domain.String(), "IPv6")
+
 
 	return
 }

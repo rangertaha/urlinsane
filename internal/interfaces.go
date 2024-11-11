@@ -47,6 +47,9 @@ type Config interface {
 	Timeout() time.Duration
 	TTL() time.Duration
 
+	// Processing
+	Distance() int
+
 	// Output
 	Verbose() bool
 	Progress() bool
@@ -55,6 +58,7 @@ type Config interface {
 	Filters() []string
 	Registered() bool
 	Unregistered() bool
+	Summary() bool
 
 	Dir() string
 	File() string
@@ -94,9 +98,13 @@ type Database interface {
 type Output interface {
 	Id() string
 	Description() string
-	Write(Domain)
-	Summary(map[string]string)
-	Save()
+
+	// Batching and streaming 
+	Read(Domain)
+	Write()
+	Save(filename string)
+	Summary(report map[string]string)
+	
 }
 
 type Domain interface {
@@ -113,7 +121,9 @@ type Domain interface {
 	Algorithm() Algorithm
 	Valid() bool
 	Live(...bool) bool
+	Active(...bool) bool
 	Ld(...int) int
+	Json() string
 }
 
 type Table interface {

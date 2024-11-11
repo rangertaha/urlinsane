@@ -44,6 +44,7 @@ type (
 		started  time.Time
 		elapsed  time.Duration
 		total    int64
+		live     int64
 	}
 )
 
@@ -152,32 +153,35 @@ func (u *Urlinsane) Target(in <-chan internal.Domain) <-chan internal.Domain {
 
 // Algorithms generate typo variations using the algorithm plugins
 func (u *Urlinsane) Algorithms(in <-chan internal.Domain) <-chan internal.Domain {
-	out := make(chan internal.Domain)
-	var wg sync.WaitGroup
+	if len(u.cfg.Algorithms()) > 0 {
+		out := make(chan internal.Domain)
+		var wg sync.WaitGroup
 
-	for w := 1; w <= u.cfg.Workers(); w++ {
-		wg.Add(1)
-		go func(id int, in <-chan internal.Domain, out chan<- internal.Domain) {
-			defer wg.Done()
-			for domain := range in {
+		for w := 1; w <= u.cfg.Workers(); w++ {
+			wg.Add(1)
+			go func(id int, in <-chan internal.Domain, out chan<- internal.Domain) {
+				defer wg.Done()
+				for domain := range in {
 
-				acc := NewAccumulator(out)
-				if err := domain.Algorithm().Exec(u.target, acc); err != nil {
-					log.Error("Algorithm failed: ", err)
+					acc := NewAccumulator(out)
+					if err := domain.Algorithm().Exec(u.target, acc); err != nil {
+						log.Error("Algorithm failed: ", err)
+					}
 				}
-			}
-		}(w, in, out)
+			}(w, in, out)
+		}
+
+		go func() {
+			wg.Wait()
+			close(out)
+		}()
+
+		return u.PreFilters(out)
 	}
-
-	go func() {
-		wg.Wait()
-		close(out)
-	}()
-
-	return out
+	return u.PreFilters(in)
 }
 
-func (u *Urlinsane) Filters(in <-chan internal.Domain) <-chan internal.Domain {
+func (u *Urlinsane) PreFilters(in <-chan internal.Domain) <-chan internal.Domain {
 	out := make(chan internal.Domain)
 	variants := make(map[string]bool)
 
@@ -195,7 +199,9 @@ func (u *Urlinsane) Filters(in <-chan internal.Domain) <-chan internal.Domain {
 					dist := fuzzy.Levenshtein(typo.String(), u.target.String())
 					typo.Ld(dist)
 
-					out <- typo
+					if dist >= u.cfg.Distance() {
+						out <- typo
+					}
 				}
 			}
 		}
@@ -231,10 +237,32 @@ func (u *Urlinsane) Collectors(in <-chan internal.Domain) <-chan internal.Domain
 			wg.Wait()
 			close(out)
 		}()
-		return out
+		return u.PostFilters(out)
 	}
 	log.Debug("No collectors !")
-	return in
+	return u.PostFilters(in)
+}
+
+func (u *Urlinsane) PostFilters(in <-chan internal.Domain) <-chan internal.Domain {
+	out := make(chan internal.Domain)
+
+	go func() {
+		for typo := range in {
+			if typo.Live() {
+				u.live++
+			}
+			if typo.Live() && u.cfg.Registered() {
+				out <- typo
+			} else if !typo.Live() && u.cfg.Unregistered() {
+				out <- typo
+			} else if !u.cfg.Registered() && !u.cfg.Unregistered() {
+				out <- typo
+			}
+		}
+		close(out)
+	}()
+
+	return out
 }
 
 // InfoChain creates a chain of information-gathering functions
@@ -281,6 +309,11 @@ func (u *Urlinsane) runner(ctx context.Context, fn internal.Collector, domain in
 	}
 }
 
+func (u *Urlinsane) Analyzers(in <-chan internal.Domain) <-chan internal.Domain {
+
+	return in
+}
+
 // Progress adds a visible progesssbar if -p flag is set
 func (u *Urlinsane) Progress(in <-chan internal.Domain) <-chan internal.Domain {
 	if u.cfg.Progress() {
@@ -302,23 +335,32 @@ func (u *Urlinsane) Progress(in <-chan internal.Domain) <-chan internal.Domain {
 }
 
 func (u *Urlinsane) Output(in <-chan internal.Domain) {
+	output := u.cfg.Output()
 
-	// Stream typo records to the output plugin
+	// Send domain typos to the output plugin
 	for c := range in {
-		u.cfg.Output().Write(c)
+		output.Read(c)
 	}
+
+	// Writes output if it can't stream
+	output.Write()
 
 	// Save typo records collected by the output plugin
-	u.cfg.Output().Save()
+	if fname := u.cfg.File(); fname != "" {
+		output.Save(fname)
+	}
 
 	// Print summary
-	u.elapsed = time.Since(u.started)
-	summary := map[string]string{
-		"TIME:":  u.elapsed.String(),
-		"TOTAL:": fmt.Sprintf("%d", u.total),
+	if u.cfg.Summary() {
+		u.elapsed = time.Since(u.started)
+		summary := map[string]string{
+			"  TIME:":                             u.elapsed.String(),
+			text.FgGreen.Sprintf("%s", "  LIVE:"): fmt.Sprintf("%d", u.live),
+			text.FgRed.Sprintf("%s", "  OFFLINE"): fmt.Sprintf("%d", u.total-u.live),
+			"  TOTAL:":                            fmt.Sprintf("%d", u.total),
+		}
+		output.Summary(summary)
 	}
-	u.cfg.Output().Summary(summary)
-
 }
 
 func (u *Urlinsane) Close() {
@@ -342,8 +384,8 @@ func (u *Urlinsane) Execute() (err error) {
 	typos := u.Init()
 	typos = u.Target(typos)
 	typos = u.Algorithms(typos)
-	typos = u.Filters(typos)
 	typos = u.Collectors(typos)
+	typos = u.Analyzers(typos)
 	typos = u.Progress(typos)
 	u.Output(typos)
 	u.Close()
@@ -351,13 +393,13 @@ func (u *Urlinsane) Execute() (err error) {
 	return
 }
 
-// func (u *Urlinsane) Stream() <-chan internal.Domain {
-// 	typos := u.Init()
-// 	typos = u.Algorithms(typos)
-// 	typos = u.Filters(typos)
-// 	typos = u.Collectors(typos)
-// 	return typos
-// }
+func (u *Urlinsane) Stream() <-chan internal.Domain {
+	typos := u.Init()
+	typos = u.Algorithms(typos)
+	typos = u.Collectors(typos)
+	typos = u.Analyzers(typos)
+	return typos
+}
 
 func Banner(cfg config.Config) {
 	var lang, board, algo []string
