@@ -142,23 +142,14 @@ func (n *Plugin) Write() {
 }
 
 func (n *Plugin) Summary(report map[string]string) {
-	// for _, domain := range n.domains {
-	// 	if domain.Live() {
-	// 		summary["LIVE"] = summary["LIVE"] + 1
-	// 	}
-	// }
 	fmt.Println("")
 	for k, v := range report {
-		log.Errorf("%s %s   ", k, v)
+		fmt.Printf("%s %s   ", k, v)
 	}
 	fmt.Println("")
 }
 
 func (n *Plugin) Save(fname string) {
-	// We need a little space between the progress bar and this output
-	fmt.Println("")
-	// output := n.table.Render()
-
 	results := []byte(n.output)
 	if err := os.WriteFile(fname, results, 0644); err != nil {
 		log.Errorf("Error: %s", err)

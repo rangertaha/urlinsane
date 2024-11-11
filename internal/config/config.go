@@ -289,7 +289,12 @@ func CliConfig(cli *cli.Context) (c Config, err error) {
 	if cli.Bool("debug") {
 		log.SetOutput(os.Stdout)
 		log.SetLevel(log.DebugLevel)
-		// Conf.Print()
+	}
+
+	if cli.String("format") == "json" {
+		c.banner = false
+		c.summary = false
+		c.progress = false
 	}
 
 	return c, err

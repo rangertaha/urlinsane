@@ -52,3 +52,7 @@ clean: ## Remove files created by the build
 
 doc: ## Go documentation
 	$(GODOC) -http=:6060
+
+
+geoipdb: ## Go documentation
+	bash scripts/geoip.sh

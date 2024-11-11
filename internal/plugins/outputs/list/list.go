@@ -75,7 +75,7 @@ func (n *Plugin) Filter(header string) bool {
 func (n *Plugin) Summary(report map[string]string) {
 	fmt.Println("")
 	for k, v := range report {
-		log.Errorf("%s %s   ", k, v)
+		fmt.Printf("%s %s   ", k, v)
 	}
 	fmt.Println("")
 }

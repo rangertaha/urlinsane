@@ -33,6 +33,7 @@ const (
 type Plugin struct {
 	table  table.Writer
 	config internal.Config
+	output string
 }
 
 func (n *Plugin) Id() string {
@@ -106,26 +107,24 @@ func (n *Plugin) Filter(header string) bool {
 	return false
 }
 
-func (n *Plugin) Progress(typo <-chan internal.Domain) <-chan internal.Domain {
-	return typo
-}
+// func (n *Plugin) Progress(typo <-chan internal.Domain) <-chan internal.Domain {
+// 	return typo
+// }
 
 func (n *Plugin) Write() {
-	// n.table.AppendRow(n.Row(in))
+	n.output = n.table.RenderHTML()
 }
 
 func (n *Plugin) Summary(report map[string]string) {
 	fmt.Println("")
 	for k, v := range report {
-		log.Errorf("%s %s   ", k, v)
+		fmt.Printf("%s %s   ", k, v)
 	}
 	fmt.Println("")
 }
 
 func (n *Plugin) Save(fname string) {
-	output := n.table.RenderHTML()
-
-	results := []byte(output)
+	results := []byte(n.output)
 	if err := os.WriteFile(fname, results, 0644); err != nil {
 		log.Errorf("Error: %s", err)
 	}
