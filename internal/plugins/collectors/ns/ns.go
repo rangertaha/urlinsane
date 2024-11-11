@@ -12,27 +12,28 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-// An internationalized domain name (IDN) is a domain name that includes characters
-// outside of the Latin alphabet, such as letters from Arabic, Chinese, Cyrillic, or
-// Devanagari scripts. IDNs allow users to use domain names in their local languages
-// and scripts.
-package idn
+package ns
 
 import (
+	"net"
+	"strings"
+
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
-	"golang.org/x/net/idna"
 )
 
 const (
-	ORDER       = 0
-	CODE        = "idn"
-	NAME        = "Internationalize"
-	DESCRIPTION = "Internationalized Domain Name"
+	ORDER       = 2
+	CODE        = "ns"
+	NAME        = "NS Records"
+	DESCRIPTION = "DNS NS Records"
 )
 
-type Plugin struct{}
+type Plugin struct {
+	// resolver resolver.Client
+	conf internal.Config
+	db   internal.Database
+}
 
 func (n *Plugin) Id() string {
 	return CODE
@@ -42,22 +43,45 @@ func (n *Plugin) Order() int {
 	return ORDER
 }
 
+func (i *Plugin) Init(c internal.Config) {
+	i.db = c.Database()
+	i.conf = c
+}
+
 func (n *Plugin) Description() string {
 	return DESCRIPTION
 }
 
 func (n *Plugin) Headers() []string {
-	return []string{"IDN"}
+	return []string{"NS"}
 }
 
 func (i *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
-	if punycode, err := idna.Punycode.ToASCII(domain.String()); err == nil {
-		domain.SetMeta("IDN", domain.Idn(punycode))
+	nsr, _ := i.db.Read(domain.String(), "NS")
+	if nsr != "" {
+		domain.SetMeta("NS", nsr)
+		domain.Live(true)
+		acc.Add(domain)
+		return
+	}
+
+	nss, err := net.LookupNS(domain.String())
+	if err == nil {
+		var answers []string
+		for _, ns := range nss {
+			answers = append(answers, ns.Host)
+		}
+		record := strings.Join(answers, " ")
+		domain.SetMeta("NS", record)
+		domain.Live(true)
+
+		err = i.db.Write(record, domain.String(), "NS")
 	}
 	acc.Add(domain)
-
 	return
 }
+
+func (i *Plugin) Close() {}
 
 // Register the plugin
 func init() {

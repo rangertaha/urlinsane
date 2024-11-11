@@ -65,7 +65,7 @@ var TypoCmd = cli.Command{
 		&cli.StringFlag{
 			Name:    "collectors",
 			Aliases: []string{"c"},
-			Value:   "ip,idn",
+			Value:   "idn,ip,geo",
 			Usage:   "collectors IDs to use",
 		},
 		&cli.IntFlag{
@@ -192,7 +192,7 @@ var TypoCmd = cli.Command{
 			cli.ShowSubcommandHelpAndExit(cCtx, 1)
 		}
 
-		
+
 		cfg, err := config.CliConfig(cCtx)
 		if err != nil {
 			fmt.Printf("%s", err)

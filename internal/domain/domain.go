@@ -15,42 +15,70 @@
 package domain
 
 import (
+	"encoding/json"
 	"strings"
 
 	"github.com/bobesa/go-domain-util/domainutil"
 	"github.com/rangertaha/urlinsane/internal"
+	log "github.com/sirupsen/logrus"
 )
 
 // Domain ...
 type Domain struct {
-	prefix string
-	name   string
-	suffix string
+	PreName  string `json:"prefix,omitempty"`
+	Domain   string `json:"name,omitempty"`
+	SufName  string `json:"suffix,omitempty"`
+	FQDN     string `json:"fqdn"`
+	Punycode string `json:"idn"`
+
+	IsLive bool `json:"live,omitempty"`
+	// IPv4       []IP   `json:"ipv4,omitempty"`
+	// IPv6       []IP   `json:"ipv6,omitempty"`
+	// Banner     Banner `json:"response,omitempty"`
+	// Screenshot string `json:"screenshot,omitempty"`
+	// Html       string `json:"html,omitempty"`
+	// Ssdeep     string `json:"ssdeep,omitempty"`
+
+	// Dns   []DnsRecord   `json:"dns,omitempty"`
+	// Whois []WhoisRecord `json:"whois,omitempty"`
 
 	algo        internal.Algorithm
 	meta        map[string]interface{}
 	levenshtein int
-	live        bool
 	active      bool
 }
 
+// type Domain struct {
+// 	prefix string
+// 	name   string
+// 	suffix string
+
+// 	algo        internal.Algorithm
+// 	meta        map[string]interface{}
+// 	levenshtein int
+// 	live        bool
+// 	active      bool
+// }
+
 func New(name string) internal.Domain {
 	return &Domain{
-		prefix: domainutil.Subdomain(name),
-		name:   domainutil.DomainPrefix(name),
-		suffix: domainutil.DomainSuffix(name),
-		meta:   make(map[string]interface{}),
+		FQDN:    name,
+		PreName: domainutil.Subdomain(name),
+		Domain:  domainutil.DomainPrefix(name),
+		SufName: domainutil.DomainSuffix(name),
+		meta:    make(map[string]interface{}),
 	}
 }
 
 func NewVariant(algo internal.Algorithm, names ...string) internal.Domain {
 	name := strings.Join(names, ".")
 	return &Domain{
-		prefix: domainutil.Subdomain(name),
-		name:   domainutil.DomainPrefix(name),
-		suffix: domainutil.DomainSuffix(name),
-		meta:   make(map[string]interface{}),
-		algo:   algo,
+		FQDN:    name,
+		PreName: domainutil.Subdomain(name),
+		Domain:  domainutil.DomainPrefix(name),
+		SufName: domainutil.DomainSuffix(name),
+		meta:    make(map[string]interface{}),
+		algo:    algo,
 	}
 }
 
@@ -76,36 +104,36 @@ func (t *Domain) Algorithm() internal.Algorithm {
 func (d *Domain) Prefix(labels ...string) string {
 	if len(labels) > 0 {
 		name := strings.Join(labels, ".")
-		d.prefix = name
+		d.PreName = name
 	}
 
-	return d.prefix
+	return d.PreName
 }
 
 func (d *Domain) Name(labels ...string) string {
 	if len(labels) > 0 {
 		name := strings.Join(labels, ".")
-		d.name = name
+		d.Domain = name
 	}
 
-	return d.name
+	return d.Domain
 }
 
 func (d *Domain) Suffix(labels ...string) string {
 	if len(labels) > 0 {
 		name := strings.Join(labels, ".")
-		d.suffix = name
+		d.SufName = name
 	}
 
-	return d.suffix
+	return d.SufName
 }
 
 func (d *Domain) Valid() bool {
-	return d.name != ""
+	return d.Domain != ""
 }
 
 func (d *Domain) String(labels ...string) (name string) {
-	names := []string{d.prefix, d.name, d.suffix}
+	names := []string{d.PreName, d.Domain, d.SufName}
 	name = strings.Join(names, ".")
 	name = strings.ReplaceAll(name, "..", ".")
 	name = strings.Trim(name, ".")
@@ -114,10 +142,10 @@ func (d *Domain) String(labels ...string) (name string) {
 
 func (d *Domain) Live(v ...bool) bool {
 	if len(v) > 0 {
-		d.live = v[0]
+		d.IsLive = v[0]
 	}
 
-	return d.live
+	return d.IsLive
 }
 
 func (d *Domain) Active(v ...bool) bool {
@@ -140,5 +168,18 @@ func (d *Domain) Ld(v ...int) int {
 }
 
 func (d *Domain) Json() string {
-	return d.String()
+	jsonData, err := json.Marshal(d)
+	if err != nil {
+		log.Errorf("Error:", err)
+	}
+
+	return string(jsonData)
+}
+
+func (d *Domain) Idn(names ...string) string {
+	if len(names) > 0 {
+		d.Punycode = names[0]
+	}
+
+	return d.Punycode
 }
