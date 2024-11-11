@@ -135,7 +135,7 @@ func (n *Plugin) Write(in internal.Domain) {
 	n.table.AppendRow(n.Row(in))
 }
 
-func (n *Plugin) Summary(report map[string]int) {
+func (n *Plugin) Summary(report map[string]string) {
 	// for _, domain := range n.domains {
 	// 	if domain.Live() {
 	// 		summary["LIVE"] = summary["LIVE"] + 1
@@ -143,7 +143,7 @@ func (n *Plugin) Summary(report map[string]int) {
 	// }
 	fmt.Println("")
 	for k, v := range report {
-		fmt.Printf("%s %d   ", k, v)
+		fmt.Printf("%s %s   ", k, v)
 	}
 	fmt.Println("")
 }
