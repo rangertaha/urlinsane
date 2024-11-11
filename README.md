@@ -154,9 +154,9 @@ Algorithms systematically generate plausible misspelled domain variations by ana
 | ks   | Keyboard Substitution         | **TODO**: Changing international keyboard layouts, assuming the user is typing in their native layout. |
 
 
-## Information
+## Collectors
 
-Information gathering on target domains enables a detailed comparison of similar-looking domains to determine if they are being typosquatted by cybercriminals. By collecting data on domain ownership, registration dates, hosting locations, and site content, algorithms can analyze whether these variations are likely to be malicious. This approach helps identify suspicious patterns and potential connections to phishing, fraud, or brand impersonation attempts. With thorough data collection, organizations can better detect and respond to typosquatting threats in real time.
+Collector plugins gathering information on domains enables a detailed comparison of similar-looking domains to determine if they are being typosquatted by cybercriminals. By collecting data on domain ownership, registration dates, hosting locations, and site content, algorithms can analyze whether these variations are likely to be malicious. This approach helps identify suspicious patterns and potential connections to phishing, fraud, or brand impersonation attempts. With thorough data collection, organizations can better detect and respond to typosquatting threats in real time.
 
 
 

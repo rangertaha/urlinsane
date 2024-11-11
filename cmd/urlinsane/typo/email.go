@@ -32,7 +32,6 @@ package typo
 // 	"github.com/spf13/cobra"
 // )
 
-
 // const emailHelpTemplate = `
 
 // ALGORITHMS:
@@ -40,27 +39,22 @@ package typo
 
 // {{.Algorithms}}
 
-
 // INFORMATION:
 //     Information-gathering plugins that collect information on each domain
 
 // {{.Information}}
 
-
 // LANGUAGES:
 
 // {{.Languages}}
-
 
 // KEYBOARDS:
 
 // {{.Keyboards}}
 
-
 // EXAMPLE:
 
 //     urlinsane typo email username@example.com
-
 
 // AUTHOR:
 //    Rangertaha (rangertaha@gmail.com)

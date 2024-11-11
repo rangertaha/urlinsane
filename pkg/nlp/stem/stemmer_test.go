@@ -11,7 +11,6 @@ func compare(t *testing.T, expected, actual interface{}, msg ...string) {
 	}
 }
 
-
 func TestConsonant(t *testing.T) {
 	word := []byte("TOY")
 	compare(t, true, Consonant(word, 0), "T")  //T
