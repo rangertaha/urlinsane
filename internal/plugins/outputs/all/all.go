@@ -7,6 +7,6 @@ import (
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/outputs/md"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/outputs/table"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/outputs/tsv"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/outputs/txt"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/outputs/list"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/outputs/json"
 )

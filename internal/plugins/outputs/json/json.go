@@ -36,10 +36,10 @@ type Record struct {
 	Distance int           `json:"distance"`
 }
 
-type Json struct {
+type Plugin struct {
 	config internal.Config
 	output string
-	typos  []internal.Typo
+	typos  []internal.Domain
 }
 
 func (p *Record) Json() string {
@@ -52,19 +52,19 @@ func (p *Record) Json() string {
 	return string(jsonData)
 }
 
-func (n *Json) Id() string {
+func (n *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Json) Description() string {
+func (n *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Json) Init(conf internal.Config) {
+func (n *Plugin) Init(conf internal.Config) {
 	n.config = conf
 }
 
-func (n *Json) Write(in internal.Typo) {
+func (n *Plugin) Write(in internal.Domain) {
 	if n.config.Progress() {
 		n.typos = append(n.typos, in)
 	} else {
@@ -72,7 +72,7 @@ func (n *Json) Write(in internal.Typo) {
 	}
 }
 
-func (n *Json) Stream(in internal.Typo) {
+func (n *Plugin) Stream(in internal.Domain) {
 	orig, vari := in.Get()
 
 	record := Record{
@@ -83,7 +83,7 @@ func (n *Json) Stream(in internal.Typo) {
 	fmt.Println(record.Json())
 }
 
-func (n *Json) Filter(header string) bool {
+func (n *Plugin) Filter(header string) bool {
 	header = strings.TrimSpace(header)
 	header = strings.ToLower(header)
 	for _, filter := range n.config.Filters() {
@@ -96,11 +96,11 @@ func (n *Json) Filter(header string) bool {
 	return false
 }
 
-func (n *Json) Summary(report []internal.Typo) {
+func (n *Plugin) Summary(report map[string]string) {
 	//
 }
 
-func (n *Json) Save() {
+func (n *Plugin) Save() {
 	if n.config.Progress() {
 		for _, typo := range n.typos {
 			n.Stream(typo)
@@ -118,6 +118,6 @@ func (n *Json) Save() {
 // Register the plugin
 func init() {
 	outputs.Add(CODE, func() internal.Output {
-		return &Json{}
+		return &Plugin{}
 	})
 }
