@@ -22,6 +22,7 @@ package idn
 import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
+	"golang.org/x/net/idna"
 )
 
 const (
@@ -49,15 +50,12 @@ func (n *Plugin) Headers() []string {
 	return []string{"IDN"}
 }
 
-func (i *Plugin) Exec(in internal.Domain, acc internal.Accumulator) (err error) {
-	// orig, vari := in.Get()
-	// if punycode, err := idna.Punycode.ToASCII(vari.Fqdn()); err == nil {
-	// 	in.SetMeta("IDN", punycode)
-	// 	vari.Punycode = punycode
-	// 	// fmt.Println(vari.Punycode)
+func (i *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
+	if punycode, err := idna.Punycode.ToASCII(domain.String()); err == nil {
+		domain.SetMeta("IDN", punycode)
 
-	// }
-	// in.Set(orig, vari)
+	}
+	acc.Add(domain)
 
 	return
 }

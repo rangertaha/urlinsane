@@ -68,7 +68,6 @@ import (
 )
 
 func main() {
-	config.LoadOrCreateConfig(config.Conf, config.DIR, config.FILE, config.DefualtConfig)
 
 	// EXAMPLE: Append to an existing template
 
@@ -134,14 +133,17 @@ AUTHOR:
 		Usage:       "Urlinsane is an advanced cybersecurity typosquatting tool",
 		Description: "",
 		UsageText:   "urlinsane [command] [options..]",
-		Flags:       []cli.Flag{
-			// &cli.BoolFlag{
-			// 	Name:     "ll",
-			// 	Aliases:  []string{"p"},
-			// 	Value:    false,
-			// 	Category: "OUTPUT",
-			// 	Usage:    "Show progress bar",
-			// },
+		Flags: []cli.Flag{
+			&cli.BoolFlag{
+				Name:  "debug",
+                Aliases:  []string{"d"},
+				Value: false,
+				Usage: "Log debug messags for development",
+				Action: func(ctx *cli.Context, v bool) error {
+					config.Conf.Set("debug", v)
+					return nil
+				},
+			},
 		},
 		Action: func(ctx *cli.Context) error {
 			cli.ShowAppHelpAndExit(ctx, 0)

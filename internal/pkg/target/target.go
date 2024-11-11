@@ -21,73 +21,73 @@ import (
 	"github.com/rangertaha/urlinsane/internal/pkg/domain"
 )
 
-// Target ...
-type Target struct {
-	name  string
-	meta  map[string]interface{}
-	ready bool
-	live  bool
-}
+// // Target ...
+// type Target struct {
+// 	name  string
+// 	meta  map[string]interface{}
+// 	ready bool
+// 	live  bool
+// }
 
-func New(name string) *Target {
-	name = strings.TrimSpace(name)
-	return &Target{
-		name:  name,
-		live:  false,
-		ready: false,
-		meta:  make(map[string]interface{}),
-	}
-}
+// func New(name string) *Target {
+// 	name = strings.TrimSpace(name)
+// 	return &Target{
+// 		name:  name,
+// 		live:  false,
+// 		ready: false,
+// 		meta:  make(map[string]interface{}),
+// 	}
+// }
 
-func (d *Target) Meta() map[string]interface{} {
-	return d.meta
-}
+// func (d *Target) Meta() map[string]interface{} {
+// 	return d.meta
+// }
 
-func (d *Target) Domain() (string, string, string) {
-	dm := domain.Parse(d.name)
-	return dm.Subdomain, dm.Prefix, dm.Suffix
-}
-func (d *Target) Email() (string, string) {
-	if names := strings.Split(d.name, "@"); len(names) > 1 {
-		return names[0], strings.Join(names[1:], "@")
-	}
-	return "", ""
-}
+// func (d *Target) Domain() (string, string, string) {
+// 	dm := domain.Parse(d.name)
+// 	return dm.Subdomain, dm.Prefix, dm.Suffix
+// }
+// func (d *Target) Email() (string, string) {
+// 	if names := strings.Split(d.name, "@"); len(names) > 1 {
+// 		return names[0], strings.Join(names[1:], "@")
+// 	}
+// 	return "", ""
+// }
 
-func (d *Target) Add(key string, value interface{}) {
-	d.meta[key] = value
-}
-func (d *Target) Get(key string) (value interface{}) {
-	if value, ok := d.meta[key]; ok {
-		return value
-	}
-	return nil
-}
-func (d *Target) GetInt(key string) (value int) {
-	if value, ok := d.meta[key]; ok {
-		return value.(int)
-	}
-	return
-}
+// func (d *Target) Add(key string, value interface{}) {
+// 	d.meta[key] = value
+// }
+// func (d *Target) Get(key string) (value interface{}) {
+// 	if value, ok := d.meta[key]; ok {
+// 		return value
+// 	}
+// 	return nil
+// }
+// func (d *Target) GetInt(key string) (value int) {
+// 	if value, ok := d.meta[key]; ok {
+// 		return value.(int)
+// 	}
+// 	return
+// }
 
-func (d *Target) Name() string {
-	return d.name
-}
+// func (d *Target) Name() string {
+// 	return d.name
+// }
 
-func (d *Target) Live(v ...bool) bool {
-	if len(v) > 0 {
-		d.live = v[0]
-	}
-	return d.live
-}
-func (d *Target) Ready(v ...bool) bool {
-	if len(v) > 0 {
-		d.ready = v[0]
-	}
-	return d.ready
-}
+// func (d *Target) Live(v ...bool) bool {
+// 	if len(v) > 0 {
+// 		d.live = v[0]
+// 	}
+// 	return d.live
+// }
+// func (d *Target) Ready(v ...bool) bool {
+// 	if len(v) > 0 {
+// 		d.ready = v[0]
+// 	}
+// 	return d.ready
+// }
 
-func (d *Target) Json() (j []byte, e error) {
-	d.meta["name"] = d.name
-	return json.Marshal(d.meta)
-}
+// func (d *Target) Json() (j []byte, e error) {
+// 	d.meta["name"] = d.name
+// 	return json.Marshal(d.meta)
+// }

@@ -31,7 +31,7 @@ const (
 type Text struct {
 	config internal.Config
 	output string
-	typos  []internal.Typo
+	typos  []internal.Domain
 }
 
 func (n *Text) Id() string {
@@ -46,7 +46,7 @@ func (n *Text) Init(conf internal.Config) {
 	n.config = conf
 }
 
-func (n *Text) Write(in internal.Typo) {
+func (n *Text) Write(in internal.Domain) {
 	if n.config.Progress() {
 		n.typos = append(n.typos, in)
 	} else {
@@ -54,20 +54,20 @@ func (n *Text) Write(in internal.Typo) {
 	}
 }
 
-func (n *Text) Stream(in internal.Typo) {
+func (n *Text) Stream(in internal.Domain) {
 	var data []interface{}
-	data = append(data, in.Ld())
+	// data = append(data, in.Ld())
 	if n.config.Verbose() {
 		data = append(data, in.Algorithm().Name())
 	} else {
 		data = append(data, in.Algorithm().Id())
 	}
-	data = append(data, in.Variant().Name())
+	data = append(data, in.String())
 
-	for h, v := range in.Variant().Meta() {
-		if n.Filter(h) {
-			data = append(data, v)
-		}
+	for _, v := range in.Meta() {
+		// if n.Filter(h) {
+		data = append(data, v)
+		// }
 
 	}
 	fmt.Println(data...)
@@ -87,7 +87,7 @@ func (n *Text) Filter(header string) bool {
 	return false
 }
 
-func (n *Text) Summary(report []internal.Typo) {
+func (n *Text) Summary(report map[string]int) {
 	fmt.Println("")
 	for k, v := range report {
 		fmt.Printf("%s %d   ", k, v)

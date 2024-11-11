@@ -17,6 +17,7 @@ package table
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/rangertaha/urlinsane/internal"
@@ -31,8 +32,9 @@ const (
 )
 
 type Plugin struct {
-	table  table.Writer
-	config internal.Config
+	table   table.Writer
+	config  internal.Config
+	domains []internal.Domain
 }
 
 func (n *Plugin) Id() string {
@@ -59,57 +61,56 @@ func (n *Plugin) Init(conf internal.Config) {
 
 func (n *Plugin) Header() (row table.Row) {
 	// row = append(row, "LD")
-	// row = append(row, "TYPE")
-	// row = append(row, "TYPO")
+	row = append(row, "TYPE")
+	row = append(row, "TYPO")
 
-	// for _, info := range n.config.Information() {
-	// 	for _, header := range info.Headers() {
-	// 		// if n.Filter(header) {
-	// 		row = append(row, header)
-	// 		// }
-	// 	}
-	// }
+	for _, info := range n.config.Collectors() {
+		for _, header := range info.Headers() {
+			// if n.Filter(header) {
+			row = append(row, header)
+			// }
+		}
+	}
 	return
 }
 
-func (n *Plugin) Row(typo internal.Domain) (row table.Row) {
-	// // orig, vari := typo.Get()
-
+func (n *Plugin) Row(domain internal.Domain) (row table.Row) {
+	n.domains = append(n.domains, domain)
 	// row = append(row, typo.Dist())
-	// if n.config.Verbose() {
-	// 	row = append(row, typo.Algo().Name())
-	// } else {
-	// 	row = append(row, strings.ToUpper(typo.Algo().Id()))
-	// }
-	// row = append(row, typo.String())
+	if n.config.Verbose() {
+		row = append(row, domain.Algorithm().Name())
+	} else {
+		row = append(row, strings.ToUpper(domain.Algorithm().Id()))
+	}
+	row = append(row, domain.String())
 
-	// for _, info := range n.config.Information() {
-	// 	for _, header := range info.Headers() {
-	// 		// if n.Filter(header) {
-	// 		meta := typo.Metatable()
-	// 		if col, ok := meta[header]; ok {
-	// 			row = append(row, col)
-	// 		} else {
-	// 			row = append(row, "")
-	// 		}
-	// 		// }
-	// 	}
-	// }
+	for _, info := range n.config.Collectors() {
+		for _, header := range info.Headers() {
+			// if n.Filter(header) {
+			meta := domain.Meta()
+			if col, ok := meta[header]; ok {
+				row = append(row, col)
+			} else {
+				row = append(row, "")
+			}
+			// }
+		}
+	}
 	return
 }
 
-// func (n *Plugin) Filter(header string) bool {
-// 	header = strings.TrimSpace(header)
-// 	header = strings.ToLower(header)
-// 	for _, filter := range n.config.Filters() {
-// 		filter = strings.TrimSpace(filter)
-// 		filter = strings.ToLower(filter)
-// 		if filter == header {
-// 			return true
-// 		}
-// 	}
-// 	return false
-// }
+func (n *Plugin) Filter(header string) bool {
+	header = strings.TrimSpace(header)
+	header = strings.ToLower(header)
+	for _, filter := range n.config.Filters() {
+		filter = strings.TrimSpace(filter)
+		filter = strings.ToLower(filter)
+		if filter == header {
+			return true
+		}
+	}
+	return false
+}
 
 func (n *Plugin) Config() (row table.Row) {
 	n.table.SetStyle(utils.StyleDefault)
@@ -126,20 +127,20 @@ func (n *Plugin) Config() (row table.Row) {
 	n.table.SetColumnConfigs(ColumnConfig)
 	return
 }
-func (n *Plugin) Progress(typo <-chan internal.Typo) <-chan internal.Typo {
+func (n *Plugin) Progress(typo <-chan internal.Domain) <-chan internal.Domain {
 	return typo
 }
 
 func (n *Plugin) Write(in internal.Domain) {
-	// orig, vari := in.Get()
-	// fmt.Println(orig.Name)
-	// fmt.Println(vari.Name)
-	// fmt.Println()
-
 	n.table.AppendRow(n.Row(in))
 }
 
-func (n *Plugin) Summary(report []internal.Typo) {
+func (n *Plugin) Summary(report map[string]int) {
+	// for _, domain := range n.domains {
+	// 	if domain.Live() {
+	// 		summary["LIVE"] = summary["LIVE"] + 1
+	// 	}
+	// }
 	fmt.Println("")
 	for k, v := range report {
 		fmt.Printf("%s %d   ", k, v)
