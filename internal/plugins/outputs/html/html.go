@@ -22,6 +22,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -44,10 +45,13 @@ func (n *Plugin) Description() string {
 
 func (n *Plugin) Init(conf internal.Config) {
 	n.config = conf
-	internal.Banner()
 	n.table = table.NewWriter()
 	n.table.SetOutputMirror(os.Stdout)
 	n.table.AppendHeader(n.Header())
+}
+
+func (n *Plugin) Read(in internal.Domain) {
+	n.table.AppendRow(n.Row(in))
 }
 
 func (n *Plugin) Header() (row table.Row) {
@@ -55,7 +59,7 @@ func (n *Plugin) Header() (row table.Row) {
 	row = append(row, "TYPE")
 	row = append(row, "TYPO")
 
-	for _, info := range n.config.Information() {
+	for _, info := range n.config.Collectors() {
 		for _, header := range info.Headers() {
 			if n.Filter(header) {
 				row = append(row, header)
@@ -74,10 +78,10 @@ func (n *Plugin) Row(typo internal.Domain) (row table.Row) {
 	}
 	row = append(row, typo.String())
 
-	for _, info := range n.config.Information() {
+	for _, info := range n.config.Collectors() {
 		for _, header := range info.Headers() {
 			if n.Filter(header) {
-				meta := typo.Variant().Meta()
+				meta := typo.Meta()
 				if col, ok := meta[header]; ok {
 					row = append(row, col)
 				} else {
@@ -106,26 +110,24 @@ func (n *Plugin) Progress(typo <-chan internal.Domain) <-chan internal.Domain {
 	return typo
 }
 
-func (n *Plugin) Write(in internal.Domain) {
-	n.table.AppendRow(n.Row(in))
+func (n *Plugin) Write() {
+	// n.table.AppendRow(n.Row(in))
 }
 
-func (n *Plugin) Summary(report []internal.Domain) {
+func (n *Plugin) Summary(report map[string]string) {
 	fmt.Println("")
 	for k, v := range report {
-		fmt.Printf("%s %d   ", k, v)
+		log.Errorf("%s %s   ", k, v)
 	}
 	fmt.Println("")
 }
 
-func (n *Plugin) Save() {
+func (n *Plugin) Save(fname string) {
 	output := n.table.RenderHTML()
 
-	if n.config.File() != "" {
-		results := []byte(output)
-		if err := os.WriteFile(n.config.File(), results, 0644); err != nil {
-			fmt.Printf("Error: %s", err)
-		}
+	results := []byte(output)
+	if err := os.WriteFile(fname, results, 0644); err != nil {
+		log.Errorf("Error: %s", err)
 	}
 }
 

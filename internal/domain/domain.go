@@ -31,6 +31,7 @@ type Domain struct {
 	meta        map[string]interface{}
 	levenshtein int
 	live        bool
+	active      bool
 }
 
 func New(name string) internal.Domain {
@@ -111,12 +112,20 @@ func (d *Domain) String(labels ...string) (name string) {
 	return
 }
 
-func (d *Domain) Live(v ...bool) (ip bool) {
+func (d *Domain) Live(v ...bool) bool {
 	if len(v) > 0 {
 		d.live = v[0]
 	}
 
 	return d.live
+}
+
+func (d *Domain) Active(v ...bool) bool {
+	if len(v) > 0 {
+		d.active = v[0]
+	}
+
+	return d.active
 }
 
 // Ld returns the Levenshtein_distance
@@ -128,4 +137,8 @@ func (d *Domain) Ld(v ...int) int {
 	}
 
 	return d.levenshtein
+}
+
+func (d *Domain) Json() string {
+	return d.String()
 }

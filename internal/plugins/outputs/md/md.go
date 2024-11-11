@@ -32,6 +32,7 @@ const (
 type Plugin struct {
 	table  table.Writer
 	config internal.Config
+	output string
 }
 
 func (n *Plugin) Id() string {
@@ -44,10 +45,13 @@ func (n *Plugin) Description() string {
 
 func (n *Plugin) Init(conf internal.Config) {
 	n.config = conf
-	internal.Banner()
 	n.table = table.NewWriter()
 	n.table.SetOutputMirror(os.Stdout)
 	n.table.AppendHeader(n.Header())
+}
+
+func (n *Plugin) Read(in internal.Domain) {
+	n.table.AppendRow(n.Row(in))
 }
 
 func (n *Plugin) Header() (row table.Row) {
@@ -55,7 +59,7 @@ func (n *Plugin) Header() (row table.Row) {
 	row = append(row, "TYPE")
 	row = append(row, "TYPO")
 
-	for _, info := range n.config.Information() {
+	for _, info := range n.config.Collectors() {
 		for _, header := range info.Headers() {
 			if n.Filter(header) {
 				row = append(row, header)
@@ -74,10 +78,10 @@ func (n *Plugin) Row(typo internal.Domain) (row table.Row) {
 	}
 	row = append(row, typo.String())
 
-	for _, info := range n.config.Information() {
+	for _, info := range n.config.Collectors() {
 		for _, header := range info.Headers() {
 			if n.Filter(header) {
-				meta := typo.Variant().Meta()
+				meta := typo.Meta()
 				if col, ok := meta[header]; ok {
 					row = append(row, col)
 				} else {
@@ -102,32 +106,27 @@ func (n *Plugin) Filter(header string) bool {
 	return false
 }
 
-func (n *Plugin) Progress(typo <-chan internal.Domain) <-chan internal.Domain {
-	return typo
+// func (n *Plugin) Progress(typo <-chan internal.Domain) <-chan internal.Domain {
+// 	return typo
+// }
+
+func (n *Plugin) Write() {
+	n.output = n.table.RenderMarkdown()
 }
 
-func (n *Plugin) Write(in internal.Domain) {
-	n.table.AppendRow(n.Row(in))
-}
-
-func (n *Plugin) Summary(report []internal.Domain) {
+func (n *Plugin) Summary(report map[string]string) {
 	fmt.Println("")
 	for k, v := range report {
-		fmt.Printf("%s %d   ", k, v)
+		fmt.Printf("%s %s   ", k, v)
 	}
 	fmt.Println("")
 }
 
-func (n *Plugin) Save() {
-	output := n.table.RenderMarkdown()
-
-	if n.config.File() != "" {
-		results := []byte(output)
-		if err := os.WriteFile(n.config.File(), results, 0644); err != nil {
-			fmt.Printf("Error: %s", err)
-		}
+func (n *Plugin) Save(fname string) {
+	results := []byte(n.output)
+	if err := os.WriteFile(fname, results, 0644); err != nil {
+		fmt.Printf("Error: %s", err)
 	}
-
 }
 
 // Register the plugin

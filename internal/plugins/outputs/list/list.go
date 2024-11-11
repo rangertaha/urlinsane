@@ -21,17 +21,17 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
 	CODE        = "list"
-	DESCRIPTION = "List outputs one record per line"
+	DESCRIPTION = "outputs one record per line"
 )
 
 type Plugin struct {
-	config internal.Config
-	output string
-	typos  []internal.Domain
+	config  internal.Config
+	domains []internal.Domain
 }
 
 func (n *Plugin) Id() string {
@@ -46,32 +46,17 @@ func (n *Plugin) Init(conf internal.Config) {
 	n.config = conf
 }
 
-func (n *Plugin) Write(in internal.Domain) {
-	if n.config.Progress() {
-		n.typos = append(n.typos, in)
-	} else {
-		n.Stream(in)
+func (n *Plugin) Read(in internal.Domain) {
+	n.domains = append(n.domains, in)
+	if !n.config.Progress() {
+		fmt.Println(n.Row(in))
 	}
 }
 
-func (n *Plugin) Stream(in internal.Domain) {
-	var data []interface{}
-	// data = append(data, in.Ld())
-	if n.config.Verbose() {
-		data = append(data, in.Algorithm().Name())
-	} else {
-		data = append(data, strings.ToUpper(in.Algorithm().Id()))
+func (n *Plugin) Write() {
+	if n.config.Progress() {
+		fmt.Println(strings.Join(n.Rows(n.domains...), "\n"))
 	}
-	data = append(data, in.String())
-
-	for _, v := range in.Meta() {
-		// if n.Filter(h) {
-		data = append(data, v)
-		// }
-
-	}
-	fmt.Println(data...)
-	n.output = n.output + fmt.Sprint(data...) + "\n"
 }
 
 func (n *Plugin) Filter(header string) bool {
@@ -90,23 +75,15 @@ func (n *Plugin) Filter(header string) bool {
 func (n *Plugin) Summary(report map[string]string) {
 	fmt.Println("")
 	for k, v := range report {
-		fmt.Printf("%s %s   ", k, v)
+		log.Errorf("%s %s   ", k, v)
 	}
 	fmt.Println("")
 }
 
-func (n *Plugin) Save() {
-	if n.config.Progress() {
-		for _, typo := range n.typos {
-			n.Stream(typo)
-		}
-	}
-
-	if n.config.File() != "" {
-		results := []byte(n.output)
-		if err := os.WriteFile(n.config.File(), results, 0644); err != nil {
-			fmt.Printf("Error: %s", err)
-		}
+func (n *Plugin) Save(fname string) {
+	output := strings.Join(n.Rows(n.domains...), "\n")
+	if err := os.WriteFile(fname, []byte(output), 0644); err != nil {
+		log.Errorf("Saving file: %s", err)
 	}
 }
 

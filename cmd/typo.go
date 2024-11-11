@@ -100,6 +100,13 @@ var TypoCmd = cli.Command{
 			Category: "PERFORMANCE",
 			Usage:    "maximim duration to cache results",
 		},
+		&cli.IntFlag{
+			Name:     "distance",
+			Aliases:  []string{"d"},
+			Value:    25,
+			Category: "PERFORMANCE",
+			Usage:    "minimum Levenshtein distance for Data Collection",
+		},
 		&cli.BoolFlag{
 			Name:     "progress",
 			Aliases:  []string{"p"},
@@ -154,13 +161,21 @@ var TypoCmd = cli.Command{
 		&cli.BoolFlag{
 			Name:     "unregistered",
 			Aliases:  []string{"u"},
-			Value:    true,
+			Value:    false,
 			Category: "OUTPUT",
 			Usage:    "show only unregistered domain names",
 		},
 		&cli.BoolFlag{
-			Name:     "rua",
+			Name:     "summary",
+			Aliases:  []string{"s"},
 			Value:    true,
+			Hidden:   true,
+			Category: "OUTPUT",
+			Usage:    "show summary of scan results",
+		},
+		&cli.BoolFlag{
+			Name:     "rua",
+			Value:    false,
 			Hidden:   true,
 			Category: "PERFORMANCE",
 			Usage:    "use random user agent for HTTP requests",
@@ -177,6 +192,7 @@ var TypoCmd = cli.Command{
 			cli.ShowSubcommandHelpAndExit(cCtx, 1)
 		}
 
+		
 		cfg, err := config.CliConfig(cCtx)
 		if err != nil {
 			fmt.Printf("%s", err)

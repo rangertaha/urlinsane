@@ -15,14 +15,14 @@
 package txt
 
 import (
-	"encoding/json"
+	"bufio"
 	"fmt"
 	"os"
 	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/models"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -30,26 +30,10 @@ const (
 	DESCRIPTION = "Deeply nested JSON structured output"
 )
 
-type Record struct {
-	Original string        `json:"domain"`
-	Variant  models.Domain `json:"variant"`
-	Distance int           `json:"distance"`
-}
 
 type Plugin struct {
-	config internal.Config
-	output string
-	typos  []internal.Domain
-}
-
-func (p *Record) Json() string {
-	// Marshal the struct into JSON
-	jsonData, err := json.Marshal(p)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return ""
-	}
-	return string(jsonData)
+	config  internal.Config
+	domains []internal.Domain
 }
 
 func (n *Plugin) Id() string {
@@ -64,23 +48,20 @@ func (n *Plugin) Init(conf internal.Config) {
 	n.config = conf
 }
 
-func (n *Plugin) Write(in internal.Domain) {
-	if n.config.Progress() {
-		n.typos = append(n.typos, in)
-	} else {
-		n.Stream(in)
+func (n *Plugin) Read(domain internal.Domain) {
+	n.domains = append(n.domains, domain)
+
+	if !n.config.Progress() {
+		fmt.Println(domain.Json())
 	}
 }
 
-func (n *Plugin) Stream(in internal.Domain) {
-	orig, vari := in.Get()
-
-	record := Record{
-		Original: orig.Fqdn(),
-		Variant:  vari,
-		Distance: in.Dist(),
+func (n *Plugin) Write() {
+	if n.config.Progress() {
+		for _, domain := range n.domains {
+			fmt.Println(domain.Json())
+		}
 	}
-	fmt.Println(record.Json())
 }
 
 func (n *Plugin) Filter(header string) bool {
@@ -96,23 +77,33 @@ func (n *Plugin) Filter(header string) bool {
 	return false
 }
 
-func (n *Plugin) Summary(report map[string]string) {
-	//
-}
+func (n *Plugin) Summary(report map[string]string) {}
 
-func (n *Plugin) Save() {
-	if n.config.Progress() {
-		for _, typo := range n.typos {
-			n.Stream(typo)
+func (n *Plugin) Save(fname string) {
+	// Open the file for writing
+	file, err := os.Create(fname)
+	if err != nil {
+		log.Error("Error opening file:", err)
+		return
+	}
+	defer file.Close()
+
+	// Create a buffered writer for efficiency
+	writer := bufio.NewWriter(file)
+
+	// Stream data to the file
+	for _, domain := range n.domains {
+		_, err := writer.WriteString(domain.Json())
+		if err != nil {
+			log.Error("Error writing to file:", err)
+			return
 		}
 	}
 
-	if n.config.File() != "" {
-		results := []byte(n.output)
-		if err := os.WriteFile(n.config.File(), results, 0644); err != nil {
-			fmt.Printf("Error: %s", err)
-		}
-	}
+	// Flush the buffered data to the file
+	writer.Flush()
+
+	log.Info("Data streamed to file successfully")
 }
 
 // Register the plugin
