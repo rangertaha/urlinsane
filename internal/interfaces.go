@@ -99,12 +99,11 @@ type Output interface {
 	Id() string
 	Description() string
 
-	// Batching and streaming 
+	// Batching and streaming
 	Read(Domain)
 	Write()
 	Save(filename string)
 	Summary(report map[string]string)
-	
 }
 
 type Domain interface {
@@ -124,6 +123,7 @@ type Domain interface {
 	Active(...bool) bool
 	Ld(...int) int
 	Json() string
+	Idn(...string) string
 }
 
 type Table interface {

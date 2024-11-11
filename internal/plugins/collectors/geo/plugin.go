@@ -12,27 +12,19 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-// An internationalized domain name (IDN) is a domain name that includes characters
-// outside of the Latin alphabet, such as letters from Arabic, Chinese, Cyrillic, or
-// Devanagari scripts. IDNs allow users to use domain names in their local languages
-// and scripts.
-package idn
+package geo
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
-	"golang.org/x/net/idna"
 )
 
 const (
-	ORDER       = 0
-	CODE        = "idn"
-	NAME        = "Internationalize"
-	DESCRIPTION = "Internationalized Domain Name"
+	ORDER       = 10
+	CODE        = "geo"
+	NAME        = "GeoIP Lookup"
+	DESCRIPTION = "Retrieves location of IP addresses"
 )
-
-type Plugin struct{}
 
 func (n *Plugin) Id() string {
 	return CODE
@@ -42,21 +34,12 @@ func (n *Plugin) Order() int {
 	return ORDER
 }
 
+func (n *Plugin) Name() string {
+	return NAME
+}
+
 func (n *Plugin) Description() string {
 	return DESCRIPTION
-}
-
-func (n *Plugin) Headers() []string {
-	return []string{"IDN"}
-}
-
-func (i *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
-	if punycode, err := idna.Punycode.ToASCII(domain.String()); err == nil {
-		domain.SetMeta("IDN", domain.Idn(punycode))
-	}
-	acc.Add(domain)
-
-	return
 }
 
 // Register the plugin
