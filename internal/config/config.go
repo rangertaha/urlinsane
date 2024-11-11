@@ -22,8 +22,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/knadh/koanf/parsers/hcl"
-	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
@@ -38,6 +36,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/outputs/all"
 	log "github.com/sirupsen/logrus"
+	"github.com/urfave/cli/v2"
 )
 
 const DIR = ".urlinsane"
@@ -49,7 +48,7 @@ var (
 	DefualtConfig = []byte(`
 database = "badger"
 algorithms = "all"
-concurrency = 25
+workers = 25
 delay = 1 
 format = "table"
 keyboards = "all"
@@ -85,11 +84,11 @@ type (
 		output     internal.Output
 
 		// Performance
-		concurrency int
-		delay       time.Duration
-		random      time.Duration
-		timeout     time.Duration
-		ttl         time.Duration
+		workers int
+		delay   time.Duration
+		random  time.Duration
+		timeout time.Duration
+		ttl     time.Duration
 
 		// Output
 		verbose  bool
@@ -164,8 +163,8 @@ func (c *Config) Database() internal.Database {
 }
 
 // Performance
-func (c *Config) Concurrency() int {
-	return c.concurrency
+func (c *Config) Workers() int {
+	return c.workers
 }
 
 func (c *Config) Delay() time.Duration {
@@ -233,36 +232,36 @@ func (c *Config) Mkfile(dir, name string, content []byte) (file string, err erro
 }
 
 // CliConfig creates a configuration from a cobra command options and arguments
-func CliConfig(target string) (c Config, err error) {
+func CliConfig(cli *cli.Context) (c Config, err error) {
 
 	c = New()
-	c.domain = target
+	c.domain = cli.Args().First()
 
-	c.languages = languages.Languages(csSplit(Conf.String("languages"))...)
-	c.keyboards = languages.Keyboards(csSplit(Conf.String("keyboards"))...)
-	c.algorithms = algorithms.List(csSplit(Conf.String("algorithms"))...)
-	c.collectors = collectors.List(csSplit(Conf.String("collectors"))...)
-	if c.database, err = databases.Get(Conf.String("database")); err != nil {
+	c.languages = languages.Languages(csSplit(cli.String("languages"))...)
+	c.keyboards = languages.Keyboards(csSplit(cli.String("keyboards"))...)
+	c.algorithms = algorithms.List(csSplit(cli.String("algorithms"))...)
+	c.collectors = collectors.List(csSplit(cli.String("collectors"))...)
+	if c.database, err = databases.Get("badger"); err != nil {
 		return c, err
 	}
 
-	if c.output, err = outputs.Get(Conf.String("format")); err != nil {
+	if c.output, err = outputs.Get(cli.String("format")); err != nil {
 		return c, err
 	}
 
-	c.file = Conf.String("file")
-	c.verbose = Conf.Bool("verbose")
-	c.progress = Conf.Bool("progress")
-	c.concurrency = Conf.Int("concurrency")
-	c.random = Conf.Duration("random")
-	c.delay = Conf.Duration("delay")
-	c.ttl = Conf.Duration("ttl")
-	c.timeout = Conf.Duration("timeout")
-	c.banner = Conf.Bool("banner")
-	if Conf.Bool("debug") {
+	c.file = cli.String("file")
+	c.verbose = cli.Bool("verbose")
+	c.progress = cli.Bool("progress")
+	c.workers = cli.Int("workers")
+	c.random = cli.Duration("random")
+	c.delay = cli.Duration("delay")
+	c.ttl = cli.Duration("ttl")
+	c.timeout = cli.Duration("timeout")
+	c.banner = true
+	if cli.Bool("debug") {
 		log.SetOutput(os.Stdout)
 		log.SetLevel(log.DebugLevel)
-		Conf.Print()
+		// Conf.Print()
 	}
 
 	return c, err
@@ -312,15 +311,15 @@ func CreateAppConfig(dirname, filename string, defaultFile []byte) string {
 
 	fpath := filepath.Join(dirname, filename)
 
-	if err := Conf.Load(file.Provider(fpath), hcl.Parser(true)); err != nil {
-		log.Errorf("Unable to load config file: %s, Error: %s", fpath, err)
+	// if err := Conf.Load(file.Provider(fpath), hcl.Parser(true)); err != nil {
+	// 	log.Errorf("Unable to load config file: %s, Error: %s", fpath, err)
 
-		if _, err := os.Stat(fpath); os.IsNotExist(err) {
-			if err = os.WriteFile(fpath, defaultFile, 0644); err != nil {
-				log.Error(err)
-			}
-		}
-	}
+	// 	if _, err := os.Stat(fpath); os.IsNotExist(err) {
+	// 		if err = os.WriteFile(fpath, defaultFile, 0644); err != nil {
+	// 			log.Error(err)
+	// 		}
+	// 	}
+	// }
 
 	// conf.Print()
 
