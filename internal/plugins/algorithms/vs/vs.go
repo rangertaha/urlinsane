@@ -50,15 +50,11 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
-	orig, _ := typo.Get()
-
+func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
 	for _, language := range n.languages {
-		for _, variant := range algo.VowelSwapping(orig.Name, language.Vowels()...) {
-			if orig.Name != variant {
-
-				new := typo.New(n, orig, domain.New(orig.Prefix, variant, orig.Suffix))
-				typos = append(typos, new)
+		for _, variant := range algo.VowelSwapping(original.Name(), language.Vowels()...) {
+			if original.Name() != variant {
+				acc.Add(domain.NewVariant(n, original.Prefix(), variant, original.Suffix()))
 			}
 		}
 	}

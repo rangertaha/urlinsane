@@ -81,14 +81,10 @@ func (a *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
-	orig, _ := typo.Get()
-
-	for _, variant := range algo.CharacterOmission(orig.Name) {
-		if orig.Name != variant {
-
-			new := typo.New(n, orig, domain.New(orig.Prefix, variant, orig.Suffix))
-			typos = append(typos, new)
+func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
+	for _, variant := range algo.CharacterOmission(original.Name()) {
+		if original.Name() != variant {
+			acc.Add(domain.NewVariant(n, original.Prefix(), variant, original.Suffix()))
 		}
 	}
 

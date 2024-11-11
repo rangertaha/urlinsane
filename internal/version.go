@@ -44,7 +44,7 @@ DOMAIN: %s
 
 func Banner(name string) {
 	t := time.Now()
-	timetamp := t.Format("2006-01-02 15:04:05")
+	timestamp := t.Format("2006-01-02 15:04:05")
 	name = text.FgRed.Sprint(name)
-	fmt.Printf(LOGO, VERSION, timetamp, name)
+	fmt.Printf(LOGO, VERSION, timestamp, name)
 }

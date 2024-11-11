@@ -15,14 +15,13 @@
 package config
 
 import (
-	"log"
+	"io"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
 	"time"
 
-	badger "github.com/dgraph-io/badger/v4"
 	"github.com/knadh/koanf/parsers/hcl"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
@@ -38,6 +37,7 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/outputs/all"
+	log "github.com/sirupsen/logrus"
 )
 
 const DIR = ".urlinsane"
@@ -62,7 +62,7 @@ banner = true
 )
 
 type (
-	Dns struct {
+	DnsConf struct {
 		RetryCount       int      `yaml:"retry"`
 		QueriesPerSecond int      `yaml:"qps"`
 		Concurrency      int      `yaml:"concurrency"`
@@ -71,6 +71,9 @@ type (
 
 	Config struct {
 		domain string // Target domain
+
+		directory  string
+		configfile string
 
 		// Plugins
 		keyboards  []internal.Keyboard
@@ -82,23 +85,22 @@ type (
 		output     internal.Output
 
 		// Performance
-		concurrency int           `yaml:"concurrency"`
-		delay       time.Duration `yaml:"delay"`
-		random      time.Duration `yaml:"random"`
-		levenshtein int           `yaml:"levenshtein"`
-
-		// DNS
-		Dns Dns `yaml:"dns"`
+		concurrency int
+		delay       time.Duration
+		random      time.Duration
+		timeout     time.Duration
+		ttl         time.Duration
 
 		// Output
-		verbose bool     `yaml:"verbose"`
-		banner  bool     `yaml:"verbose"`
-		format  string   `yaml:"format"`
-		filters []string `yaml:"filters"`
-		file    string   `yaml:"file"`
-		// showAll  bool     `yaml:"showAll"`
-		// scanAll  bool     `yaml:"scanAll"`
-		progress bool `yaml:"progress"`
+		verbose  bool
+		banner   bool
+		format   string
+		filters  []string
+		file     string
+		progress bool
+
+		// DNS
+		Dns DnsConf
 	}
 
 	Infos             []internal.Collector
@@ -115,17 +117,27 @@ func (l InfosOrder) Less(i, j int) bool {
 	return l.Infos[i].Order() < l.Infos[j].Order()
 }
 
+func init() {
+	// Log as JSON instead of the default ASCII formatter.
+	// log.SetFormatter(&log.JSONFormatter{})
+
+	// Output to stdout instead of the default stderr
+	// Can be any io.Writer, see below for File example
+	log.SetOutput(io.Discard)
+
+	// Only log the warning severity or above.
+	log.SetLevel(log.ErrorLevel)
+}
+
 func New() Config {
-	return Config{}
+	cdir := CreateAppDir(DIR)
+	cfile := CreateAppConfig(cdir, FILE, DefualtConfig)
+	return Config{directory: cdir, configfile: cfile}
 }
 
 func (c *Config) Target() string {
 	return c.domain
 }
-
-// func (c *Config) Dir() *AppDir {
-// 	return c.appDir
-// }
 
 // Plugins
 func (c *Config) Keyboards() []internal.Keyboard {
@@ -151,12 +163,6 @@ func (c *Config) Database() internal.Database {
 	return c.database
 }
 
-// Dist is the Levenshtein_distance
-// See: https://en.wikipedia.org/wiki/Levenshtein_distance
-// func (c *Config) Dist() int {
-// 	return c.levenshtein
-// }
-
 // Performance
 func (c *Config) Concurrency() int {
 	return c.concurrency
@@ -165,8 +171,17 @@ func (c *Config) Concurrency() int {
 func (c *Config) Delay() time.Duration {
 	return c.delay
 }
+
+func (c *Config) TTL() time.Duration {
+	return c.ttl
+}
+
 func (c *Config) Random() time.Duration {
 	return c.random
+}
+
+func (c *Config) Timeout() time.Duration {
+	return c.timeout
 }
 
 // Outputs
@@ -194,19 +209,39 @@ func (c *Config) File() string {
 	return c.file
 }
 
-func (c *Config) BadgerOptions() badger.Options {
-	return badger.DefaultOptions(Conf.String("database.file"))
+func (c *Config) Dir() string {
+	return c.directory
 }
 
-// CobraConfig creates a configuration from a cobra command options and arguments
+func (c *Config) Mkdir(name string) (dir string, err error) {
+	dir = filepath.Join(c.directory, name)
+	if err = os.MkdirAll(dir, 0750); err != nil {
+		return
+	}
+	return
+}
+func (c *Config) Mkfile(dir, name string, content []byte) (file string, err error) {
+	file = filepath.Join(dir, name)
+	_, err = os.Stat(file)
+	if os.IsNotExist(err) {
+		err = os.WriteFile(file, content, 0644)
+		if err != nil {
+			return
+		}
+	}
+	return
+}
+
+// CliConfig creates a configuration from a cobra command options and arguments
 func CliConfig(target string) (c Config, err error) {
+
+	c = New()
 	c.domain = target
 
 	c.languages = languages.Languages(csSplit(Conf.String("languages"))...)
 	c.keyboards = languages.Keyboards(csSplit(Conf.String("keyboards"))...)
 	c.algorithms = algorithms.List(csSplit(Conf.String("algorithms"))...)
 	c.collectors = collectors.List(csSplit(Conf.String("collectors"))...)
-	// c.languages = languages.Languages(csSplit(Conf.String("languages"))...)
 	if c.database, err = databases.Get(Conf.String("database")); err != nil {
 		return c, err
 	}
@@ -221,7 +256,14 @@ func CliConfig(target string) (c Config, err error) {
 	c.concurrency = Conf.Int("concurrency")
 	c.random = Conf.Duration("random")
 	c.delay = Conf.Duration("delay")
+	c.ttl = Conf.Duration("ttl")
+	c.timeout = Conf.Duration("timeout")
 	c.banner = Conf.Bool("banner")
+	if Conf.Bool("debug") {
+		log.SetOutput(os.Stdout)
+		log.SetLevel(log.DebugLevel)
+		Conf.Print()
+	}
 
 	return c, err
 }
@@ -232,34 +274,80 @@ func csSplit(value string) []string {
 	return strings.Split(value, ",")
 }
 
-func LoadOrCreateConfig(conf *koanf.Koanf, dirname, filename string, defaultFile []byte) (err error) {
-	var userDir string
+// func LoadOrCreateConfig(conf *koanf.Koanf, dirname, filename string, defaultFile []byte) (err error) {
+// 	var userDir string
 
-	if userDir, err = os.UserHomeDir(); err != nil {
-		if userDir, err = os.Getwd(); err != nil {
-			userDir = ""
-		}
+// 	if userDir, err = os.UserHomeDir(); err != nil {
+// 		if userDir, err = os.Getwd(); err != nil {
+// 			userDir = ""
+// 		}
+// 	}
+// 	configDir := filepath.Join(userDir, dirname)
+// 	configFile := filepath.Join(configDir, filename)
+
+// 	if err := conf.Load(file.Provider(configFile), hcl.Parser(true)); err != nil {
+// 		log.Printf("Unable to load config file: %s, Error: %s", configFile, err)
+// 		if err = os.MkdirAll(configDir, 0750); err != nil {
+// 			return err
+// 		}
+// 		_, err := os.Stat(configFile)
+// 		if os.IsNotExist(err) {
+// 			err = os.WriteFile(configFile, defaultFile, 0644)
+// 			if err != nil {
+// 				panic(err)
+// 			}
+// 		}
+// 	}
+
+// 	// conf.Print()
+
+// 	return
+// }
+
+func CreateAppConfig(dirname, filename string, defaultFile []byte) string {
+
+	if err := os.MkdirAll(dirname, 0750); err != nil {
+		log.Error(err)
 	}
-	configDir := filepath.Join(userDir, dirname)
-	configFile := filepath.Join(configDir, filename)
 
-	databaseDir := filepath.Join(userDir, DIR, "badger")
+	fpath := filepath.Join(dirname, filename)
 
-	if err := conf.Load(file.Provider(configFile), hcl.Parser(true)); err != nil {
-		log.Printf("Unable to load config file: %s, Error: %s", configFile, err)
-		if err = os.MkdirAll(databaseDir, 0750); err != nil {
-			return err
-		}
-		_, err := os.Stat(configFile)
-		if os.IsNotExist(err) {
-			err = os.WriteFile(configFile, defaultFile, 0644)
-			if err != nil {
-				panic(err)
+	if err := Conf.Load(file.Provider(fpath), hcl.Parser(true)); err != nil {
+		log.Errorf("Unable to load config file: %s, Error: %s", fpath, err)
+
+		if _, err := os.Stat(fpath); os.IsNotExist(err) {
+			if err = os.WriteFile(fpath, defaultFile, 0644); err != nil {
+				log.Error(err)
 			}
 		}
 	}
 
 	// conf.Print()
 
-	return
+	return fpath
+}
+
+func CreateAppDir(dirname string) string {
+	var userDir string
+	var err error
+
+	if userDir, err = os.UserHomeDir(); err != nil {
+		if userDir, err = os.Getwd(); err != nil {
+			userDir = ""
+		}
+	}
+
+	// If .config exits lets put it in there
+	configDir := filepath.Join(userDir, ".config")
+	if _, err := os.Stat(configDir); !os.IsNotExist(err) {
+		configDir = filepath.Join(configDir, dirname)
+	} else {
+		configDir = filepath.Join(userDir, dirname)
+	}
+
+	if err = os.MkdirAll(configDir, 0750); err != nil {
+		log.Error(err)
+	}
+
+	return configDir
 }

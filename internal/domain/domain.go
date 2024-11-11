@@ -27,47 +27,75 @@ type Domain struct {
 	prefix string
 	name   string
 	suffix string
+
+	algo internal.Algorithm
+	meta map[string]interface{}
+	live bool
 }
 
-//	type Domain interface {
-//		Prefix(...string) string
-//		Name(...string) string
-//		Suffix(...string) string
-//		String() string
-//		Valid() bool
-//		Live() bool
-//	}
 func New(name string) internal.Domain {
 	return &Domain{
 		prefix: domainutil.Subdomain(name),
 		name:   domainutil.DomainPrefix(name),
 		suffix: domainutil.DomainSuffix(name),
+		meta:   make(map[string]interface{}),
 	}
 }
 
-// func New(prefix, name, suffix string) internal.Domain {
-// 	name = fmt.Sprintf("%s.%s.%s", prefix, name, suffix)
-// 	name = strings.ReplaceAll(name, "..", ".")
-// 	name = strings.Trim(name, ".")
+func NewVariant(algo internal.Algorithm, names ...string) internal.Domain {
+	name := strings.Join(names, ".")
+	return &Domain{
+		prefix: domainutil.Subdomain(name),
+		name:   domainutil.DomainPrefix(name),
+		suffix: domainutil.DomainSuffix(name),
+		meta:   make(map[string]interface{}),
+		algo:   algo,
+	}
+}
 
-// 	domain := &Domain{
-// 		prefix: domainutil.Subdomain(name),
-// 		name:   domainutil.DomainPrefix(name),
-// 		suffix: domainutil.DomainSuffix(name),
-// 	}
-// 	// domain.Fqdn()
-// 	return domain
-// }
+func (t *Domain) Meta() map[string]interface{} {
+	return t.meta
+}
 
-func (d *Domain) Prefix(labels ...string) (name string) {
+func (t *Domain) SetMeta(key string, value interface{}) {
+	t.meta[key] = value
+}
+
+func (t *Domain) GetMeta(key string) (value interface{}) {
+	if value, ok := t.meta[key]; ok {
+		return value
+	}
+	return nil
+}
+
+func (t *Domain) Algorithm() internal.Algorithm {
+	return t.algo
+}
+
+func (d *Domain) Prefix(labels ...string) string {
+	if len(labels) > 0 {
+		name := strings.Join(labels, ".")
+		d.prefix = name
+	}
+
 	return d.prefix
 }
 
-func (d *Domain) Name(labels ...string) (name string) {
+func (d *Domain) Name(labels ...string) string {
+	if len(labels) > 0 {
+		name := strings.Join(labels, ".")
+		d.name = name
+	}
+
 	return d.name
 }
 
-func (d *Domain) Suffix(labels ...string) (name string) {
+func (d *Domain) Suffix(labels ...string) string {
+	if len(labels) > 0 {
+		name := strings.Join(labels, ".")
+		d.suffix = name
+	}
+
 	return d.suffix
 }
 
@@ -82,6 +110,10 @@ func (d *Domain) String(labels ...string) (name string) {
 	return
 }
 
-func (d *Domain) Live() (ip bool) {
-	return true
+func (d *Domain) Live(v ...bool) (ip bool) {
+	if len(v) > 0 {
+		d.live = v[0]
+	}
+
+	return d.live
 }

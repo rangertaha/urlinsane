@@ -21,56 +21,56 @@ import (
 	"github.com/bobesa/go-domain-util/domainutil"
 )
 
-// Domain ...
-type Domain struct {
-	Subdomain string
-	Prefix    string
-	Suffix    string
-}
+// // Domain ...
+// type Domain struct {
+// 	Subdomain string
+// 	Prefix    string
+// 	Suffix    string
+// }
 
-func New(sub, prefix, suffix string) (d *Domain) {
+// func New(sub, prefix, suffix string) (d *Domain) {
 
-	// if len(names) == 3 {
-	// 	domain := fmt.Sprintf("%s.%s.%s", names[0], names[1], names[2])
-	// 	d.Subdomain = domainutil.Subdomain(domain)
-	// 	d.Prefix = domainutil.DomainPrefix(domain)
-	// 	d.Suffix = domainutil.DomainSuffix(domain)
-	// }
-	// if len(names) == 2 {
-	// 	domain := fmt.Sprintf("%s.%s", names[0], names[1])
-	// 	d.Subdomain = domainutil.Subdomain(domain)
-	// 	d.Prefix = domainutil.DomainPrefix(domain)
-	// 	d.Suffix = domainutil.DomainSuffix(domain)
-	// }
+// 	// if len(names) == 3 {
+// 	// 	domain := fmt.Sprintf("%s.%s.%s", names[0], names[1], names[2])
+// 	// 	d.Subdomain = domainutil.Subdomain(domain)
+// 	// 	d.Prefix = domainutil.DomainPrefix(domain)
+// 	// 	d.Suffix = domainutil.DomainSuffix(domain)
+// 	// }
+// 	// if len(names) == 2 {
+// 	// 	domain := fmt.Sprintf("%s.%s", names[0], names[1])
+// 	// 	d.Subdomain = domainutil.Subdomain(domain)
+// 	// 	d.Prefix = domainutil.DomainPrefix(domain)
+// 	// 	d.Suffix = domainutil.DomainSuffix(domain)
+// 	// }
 
-	// if len(names) == 1 {
-	// 	domain := names[0]
-	// 	d.Subdomain = domainutil.Subdomain(domain)
-	// 	d.Prefix = domainutil.DomainPrefix(domain)
-	// 	d.Suffix = domainutil.DomainSuffix(domain)
-	// }
-	name := fmt.Sprintf("%s.%s.%s", sub, prefix, suffix)
-	name = strings.ReplaceAll(name, "..", ".")
-	name = strings.Trim(name, ".")
+// 	// if len(names) == 1 {
+// 	// 	domain := names[0]
+// 	// 	d.Subdomain = domainutil.Subdomain(domain)
+// 	// 	d.Prefix = domainutil.DomainPrefix(domain)
+// 	// 	d.Suffix = domainutil.DomainSuffix(domain)
+// 	// }
+// 	name := fmt.Sprintf("%s.%s.%s", sub, prefix, suffix)
+// 	name = strings.ReplaceAll(name, "..", ".")
+// 	name = strings.Trim(name, ".")
 
-	return &Domain{
-		Subdomain: domainutil.Subdomain(name),
-		Prefix:    domainutil.DomainPrefix(name),
-		Suffix:    domainutil.DomainSuffix(name),
-	}
-}
+// 	return &Domain{
+// 		Subdomain: domainutil.Subdomain(name),
+// 		Prefix:    domainutil.DomainPrefix(name),
+// 		Suffix:    domainutil.DomainSuffix(name),
+// 	}
+// }
 
-func Parse(name string) (d *Domain) {
-	return &Domain{
-		Subdomain: domainutil.Subdomain(name),
-		Prefix:    domainutil.DomainPrefix(name),
-		Suffix:    domainutil.DomainSuffix(name),
-	}
-}
+// func Parse(name string) (d *Domain) {
+// 	return &Domain{
+// 		Subdomain: domainutil.Subdomain(name),
+// 		Prefix:    domainutil.DomainPrefix(name),
+// 		Suffix:    domainutil.DomainSuffix(name),
+// 	}
+// }
 
-func (d *Domain) String() (name string) {
-	name = fmt.Sprintf("%s.%s.%s", d.Subdomain, d.Prefix, d.Suffix)
-	name = strings.ReplaceAll(name, "..", ".")
-	name = strings.Trim(name, ".")
-	return
-}
+// func (d *Domain) String() (name string) {
+// 	name = fmt.Sprintf("%s.%s.%s", d.Subdomain, d.Prefix, d.Suffix)
+// 	name = strings.ReplaceAll(name, "..", ".")
+// 	name = strings.Trim(name, ".")
+// 	return
+// }
