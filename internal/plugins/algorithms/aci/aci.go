@@ -33,7 +33,9 @@ package aci
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	"github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 const (
@@ -63,19 +65,14 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(typo internal.Domain, variant internal.Domain, acc internal.Accumulator) (err error) {
-	// orig, _ := typo.Get()
-
-	// for _, keyboard := range n.keyboards {
-	// 	for _, variant := range algo.AdjacentCharacterInsertion(orig.Name, keyboard.Layouts()...) {
-	// 		// log.Println(orig.Name, variant)
-	// 		if orig.Name != variant {
-	// 			// log.Println(orig.Name, variant, domain.New(orig.Prefix, variant, orig.Suffix))
-	// 			new := typo.New(n, orig, domain.New(orig.Prefix, variant, orig.Suffix))
-	// 			typos = append(typos, new)
-	// 		}
-	// 	}
-	// }
+func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
+	for _, keyboard := range n.keyboards {
+		for _, variant := range typo.AdjacentCharacterInsertion(original.Name(), keyboard.Layouts()...) {
+			if original.Name() != variant {
+				acc.Add(domain.NewVariant(n, original.Prefix(), variant, original.Suffix()))
+			}
+		}
+	}
 	return
 }
 

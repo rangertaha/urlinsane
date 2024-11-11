@@ -4,16 +4,10 @@ import (
 	"fmt"
 
 	"github.com/rangertaha/urlinsane/internal"
-)
-
-const (
-	ENTITY = "ENTITY"
-	DOMAIN = "DOMAIN"
+	log "github.com/sirupsen/logrus"
 )
 
 type Creator func() internal.Algorithm
-
-var Types = []string{ENTITY, DOMAIN}
 
 var Algorithms = map[string]Creator{}
 
@@ -37,6 +31,7 @@ func All() (mods []internal.Algorithm) {
 }
 
 func List(IDs ...string) (algos []internal.Algorithm) {
+	log.Debug("Selected algorithms: ", IDs)
 	for id, algo := range Algorithms {
 		for _, aid := range IDs {
 			if id == aid {
@@ -59,11 +54,11 @@ func List(IDs ...string) (algos []internal.Algorithm) {
 	return
 }
 
-func IsType(types []string, other string) bool {
-	for _, typ := range types {
-		if typ == other {
-			return true
-		}
-	}
-	return false
-}
+// func IsType(types []string, other string) bool {
+// 	for _, typ := range types {
+// 		if typ == other {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }

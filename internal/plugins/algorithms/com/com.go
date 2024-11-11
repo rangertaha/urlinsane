@@ -61,7 +61,7 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(typo internal.Typo) (typos []internal.Typo) {
+func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
 	return
 }
 
