@@ -12,24 +12,33 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package geo
+package cn
 
 import (
-	"embed"
-	"fmt"
-	"io"
-	"strings"
+	"net"
 
-	"github.com/rainycape/geoip"
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 )
 
-//go:embed GeoLite2-City.mmdb
-var dataFile embed.FS
+const (
+	ORDER       = 3
+	CODE        = "cn"
+	DESCRIPTION = "DNS CNAME records"
+)
 
 type Plugin struct {
+	// resolver resolver.Client
 	conf internal.Config
 	db   internal.Database
+}
+
+func (n *Plugin) Id() string {
+	return CODE
+}
+
+func (n *Plugin) Order() int {
+	return ORDER
 }
 
 func (i *Plugin) Init(c internal.Config) {
@@ -37,42 +46,39 @@ func (i *Plugin) Init(c internal.Config) {
 	i.conf = c
 }
 
-func (n *Plugin) Headers() []string {
-	return []string{"GEO"}
+func (n *Plugin) Description() string {
+	return DESCRIPTION
 }
 
-func (n *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
-	var location string
-	if ipv4, ok := domain.GetMeta("IPv4").(string); ok {
-		for _, ip := range strings.Split(ipv4, " ") {
-			if loc, _ := n.getGeo(ip); loc != nil {
-				if loc.Country != nil {
-					location = loc.Country.Name.String()
-				}
-				if loc.City != nil {
-					location = fmt.Sprintf("%s, %s", location, loc.City.Name.String())
-				}
-				domain.SetMeta("GEO", location)
-			}
-		}
+func (n *Plugin) Headers() []string {
+	return []string{"CNAME"}
+}
+
+func (i *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
+	cname, _ := i.db.Read(domain.String(), "CNAME")
+	if cname != "" {
+		domain.SetMeta("CNAME", cname)
+		domain.Live(true)
+		acc.Add(domain)
+		return
 	}
 
+	cname, err = net.LookupCNAME(domain.String())
+
+	if cname != "" && err == nil {
+		domain.SetMeta("CNAME", cname)
+		domain.Live(true)
+		err = i.db.Write(cname, domain.String(), "CNAME")
+	}
 	acc.Add(domain)
 	return
 }
 
-func (n *Plugin) getGeo(ip string) (r *geoip.Record, err error) {
-	file, err := dataFile.Open("GeoLite2-City.mmdb")
-	if err != nil {
-		return nil, err
-	}
+func (i *Plugin) Close() {}
 
-	defer file.Close()
-
-	db, err := geoip.New(file.(io.ReadSeeker))
-	if err != nil {
-		return nil, err
-	}
-
-	return db.Lookup(ip)
+// Register the plugin
+func init() {
+	collectors.Add(CODE, func() internal.Collector {
+		return &Plugin{}
+	})
 }

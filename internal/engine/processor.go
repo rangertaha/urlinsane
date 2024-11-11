@@ -140,9 +140,9 @@ func (u *Urlinsane) Target(in <-chan internal.Domain) <-chan internal.Domain {
 		// Print report of target domain
 		log.Debug("Generate domain report: ", u.target.String())
 
-		// Initialize algorithm plugins if needed
+		// Send origianl domain downstream
 		for _, algorithm := range u.cfg.Algorithms() {
-			out <- domain.NewVariant(algorithm, u.cfg.Target())
+			out <- domain.NewVariant(algorithm, u.target.String())
 		}
 
 		close(out)
