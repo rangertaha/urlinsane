@@ -24,6 +24,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
 	"github.com/rangertaha/urlinsane/internal/utils"
 	"golang.org/x/term"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -35,6 +36,7 @@ type Plugin struct {
 	table   table.Writer
 	config  internal.Config
 	domains []internal.Domain
+	output string
 }
 
 func (n *Plugin) Id() string {
@@ -57,6 +59,10 @@ func (n *Plugin) Init(conf internal.Config) {
 	n.table.AppendHeader(n.Header())
 	n.table.AppendFooter(n.Header())
 	n.Config()
+}
+
+func (n *Plugin) Read(in internal.Domain) {
+	n.table.AppendRow(n.Row(in))
 }
 
 func (n *Plugin) Header() (row table.Row) {
@@ -131,8 +137,8 @@ func (n *Plugin) Progress(typo <-chan internal.Domain) <-chan internal.Domain {
 	return typo
 }
 
-func (n *Plugin) Write(in internal.Domain) {
-	n.table.AppendRow(n.Row(in))
+func (n *Plugin) Write() {
+	n.output = n.table.Render()
 }
 
 func (n *Plugin) Summary(report map[string]string) {
@@ -143,22 +149,21 @@ func (n *Plugin) Summary(report map[string]string) {
 	// }
 	fmt.Println("")
 	for k, v := range report {
-		fmt.Printf("%s %s   ", k, v)
+		log.Errorf("%s %s   ", k, v)
 	}
 	fmt.Println("")
 }
 
-func (n *Plugin) Save() {
+func (n *Plugin) Save(fname string) {
 	// We need a little space between the progress bar and this output
 	fmt.Println("")
-	output := n.table.Render()
+	// output := n.table.Render()
 
-	if n.config.File() != "" {
-		results := []byte(output)
-		if err := os.WriteFile(n.config.File(), results, 0644); err != nil {
-			fmt.Printf("Error: %s", err)
-		}
+	results := []byte(n.output)
+	if err := os.WriteFile(fname, results, 0644); err != nil {
+		log.Errorf("Error: %s", err)
 	}
+
 }
 
 // Register the plugin
