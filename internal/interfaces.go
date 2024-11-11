@@ -53,6 +53,8 @@ type Config interface {
 	Banner() bool
 	Format() string
 	Filters() []string
+	Registered() bool
+	Unregistered() bool
 
 	Dir() string
 	File() string
@@ -111,6 +113,7 @@ type Domain interface {
 	Algorithm() Algorithm
 	Valid() bool
 	Live(...bool) bool
+	Ld(...int) int
 }
 
 type Table interface {
