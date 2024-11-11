@@ -142,7 +142,7 @@ var TypoCmd = cli.Command{
 			Value:    "",
 			Hidden:   true,
 			Category: "OUTPUT",
-			Usage:    "directory place downloaded files into defaults to .urlinsane",
+			Usage:    "downloads directory, defaults to ~/.config/urlinsane",
 		},
 		&cli.BoolFlag{
 			Name:     "registered",

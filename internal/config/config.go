@@ -202,7 +202,7 @@ func (c *Config) Verbose() bool {
 func (c *Config) Registered() bool {
 	return c.registered
 }
-func (c *Config) nregistered() bool {
+func (c *Config) Unregistered() bool {
 	return c.unregistered
 }
 
