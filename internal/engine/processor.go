@@ -16,9 +16,12 @@ package engine
 
 import (
 	"context"
+	"fmt"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/config"
 	"github.com/rangertaha/urlinsane/internal/domain"
@@ -64,10 +67,15 @@ func (u *Urlinsane) Init() <-chan internal.Domain {
 	// used to store files and images we collect
 	if err := u.Mkdir(u.cfg.Target()); err != nil {
 		log.Error("Creating target directory", err)
-		time.Sleep(1 * time.Second)
+		// time.Sleep(1 * time.Second)
 	}
 
 	go func() {
+		// Initialize database plugins if needed
+		if db, ok := u.cfg.Database().(internal.Initializer); ok {
+			log.Debug("Init database:", u.cfg.Database().Id())
+			db.Init(&u.cfg)
+		}
 
 		// Initialize collector plugins if needed
 		log.Debug("Collectors:", len(u.cfg.Collectors()))
@@ -111,15 +119,9 @@ func (u *Urlinsane) Init() <-chan internal.Domain {
 			u.Close()
 		}
 
-		// Initialize database plugins if needed
-		if db, ok := u.cfg.Database().(internal.Initializer); ok {
-			log.Debug("Init database:", u.cfg.Database().Id())
-			db.Init(&u.cfg)
-		}
-
 		if u.cfg.Banner() {
 			log.Debug("Show banner !")
-			internal.Banner(u.cfg.Target())
+			Banner(u.cfg)
 		}
 
 		close(out)
@@ -155,7 +157,7 @@ func (u *Urlinsane) Algorithms(in <-chan internal.Domain) <-chan internal.Domain
 	out := make(chan internal.Domain)
 	var wg sync.WaitGroup
 
-	for w := 1; w <= u.cfg.Concurrency(); w++ {
+	for w := 1; w <= u.cfg.Workers(); w++ {
 		wg.Add(1)
 		go func(id int, in <-chan internal.Domain, out chan<- internal.Domain) {
 			defer wg.Done()
@@ -216,7 +218,7 @@ func (u *Urlinsane) Collectors(in <-chan internal.Domain) <-chan internal.Domain
 		out := make(chan internal.Domain)
 		var wg sync.WaitGroup
 
-		for w := 1; w <= u.cfg.Concurrency(); w++ {
+		for w := 1; w <= u.cfg.Workers(); w++ {
 			wg.Add(1)
 			go func(in <-chan internal.Domain, out chan<- internal.Domain) {
 				defer wg.Done()
@@ -269,13 +271,13 @@ func (u *Urlinsane) CollectorChain(funcs []internal.Collector, in <-chan interna
 }
 
 func (u *Urlinsane) runner(ctx context.Context, fn internal.Collector, domain internal.Domain, acc internal.Accumulator) {
-	logger := log.WithFields(log.Fields{"collector": fn.Id(), "domain": domain.String()})
+	logger := log.WithFields(log.Fields{"c": fn.Id(), "d": domain.String()})
 	fn.Exec(domain, acc)
 	select {
 	case <-time.After(1 * time.Second):
-		logger.Info("Function completed successfully")
+		logger.Info("Collector completed")
 	case <-ctx.Done():
-		logger.Error("Function timed out:", ctx.Err())
+		logger.Error("Collector timed out:", ctx.Err())
 	}
 }
 
@@ -287,11 +289,6 @@ func (u *Urlinsane) Progress(in <-chan internal.Domain) <-chan internal.Domain {
 			for t := range in {
 				u.progress.Add(1)
 				out <- t
-
-				log.WithFields(log.Fields{
-					"domain": t.String(),
-				}).Debug("Progress(<-)")
-
 			}
 			// Clear/hide the progress bar after all typos have passed through
 			u.progress.Clear()
@@ -309,13 +306,6 @@ func (u *Urlinsane) Output(in <-chan internal.Domain) {
 	// Stream typo records to the output plugin
 	for c := range in {
 		u.cfg.Output().Write(c)
-		// if u.cfg.ShowAll() {
-		// 	u.cfg.Output().Write(c)
-
-		// } else if vari.Live {
-		// 	u.cfg.Output().Write(c)
-		// }
-
 	}
 
 	// Save typo records collected by the output plugin
@@ -323,9 +313,9 @@ func (u *Urlinsane) Output(in <-chan internal.Domain) {
 
 	// Print summary
 	u.elapsed = time.Since(u.started)
-	summary := map[string]int{
-		"ELAPSED": int(u.elapsed),
-		"TOTAL":   int(u.total),
+	summary := map[string]string{
+		"TIME:":  u.elapsed.String(),
+		"TOTAL:": fmt.Sprintf("%d", u.total),
 	}
 	u.cfg.Output().Summary(summary)
 
@@ -369,3 +359,28 @@ func (u *Urlinsane) Execute() (err error) {
 // 	typos = u.Collectors(typos)
 // 	return typos
 // }
+
+func Banner(cfg config.Config) {
+	var lang, board, algo []string
+	t := time.Now()
+	timestamp := t.Format("2006-01-02 15:04:05")
+	name := text.FgRed.Sprint(cfg.Target())
+	for _, l := range cfg.Languages() {
+		lang = append(lang, l.Id())
+	}
+	for _, b := range cfg.Keyboards() {
+		board = append(board, b.Id())
+	}
+	for _, a := range cfg.Algorithms() {
+		algo = append(algo, a.Id())
+	}
+	fmt.Printf(
+		internal.BANNER,
+		internal.VERSION,
+		name,
+		strings.Join(lang, ","),
+		strings.Join(board, ","),
+		strings.Join(algo, ","),
+		timestamp,
+	)
+}

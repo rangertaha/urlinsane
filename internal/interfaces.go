@@ -41,7 +41,7 @@ type Config interface {
 	Output() Output
 
 	// Performance
-	Concurrency() int
+	Workers() int
 	Delay() time.Duration
 	Random() time.Duration
 	Timeout() time.Duration
@@ -65,32 +65,6 @@ type Algorithm interface {
 	Exec(origin Domain, acc Accumulator) error
 }
 
-//	type DomainAlgorithm interface {
-//		Domain(Typo) []Typo
-//	}
-//
-//	type PackageAlgorithm interface {
-//		Package(Typo) []Typo
-//	}
-//
-//	type EmailAlgorithm interface {
-//		Email(Typo) []Typo
-//	}
-//
-//	type UserAlgorithm interface {
-//		Username(Typo) []Typo
-//	}
-// type Algorithm interface {
-// 	Exec(Typo) []Typo
-// }
-
-// type Information interface {
-// 	Id() string
-// 	Description() string
-// 	Headers() []string
-// 	Exec(Typo) Typo
-// 	Order() int
-// }
 
 type Analyzer interface {
 	Id() string
@@ -108,19 +82,6 @@ type Collector interface {
 	Exec(Domain, Accumulator) error
 }
 
-// type InfoCache interface {
-// 	Get(models.Domain, Accumulator)
-// }
-
-// type Information interface {
-// 	Id() string
-// 	Order() int
-// 	Description() string
-// 	Headers() []string
-// 	Get(models.Domain, Accumulator)
-// 	Exec(models.Domain, Accumulator) models.Domain
-// }
-
 type Database interface {
 	Id() string
 	Init(Config)
@@ -133,7 +94,7 @@ type Output interface {
 	Id() string
 	Description() string
 	Write(Domain)
-	Summary(map[string]int)
+	Summary(map[string]string)
 	Save()
 }
 
@@ -184,48 +145,6 @@ type Accumulator interface {
 	Add(Domain)
 }
 
-// type Typo interface {
-// 	Algorithm() Algorithm
-// 	Original() Target
-// 	Variant() Target
-// 	Active() bool
-// 	Clone(string) Typo
-// 	String() string
-// 	Ld() int
-// }
-
-// type Result interface {
-// 	Keyboards() []Keyboard
-// 	Languages() []Language
-// 	Original() Domain
-// 	Variant() Domain
-// 	Algo() Module
-// 	Data() map[string]string
-// }
-
-// type Domain interface {
-// 	GetMeta() map[string]interface{}
-// 	AddMeta(string, interface{})
-
-// 	GetUsername() string
-// 	SetUsername(string)
-
-// 	GetSubdomain() string
-// 	SetSubdomain(string)
-
-// 	GetDomain() string
-// 	SetDomain(string)
-
-// 	GetSuffix() string
-// 	SetSuffix(string)
-
-// 	GetUrl() string
-// 	SetUrl(string)
-
-// 	Live() bool
-// 	Name() string
-// 	String() string
-// }
 
 type Language interface {
 	Id() string

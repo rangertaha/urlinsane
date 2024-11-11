@@ -14,13 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package internal
 
-import (
-	"fmt"
-	"time"
-
-	"github.com/jedib0t/go-pretty/v6/text"
-)
-
 const (
 	// VERSION format is loosely based on
 	// [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -29,7 +22,7 @@ const (
 	DEBUG = false
 
 	// LOGO made as ASCII graphics
-	LOGO = `
+	BANNER = `
  _   _  ____   _      ___
 | | | ||  _ \ | |    |_ _| _ __   ___   __ _  _ __    ___
 | | | || |_) || |     | | | '_ \ / __| / _' || '_ \  / _ \
@@ -37,14 +30,11 @@ const (
  \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|   
  v%s
     
-TIME:   %s
-DOMAIN: %s
- 
-`)
+DOMAIN:    %s
+LANGUAGES: %s 
+KEYBOARDS: %s
+ALGORITMS: %s
+TIME:      %s
 
-func Banner(name string) {
-	t := time.Now()
-	timestamp := t.Format("2006-01-02 15:04:05")
-	name = text.FgRed.Sprint(name)
-	fmt.Printf(LOGO, VERSION, timestamp, name)
-}
+`
+)

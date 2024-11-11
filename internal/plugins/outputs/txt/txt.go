@@ -87,10 +87,10 @@ func (n *Text) Filter(header string) bool {
 	return false
 }
 
-func (n *Text) Summary(report map[string]int) {
+func (n *Text) Summary(report map[string]string) {
 	fmt.Println("")
 	for k, v := range report {
-		fmt.Printf("%s %d   ", k, v)
+		fmt.Printf("%s %s   ", k, v)
 	}
 	fmt.Println("")
 }

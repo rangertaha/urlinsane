@@ -13,48 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-/*
-Urlinsane OSINT tool
-It uses tabs for indentation and blanks for alignment.
-Alignment assumes that an editor is using a fixed-width font.
 
-Without an explicit path, it processes the standard input. Given a file,
-it operates on that file; given a directory, it operates on all .go files in
-that directory, recursively. (Files starting with a period are ignored.)
-By default, gofmt prints the reformatted sources to standard output.
-
-Usage:
-
-	gofmt [flags] [path ...]
-
-The flags are:
-
-	-d
-	    Do not print reformatted sources to standard output.
-	    If a file's formatting is different than gofmt's, print diffs
-	    to standard output.
-	-w
-	    Do not print reformatted sources to standard output.
-	    If a file's formatting is different from gofmt's, overwrite it
-	    with gofmt's version. If an error occurred during overwriting,
-	    the original file is restored from an automatic backup.
-
-When gofmt reads from standard input, it accepts either a full Go program
-or a program fragment. A program fragment must be a syntactically
-valid declaration list, statement list, or expression. When formatting
-such a fragment, gofmt preserves leading indentation as well as leading
-and trailing spaces, so that individual sections of a Go program can be
-formatted by piping them through gofmt.
-*/
 package main
-
-// import "github.com/rangertaha/urlinsane/cmd/urlinsane"
-
-// func main() {
-// 	urlinsane.Execute()
-// }
-
-// package main
 
 import (
 	"fmt"
@@ -102,7 +62,7 @@ var TypoCmd = []*cli.Command{
 			&cli.IntFlag{
 				Name:     "workers",
 				Aliases:  []string{"w"},
-				Value:    5,
+				Value:    50,
 				Category: "PERFORMANCE",
 				Usage:    "number of concurrent workers",
 			},
@@ -171,29 +131,29 @@ var TypoCmd = []*cli.Command{
 			}
 
 			// Target domain
-			config.Conf.Set("target", cCtx.Args().First())
+			// config.Conf.Set("target", )
 
-			// PLUGINS
-			config.Conf.Set("languages", cCtx.String("languages"))
-			config.Conf.Set("keyboards", cCtx.String("keyboards"))
-			config.Conf.Set("algorithms", cCtx.String("algorithms"))
-			config.Conf.Set("collectors", cCtx.String("collectors"))
-			config.Conf.Set("database", "badger")
+			// // PLUGINS
+			// config.Conf.Set("languages", cCtx.String("languages"))
+			// config.Conf.Set("keyboards", cCtx.String("keyboards"))
+			// config.Conf.Set("algorithms", cCtx.String("algorithms"))
+			// config.Conf.Set("collectors", cCtx.String("collectors"))
+			// config.Conf.Set("database", "badger")
 
-			// PERFORMANCE
-			config.Conf.Set("workers", cCtx.String("workers"))
-			config.Conf.Set("random", cCtx.String("random"))
-			config.Conf.Set("delay", cCtx.String("delay"))
-			config.Conf.Set("timeout", cCtx.String("timeout"))
-			config.Conf.Set("ttl", cCtx.String("ttl"))
+			// // PERFORMANCE
+			// config.Conf.Set("workers", cCtx.String("workers"))
+			// config.Conf.Set("random", cCtx.String("random"))
+			// config.Conf.Set("delay", cCtx.String("delay"))
+			// config.Conf.Set("timeout", cCtx.String("timeout"))
+			// config.Conf.Set("ttl", cCtx.String("ttl"))
 
-			// OUTPUT
-			config.Conf.Set("verbose", cCtx.String("verbose"))
-			config.Conf.Set("file", cCtx.String("file"))
-			config.Conf.Set("format", cCtx.String("format"))
-			config.Conf.Set("progress", cCtx.String("progress"))
+			// // OUTPUT
+			// config.Conf.Set("verbose", cCtx.String("verbose"))
+			// config.Conf.Set("file", cCtx.String("file"))
+			// config.Conf.Set("format", cCtx.String("format"))
+			// config.Conf.Set("progress", cCtx.String("progress"))
 
-			cfg, err := config.CliConfig(config.Conf.String("target"))
+			cfg, err := config.CliConfig(cCtx)
 			if err != nil {
 				fmt.Printf("%s", err)
 				os.Exit(0)
