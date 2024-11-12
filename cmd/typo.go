@@ -65,7 +65,7 @@ var TypoCmd = cli.Command{
 		&cli.StringFlag{
 			Name:    "collectors",
 			Aliases: []string{"c"},
-			Value:   "idn,ip,geo",
+			Value:   "idn,ip,geo,ns,mx",
 			Usage:   "collectors IDs to use",
 		},
 		&cli.IntFlag{
@@ -90,7 +90,7 @@ var TypoCmd = cli.Command{
 		&cli.DurationFlag{
 			Name:     "timeout",
 			Aliases:  []string{"t"},
-			Value:    5 * time.Second,
+			Value:    20 * time.Second,
 			Category: "PERFORMANCE",
 			Usage:    "maximim duration tasks need to complete",
 		},
