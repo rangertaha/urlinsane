@@ -155,6 +155,8 @@ type Typo interface {
 
 type Accumulator interface {
 	Add(Domain)
+	Mkdir(root, dirname string) (string, error)
+	Mkfile(dirname, filename string, content []byte) (string, error)
 }
 
 type Language interface {

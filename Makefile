@@ -18,7 +18,7 @@ version: ## Returns the version number
 	@echo $(VERSION)
 
 
-build: deps test ## Build the binaries for Windows, OSX, and Linux
+build: deps ## Build the binaries for Windows, OSX, and Linux
 	mkdir -p build
 	cd cmd; $(GOBUILD) -o ../$(BDIR)/$(BINARY_NAME) -v
 	cd cmd; env GOOS=darwin GOARCH=amd64 $(GOBUILD) -o ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 -v

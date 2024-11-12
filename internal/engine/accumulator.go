@@ -1,6 +1,9 @@
 package engine
 
 import (
+	"os"
+	"path/filepath"
+
 	"github.com/rangertaha/urlinsane/internal"
 	log "github.com/sirupsen/logrus"
 )
@@ -25,6 +28,25 @@ func (ac *accumulator) Add(domain internal.Domain) {
 		"domain": domain.String(),
 	}).Debug("Accumulator:Add()")
 	ac.domains <- domain
+}
+
+func (c *accumulator) Mkdir(dirpath, name string) (dir string, err error) {
+	dir = filepath.Join(dirpath, name)
+	if err = os.MkdirAll(dir, 0750); err != nil {
+		return
+	}
+	return
+}
+func (c *accumulator) Mkfile(dir, name string, content []byte) (file string, err error) {
+	file = filepath.Join(dir, name)
+	_, err = os.Stat(file)
+	if os.IsNotExist(err) {
+		err = os.WriteFile(file, content, 0644)
+		if err != nil {
+			return
+		}
+	}
+	return
 }
 
 // func (ac *accumulator) AddGauge(
