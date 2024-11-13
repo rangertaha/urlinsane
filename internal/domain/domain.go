@@ -36,6 +36,7 @@ type Domain struct {
 	Metadata map[string]string          `json:"-"`              // Used for simplified table based output
 
 	// Internal use
+	input       string // Name provded by user
 	algo        internal.Algorithm
 	levenshtein int
 	active      bool
@@ -67,6 +68,7 @@ func New(name string) internal.Domain {
 		SufName:  domainutil.DomainSuffix(name),
 		Metadata: make(map[string]string),
 		Data:     make(map[string]json.RawMessage),
+		input:    name,
 	}
 }
 
@@ -80,6 +82,7 @@ func NewVariant(algo internal.Algorithm, names ...string) internal.Domain {
 		Metadata: make(map[string]string),
 		Data:     make(map[string]json.RawMessage),
 		algo:     algo,
+		input:    name,
 	}
 }
 
@@ -144,12 +147,12 @@ func (d *Domain) Valid() bool {
 	return d.Domain != ""
 }
 
-func (d *Domain) String(labels ...string) (name string) {
-	names := []string{d.PreName, d.Domain, d.SufName}
-	name = strings.Join(names, ".")
-	name = strings.ReplaceAll(name, "..", ".")
-	name = strings.Trim(name, ".")
-	return
+func (d *Domain) String() string {
+	// names := []string{d.PreName, d.Domain, d.SufName}
+	// name = strings.Join(names, ".")
+	// name = strings.ReplaceAll(name, "..", ".")
+	// name = strings.Trim(name, ".")
+	return d.input
 }
 
 func (d *Domain) Live(v ...bool) bool {
