@@ -16,63 +16,31 @@ package geo
 
 import (
 	"embed"
-	"fmt"
-	"io"
-	"strings"
 
-	"github.com/rainycape/geoip"
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/pkg"
 )
 
 //go:embed GeoLite2-City.mmdb
 var dataFile embed.FS
 
-type Plugin struct {
-	conf internal.Config
-	db   internal.Database
-}
+type Plugin struct{}
 
 func (i *Plugin) Init(c internal.Config) {
-	i.db = c.Database()
-	i.conf = c
+
 }
 
-func (n *Plugin) Headers() []string {
-	return []string{"GEO"}
-}
+func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
+	dns := make(pkg.DnsRecords, 0)
 
-func (n *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
-	var location string
-	if ipv4, ok := domain.GetMeta("IPv4").(string); ok {
-		for _, ip := range strings.Split(ipv4, " ") {
-			if loc, _ := n.getGeo(ip); loc != nil {
-				if loc.Country != nil {
-					location = loc.Country.Name.String()
-				}
-				if loc.City != nil {
-					location = fmt.Sprintf("%s, %s", location, loc.City.Name.String())
-				}
-				domain.SetMeta("GEO", location)
-			}
-		}
+	if err := acc.Unmarshal("DNS", &dns); err != nil {
+		return err
 	}
 
-	acc.Add(domain)
-	return
-}
-
-func (n *Plugin) getGeo(ip string) (r *geoip.Record, err error) {
-	file, err := dataFile.Open("GeoLite2-City.mmdb")
-	if err != nil {
-		return nil, err
+	if gip, err := NewGeoIp(dns.Array("A")...); err == nil {
+		acc.SetJson("GEO", gip.Json())
+		acc.SetMeta("GEO", gip.String())
 	}
 
-	defer file.Close()
-
-	db, err := geoip.New(file.(io.ReadSeeker))
-	if err != nil {
-		return nil, err
-	}
-
-	return db.Lookup(ip)
+	return acc.Next()
 }

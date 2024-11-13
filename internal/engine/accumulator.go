@@ -1,33 +1,31 @@
 package engine
 
 import (
+	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
 	log "github.com/sirupsen/logrus"
 )
 
-// type MetricMaker interface {
-// 	LogName() string
-// 	MakeMetric(m telegraf.Metric) telegraf.Metric
-// 	Log() telegraf.Logger
-// }
-
 type accumulator struct {
-	domains chan<- internal.Domain
+	out    chan<- internal.Domain
+	domain internal.Domain
 }
 
-func NewAccumulator(domains chan<- internal.Domain) internal.Accumulator {
-	acc := accumulator{domains: domains}
-	return &acc
+func NewAccumulator(out chan<- internal.Domain, domain internal.Domain) internal.Accumulator {
+	return &accumulator{
+		out:    out,
+		domain: domain,
+	}
 }
 
 func (ac *accumulator) Add(domain internal.Domain) {
-	log.WithFields(log.Fields{
-		"domain": domain.String(),
-	}).Debug("Accumulator:Add()")
-	ac.domains <- domain
+	log.WithFields(log.Fields{"domain": domain.String()}).Debug("Accumulator:Add()")
+	ac.out <- domain
 }
 
 func (c *accumulator) Mkdir(dirpath, name string) (dir string, err error) {
@@ -37,6 +35,7 @@ func (c *accumulator) Mkdir(dirpath, name string) (dir string, err error) {
 	}
 	return
 }
+
 func (c *accumulator) Mkfile(dir, name string, content []byte) (file string, err error) {
 	file = filepath.Join(dir, name)
 	_, err = os.Stat(file)
@@ -49,121 +48,51 @@ func (c *accumulator) Mkfile(dir, name string, content []byte) (file string, err
 	return
 }
 
-// func (ac *accumulator) AddGauge(
-// 	measurement string,
-// 	fields map[string]interface{},
-// 	tags map[string]string,
-// 	t ...time.Time,
-// ) {
-// 	ac.addMeasurement(measurement, tags, fields, telegraf.Gauge, t...)
-// }
+func (c *accumulator) Domain() internal.Domain {
+	return c.domain
+}
 
-// func (ac *accumulator) AddCounter(
-// 	measurement string,
-// 	fields map[string]interface{},
-// 	tags map[string]string,
-// 	t ...time.Time,
-// ) {
-// 	ac.addMeasurement(measurement, tags, fields, telegraf.Counter, t...)
-// }
+func (c *accumulator) GetJson(key string) json.RawMessage {
+	key = strings.ToLower(key)
+	return c.domain.GetData(key)
+}
 
-// func (ac *accumulator) AddSummary(
-// 	measurement string,
-// 	fields map[string]interface{},
-// 	tags map[string]string,
-// 	t ...time.Time,
-// ) {
-// 	ac.addMeasurement(measurement, tags, fields, telegraf.Summary, t...)
-// }
+func (c *accumulator) SetJson(key string, value json.RawMessage) {
+	key = strings.ToLower(key)
+	c.domain.SetData(key, value)
+}
 
-// func (ac *accumulator) AddHistogram(
-// 	measurement string,
-// 	fields map[string]interface{},
-// 	tags map[string]string,
-// 	t ...time.Time,
-// ) {
-// 	ac.addMeasurement(measurement, tags, fields, telegraf.Histogram, t...)
-// }
+func (c *accumulator) Unmarshal(key string, v interface{}) (err error) {
+	if data := c.GetJson(key); data != nil {
 
-// func (ac *accumulator) AddMetric(m telegraf.Metric) {
-// 	m.SetTime(m.Time().Round(ac.precision))
-// 	if m := ac.maker.MakeMetric(m); m != nil {
-// 		ac.metrics <- m
-// 	}
-// }
+		Source := (*json.RawMessage)(&data)
+		return json.Unmarshal(*Source, &v)
 
-// func (ac *accumulator) addMeasurement(
-// 	measurement string,
-// 	tags map[string]string,
-// 	fields map[string]interface{},
-// 	tp telegraf.ValueType,
-// 	t ...time.Time,
-// ) {
-// 	m := metric.New(measurement, tags, fields, ac.getTime(t), tp)
-// 	if m := ac.maker.MakeMetric(m); m != nil {
-// 		ac.metrics <- m
-// 	}
-// }
+		// Source := (*json.RawMessage)(&data)
+		// return json.Unmarshal(*Source, v)
+	}
 
-// // AddError passes a runtime error to the accumulator.
-// // The error will be tagged with the plugin name and written to the log.
-// func (ac *accumulator) AddError(err error) {
-// 	if err == nil {
-// 		return
-// 	}
-// 	ac.maker.Log().Errorf("Error in plugin: %v", err)
-// }
+	return fmt.Errorf("nothing to retrive")
+}
 
-// func (ac *accumulator) SetPrecision(precision time.Duration) {
-// 	ac.precision = precision
-// }
+func (c *accumulator) GetMeta(key string) (data string) {
+	return c.domain.GetMeta(key)
+}
 
-// func (ac *accumulator) getTime(t []time.Time) time.Time {
-// 	var timestamp time.Time
-// 	if len(t) > 0 {
-// 		timestamp = t[0]
-// 	} else {
-// 		timestamp = time.Now()
-// 	}
-// 	return timestamp.Round(ac.precision)
-// }
+func (c *accumulator) SetMeta(key string, value string) {
+	c.domain.SetMeta(key, value)
+}
 
-// func (ac *accumulator) WithTracking(maxTracked int) telegraf.TrackingAccumulator {
-// 	return &trackingAccumulator{
-// 		Accumulator: ac,
-// 		delivered:   make(chan telegraf.DeliveryInfo, maxTracked),
-// 	}
-// }
+func (c *accumulator) Save(key string, data []byte) (err error) {
+	return err
+}
 
-// type trackingAccumulator struct {
-// 	telegraf.Accumulator
-// 	delivered chan telegraf.DeliveryInfo
-// }
+func (c *accumulator) Next() (err error) {
+	c.Add(c.domain)
+	return err
+}
 
-// func (a *trackingAccumulator) AddTrackingMetric(m telegraf.Metric) telegraf.TrackingID {
-// 	dm, id := metric.WithTracking(m, a.onDelivery)
-// 	a.AddMetric(dm)
-// 	return id
-// }
-
-// func (a *trackingAccumulator) AddTrackingMetricGroup(group []telegraf.Metric) telegraf.TrackingID {
-// 	db, id := metric.WithGroupTracking(group, a.onDelivery)
-// 	for _, m := range db {
-// 		a.AddMetric(m)
-// 	}
-// 	return id
-// }
-
-// func (a *trackingAccumulator) Delivered() <-chan telegraf.DeliveryInfo {
-// 	return a.delivered
-// }
-
-// func (a *trackingAccumulator) onDelivery(info telegraf.DeliveryInfo) {
-// 	select {
-// 	case a.delivered <- info:
-// 	default:
-// 		// This is a programming error in the input.  More items were sent for
-// 		// tracking than space requested.
-// 		panic("channel is full")
-// 	}
-// }
+func (c *accumulator) Live(v ...bool) bool {
+	c.domain.Live(v...)
+	return c.domain.Live()
+}

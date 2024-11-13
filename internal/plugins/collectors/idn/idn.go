@@ -50,13 +50,12 @@ func (n *Plugin) Headers() []string {
 	return []string{"IDN"}
 }
 
-func (i *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
-	if punycode, err := idna.Punycode.ToASCII(domain.String()); err == nil {
-		domain.SetMeta("IDN", domain.Idn(punycode))
+func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
+	if punycode, err := idna.Punycode.ToASCII(acc.Domain().String()); err == nil {
+		acc.SetMeta("IDN", acc.Domain().Idn(punycode))
 	}
-	acc.Add(domain)
 
-	return
+	return acc.Next()
 }
 
 // Register the plugin
