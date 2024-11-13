@@ -16,9 +16,9 @@ package txt
 
 import (
 	"net"
-	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/pkg"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 )
 
@@ -56,24 +56,42 @@ func (n *Plugin) Headers() []string {
 	return []string{"TXT"}
 }
 
-func (i *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
-	cname, _ := i.db.Read(domain.String(), "TXT")
-	if cname != "" {
-		domain.SetMeta("TXT", cname)
-		domain.Live(true)
-		acc.Add(domain)
-		return
+func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
+	dns := make(pkg.DnsRecords, 0)
+	if err := acc.Unmarshal("DNS", &dns); err != nil {
+		return err
 	}
 
-	records, err := net.LookupTXT(domain.String())
-
-	if records == nil {
-		record := strings.Join(records, " ")
-		domain.SetMeta("TXT", record)
-		domain.Live(true)
-		err = i.db.Write(record, domain.String(), "TXT")
+	records, err := net.LookupTXT(acc.Domain().String())
+	if err != nil {
+		return err
 	}
-	acc.Add(domain)
+	for _, record := range records {
+		dns.Add("TXT", 0, record)
+	}
+	acc.SetMeta("TXT", dns.String("TXT"))
+	acc.SetJson("DNS", dns.Json())
+	acc.Domain().Live(true)
+
+	return acc.Next()
+
+	// cname, _ := i.db.Read(domain.String(), "TXT")
+	// if cname != "" {
+	// 	domain.SetMeta("TXT", cname)
+	// 	domain.Live(true)
+	// 	acc.Add(domain)
+	// 	return
+	// }
+
+	// records, err := net.LookupTXT(domain.String())
+
+	// if records == nil {
+	// 	record := strings.Join(records, " ")
+	// 	domain.SetMeta("TXT", record)
+	// 	domain.Live(true)
+	// 	err = i.db.Write(record, domain.String(), "TXT")
+	// }
+	// acc.Add(domain)
 	return
 }
 

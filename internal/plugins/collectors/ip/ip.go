@@ -19,74 +19,48 @@ import (
 	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
+	"github.com/rangertaha/urlinsane/internal/pkg"
 	log "github.com/sirupsen/logrus"
-)
-
-const (
-	ORDER       = 0 // We need this to run first
-	CODE        = "ip"
-	NAME        = "Ip Address"
-	DESCRIPTION = "Domain IPv4 and IPv6 addresses"
 )
 
 type Plugin struct {
 	// resolver resolver.Client
 	conf internal.Config
-	db   internal.Database
-}
-
-func (n *Plugin) Id() string {
-	return CODE
-}
-
-func (n *Plugin) Order() int {
-	return ORDER
 }
 
 func (i *Plugin) Init(c internal.Config) {
-	i.db = c.Database()
 	i.conf = c
 }
 
-func (n *Plugin) Description() string {
-	return DESCRIPTION
-}
+func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
+	dns := make(pkg.DnsRecords, 0)
+	// if err = acc.Unmarshal("DNS", dns); err == nil {
 
-func (n *Plugin) Headers() []string {
-	return []string{"IPv4", "IPv6"}
-}
+	// 	// Update simple table data
+	// 	acc.SetMeta("IPv4", dns.String("A"))
+	// 	acc.SetMeta("IPv6", dns.String("AAAA"))
+	// 	return acc.Next()
+	// }
 
-func (i *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
-	ipv4, _ := i.db.Read(domain.String(), "IPv4")
-	ipv6, _ := i.db.Read(domain.String(), "IPv6")
-	if ipv4 != "" || ipv6 != "" {
-		domain.SetMeta("IPv4", ipv4)
-		domain.SetMeta("IPv6", ipv6)
-		domain.Live(true)
-		acc.Add(domain)
-		return
-	}
+	// Retrive data
+	ipv4, ipv6 := i.getIp(acc.Domain().String())
+	dns.Add("A", 0, ipv4...)
+	dns.Add("AAAA", 0, ipv6...)
 
-	ipv4, ipv6 = i.getIp(domain.String())
+	// Update simple table data
+	acc.SetMeta("IPv4", dns.String("A"))
+	acc.SetMeta("IPv6", dns.String("AAAA"))
 
-	if ipv4 != "" || ipv6 != "" {
-		domain.SetMeta("IPv4", ipv4)
-		domain.SetMeta("IPv6", ipv6)
-		domain.Live(true)
-		_ = i.db.Write(ipv4, domain.String(), "IPv4")
-		err = i.db.Write(ipv6, domain.String(), "IPv6")
-	}
-	acc.Add(domain)
+	// Added to JSON data
+	acc.SetJson("DNS", dns.Json())
+	acc.Domain().Live(true)
 
-
-
-	return
+	return acc.Next()
 }
 
 func (i *Plugin) Close() {}
 
-func (i *Plugin) getIp(d string) (v4, v6 string) {
+func (i *Plugin) getIp(d string) (v4, v6 []string) {
 	var As []string
 	var AAAAs []string
 
@@ -102,12 +76,5 @@ func (i *Plugin) getIp(d string) (v4, v6 string) {
 			As = append(As, ip.String())
 		}
 	}
-	return strings.Join(As, " "), strings.Join(AAAAs, " ")
-}
-
-// Register the plugin
-func init() {
-	collectors.Add(CODE, func() internal.Collector {
-		return &Plugin{}
-	})
+	return As, AAAAs
 }

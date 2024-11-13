@@ -66,7 +66,6 @@ func (u *Urlinsane) Init() <-chan internal.Domain {
 	// used to store files and images we collect
 	if err := u.Mkdir(u.cfg.Target()); err != nil {
 		log.Error("Creating target directory", err)
-		// time.Sleep(1 * time.Second)
 	}
 
 	go func() {
@@ -163,7 +162,7 @@ func (u *Urlinsane) Algorithms(in <-chan internal.Domain) <-chan internal.Domain
 				defer wg.Done()
 				for domain := range in {
 
-					acc := NewAccumulator(out)
+					acc := NewAccumulator(out, u.target)
 					if err := domain.Algorithm().Exec(u.target, acc); err != nil {
 						log.Error("Algorithm failed: ", err)
 					}
@@ -265,7 +264,7 @@ func (u *Urlinsane) PostFilters(in <-chan internal.Domain) <-chan internal.Domai
 	return out
 }
 
-// InfoChain creates a chain of information-gathering functions
+// CollectorChain creates a chain of information-gathering functions
 func (u *Urlinsane) CollectorChain(funcs []internal.Collector, in <-chan internal.Domain) <-chan internal.Domain {
 	if len(funcs) == 0 {
 		log.Debug("No collectors to chain !")
@@ -275,7 +274,7 @@ func (u *Urlinsane) CollectorChain(funcs []internal.Collector, in <-chan interna
 	out := make(chan internal.Domain)
 	xfunc, funcs = funcs[len(funcs)-1], funcs[:len(funcs)-1]
 	go func() {
-		for i := range in {
+		for variant := range in {
 			if fn, ok := xfunc.(internal.Initializer); ok {
 				fn.Init(&u.cfg)
 			}
@@ -284,8 +283,8 @@ func (u *Urlinsane) CollectorChain(funcs []internal.Collector, in <-chan interna
 
 			// Execute the collector and timeout if it takes too long
 			ctx, cancel := context.WithTimeout(context.Background(), u.cfg.Timeout())
-			acc := NewAccumulator(out)
-			u.runner(ctx, xfunc, i, acc)
+			// acc := NewAccumulator(out)
+			u.runner(ctx, xfunc, variant, out)
 			cancel()
 		}
 		close(out)
@@ -298,9 +297,13 @@ func (u *Urlinsane) CollectorChain(funcs []internal.Collector, in <-chan interna
 	return out
 }
 
-func (u *Urlinsane) runner(ctx context.Context, fn internal.Collector, domain internal.Domain, acc internal.Accumulator) {
+func (u *Urlinsane) runner(ctx context.Context, fn internal.Collector, domain internal.Domain, out chan internal.Domain) {
 	logger := log.WithFields(log.Fields{"c": fn.Id(), "d": domain.String()})
-	fn.Exec(domain, acc)
+
+	// acc := NewAccumulator(out)
+	fn.Exec(NewAccumulator(out, domain))
+
+	// fn.Exec(domain, acc)
 	select {
 	case <-time.After(1 * time.Second):
 		logger.Info("Collector completed")

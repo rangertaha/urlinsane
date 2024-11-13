@@ -18,6 +18,7 @@ import (
 	"net"
 
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/pkg"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 )
 
@@ -54,24 +55,25 @@ func (n *Plugin) Headers() []string {
 	return []string{"CNAME"}
 }
 
-func (i *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
-	cname, _ := i.db.Read(domain.String(), "CNAME")
-	if cname != "" {
-		domain.SetMeta("CNAME", cname)
-		domain.Live(true)
-		acc.Add(domain)
-		return
+func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
+	dns := make(pkg.DnsRecords, 0)
+
+	if err := acc.Unmarshal("DNS", &dns); err != nil {
+		return err
 	}
 
-	cname, err = net.LookupCNAME(domain.String())
-
-	if cname != "" && err == nil {
-		domain.SetMeta("CNAME", cname)
-		domain.Live(true)
-		err = i.db.Write(cname, domain.String(), "CNAME")
+	cname, err := net.LookupCNAME(acc.Domain().String())
+	if err != nil {
+		return err
 	}
-	acc.Add(domain)
-	return
+	dns.Add("CNAME", 0, cname)
+
+	acc.SetMeta("CNAME", cname)
+	acc.SetJson("DNS", dns.Json())
+	acc.Domain().Live(true)
+
+
+	return acc.Next()
 }
 
 func (i *Plugin) Close() {}
