@@ -8,20 +8,15 @@ require github.com/gocolly/colly/v2 v2.1.0
 
 require (
 	github.com/agonopol/go-stem v0.0.0-20150630113328-985885018250
-	github.com/arpitgogia/rake v0.0.0-20180919172115-eef46a94533f
 	github.com/bobesa/go-domain-util v0.0.0-20190911083921-4033b5f7dd89
 	github.com/chromedp/chromedp v0.11.1
-	github.com/cybint/hackingo v0.0.0-20190908192737-924ede13fbff
 	github.com/d3mondev/resolvermt v0.3.2
 	github.com/dgraph-io/badger/v4 v4.3.1
 	github.com/glaslos/ssdeep v0.4.0
 	github.com/google/go-github/v50 v50.2.0
 	github.com/jedib0t/go-pretty/v6 v6.6.1
 	github.com/knadh/koanf/v2 v2.1.2
-	github.com/likexian/whois v1.15.5
-	github.com/likexian/whois-parser v1.24.20
 	github.com/miekg/dns v1.1.62
-	github.com/oschwald/geoip2-golang v1.11.0
 	github.com/rainycape/geoip v0.0.0-20170217195415-79e9946b7c4c
 	github.com/schollz/progressbar/v3 v3.17.0
 	github.com/sirupsen/logrus v1.9.3
@@ -65,12 +60,12 @@ require (
 	github.com/klauspost/compress v1.17.10 // indirect
 	github.com/knadh/koanf/maps v0.1.1 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
-	github.com/likexian/gokit v0.25.15 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
+	github.com/oschwald/geoip2-golang v1.11.0 // indirect
 	github.com/oschwald/maxminddb-golang v1.13.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect

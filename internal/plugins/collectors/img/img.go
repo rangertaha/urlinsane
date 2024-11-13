@@ -17,7 +17,6 @@ package img
 import (
 	"context"
 	"fmt"
-	"os"
 	"path/filepath"
 	"time"
 
@@ -56,7 +55,7 @@ func (i *Plugin) Init(c internal.Config) {
 	i.ctx, i.cancel = chromedp.NewContext(context.Background())
 	// defer cancel()
 
-	i.ctx, i.cancel = context.WithTimeout(i.ctx, 25*time.Second)
+	i.ctx, i.cancel = context.WithTimeout(i.ctx, 60*time.Second)
 	// defer cancel()
 }
 
@@ -68,9 +67,9 @@ func (p *Plugin) Headers() []string {
 	return []string{"SCREENSHOT"}
 }
 
-func (p *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
-	if domain.Live() {
-		assetDir, _ := acc.Mkdir(p.dir, domain.String())
+func (p *Plugin) Exec(acc internal.Accumulator) (err error) {
+	if acc.Live() {
+		// assetDir, _ := acc.Mkdir(p.dir, domain.String())
 		// create context
 		// ctx, cancel := chromedp.NewContext(context.Background())
 		// defer cancel()
@@ -79,23 +78,21 @@ func (p *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err err
 		// defer cancel()
 
 		var buf []byte
-		url := fmt.Sprintf("http://%s", domain)
+		url := fmt.Sprintf("http://%s", acc.Domain().String())
 		// capture entire browser viewport, returning png with quality=90
 		if err := chromedp.Run(p.ctx, fullScreenshot(url, 90, &buf)); err != nil {
-			url := fmt.Sprintf("https://%s", domain)
+			url := fmt.Sprintf("https://%s", acc.Domain().String())
 			if err := chromedp.Run(p.ctx, fullScreenshot(url, 90, &buf)); err != nil {
 				log.Error(err)
 			}
 		}
-		filename := filepath.Join(assetDir, "index.png")
-		if err := os.WriteFile(filename, buf, 0o644); err != nil {
+
+		if err := acc.Save("index.png", buf); err != nil {
 			log.Error(err)
 		} else {
-
-			domain.SetMeta("SCREENSHOT", domain.String()+"/"+"index.png")
+			acc.SetMeta("SCREENSHOT", acc.Domain().String()+"/"+"index.png")
 		}
 	}
-	acc.Add(domain)
 	return
 }
 

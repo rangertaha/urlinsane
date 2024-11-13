@@ -109,7 +109,7 @@ type Domain interface {
 	Prefix(...string) string
 	Name(...string) string
 	Suffix(...string) string
-	String(...string) string
+	String() string
 
 	// Metadata
 	Meta() map[string]string
@@ -159,6 +159,7 @@ type Accumulator interface {
 	// Mkdir(root, dirname string) (string, error)
 	// Mkfile(dirname, filename string, content []byte) (string, error)
 	Save(filename string, content []byte) error
+	Dir() string
 
 	Domain() Domain
 	GetJson(key string) json.RawMessage

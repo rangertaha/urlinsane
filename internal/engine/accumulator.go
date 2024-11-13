@@ -14,12 +14,14 @@ import (
 type accumulator struct {
 	out    chan<- internal.Domain
 	domain internal.Domain
+	cfg    internal.Config
 }
 
-func NewAccumulator(out chan<- internal.Domain, domain internal.Domain) internal.Accumulator {
+func NewAccumulator(out chan<- internal.Domain, domain internal.Domain, conf internal.Config) internal.Accumulator {
 	return &accumulator{
 		out:    out,
 		domain: domain,
+		cfg:    conf,
 	}
 }
 
@@ -83,7 +85,34 @@ func (c *accumulator) SetMeta(key string, value string) {
 	c.domain.SetMeta(key, value)
 }
 
-func (c *accumulator) Save(key string, data []byte) (err error) {
+func (c *accumulator) Dir() (dir string) {
+	dir = filepath.Join(c.cfg.Dir(), "domains", c.domain.String())
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		if err = os.MkdirAll(dir, 0750); err != nil {
+			log.Error(err)
+		}
+	}
+	return
+}
+
+func (c *accumulator) Save(name string, data []byte) (err error) {
+	dir := filepath.Join(c.cfg.Dir(), "domains", c.domain.String())
+	if _, err = os.Stat(dir); os.IsNotExist(err) {
+		if err = os.MkdirAll(dir, 0750); err != nil {
+			log.Error(err)
+			return
+		}
+	}
+
+	file := filepath.Join(dir, name)
+	if _, err = os.Stat(dir); os.IsNotExist(err) {
+		err = os.WriteFile(file, data, 0644)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+	}
+
 	return err
 }
 
