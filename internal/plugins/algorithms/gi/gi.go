@@ -31,7 +31,6 @@ type Algo struct {
 	config    internal.Config
 	languages []internal.Language
 	keyboards []internal.Keyboard
-	funcs     map[int]func(internal.Typo) []internal.Typo
 }
 
 func (n *Algo) Id() string {
@@ -39,7 +38,6 @@ func (n *Algo) Id() string {
 }
 
 func (n *Algo) Init(conf internal.Config) {
-	n.funcs = make(map[int]func(internal.Typo) []internal.Typo)
 	n.keyboards = conf.Keyboards()
 	n.languages = conf.Languages()
 	n.config = conf

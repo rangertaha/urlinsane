@@ -62,16 +62,6 @@ banner = true
 )
 
 type (
-	HTTPConfig struct {
-	}
-
-	DNSConfig struct {
-		RetryCount       int
-		QueriesPerSecond int
-		Concurrency      int
-		Servers          []string
-	}
-
 	Config struct {
 		domain string // Target domain
 
@@ -105,10 +95,6 @@ type (
 		unregistered bool
 		levenshtein  int
 		summary      bool
-
-		// DNS
-		// dns  DNSConfig
-		// http HTTPConfig
 	}
 
 	Infos             []internal.Collector

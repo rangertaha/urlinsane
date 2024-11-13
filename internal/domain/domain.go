@@ -1,17 +1,17 @@
-// // Copyright (C) 2024 Rangertaha
-// //
-// // This program is free software: you can redistribute it and/or modify
-// // it under the terms of the GNU General Public License as published by
-// // the Free Software Foundation, either version 3 of the License, or
-// // (at your option) any later version.
-// //
-// // This program is distributed in the hope that it will be useful,
-// // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// // GNU General Public License for more details.
-// //
-// // You should have received a copy of the GNU General Public License
-// // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright (C) 2024 Rangertaha
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package domain
 
 import (
@@ -31,22 +31,21 @@ type Domain struct {
 	FQDN     string `json:"fqdn"`
 	Punycode string `json:"idn"`
 
-	IsLive bool `json:"live,omitempty"`
-	// IPv4       []IP   `json:"ipv4,omitempty"`
-	// IPv6       []IP   `json:"ipv6,omitempty"`
-	// Banner     Banner `json:"response,omitempty"`
-	// Screenshot string `json:"screenshot,omitempty"`
-	// Html       string `json:"html,omitempty"`
-	// Ssdeep     string `json:"ssdeep,omitempty"`
+	IsLive   bool                       `json:"live,omitempty"`
+	Data     map[string]json.RawMessage `json:"data,omitempty"` // used for detailed JSON nested outputs
+	Metadata map[string]string          `json:"-"`              // Used for simplified table based output
 
-	// Dns   []DnsRecord   `json:"dns,omitempty"`
-	// Whois []WhoisRecord `json:"whois,omitempty"`
-
+	// Internal use
 	algo        internal.Algorithm
-	meta        map[string]interface{}
 	levenshtein int
 	active      bool
 }
+
+// type DnsRecord struct {
+// 	Type  string `json:"type,omitempty"`
+// 	Value string `json:"value,omitempty"`
+// 	TTL   int    `json:"ttl,omitempty"`
+// }
 
 // type Domain struct {
 // 	prefix string
@@ -62,39 +61,52 @@ type Domain struct {
 
 func New(name string) internal.Domain {
 	return &Domain{
-		FQDN:    name,
-		PreName: domainutil.Subdomain(name),
-		Domain:  domainutil.DomainPrefix(name),
-		SufName: domainutil.DomainSuffix(name),
-		meta:    make(map[string]interface{}),
+		FQDN:     name,
+		PreName:  domainutil.Subdomain(name),
+		Domain:   domainutil.DomainPrefix(name),
+		SufName:  domainutil.DomainSuffix(name),
+		Metadata: make(map[string]string),
+		Data:     make(map[string]json.RawMessage),
 	}
 }
 
 func NewVariant(algo internal.Algorithm, names ...string) internal.Domain {
 	name := strings.Join(names, ".")
 	return &Domain{
-		FQDN:    name,
-		PreName: domainutil.Subdomain(name),
-		Domain:  domainutil.DomainPrefix(name),
-		SufName: domainutil.DomainSuffix(name),
-		meta:    make(map[string]interface{}),
-		algo:    algo,
+		FQDN:     name,
+		PreName:  domainutil.Subdomain(name),
+		Domain:   domainutil.DomainPrefix(name),
+		SufName:  domainutil.DomainSuffix(name),
+		Metadata: make(map[string]string),
+		Data:     make(map[string]json.RawMessage),
+		algo:     algo,
 	}
 }
 
-func (t *Domain) Meta() map[string]interface{} {
-	return t.meta
+func (t *Domain) Meta() map[string]string {
+	return t.Metadata
 }
 
-func (t *Domain) SetMeta(key string, value interface{}) {
-	t.meta[key] = value
+func (t *Domain) SetMeta(key string, value string) {
+	t.Metadata[key] = value
 }
 
-func (t *Domain) GetMeta(key string) (value interface{}) {
-	if value, ok := t.meta[key]; ok {
+func (t *Domain) GetMeta(key string) (value string) {
+	if value, ok := t.Metadata[key]; ok {
 		return value
 	}
-	return nil
+	return
+}
+
+func (t *Domain) SetData(key string, value json.RawMessage) {
+	t.Data[key] = value
+}
+
+func (t *Domain) GetData(key string) (value json.RawMessage) {
+	if value, ok := t.Data[key]; ok {
+		return value
+	}
+	return
 }
 
 func (t *Domain) Algorithm() internal.Algorithm {
@@ -170,7 +182,7 @@ func (d *Domain) Ld(v ...int) int {
 func (d *Domain) Json() string {
 	jsonData, err := json.Marshal(d)
 	if err != nil {
-		log.Errorf("Error:", err)
+		log.Error("Error:", err)
 	}
 
 	return string(jsonData)

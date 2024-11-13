@@ -16,7 +16,6 @@ package web
 
 import (
 	"fmt"
-	"path/filepath"
 
 	"github.com/gocolly/colly/v2"
 	"github.com/rangertaha/urlinsane/internal"
@@ -33,9 +32,7 @@ const (
 
 type Plugin struct {
 	conf   internal.Config
-	db     internal.Database
 	client *colly.Collector
-	dir    string
 }
 
 func (p *Plugin) Id() string {
@@ -47,10 +44,10 @@ func (p *Plugin) Order() int {
 }
 
 func (i *Plugin) Init(c internal.Config) {
-	i.db = c.Database()
+	// i.db = c.Database()
 	i.conf = c
 	i.client = colly.NewCollector()
-	i.dir = filepath.Join(c.Dir(), "domains")
+	// i.dir = filepath.Join(c.Dir(), "domains")
 
 }
 
@@ -62,79 +59,87 @@ func (p *Plugin) Headers() []string {
 	return []string{"STATUS"}
 }
 
-func (p *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
-	if domain.Live() {
-		assetDir, err := acc.Mkdir(p.dir, domain.String())
-		if err != nil {
-			log.Error("AssetDir: ", err)
-		}
+func (p *Plugin) Exec(acc internal.Accumulator) (err error) {
+	res := &Response{
+		HTML: HTML{
+			Meta: []Metatags{},
+		},
+	}
+	if acc.Domain().Live() {
+
 		p.client.OnRequest(func(r *colly.Request) {
 			r.Headers.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
 		})
 
-		// p.client.OnResponse(func(r *colly.Response) {
-		// 	if strings.Contains(r.Headers.Get("Content-Type"), "video/mp4") {
-		// 		log.Println("dowloading")
-		// 		path := "./download/" + uuid.New().String() + ".mp4"
-		// 		err := r.Save(path)
-		// 		if err != nil {
-		// 			log.Println("dowload video error")
-		// 			log.Println(err)
-		// 			return
-		// 		}
-		// 		log.Println("dowloaded")
+		p.client.OnHTML("a[href]", func(e *colly.HTMLElement) {
+			href := e.Attr("href")
+			if len(href) > len(acc.Domain().String())+10 {
+				res.HTML.Links = append(res.HTML.Links, href)
+			}
+		})
+
+		p.client.OnHTML("img", func(e *colly.HTMLElement) {
+			src := e.Attr("src")
+			if len(src) > len(acc.Domain().String())+10 {
+				res.HTML.Images = append(res.HTML.Images, src)
+			}
+		})
+
+		// p.client.OnHTML("*", func(e *colly.HTMLElement) {
+		// 	text := strings.TrimSpace(e.Text)
+
+		// 	if len(text) > 5 {
+		// 		res.HTML.Texts = append(res.HTML.Texts, text)
 		// 	}
+
 		// })
 
-		// // On every a element which has href attribute call callback
-		// p.client.OnHTML("img", func(e *colly.HTMLElement) {
-		// 	// Get the URL of the image
-		// 	imgSrc := e.Attr("src")
+		p.client.OnHTML("title", func(e *colly.HTMLElement) {
+			res.HTML.Title = e.Text
+		})
 
-		// 	// Use absolute URL for the image
-		// 	imgSrc = e.Request.AbsoluteURL(imgSrc)
+		p.client.OnHTML("meta", func(e *colly.HTMLElement) {
+			res.HTML.Title = e.Text
+			meta := Metatags{
+				Property: e.Attr("property"),
+				Name:     e.Attr("name"),
+				Value:    e.Attr("content"),
+			}
+			res.HTML.Meta = append(res.HTML.Meta, meta)
 
-		// 	// Download the image
-		// 	fmt.Printf("Image found: %s\n", imgSrc)
-		// 	// Create a new folder to store images if it does not exist
-		// 	// os.MkdirAll("images", os.ModePerm)
-		// 	// Download the image and save to the file
-		// 	// fileName := "images/" + e.Attr("alt") + ".jpg"
-		// 	err := p.client.Visit(imgSrc)
-		// 	if err != nil {
-		// 		log.Printf("Failed to download image %s: %s", imgSrc, err)
-		// 		return
-		// 	}
-		// 	filename := filepath.Join(assetDir, "image.gif")
-		// 	p.client.sa Save(filename)
-
-		// })
+		})
 
 		p.client.OnError(func(r *colly.Response, err error) {
-			domain.SetMeta("STATUS", fmt.Sprint(r.StatusCode))
+			acc.SetMeta("STATUS", fmt.Sprint(r.StatusCode))
+			res.StatusCode = r.StatusCode
 		})
 
 		// attach callbacks after login
 		p.client.OnResponse(func(r *colly.Response) {
-			acc.Mkfile(assetDir, "index.html", r.Body)
-			domain.SetMeta("STATUS", fmt.Sprint(r.StatusCode))
-			domain.Live(true)
+			acc.SetMeta("STATUS", fmt.Sprint(r.StatusCode))
+			res.StatusCode = r.StatusCode
+			res.Headers = Header(*r.Headers)
+			res.URL = r.Request.URL.String()
+			acc.Save("index.html", r.Body)
 
+			// SSDeep
 			hash, err := ssdeep.FuzzyBytes(r.Body)
 			if err != nil {
-				// fmt.Println(err)
 				log.Error("SSDeep: ", err)
 			}
-			domain.SetMeta("HASH", hash)
+			res.SSDeep = hash
+
+			// Keyword Extraction
 
 		})
 
-		p.client.Visit(fmt.Sprintf("http://%s", domain.String()))
-		p.client.Visit(fmt.Sprintf("https://%s", domain.String()))
+		p.client.Visit(fmt.Sprintf("http://%s", acc.Domain().String()))
+		p.client.Visit(fmt.Sprintf("https://%s", acc.Domain().String()))
+
+		acc.SetJson("WEB", res.Json())
 
 	}
-	acc.Add(domain)
-	return
+	return acc.Next()
 }
 
 // Register the plugin
