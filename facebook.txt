@@ -1,7 +1,0 @@
-[32m1 CO facbook.com 157.240.241.17  facbook.com [0m
-[32m1 CO acebook.com acebook.com 31.13.71.1  [0m
-[32m1 CO fcebook.com  fcebook.com 157.240.241.17 [0m
-[32m1 CO faebook.com faebook.com 157.240.241.17  [0m
-[32m1 CO facebok.com 157.240.241.17  facebok.com [0m
-[32m1 CO faceook.com 157.240.241.17  faceook.com [0m
-[32m1 CO faceboo.com 157.240.241.17  faceboo.com [0m

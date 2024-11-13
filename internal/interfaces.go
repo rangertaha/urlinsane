@@ -15,9 +15,8 @@
 package internal
 
 import (
+	"encoding/json"
 	"time"
-
-	"github.com/rangertaha/urlinsane/internal/models"
 )
 
 type Initializer interface {
@@ -84,7 +83,7 @@ type Collector interface {
 	Order() int
 	Description() string
 	Headers() []string
-	Exec(Domain, Accumulator) error
+	Exec(Accumulator) error
 }
 
 type Database interface {
@@ -112,10 +111,12 @@ type Domain interface {
 	Suffix(...string) string
 	String(...string) string
 
-	// Metatable
-	Meta() map[string]interface{}
-	SetMeta(key string, value interface{})
-	GetMeta(key string) interface{}
+	// Metadata
+	Meta() map[string]string
+	SetMeta(key string, value string)
+	GetMeta(key string) (value string)
+	SetData(key string, value json.RawMessage)
+	GetData(key string) (value json.RawMessage)
 
 	Algorithm() Algorithm
 	Valid() bool
@@ -126,37 +127,47 @@ type Domain interface {
 	Idn(...string) string
 }
 
-type Table interface {
-	Metatable() map[string]interface{}
-	Set(key string, value interface{})
-	Get(key string) interface{}
-}
+// type Table interface {
+// 	Metatable() map[string]interface{}
+// 	Set(key string, value interface{})
+// 	Get(key string) interface{}
+// }
 
-type Typo interface {
-	Algo() Algorithm
-	Set(models.Domain, models.Domain)
-	Get() (models.Domain, models.Domain)
-	New(algo Algorithm, original models.Domain, variant models.Domain) Typo
+// type Typo interface {
+// 	Algo() Algorithm
+// 	Set(models.Domain, models.Domain)
+// 	Get() (models.Domain, models.Domain)
+// 	New(algo Algorithm, original models.Domain, variant models.Domain) Typo
 
-	String() string
-	Dist() int
-	// Threat() int
-	Live() bool
-	Valid() bool
+// 	String() string
+// 	Dist() int
+// 	// Threat() int
+// 	Live() bool
+// 	Valid() bool
 
-	Origin(...string) models.Domain
-	Derived(...string) models.Domain
+// 	Origin(...string) models.Domain
+// 	Derived(...string) models.Domain
 
-	// Metatable
-	Metatable() map[string]interface{}
-	SetMeta(key string, value interface{})
-	GetMeta(key string) interface{}
-}
+// 	// Metatable
+// 	Metatable() map[string]interface{}
+// 	SetMeta(key string, value interface{})
+// 	GetMeta(key string) interface{}
+// }
 
 type Accumulator interface {
 	Add(Domain)
-	Mkdir(root, dirname string) (string, error)
-	Mkfile(dirname, filename string, content []byte) (string, error)
+	// Mkdir(root, dirname string) (string, error)
+	// Mkfile(dirname, filename string, content []byte) (string, error)
+	Save(filename string, content []byte) error
+
+	Domain() Domain
+	GetJson(key string) json.RawMessage
+	SetJson(key string, data json.RawMessage)
+	Unmarshal(key string, v interface{}) error
+	GetMeta(key string) (data string)
+	SetMeta(key string, data string)
+	Next() (err error)
+	Live(...bool) bool
 }
 
 type Language interface {

@@ -16,9 +16,9 @@ package mx
 
 import (
 	"net"
-	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/pkg"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 )
 
@@ -55,29 +55,47 @@ func (n *Plugin) Headers() []string {
 	return []string{"MX"}
 }
 
-func (i *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
-	mx, _ := i.db.Read(domain.String(), "MX")
-	if mx != "" {
-		domain.SetMeta("MX", mx)
-		domain.Live(true)
-		acc.Add(domain)
-		return
+func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
+	dns := make(pkg.DnsRecords, 0)
+	if err := acc.Unmarshal("DNS", &dns); err != nil {
+		return err
 	}
 
-	records, err := net.LookupMX(domain.String())
-	if err == nil {
-		var answers []string
-		for _, mx := range records {
-			answers = append(answers, mx.Host)
-		}
-		record := strings.Join(answers, " ")
-		domain.SetMeta("MX", record)
-		domain.Live(true)
-
-		err = i.db.Write(record, domain.String(), "MX")
+	records, err := net.LookupMX(acc.Domain().String())
+	if err != nil {
+		return err
 	}
-	acc.Add(domain)
-	return
+	for _, record := range records {
+		dns.Add("MX", 0, record.Host)
+	}
+	acc.SetMeta("MX", dns.String("MX"))
+	acc.SetJson("DNS", dns.Json())
+	acc.Domain().Live(true)
+
+	return acc.Next()
+
+	// mx, _ := i.db.Read(domain.String(), "MX")
+	// if mx != "" {
+	// 	domain.SetMeta("MX", mx)
+	// 	domain.Live(true)
+	// 	acc.Add(domain)
+	// 	return
+	// }
+
+	// records, err := net.LookupMX(domain.String())
+	// if err == nil {
+	// 	var answers []string
+	// 	for _, mx := range records {
+	// 		answers = append(answers, mx.Host)
+	// 	}
+	// 	record := strings.Join(answers, " ")
+	// 	domain.SetMeta("MX", record)
+	// 	domain.Live(true)
+
+	// 	err = i.db.Write(record, domain.String(), "MX")
+	// }
+	// acc.Add(domain)
+	// return
 }
 
 func (i *Plugin) Close() {}

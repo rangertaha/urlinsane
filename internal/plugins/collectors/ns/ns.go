@@ -16,9 +16,9 @@ package ns
 
 import (
 	"net"
-	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/pkg"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 )
 
@@ -56,28 +56,46 @@ func (n *Plugin) Headers() []string {
 	return []string{"NS"}
 }
 
-func (i *Plugin) Exec(domain internal.Domain, acc internal.Accumulator) (err error) {
-	nsr, _ := i.db.Read(domain.String(), "NS")
-	if nsr != "" {
-		domain.SetMeta("NS", nsr)
-		domain.Live(true)
-		acc.Add(domain)
-		return
+func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
+	dns := make(pkg.DnsRecords, 0)
+	if err := acc.Unmarshal("DNS", &dns); err != nil {
+		return err
 	}
 
-	nss, err := net.LookupNS(domain.String())
-	if err == nil {
-		var answers []string
-		for _, ns := range nss {
-			answers = append(answers, ns.Host)
-		}
-		record := strings.Join(answers, " ")
-		domain.SetMeta("NS", record)
-		domain.Live(true)
-
-		err = i.db.Write(record, domain.String(), "NS")
+	records, err := net.LookupNS(acc.Domain().String())
+	if err != nil {
+		return err
 	}
-	acc.Add(domain)
+	for _, record := range records {
+		dns.Add("NS", 0, record.Host)
+	}
+	acc.SetMeta("NS", dns.String("NS"))
+	acc.SetJson("DNS", dns.Json())
+	acc.Domain().Live(true)
+
+	return acc.Next()
+
+	// nsr, _ := i.db.Read(domain.String(), "NS")
+	// if nsr != "" {
+	// 	domain.SetMeta("NS", nsr)
+	// 	domain.Live(true)
+	// 	acc.Add(domain)
+	// 	return
+	// }
+
+	// nss, err := net.LookupNS(domain.String())
+	// if err == nil {
+	// 	var answers []string
+	// 	for _, ns := range nss {
+	// 		answers = append(answers, ns.Host)
+	// 	}
+	// 	record := strings.Join(answers, " ")
+	// 	domain.SetMeta("NS", record)
+	// 	domain.Live(true)
+
+	// 	err = i.db.Write(record, domain.String(), "NS")
+	// }
+	// acc.Add(domain)
 	return
 }
 

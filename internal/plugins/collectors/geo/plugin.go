@@ -42,6 +42,10 @@ func (n *Plugin) Description() string {
 	return DESCRIPTION
 }
 
+func (n *Plugin) Headers() []string {
+	return []string{"GEO"}
+}
+
 // Register the plugin
 func init() {
 	collectors.Add(CODE, func() internal.Collector {
