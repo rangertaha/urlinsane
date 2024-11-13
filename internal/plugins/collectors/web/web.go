@@ -120,7 +120,12 @@ func (p *Plugin) Exec(acc internal.Accumulator) (err error) {
 			res.StatusCode = r.StatusCode
 			res.Headers = Header(*r.Headers)
 			res.URL = r.Request.URL.String()
-			acc.Save("index.html", r.Body)
+			// acc.Save("index.html", r.Body)
+			log.Debugf("Save file: %s", acc.Dir()+"/index.html")
+		
+			if err := r.Save(acc.Dir()+"/index.html"); err != nil {
+				log.Error(err)
+			}
 
 			// SSDeep
 			hash, err := ssdeep.FuzzyBytes(r.Body)

@@ -44,16 +44,18 @@ func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
 
 	// Retrive data
 	ipv4, ipv6 := i.getIp(acc.Domain().String())
-	dns.Add("A", 0, ipv4...)
-	dns.Add("AAAA", 0, ipv6...)
+	if len(ipv4) > 0 || len(ipv6) > 0 {
+		dns.Add("A", 0, ipv4...)
+		dns.Add("AAAA", 0, ipv6...)
 
-	// Update simple table data
-	acc.SetMeta("IPv4", dns.String("A"))
-	acc.SetMeta("IPv6", dns.String("AAAA"))
+		// Update simple table data
+		acc.SetMeta("IPv4", dns.String("A"))
+		acc.SetMeta("IPv6", dns.String("AAAA"))
 
-	// Added to JSON data
-	acc.SetJson("DNS", dns.Json())
-	acc.Domain().Live(true)
+		// Added to JSON data
+		acc.SetJson("DNS", dns.Json())
+		acc.Domain().Live(true)
+	}
 
 	return acc.Next()
 }

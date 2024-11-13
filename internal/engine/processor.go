@@ -68,52 +68,57 @@ func (u *Urlinsane) Init() <-chan internal.Domain {
 		log.Error("Creating target directory", err)
 	}
 
+	u.target = domain.New(u.cfg.Target())
+	log := log.WithFields(
+		log.Fields{"fqdn": u.target.String(), "prefix": u.target.Prefix(),
+			"name": u.target.Name(), "suffix": u.target.Suffix()})
+
+	// Initialize database plugins if needed
+	if db, ok := u.cfg.Database().(internal.Initializer); ok {
+		log.Debug("Init database:", u.cfg.Database().Id())
+		db.Init(&u.cfg)
+	}
+
+	// Initialize collector plugins if needed
+	log.Debug("Collectors:", len(u.cfg.Collectors()))
+	for _, info := range u.cfg.Collectors() {
+		if inf, ok := info.(internal.Initializer); ok {
+			log.Debug("Init collector:", info.Id())
+			inf.Init(&u.cfg)
+		}
+	}
+
+	// Initialize algorithm plugins if needed
+	log.Debug("Algorithms:", len(u.cfg.Algorithms()))
+	for _, algorithm := range u.cfg.Algorithms() {
+		if al, ok := algorithm.(internal.Initializer); ok {
+			log.Debug("Init algorithm: ", algorithm.Id())
+			al.Init(&u.cfg)
+		}
+	}
+
+	// Initialize analyzer plugins if needed
+	log.Debug("Analyzers:", len(u.cfg.Analyzers()))
+	for _, alz := range u.cfg.Analyzers() {
+		if anz, ok := alz.(internal.Initializer); ok {
+			log.Debug("Init analyzer:", alz.Id())
+			anz.Init(&u.cfg)
+		}
+	}
+
+	// Initialize output plugin if needed
+	if out, ok := u.cfg.Output().(internal.Initializer); ok {
+		log.Debug("Init output: ", u.cfg.Output().Id())
+		out.Init(&u.cfg)
+	}
+
+	// Send original domain down to get data collected about it
 	go func() {
-		// Initialize database plugins if needed
-		if db, ok := u.cfg.Database().(internal.Initializer); ok {
-			log.Debug("Init database:", u.cfg.Database().Id())
-			db.Init(&u.cfg)
-		}
-
-		// Initialize collector plugins if needed
-		log.Debug("Collectors:", len(u.cfg.Collectors()))
-		for _, info := range u.cfg.Collectors() {
-			if inf, ok := info.(internal.Initializer); ok {
-				log.Debug("Init collector:", info.Id())
-				inf.Init(&u.cfg)
-			}
-		}
-
-		// Initialize algorithm plugins if needed
-		log.Debug("Algorithms:", len(u.cfg.Algorithms()))
-		for _, algorithm := range u.cfg.Algorithms() {
-			if al, ok := algorithm.(internal.Initializer); ok {
-				log.Debug("Init algorithm: ", algorithm.Id())
-				al.Init(&u.cfg)
-			}
-		}
-
-		// Initialize analyzer plugins if needed
-		log.Debug("Analyzers:", len(u.cfg.Analyzers()))
-		for _, alz := range u.cfg.Analyzers() {
-			if anz, ok := alz.(internal.Initializer); ok {
-				log.Debug("Init analyzer:", alz.Id())
-				anz.Init(&u.cfg)
-			}
-		}
-
-		// Initialize output plugin if needed
-		if out, ok := u.cfg.Output().(internal.Initializer); ok {
-			log.Debug("Init output: ", u.cfg.Output().Id())
-			out.Init(&u.cfg)
-		}
-
-		// Send original domain down to get data collected about it
-		if original := domain.New(u.cfg.Target()); original.Valid() {
-			log.Debug("Target: ", original.String())
-			out <- original
+		if u.target.Valid() {
+			log.Debug("Target: ", u.target.String())
+			out <- u.target
 		} else {
-			log.Debugf("domain %s not valid.", original.String())
+			log.Debugf("domain %s not valid.", u.target.String())
 			u.Close()
 		}
 
@@ -129,19 +134,29 @@ func (u *Urlinsane) Init() <-chan internal.Domain {
 
 // Target collects the same info on the target domain
 func (u *Urlinsane) Target(in <-chan internal.Domain) <-chan internal.Domain {
+	// log := log.WithFields(log.Fields{"fqdn": u.target.String(), "prefix": u.target.Prefix(), "name": u.target.Name(), "suffix": u.target.Suffix()})
 	out := make(chan internal.Domain)
 
 	go func() {
 		// Collect info on target domain
-		u.target = <-u.CollectorChain(u.cfg.Collectors(), in)
-		log.Debug("Target domain: ", u.target.String())
+		// log.Error("collect data on target")
+		// if target := <-u.CollectorChain(u.cfg.Collectors(), in); u.target != nil {
+		// 	u.target = target
+		// } else {
+		// 	log.Error("unable to create collect data on target")
+		// }
 
-		// Print report of target domain
-		log.Debug("Generate domain report: ", u.target.String())
+		// // Print report of target domain
+		// log.Debug("Generate domain report: ", u.target.String())
 
 		// Send origianl domain downstream
-		for _, algorithm := range u.cfg.Algorithms() {
-			out <- domain.NewVariant(algorithm, u.target.String())
+		for origin := range in {
+			// if origin.Algorithm() == nil {
+			// 	out <- origin
+			// }
+			for _, algorithm := range u.cfg.Algorithms() {
+				out <- domain.NewVariant(algorithm, origin.String())
+			}
 		}
 
 		close(out)
@@ -162,7 +177,7 @@ func (u *Urlinsane) Algorithms(in <-chan internal.Domain) <-chan internal.Domain
 				defer wg.Done()
 				for domain := range in {
 
-					acc := NewAccumulator(out, u.target)
+					acc := NewAccumulator(out, u.target, &u.cfg)
 					if err := domain.Algorithm().Exec(u.target, acc); err != nil {
 						log.Error("Algorithm failed: ", err)
 					}
@@ -175,9 +190,9 @@ func (u *Urlinsane) Algorithms(in <-chan internal.Domain) <-chan internal.Domain
 			close(out)
 		}()
 
-		return u.PreFilters(out)
+		return out
 	}
-	return u.PreFilters(in)
+	return in
 }
 
 func (u *Urlinsane) PreFilters(in <-chan internal.Domain) <-chan internal.Domain {
@@ -191,7 +206,7 @@ func (u *Urlinsane) PreFilters(in <-chan internal.Domain) <-chan internal.Domain
 				variants[typo.String()] = true
 
 				// Make sure the variant does not match the original
-				if typo.String() != u.target.String() {
+				if typo != nil {
 
 					// Set Levenshtein distance
 					//   https://en.wikipedia.org/wiki/Levenshtein_distance
@@ -228,6 +243,7 @@ func (u *Urlinsane) Collectors(in <-chan internal.Domain) <-chan internal.Domain
 			go func(in <-chan internal.Domain, out chan<- internal.Domain) {
 				defer wg.Done()
 				for c := range u.CollectorChain(u.cfg.Collectors(), in) {
+					log.Debugf("Collection chain completed for %s", c.String())
 					out <- c
 				}
 			}(in, out)
@@ -236,27 +252,55 @@ func (u *Urlinsane) Collectors(in <-chan internal.Domain) <-chan internal.Domain
 			wg.Wait()
 			close(out)
 		}()
-		return u.PostFilters(out)
+		return out
 	}
 	log.Debug("No collectors !")
-	return u.PostFilters(in)
+	return in
 }
 
 func (u *Urlinsane) PostFilters(in <-chan internal.Domain) <-chan internal.Domain {
 	out := make(chan internal.Domain)
+	logger := log.WithFields(log.Fields{"reg": u.cfg.Registered(), "unreg": u.cfg.Unregistered()})
 
 	go func() {
 		for typo := range in {
 			if typo.Live() {
 				u.live++
 			}
-			if typo.Live() && u.cfg.Registered() {
-				out <- typo
-			} else if !typo.Live() && u.cfg.Unregistered() {
-				out <- typo
-			} else if !u.cfg.Registered() && !u.cfg.Unregistered() {
-				out <- typo
+			logger = logger.WithFields(log.Fields{"d": typo.String(), "live": typo.Live(), "ld": typo.Ld()})
+			logger.Debug("Filtering domain")
+
+			if u.cfg.Registered() {
+				if typo.Live() {
+					logger.Debug("Filter allowing registered")
+					out <- typo
+				}
 			}
+
+			if u.cfg.Unregistered() {
+				if !typo.Live() {
+					logger.Debug("Filter allowing unregistered")
+					out <- typo
+				}
+			}
+
+			if u.cfg.Unregistered() == u.cfg.Registered() {
+				logger.Debug("Filter allowing all")
+				out <- typo
+
+			}
+
+			// if typo.Live() == u.cfg.Registered() {
+			// 	logger.Debug("Filter allowing registered domain")
+			// 	out <- typo
+			// } else if typo.Live() == !u.cfg.Unregistered() {
+			// 	logger.Debug("Filter allowing unregistered domain")
+			// 	out <- typo
+			// } else  {
+			// 	logger.Debug("Filter allow all domains")
+			// 	out <- typo
+			// }
+			// out <- typo
 		}
 		close(out)
 	}()
@@ -301,19 +345,23 @@ func (u *Urlinsane) runner(ctx context.Context, fn internal.Collector, domain in
 	logger := log.WithFields(log.Fields{"c": fn.Id(), "d": domain.String()})
 
 	// acc := NewAccumulator(out)
-	fn.Exec(NewAccumulator(out, domain))
-
+	fn.Exec(NewAccumulator(out, domain, &u.cfg))
 	// fn.Exec(domain, acc)
+
 	select {
 	case <-time.After(1 * time.Second):
-		logger.Info("Collector completed")
+		logger.Infof("Collector %s completed", fn.Id())
 	case <-ctx.Done():
 		logger.Error("Collector timed out:", ctx.Err())
+		out <- domain
 	}
 }
 
 func (u *Urlinsane) Analyzers(in <-chan internal.Domain) <-chan internal.Domain {
-
+	if len(u.cfg.Analyzers()) == 0 {
+		log.Debug("No analyzers to run !")
+		return in
+	}
 	return in
 }
 
@@ -338,10 +386,14 @@ func (u *Urlinsane) Progress(in <-chan internal.Domain) <-chan internal.Domain {
 }
 
 func (u *Urlinsane) Output(in <-chan internal.Domain) {
+	logger := log.WithFields(log.Fields{"output": u.cfg.Output().Id()})
 	output := u.cfg.Output()
 
 	// Send domain typos to the output plugin
+
 	for c := range in {
+		logger.WithFields(log.Fields{"d": c.String()}).
+			Debug("Sending to output")
 		output.Read(c)
 	}
 
@@ -376,6 +428,8 @@ func (u *Urlinsane) Close() {
 
 	// Close db
 	u.cfg.Database().Close()
+
+	// os.Exit(1)
 }
 
 func (u *Urlinsane) Mkdir(dir string) (err error) {
@@ -387,7 +441,9 @@ func (u *Urlinsane) Execute() (err error) {
 	typos := u.Init()
 	typos = u.Target(typos)
 	typos = u.Algorithms(typos)
+	typos = u.PreFilters(typos)
 	typos = u.Collectors(typos)
+	typos = u.PostFilters(typos)
 	typos = u.Analyzers(typos)
 	typos = u.Progress(typos)
 	u.Output(typos)
@@ -405,7 +461,7 @@ func (u *Urlinsane) Stream() <-chan internal.Domain {
 }
 
 func Banner(cfg config.Config) {
-	var lang, board, algo []string
+	var lang, board, algo, collectors []string
 	t := time.Now()
 	timestamp := t.Format("2006-01-02 15:04:05")
 	name := text.FgRed.Sprint(cfg.Target())
@@ -418,6 +474,9 @@ func Banner(cfg config.Config) {
 	for _, a := range cfg.Algorithms() {
 		algo = append(algo, a.Id())
 	}
+	for _, c := range cfg.Collectors() {
+		collectors = append(collectors, c.Id())
+	}
 	fmt.Printf(
 		internal.BANNER,
 		internal.VERSION,
@@ -425,6 +484,7 @@ func Banner(cfg config.Config) {
 		strings.Join(lang, ","),
 		strings.Join(board, ","),
 		strings.Join(algo, ","),
+		strings.Join(collectors, ","),
 		cfg.Output().Id(),
 		timestamp,
 	)

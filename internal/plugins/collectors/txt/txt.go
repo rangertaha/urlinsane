@@ -92,7 +92,7 @@ func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
 	// 	err = i.db.Write(record, domain.String(), "TXT")
 	// }
 	// acc.Add(domain)
-	return
+	// return
 }
 
 func (i *Plugin) Close() {}
