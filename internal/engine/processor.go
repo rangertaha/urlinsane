@@ -35,7 +35,6 @@ type (
 	// Urlinsane ...
 	Urlinsane struct {
 		cfg *config.Config
-		// kv  internal.Database
 
 		// Domain
 		target internal.Domain
@@ -56,7 +55,6 @@ func New(conf *config.Config) (u *Urlinsane) {
 		cfg:      conf,
 		started:  time.Now(),
 		progress: progressbar.DefaultSilent(1000),
-		// kv:       conf.Database(),
 	}
 }
 
@@ -64,13 +62,8 @@ func New(conf *config.Config) (u *Urlinsane) {
 func (u *Urlinsane) Init() <-chan internal.Domain {
 	out := make(chan internal.Domain)
 
-	// Create application directory for the target domains
-	// used to store files and images we collect
-	if err := u.Mkdir(u.cfg.Target()); err != nil {
-		log.Error("Creating target directory", err)
-	}
-
 	u.target = domain.New(u.cfg.Target())
+
 	log := log.WithFields(
 		log.Fields{"fqdn": u.target.String(), "prefix": u.target.Prefix(),
 			"name": u.target.Name(), "suffix": u.target.Suffix()})
@@ -154,11 +147,11 @@ func (u *Urlinsane) Target(in <-chan internal.Domain) <-chan internal.Domain {
 		// Send origianl domain downstream
 		for origin := range in {
 			// if origin.Algorithm() == nil {
-			// 	out <- origin
+			out <- origin
 			// }
 			for _, algorithm := range u.cfg.Algorithms() {
 				log.Debugf("Adding %s algo to %s for typo gen", algorithm.Id(), origin.String())
-				out <- domain.NewVariant(algorithm, origin.String())
+				out <- domain.Variant(algorithm, origin.String(), origin.String())
 			}
 		}
 
@@ -179,11 +172,14 @@ func (u *Urlinsane) Algorithms(in <-chan internal.Domain) <-chan internal.Domain
 			go func(id int, in <-chan internal.Domain, out chan<- internal.Domain) {
 				defer wg.Done()
 				for domain := range in {
-
-					acc := NewAccumulator(out, u.target, u.cfg)
-					log.Debugf("Executing %s algo", domain.Algorithm().Id())
-					if err := domain.Algorithm().Exec(u.target, acc); err != nil {
-						log.Error("Algorithm failed: ", err)
+					if domain.Algorithm() != nil {
+						acc := NewAccumulator(out, u.target, u.cfg)
+						log.Debugf("Executing %s algo", domain.Algorithm().Id())
+						if err := domain.Algorithm().Exec(u.target, acc); err != nil {
+							log.Error("Algorithm failed: ", err)
+						}
+					} else {
+						out <- domain
 					}
 				}
 			}(w, in, out)
@@ -259,6 +255,22 @@ func (u *Urlinsane) ReadCache(in <-chan internal.Domain) <-chan internal.Domain 
 	return out
 }
 
+// func (u *Urlinsane) Collectors(in <-chan internal.Domain) <-chan internal.Domain {
+// 	out := make(chan internal.Domain)
+
+// 	go func() {
+// 		for domain := range in {
+// 			if domain.Cached() {
+// 				return u.PostFilters(in)
+// 			}
+// 			return
+
+// 		}
+// 		close(out)
+// 	}()
+
+//		return u.CollectorWorkers(in)
+//	}
 func (u *Urlinsane) Collectors(in <-chan internal.Domain) <-chan internal.Domain {
 	if len(u.cfg.Collectors()) > 0 {
 		out := make(chan internal.Domain)
@@ -283,31 +295,6 @@ func (u *Urlinsane) Collectors(in <-chan internal.Domain) <-chan internal.Domain
 	log.Debug("No collectors !")
 	return in
 }
-func (u *Urlinsane) CollectorWorkers(in <-chan internal.Domain) <-chan internal.Domain {
-	if len(u.cfg.Collectors()) > 0 {
-		out := make(chan internal.Domain)
-		var wg sync.WaitGroup
-
-		for w := 1; w <= u.cfg.Workers(); w++ {
-			wg.Add(1)
-			go func(in <-chan internal.Domain, out chan<- internal.Domain) {
-				defer wg.Done()
-				for c := range u.CollectorChain(u.cfg.Collectors(), in) {
-					log.Debugf("Collection chain completed for %s", c.String())
-					out <- c
-				}
-			}(in, out)
-		}
-		go func() {
-			wg.Wait()
-			close(out)
-		}()
-		return out
-	}
-	log.Debug("No collectors !")
-	return in
-}
-
 
 func (u *Urlinsane) WriteCache(in <-chan internal.Domain) <-chan internal.Domain {
 	out := make(chan internal.Domain)
@@ -405,9 +392,18 @@ func (u *Urlinsane) CollectorChain(funcs []internal.Collector, in <-chan interna
 func (u *Urlinsane) runner(ctx context.Context, fn internal.Collector, domain internal.Domain, out chan internal.Domain) {
 	logger := log.WithFields(log.Fields{"c": fn.Id(), "d": domain.String()})
 
-	// acc := NewAccumulator(out)
-	fn.Exec(NewAccumulator(out, domain, u.cfg))
-	// fn.Exec(domain, acc)
+	// if domain.Cache(fn.Id()) {
+	// 	out <- domain
+	// } else if err := fn.Exec(NewAccumulator(out, domain, u.cfg)); err != nil {
+	//    domain.Cache(fn.Id())
+	//  }
+	// }
+
+	if domain.Cached() {
+		out <- domain
+	} else {
+		fn.Exec(NewAccumulator(out, domain, u.cfg))
+	}
 
 	select {
 	case <-time.After(1 * time.Second):
@@ -450,12 +446,21 @@ func (u *Urlinsane) Output(in <-chan internal.Domain) {
 	logger := log.WithFields(log.Fields{"output": u.cfg.Output().Id()})
 	output := u.cfg.Output()
 
-	// Send domain typos to the output plugin
-
 	for c := range in {
 		logger.WithFields(log.Fields{"d": c.String()}).
 			Debug("Sending to output")
-		output.Read(c)
+
+		// Send domain typos to the output plugin
+		if c.Algorithm() != nil {
+			output.Read(c)
+		}
+
+		// Save domain to directory
+		if u.cfg.AssetDir() != "" {
+			if err := c.Save(u.cfg.AssetDir()); err != nil {
+				logger.Error("Saving: ", err)
+			}
+		}
 	}
 
 	// Writes output if it can't stream
@@ -491,11 +496,6 @@ func (u *Urlinsane) Close() {
 	u.cfg.Database().Close()
 
 	// os.Exit(1)
-}
-
-func (u *Urlinsane) Mkdir(dir string) (err error) {
-
-	return
 }
 
 func (u *Urlinsane) Execute() (err error) {
