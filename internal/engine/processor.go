@@ -34,7 +34,8 @@ type (
 
 	// Urlinsane ...
 	Urlinsane struct {
-		cfg config.Config
+		cfg *config.Config
+		// kv  internal.Database
 
 		// Domain
 		target internal.Domain
@@ -49,12 +50,13 @@ type (
 )
 
 // NewUrlinsane ...
-func New(conf config.Config) (u Urlinsane) {
-	return Urlinsane{
+func New(conf *config.Config) (u *Urlinsane) {
+	return &Urlinsane{
 		total:    0,
 		cfg:      conf,
 		started:  time.Now(),
 		progress: progressbar.DefaultSilent(1000),
+		// kv:       conf.Database(),
 	}
 }
 
@@ -76,7 +78,7 @@ func (u *Urlinsane) Init() <-chan internal.Domain {
 	// Initialize database plugins if needed
 	if db, ok := u.cfg.Database().(internal.Initializer); ok {
 		log.Debug("Init database:", u.cfg.Database().Id())
-		db.Init(&u.cfg)
+		db.Init(u.cfg)
 	}
 
 	// Initialize collector plugins if needed
@@ -84,7 +86,7 @@ func (u *Urlinsane) Init() <-chan internal.Domain {
 	for _, info := range u.cfg.Collectors() {
 		if inf, ok := info.(internal.Initializer); ok {
 			log.Debug("Init collector:", info.Id())
-			inf.Init(&u.cfg)
+			inf.Init(u.cfg)
 		}
 	}
 
@@ -93,7 +95,7 @@ func (u *Urlinsane) Init() <-chan internal.Domain {
 	for _, algorithm := range u.cfg.Algorithms() {
 		if al, ok := algorithm.(internal.Initializer); ok {
 			log.Debug("Init algorithm: ", algorithm.Id())
-			al.Init(&u.cfg)
+			al.Init(u.cfg)
 		}
 	}
 
@@ -102,14 +104,14 @@ func (u *Urlinsane) Init() <-chan internal.Domain {
 	for _, alz := range u.cfg.Analyzers() {
 		if anz, ok := alz.(internal.Initializer); ok {
 			log.Debug("Init analyzer:", alz.Id())
-			anz.Init(&u.cfg)
+			anz.Init(u.cfg)
 		}
 	}
 
 	// Initialize output plugin if needed
 	if out, ok := u.cfg.Output().(internal.Initializer); ok {
 		log.Debug("Init output: ", u.cfg.Output().Id())
-		out.Init(&u.cfg)
+		out.Init(u.cfg)
 	}
 
 	// Send original domain down to get data collected about it
@@ -155,6 +157,7 @@ func (u *Urlinsane) Target(in <-chan internal.Domain) <-chan internal.Domain {
 			// 	out <- origin
 			// }
 			for _, algorithm := range u.cfg.Algorithms() {
+				log.Debugf("Adding %s algo to %s for typo gen", algorithm.Id(), origin.String())
 				out <- domain.NewVariant(algorithm, origin.String())
 			}
 		}
@@ -177,7 +180,8 @@ func (u *Urlinsane) Algorithms(in <-chan internal.Domain) <-chan internal.Domain
 				defer wg.Done()
 				for domain := range in {
 
-					acc := NewAccumulator(out, u.target, &u.cfg)
+					acc := NewAccumulator(out, u.target, u.cfg)
+					log.Debugf("Executing %s algo", domain.Algorithm().Id())
 					if err := domain.Algorithm().Exec(u.target, acc); err != nil {
 						log.Error("Algorithm failed: ", err)
 					}
@@ -211,10 +215,14 @@ func (u *Urlinsane) PreFilters(in <-chan internal.Domain) <-chan internal.Domain
 					// Set Levenshtein distance
 					//   https://en.wikipedia.org/wiki/Levenshtein_distance
 					dist := fuzzy.Levenshtein(typo.String(), u.target.String())
+					logger := log.WithFields(log.Fields{"min": u.cfg.Distance(), "dist": dist, "d": typo.String()})
+					logger.Debug("Levenshtein distance")
 					typo.Ld(dist)
 
-					if dist >= u.cfg.Distance() {
+					if dist <= u.cfg.Distance() {
 						out <- typo
+					} else {
+						logger.Warn("Does not have the levenshtein minimum distance")
 					}
 				}
 			}
@@ -226,6 +234,24 @@ func (u *Urlinsane) PreFilters(in <-chan internal.Domain) <-chan internal.Domain
 		// Show optional progress bar
 		if u.cfg.Progress() {
 			u.progress = progressbar.Default(u.total)
+		}
+		close(out)
+	}()
+
+	return out
+}
+
+func (u *Urlinsane) ReadCache(in <-chan internal.Domain) <-chan internal.Domain {
+	out := make(chan internal.Domain)
+
+	go func() {
+		for domain := range in {
+			log.Debugf("Reading from cache: %s", domain.String())
+			if data, _ := u.cfg.Database().Read(domain.String()); data != "" {
+				domain.Json(data)
+				log.Debug("From cache", data)
+			}
+			out <- domain
 		}
 		close(out)
 	}()
@@ -256,6 +282,53 @@ func (u *Urlinsane) Collectors(in <-chan internal.Domain) <-chan internal.Domain
 	}
 	log.Debug("No collectors !")
 	return in
+}
+func (u *Urlinsane) CollectorWorkers(in <-chan internal.Domain) <-chan internal.Domain {
+	if len(u.cfg.Collectors()) > 0 {
+		out := make(chan internal.Domain)
+		var wg sync.WaitGroup
+
+		for w := 1; w <= u.cfg.Workers(); w++ {
+			wg.Add(1)
+			go func(in <-chan internal.Domain, out chan<- internal.Domain) {
+				defer wg.Done()
+				for c := range u.CollectorChain(u.cfg.Collectors(), in) {
+					log.Debugf("Collection chain completed for %s", c.String())
+					out <- c
+				}
+			}(in, out)
+		}
+		go func() {
+			wg.Wait()
+			close(out)
+		}()
+		return out
+	}
+	log.Debug("No collectors !")
+	return in
+}
+
+
+func (u *Urlinsane) WriteCache(in <-chan internal.Domain) <-chan internal.Domain {
+	out := make(chan internal.Domain)
+
+	go func() {
+		kv := u.cfg.Database()
+		for domain := range in {
+			if !domain.Cached() {
+				json := domain.Json()
+				if err := kv.Write(json, domain.String()); err != nil {
+					log.Error(err)
+				}
+				log.Debug("Saved to cache:", json)
+			}
+
+			out <- domain
+		}
+		close(out)
+	}()
+
+	return out
 }
 
 func (u *Urlinsane) PostFilters(in <-chan internal.Domain) <-chan internal.Domain {
@@ -289,18 +362,6 @@ func (u *Urlinsane) PostFilters(in <-chan internal.Domain) <-chan internal.Domai
 				out <- typo
 
 			}
-
-			// if typo.Live() == u.cfg.Registered() {
-			// 	logger.Debug("Filter allowing registered domain")
-			// 	out <- typo
-			// } else if typo.Live() == !u.cfg.Unregistered() {
-			// 	logger.Debug("Filter allowing unregistered domain")
-			// 	out <- typo
-			// } else  {
-			// 	logger.Debug("Filter allow all domains")
-			// 	out <- typo
-			// }
-			// out <- typo
 		}
 		close(out)
 	}()
@@ -320,7 +381,7 @@ func (u *Urlinsane) CollectorChain(funcs []internal.Collector, in <-chan interna
 	go func() {
 		for variant := range in {
 			if fn, ok := xfunc.(internal.Initializer); ok {
-				fn.Init(&u.cfg)
+				fn.Init(u.cfg)
 			}
 			// Timing options
 			time.Sleep(u.cfg.Random() * u.cfg.Delay())
@@ -345,7 +406,7 @@ func (u *Urlinsane) runner(ctx context.Context, fn internal.Collector, domain in
 	logger := log.WithFields(log.Fields{"c": fn.Id(), "d": domain.String()})
 
 	// acc := NewAccumulator(out)
-	fn.Exec(NewAccumulator(out, domain, &u.cfg))
+	fn.Exec(NewAccumulator(out, domain, u.cfg))
 	// fn.Exec(domain, acc)
 
 	select {
@@ -442,7 +503,9 @@ func (u *Urlinsane) Execute() (err error) {
 	typos = u.Target(typos)
 	typos = u.Algorithms(typos)
 	typos = u.PreFilters(typos)
+	typos = u.ReadCache(typos)
 	typos = u.Collectors(typos)
+	typos = u.WriteCache(typos)
 	typos = u.PostFilters(typos)
 	typos = u.Analyzers(typos)
 	typos = u.Progress(typos)
@@ -460,7 +523,7 @@ func (u *Urlinsane) Stream() <-chan internal.Domain {
 	return typos
 }
 
-func Banner(cfg config.Config) {
+func Banner(cfg *config.Config) {
 	var lang, board, algo, collectors []string
 	t := time.Now()
 	timestamp := t.Format("2006-01-02 15:04:05")

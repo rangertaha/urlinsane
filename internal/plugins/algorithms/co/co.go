@@ -54,6 +54,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	algo "github.com/rangertaha/urlinsane/pkg/typo"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -64,6 +65,7 @@ const (
 
 type Algo struct {
 	config internal.Config
+	log *log.Entry
 }
 
 func (a *Algo) Id() string {
@@ -71,6 +73,7 @@ func (a *Algo) Id() string {
 }
 
 func (a *Algo) Init(conf internal.Config) {
+	a.log = log.WithFields(log.Fields{"type": "algo","plugin": CODE})
 	a.config = conf
 }
 
@@ -82,11 +85,16 @@ func (a *Algo) Description() string {
 }
 
 func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
+	l := n.log.WithFields(log.Fields{"domain": original.String(), "method": "Exec"})
+	var total int
 	for _, variant := range algo.CharacterOmission(original.Name()) {
 		if original.Name() != variant {
 			acc.Add(domain.NewVariant(n, original.Prefix(), variant, original.Suffix()))
+			total++
 		}
 	}
+	l.WithFields(log.Fields{"count": total}).  
+	Debug("Completed")
 
 	return
 }

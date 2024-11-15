@@ -30,6 +30,7 @@ const (
 type Plugin struct {
 	config internal.Config
 	db     *KV
+	log    *log.Entry
 }
 
 func (n *Plugin) Id() string {
@@ -37,12 +38,14 @@ func (n *Plugin) Id() string {
 }
 
 func (n *Plugin) Init(conf internal.Config) {
+	n.log = log.WithFields(log.Fields{"plugin": CODE})
 	n.config = conf
 	var err error
 
 	dbpath := filepath.Join(conf.Dir(), "db")
+	ilog := n.log.WithFields(log.Fields{"path": dbpath, "ttl": conf.TTL()})
 	if n.db, err = NewBadgerDb(dbpath, conf.TTL()); err != nil {
-		log.Error(err)
+		ilog.Error(err)
 	}
 
 }
@@ -50,23 +53,26 @@ func (n *Plugin) Init(conf internal.Config) {
 func (n *Plugin) Read(keys ...string) (value string, err error) {
 	key := strings.Join(keys, ":")
 	if value, err = n.db.Get(key); err != nil {
+		n.log.WithError(err).Errorf("Read(%s) -> len(%d)", key, len(value))
 		return value, err
 	}
-	log.Debugf("KV(%s) -> %s", key, value)
+	n.log.Debugf("Read(%s) -> len(%d)", key, len(value))
 	return
 }
 
 func (n *Plugin) Write(value string, keys ...string) (err error) {
 	key := strings.Join(keys, ":")
 	if err := n.db.Set(key, value); err != nil {
+		n.log.WithError(err).Errorf("Write(%s) <- len(%d)", key, len(value))
 		return err
 	}
-	log.Debugf("DB(%s) <- %s", key, string(value))
+	n.log.Debugf("Write(%s) <- len(%d)", key, len(value))
 	return
 }
 
 func (n *Plugin) Close() {
 	n.db.Close()
+	n.log.Debug("Connection closed")
 }
 
 // Register the plugin

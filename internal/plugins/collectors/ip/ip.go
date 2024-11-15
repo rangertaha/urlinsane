@@ -26,29 +26,40 @@ import (
 type Plugin struct {
 	// resolver resolver.Client
 	conf internal.Config
+	log  *log.Entry
 }
 
 func (i *Plugin) Init(c internal.Config) {
+	i.log = log.WithFields(log.Fields{"plugin": CODE, "method": "Exec"})
 	i.conf = c
 }
 
 func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
-	dns := make(pkg.DnsRecords, 0)
-	// if err = acc.Unmarshal("DNS", dns); err == nil {
+	// l := i.log.WithFields(log.Fields{"domain": acc.Domain().String()})
+	if acc.Domain().Cached() {
+		// l.Debug("Returning cache domain: ", acc.Domain().String())
+		return acc.Next()
+	}
+	// dns := make(pkg.DnsRecords, 0)
+	// if acc.Domain().Cached() {
+	// 	l.Debug("Returning cache domain: ", acc.Domain().String())
 
-	// 	// Update simple table data
-	// 	acc.SetMeta("IPv4", dns.String("A"))
-	// 	acc.SetMeta("IPv6", dns.String("AAAA"))
-	// 	return acc.Next()
+	// 	if err = acc.Unmarshal("DNS", dns); err == nil {
+	// 		// Update simple table data
+	// 		acc.SetMeta("IPv4", dns.String("A"))
+	// 		acc.SetMeta("IPv6", dns.String("AAAA"))
+	// 		return acc.Next()
+	// 	}
 	// }
 
 	// Retrive data
+	dns := make(pkg.DnsRecords, 0)
 	ipv4, ipv6 := i.getIp(acc.Domain().String())
 	if len(ipv4) > 0 || len(ipv6) > 0 {
 		dns.Add("A", 0, ipv4...)
 		dns.Add("AAAA", 0, ipv6...)
 
-		// Update simple table data
+		// Add simple table data
 		acc.SetMeta("IPv4", dns.String("A"))
 		acc.SetMeta("IPv6", dns.String("AAAA"))
 
@@ -68,7 +79,7 @@ func (i *Plugin) getIp(d string) (v4, v6 []string) {
 
 	ips, err := net.LookupIP(d)
 	if err != nil {
-		log.Error("IP Lookup: ", err)
+		i.log.Error("IP Lookup: ", err)
 	}
 	for _, ip := range ips {
 		if strings.Contains(ip.String(), ":") {

@@ -33,6 +33,8 @@ import (
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/outputs/all"
 	"github.com/rangertaha/urlinsane/internal/utils"
+
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 )
 
@@ -192,15 +194,13 @@ var TypoCmd = cli.Command{
 			cli.ShowSubcommandHelpAndExit(cCtx, 1)
 		}
 
-
-		cfg, err := config.CliConfig(cCtx)
+		cfg, err := config.New(config.CliOptions(cCtx))
 		if err != nil {
-			fmt.Printf("%s", err)
+			log.Error(err)
+			fmt.Println(text.FgRed.Sprint(err))
 			cli.ShowSubcommandHelpAndExit(cCtx, 1)
 		}
-
-		t := engine.New(cfg)
-		return t.Execute()
+		return engine.New(cfg).Execute()
 	},
 	CustomHelpTemplate: ShowSubcommandHelp(cli.SubcommandHelpTemplate),
 }
