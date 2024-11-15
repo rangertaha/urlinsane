@@ -17,16 +17,23 @@ type accumulator struct {
 	cfg    internal.Config
 	kv     internal.Database
 	log    log.Entry
+	dir    string
 }
 
 func NewAccumulator(out chan<- internal.Domain, domain internal.Domain, conf internal.Config) internal.Accumulator {
 	logger := log.WithFields(log.Fields{"domain": domain.String(), "func": "accumulator"})
+	var dir string
+	if conf.AssetDir() != "" {
+		dir = filepath.Join(conf.AssetDir(), domain.String())
+	}
+
 	return &accumulator{
 		out:    out,
 		domain: domain,
 		cfg:    conf,
 		log:    *logger,
 		kv:     conf.Database(),
+		dir:    dir,
 	}
 }
 
@@ -119,34 +126,22 @@ func (c *accumulator) SetMeta(key string, value string) {
 	c.domain.SetMeta(key, value)
 }
 
-func (c *accumulator) Dir() (dir string) {
-	dir = filepath.Join(c.cfg.Dir(), "domains", c.domain.String())
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		log.Debug(err, "creating..")
-		if err = os.MkdirAll(dir, 0750); err != nil {
-			log.Error(err)
-		}
-	}
-	return
-}
-
 func (c *accumulator) Save(name string, data []byte) (err error) {
-	dir := filepath.Join(c.cfg.Dir(), "domains", c.domain.String())
-	if _, err = os.Stat(dir); os.IsNotExist(err) {
+	if _, err = os.Stat(c.dir); os.IsNotExist(err) {
 		log.Debug(err, "creating..")
-		if err = os.MkdirAll(dir, 0750); err != nil {
+		if err = os.MkdirAll(c.dir, 0750); err != nil {
 			log.Error(err)
 			return
 		}
 	}
 
-	file := filepath.Join(dir, name)
-	if _, err = os.Stat(file); os.IsNotExist(err) {
-		log.Debugf("creating %s", file)
-		if err = os.WriteFile(file, data, 0644); err != nil {
-			log.Error(err)
-			return
-		}
+	file := filepath.Join(c.dir, name)
+	// if _, err = os.Stat(file); os.IsNotExist(err) {
+	log.Debugf("creating %s", file)
+	if err = os.WriteFile(file, data, 0644); err != nil {
+		log.Error(err)
+		return
+		// }
 	}
 
 	return err

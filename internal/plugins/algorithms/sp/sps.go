@@ -67,7 +67,7 @@ func (n *Algo) Description() string {
 func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
 	for _, variant := range algo.SingularPluraliseSubstitution(original.Name()) {
 		if original.Name() != variant {
-			acc.Add(domain.NewVariant(n, original.Prefix(), variant, original.Suffix()))
+			acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
 		}
 	}
 

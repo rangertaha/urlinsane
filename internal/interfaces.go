@@ -61,6 +61,7 @@ type Config interface {
 
 	Dir() string
 	File() string
+	AssetDir() string
 }
 
 type Algorithm interface {
@@ -123,10 +124,11 @@ type Domain interface {
 	Live(...bool) bool
 	Active(...bool) bool
 	Cached(...bool) bool
-	Dir(...string) string
+	// Dir(...string) string
 	Ld(...int) int
 	Json(...string) string
 	Idn(...string) string
+	Save(string) error
 }
 
 // type Table interface {
@@ -161,7 +163,6 @@ type Accumulator interface {
 
 	// Saving Files
 	Save(filename string, content []byte) error
-	Dir() string
 
 	Domain() Domain
 	GetJson(key string) json.RawMessage
