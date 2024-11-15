@@ -75,6 +75,7 @@ type (
 		unregistered bool
 		levenshtein  int
 		summary      bool
+		assets       string
 	}
 
 	Infos             []internal.Collector
@@ -143,6 +144,7 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		progress     bool   = cli.Bool("progress")     //
 		debug        bool   = cli.Bool("debug")        //
 		distance     int    = cli.Int("distance")      //
+		assets       string = cli.Path("dir")          //
 		banner       bool   = true                     //
 
 		// Performance options
@@ -167,6 +169,10 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		progress = false
 	}
 
+	if ttl == 0 {
+		deleteCacheDir(DIR_PRIMARY)
+	}
+
 	return ConfigOption(
 		domain,     // Target domain
 		keyboards,  // Keybards IDs
@@ -187,6 +193,7 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		banner,
 		debug,
 		distance,
+		assets,
 
 		// Performance options
 		workers,
@@ -217,6 +224,7 @@ func ConfigOption(
 	banner bool,
 	debug bool,
 	distance int,
+	assets string,
 
 	// Performance options
 	workers int,
@@ -256,6 +264,7 @@ func ConfigOption(
 		c.progress = progress
 		c.banner = banner
 		c.levenshtein = distance
+		c.assets = assets
 
 		// Performance options
 		c.workers = workers
@@ -278,6 +287,7 @@ func ConfigOption(
 			"format":     format,
 			"file":       file,
 			"summary":    summary,
+			"save":       assets,
 			"registered": registered,
 			"verbose":    verbose,
 			"debug":      debug,
@@ -340,27 +350,9 @@ func (c *Config) Progress() bool             { return c.progress }
 func (c *Config) Summary() bool              { return c.summary }
 func (c *Config) Format() string             { return c.format }
 func (c *Config) File() string               { return c.file }
+func (c *Config) AssetDir() string           { return c.assets }
 
 func (c *Config) Dir() string { return c.directory }
-
-// func (c *Config) Mkdir(name string) (dir string, err error) {
-// 	dir = filepath.Join(c.directory, name)
-// 	if err = os.MkdirAll(dir, 0750); err != nil {
-// 		return
-// 	}
-// 	return
-// }
-// func (c *Config) Mkfile(dir, name string, content []byte) (file string, err error) {
-// 	file = filepath.Join(dir, name)
-// 	_, err = os.Stat(file)
-// 	if os.IsNotExist(err) {
-// 		err = os.WriteFile(file, content, 0644)
-// 		if err != nil {
-// 			return
-// 		}
-// 	}
-// 	return
-// }
 
 func csSplit(value string) []string {
 	value = strings.TrimSpace(value)
@@ -392,99 +384,19 @@ func createAppDir(dirname string) string {
 	return configDir
 }
 
-// // CliConfig creates a configuration from a cobra command options and arguments
-// func CliConfig(cli *cli.Context) (c Config) {
+func deleteCacheDir(dirname string) {
+	var userDir string
+	var err error
 
-// 	c = New()
-// 	c.domain = cli.Args().First()
+	if userDir, err = os.UserHomeDir(); err != nil {
+		if userDir, err = os.Getwd(); err != nil {
+			userDir = ""
+		}
+	}
 
-// 	// c.languages = languages.Languages(csSplit(cli.String("languages"))...)
-// 	// c.keyboards = languages.Keyboards(csSplit(cli.String("keyboards"))...)
-// 	// c.algorithms = algorithms.List(csSplit(cli.String("algorithms"))...)
-// 	// c.collectors = collectors.List(csSplit(cli.String("collectors"))...)
-// 	// if c.database, err = databases.Get("badger"); err != nil {
-// 	// 	return c, err
-// 	// }
-
-// 	// if c.output, err = outputs.Get(cli.String("format")); err != nil {
-// 	// 	return c, err
-// 	// }
-
-// 	c.file = cli.String("file")
-// 	c.verbose = cli.Bool("verbose")
-// 	c.progress = cli.Bool("progress")
-// 	c.workers = cli.Int("workers")
-// 	c.random = cli.Duration("random")
-// 	c.delay = cli.Duration("delay")
-// 	c.ttl = cli.Duration("ttl")
-// 	c.timeout = cli.Duration("timeout")
-// 	c.registered = cli.Bool("registered")
-// 	c.unregistered = cli.Bool("unregistered")
-// 	c.summary = cli.Bool("summary")
-// 	c.banner = true
-// 	if cli.Bool("debug") {
-// 		log.SetOutput(os.Stdout)
-// 		log.SetLevel(log.DebugLevel)
-// 	}
-
-// 	if cli.String("format") == "json" {
-// 		c.banner = false
-// 		c.summary = false
-// 		c.progress = false
-// 	}
-
-// 	return c
-// }
-
-// func LoadOrCreateConfig(conf *koanf.Koanf, dirname, filename string, defaultFile []byte) (err error) {
-// 	var userDir string
-
-// 	if userDir, err = os.UserHomeDir(); err != nil {
-// 		if userDir, err = os.Getwd(); err != nil {
-// 			userDir = ""
-// 		}
-// 	}
-// 	configDir := filepath.Join(userDir, dirname)
-// 	configFile := filepath.Join(configDir, filename)
-
-// 	if err := conf.Load(file.Provider(configFile), hcl.Parser(true)); err != nil {
-// 		log.Printf("Unable to load config file: %s, Error: %s", configFile, err)
-// 		if err = os.MkdirAll(configDir, 0750); err != nil {
-// 			return err
-// 		}
-// 		_, err := os.Stat(configFile)
-// 		if os.IsNotExist(err) {
-// 			err = os.WriteFile(configFile, defaultFile, 0644)
-// 			if err != nil {
-// 				panic(err)
-// 			}
-// 		}
-// 	}
-
-// 	// conf.Print()
-
-// 	return
-// }
-
-// func CreateAppConfig(dirname, filename string, defaultFile []byte) string {
-
-// 	if err := os.MkdirAll(dirname, 0750); err != nil {
-// 		log.Error(err)
-// 	}
-
-// 	fpath := filepath.Join(dirname, filename)
-
-// 	// if err := Conf.Load(file.Provider(fpath), hcl.Parser(true)); err != nil {
-// 	// 	log.Errorf("Unable to load config file: %s, Error: %s", fpath, err)
-
-// 	// 	if _, err := os.Stat(fpath); os.IsNotExist(err) {
-// 	// 		if err = os.WriteFile(fpath, defaultFile, 0644); err != nil {
-// 	// 			log.Error(err)
-// 	// 		}
-// 	// 	}
-// 	// }
-
-// 	// conf.Print()
-
-// 	return fpath
-// }
+	// If .config exits lets put it in there
+	dbDir := filepath.Join(userDir, dirname, "db")
+	if _, err := os.Stat(dbDir); !os.IsNotExist(err) {
+		os.RemoveAll(dbDir)
+	}
+}

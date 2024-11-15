@@ -68,7 +68,7 @@ func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err err
 	for _, keyboard := range n.keyboards {
 		for _, variant := range algo.AdjacentCharacterSubstitution(original.Name(), keyboard.Layouts()...) {
 			if original.Name() != variant {
-				acc.Add(domain.NewVariant(n, original.Prefix(), variant, original.Suffix()))
+				acc.Add(domain.Variant(n,original.String(), original.Prefix(), variant, original.Suffix()))
 			}
 		}
 	}

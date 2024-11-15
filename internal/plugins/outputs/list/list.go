@@ -47,10 +47,13 @@ func (n *Plugin) Init(conf internal.Config) {
 }
 
 func (n *Plugin) Read(in internal.Domain) {
-	n.domains = append(n.domains, in)
-	if !n.config.Progress() {
-		fmt.Println(n.Row(in))
-	}
+	
+		n.domains = append(n.domains, in)
+
+		if !n.config.Progress() {
+			fmt.Println(n.Row(in))
+		}
+
 }
 
 func (n *Plugin) Write() {

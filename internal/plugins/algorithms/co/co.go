@@ -65,7 +65,7 @@ const (
 
 type Algo struct {
 	config internal.Config
-	log *log.Entry
+	log    *log.Entry
 }
 
 func (a *Algo) Id() string {
@@ -73,7 +73,7 @@ func (a *Algo) Id() string {
 }
 
 func (a *Algo) Init(conf internal.Config) {
-	a.log = log.WithFields(log.Fields{"type": "algo","plugin": CODE})
+	a.log = log.WithFields(log.Fields{"type": "algo", "plugin": CODE})
 	a.config = conf
 }
 
@@ -89,12 +89,12 @@ func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err err
 	var total int
 	for _, variant := range algo.CharacterOmission(original.Name()) {
 		if original.Name() != variant {
-			acc.Add(domain.NewVariant(n, original.Prefix(), variant, original.Suffix()))
+			acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
 			total++
 		}
 	}
-	l.WithFields(log.Fields{"count": total}).  
-	Debug("Completed")
+	l.WithFields(log.Fields{"count": total}).
+		Debug("Completed")
 
 	return
 }

@@ -16,6 +16,8 @@ package domain
 
 import (
 	"encoding/json"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/bobesa/go-domain-util/domainutil"
@@ -34,33 +36,15 @@ type Domain struct {
 	IsLive   bool                       `json:"live,omitempty"`
 	Data     map[string]json.RawMessage `json:"data,omitempty"` // used for detailed JSON nested outputs
 	Metadata map[string]string          `json:"meta,omitempty"` // Used for simplified table based output
-
-	// Internal use
-	Input       string // Name provded by user  `json:"input,omitempty"`
-	algo        internal.Algorithm
-	Levenshtein int    `json:"ld,omitempty"`
-	Involved      bool   `json:"active,omitempty"`
-	Cache      bool   `json:"cached,omitempty"`
-	Directory   string `json:"dir,omitempty"`
+	// Input       string                     `json:"input,omitempty"` // Name provded by user
+	Levenshtein int  `json:"ld,omitempty"`
+	Involved    bool `json:"active,omitempty"`
+	Cache       bool `json:"cached,omitempty"`
+	// Directory   string `json:"dir,omitempty"`
+	// Source      string `json:"src,omitempty"`  // Domain name provded by user
+	// Variant     string `json:"typo,omitempty"` // Domain varient
+	algo internal.Algorithm
 }
-
-// type DnsRecord struct {
-// 	Type  string `json:"type,omitempty"`
-// 	Value string `json:"value,omitempty"`
-// 	TTL   int    `json:"ttl,omitempty"`
-// }
-
-// type Domain struct {
-// 	prefix string
-// 	name   string
-// 	suffix string
-
-// 	algo        internal.Algorithm
-// 	meta        map[string]interface{}
-// 	levenshtein int
-// 	live        bool
-// 	active      bool
-// }
 
 func New(name string) internal.Domain {
 	return &Domain{
@@ -70,12 +54,14 @@ func New(name string) internal.Domain {
 		SufName:  domainutil.DomainSuffix(name),
 		Metadata: make(map[string]string),
 		Data:     make(map[string]json.RawMessage),
-		Input:    name,
+		// Source:   name,
 	}
 }
 
-func NewVariant(algo internal.Algorithm, names ...string) internal.Domain {
+func Variant(algo internal.Algorithm, names ...string) internal.Domain {
 	name := strings.Join(names, ".")
+	name = strings.Trim(name, ".")
+
 	return &Domain{
 		FQDN:     name,
 		PreName:  domainutil.Subdomain(name),
@@ -84,7 +70,22 @@ func NewVariant(algo internal.Algorithm, names ...string) internal.Domain {
 		Metadata: make(map[string]string),
 		Data:     make(map[string]json.RawMessage),
 		algo:     algo,
-		Input:    name,
+		// Source:   source,
+	}
+}
+
+func NewVariant(algo internal.Algorithm, names ...string) internal.Domain {
+	name := strings.Join(names, ".")
+	name = strings.Trim(name, ".")
+
+	return &Domain{
+		FQDN:     name,
+		PreName:  domainutil.Subdomain(name),
+		Domain:   domainutil.DomainPrefix(name),
+		SufName:  domainutil.DomainSuffix(name),
+		Metadata: make(map[string]string),
+		Data:     make(map[string]json.RawMessage),
+		algo:     algo,
 	}
 }
 
@@ -149,20 +150,17 @@ func (d *Domain) Valid() bool {
 	return d.Domain != ""
 }
 
-func (d *Domain) String() string {
-	// names := []string{d.PreName, d.Domain, d.SufName}
-	// name = strings.Join(names, ".")
-	// name = strings.ReplaceAll(name, "..", ".")
-	// name = strings.Trim(name, ".")
-	return d.Input
+func (d *Domain) String() (n string) {
+	return d.FQDN
 }
-func (d *Domain) Dir(v ...string) string {
-	if len(v) > 0 {
-		d.Directory = v[0]
-	}
 
-	return d.Directory
-}
+// func (d *Domain) Dir(v ...string) string {
+// 	if len(v) > 0 {
+// 		d.Directory = v[0]
+// 	}
+
+// 	return d.Directory
+// }
 
 func (d *Domain) Live(v ...bool) bool {
 	if len(v) > 0 {
@@ -226,4 +224,22 @@ func (d *Domain) Idn(names ...string) string {
 	}
 
 	return d.Punycode
+}
+
+func (d *Domain) Save(path string) (err error) {
+	dir := filepath.Join(path, d.String())
+	if _, err = os.Stat(dir); os.IsNotExist(err) {
+		if err = os.MkdirAll(dir, 0750); err != nil {
+			log.Error(err)
+			return
+		}
+	}
+
+	file := filepath.Join(dir, "scan.json")
+	log.Debugf("creating %s", file)
+	if err = os.WriteFile(file, []byte(d.Json()), 0644); err != nil {
+		log.Error(err)
+		return
+	}
+	return err
 }
