@@ -36,7 +36,6 @@ func (i *Plugin) Init(c internal.Config) {
 }
 
 func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
-	// if acc.Has("BANNER")  {
 	ports := []string{"80", "21", "587"}
 	banners := make(Banners)
 
@@ -47,10 +46,8 @@ func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
 		acc.SetMeta("BANNER", banners.String("80"))
 		acc.SetJson("BANNER", banners.Json())
 		acc.Domain().Live(true)
-		acc.Save("banner.json", []byte(banners.Json()))
 		acc.Save("banner.txt", []byte(banners.String("80")))
 	}
-	// }
 
 	return acc.Next()
 }
@@ -59,7 +56,7 @@ func (i *Plugin) Close() {}
 
 func (i *Plugin) Banner(proto, host, port string) (bn string) {
 	address := fmt.Sprintf("%s:%s", host, port)
-	conn, err := net.DialTimeout(proto, address, 3*time.Second)
+	conn, err := net.DialTimeout(proto, address, 5*time.Second)
 	if err != nil {
 		log.Error("Error:", err.Error())
 		return

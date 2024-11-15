@@ -40,7 +40,7 @@ func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
 	// }
 
 	dns := make(pkg.DnsRecords, 0)
-	if err = acc.Unmarshal("DNS", dns); err != nil {
+	if err = acc.Unmarshal("DNS", &dns); err != nil {
 		l.Error("Unmarshal DNS: ", err)
 	}
 
