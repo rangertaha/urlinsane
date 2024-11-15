@@ -63,6 +63,13 @@ var Flags = []cli.Flag{
 		Value:   "idn,ip,geo,ns,mx",
 		Usage:   "collectors IDs to use `[ID]`",
 	},
+	&cli.StringFlag{
+		Name:    "regex",
+		Aliases: []string{"e"},
+		Value:   "",
+		Category: "CONSTRAINTS",
+		Usage:   "regular expressions to match `[PATTERN]`",
+	},
 	&cli.IntFlag{
 		Name:     "workers",
 		Aliases:  []string{"w"},
@@ -85,7 +92,7 @@ var Flags = []cli.Flag{
 	&cli.DurationFlag{
 		Name:     "timeout",
 		Aliases:  []string{"t"},
-		Value:    20 * time.Second,
+		Value:    5 * time.Minute,
 		Category: "PERFORMANCE",
 		Usage:    "maximim duration tasks need to complete `DURATION`",
 	},
@@ -99,8 +106,8 @@ var Flags = []cli.Flag{
 		Name:     "distance",
 		Aliases:  []string{"d"},
 		Value:    25,
-		Category: "PERFORMANCE",
-		Usage:    "minimum Levenshtein distance for Data Collection `NUM`",
+		Category: "CONSTRAINTS",
+		Usage:    "minimum Levenshtein distance `NUM`",
 	},
 	&cli.BoolFlag{
 		Name:     "progress",
@@ -165,7 +172,7 @@ var Flags = []cli.Flag{
 		Name:     "dir",
 		Value:    "",
 		Category: "OUTPUT",
-		Usage:    "directory to save domain scan results `DIR`",
+		Usage:    "directory to save scan results `DIR`",
 		Action: func(ctx *cli.Context, v string) error {
 			// if v >= 65536 {
 			// 	return fmt.Errorf("Flag port value %v out of range[0-65535]", v)

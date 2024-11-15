@@ -68,25 +68,12 @@ func (c *accumulator) Domain() internal.Domain {
 
 func (c *accumulator) GetJson(key string) json.RawMessage {
 	key = strings.ToLower(key)
-	// data, err := c.kv.Read(key)
-	// if err != nil {
-	// 	log.Error(err, key)
-	// }
-	// log.Debug("KV:read", data)
-	// if data != "" {
-	// 	log.Debug("KV:read", data)
-	// 	return json.RawMessage(data)
-	// }
 	return c.domain.GetData(key)
 }
 
 func (c *accumulator) SetJson(key string, value json.RawMessage) {
 	key = strings.ToLower(key)
 	c.domain.SetData(key, value)
-	// if err := c.kv.Write(key, string(value)); err != nil {
-	// 	log.Error(err)
-	// }
-	// log.Debug("KV:write", string(value))
 }
 
 func (c *accumulator) Marshal(key string, v interface{}) (err error) {
@@ -106,16 +93,12 @@ func (c *accumulator) Marshal(key string, v interface{}) (err error) {
 }
 
 func (c *accumulator) Unmarshal(key string, v interface{}) (err error) {
-	key = fmt.Sprintf("%s:%s", c.domain.String(), key)
-	log.Debug(key, "read...")
 	if data := c.GetJson(key); data != nil {
-		log.Debug(key, "read:", string(data))
-
-		Source := (*json.RawMessage)(&data)
-		return json.Unmarshal(*Source, &v)
+		return json.Unmarshal(data, v)
 	}
+	c.log.Error("nothing to unmarshal")
 
-	return fmt.Errorf("nothing to retrive")
+	return fmt.Errorf("nothing to unmarshal")
 }
 
 func (c *accumulator) GetMeta(key string) (data string) {
@@ -124,6 +107,10 @@ func (c *accumulator) GetMeta(key string) (data string) {
 
 func (c *accumulator) SetMeta(key string, value string) {
 	c.domain.SetMeta(key, value)
+}
+
+func (c *accumulator) Metadata() map[string]string {
+	return c.domain.Meta()
 }
 
 func (c *accumulator) Save(name string, data []byte) (err error) {

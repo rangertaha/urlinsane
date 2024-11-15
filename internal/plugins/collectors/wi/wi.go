@@ -26,6 +26,6 @@ func (i *Plugin) Init(c internal.Config) {
 }
 
 func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
-
+	acc.Next()
 	return
 }

@@ -25,7 +25,6 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/config"
 	"github.com/rangertaha/urlinsane/internal/domain"
-	"github.com/rangertaha/urlinsane/pkg/fuzzy"
 	"github.com/schollz/progressbar/v3"
 	log "github.com/sirupsen/logrus"
 )
@@ -46,6 +45,7 @@ type (
 		total    int64
 		live     int64
 	}
+	FilterFunc func() func(<-chan internal.Domain, *config.Config) <-chan internal.Domain
 )
 
 // NewUrlinsane ...
@@ -129,26 +129,15 @@ func (u *Urlinsane) Init() <-chan internal.Domain {
 
 // Target collects the same info on the target domain
 func (u *Urlinsane) Target(in <-chan internal.Domain) <-chan internal.Domain {
-	// log := log.WithFields(log.Fields{"fqdn": u.target.String(), "prefix": u.target.Prefix(), "name": u.target.Name(), "suffix": u.target.Suffix()})
 	out := make(chan internal.Domain)
 
 	go func() {
-		// Collect info on target domain
-		// log.Error("collect data on target")
-		// if target := <-u.CollectorChain(u.cfg.Collectors(), in); u.target != nil {
-		// 	u.target = target
-		// } else {
-		// 	log.Error("unable to create collect data on target")
-		// }
 
-		// // Print report of target domain
-		// log.Debug("Generate domain report: ", u.target.String())
-
-		// Send origianl domain downstream
 		for origin := range in {
-			// if origin.Algorithm() == nil {
+			// Send origianl domain
 			out <- origin
-			// }
+
+			// Send a domain for each algorithm to apply
 			for _, algorithm := range u.cfg.Algorithms() {
 				log.Debugf("Adding %s algo to %s for typo gen", algorithm.Id(), origin.String())
 				out <- domain.Variant(algorithm, origin.String(), origin.String())
@@ -195,65 +184,76 @@ func (u *Urlinsane) Algorithms(in <-chan internal.Domain) <-chan internal.Domain
 	return in
 }
 
-func (u *Urlinsane) PreFilters(in <-chan internal.Domain) <-chan internal.Domain {
-	out := make(chan internal.Domain)
-	variants := make(map[string]bool)
-
-	go func() {
-		for typo := range in {
-			// Removing duplicates
-			if _, ok := variants[typo.String()]; !ok {
-				variants[typo.String()] = true
-
-				// Make sure the variant does not match the original
-				if typo != nil {
-
-					// Set Levenshtein distance
-					//   https://en.wikipedia.org/wiki/Levenshtein_distance
-					dist := fuzzy.Levenshtein(typo.String(), u.target.String())
-					logger := log.WithFields(log.Fields{"min": u.cfg.Distance(), "dist": dist, "d": typo.String()})
-					logger.Debug("Levenshtein distance")
-					typo.Ld(dist)
-
-					if dist <= u.cfg.Distance() {
-						out <- typo
-					} else {
-						logger.Warn("Does not have the levenshtein minimum distance")
-					}
-				}
-			}
-		}
-
-		// Update domain count
-		u.total = int64(len(variants))
-
-		// Show optional progress bar
-		if u.cfg.Progress() {
-			u.progress = progressbar.Default(u.total)
-		}
-		close(out)
-	}()
-
-	return out
+func (u *Urlinsane) Constraints(in <-chan internal.Domain, Filters ...FilterFunc) <-chan internal.Domain {
+	for _, fn := range Filters {
+		in = fn()(in, u.cfg)
+	}
+	// // Show optional progress bar
+	// if u.cfg.Progress() {
+	// 	u.progress = progressbar.Default(int64(u.cfg.Count()))
+	// }
+	return in
 }
 
-func (u *Urlinsane) ReadCache(in <-chan internal.Domain) <-chan internal.Domain {
-	out := make(chan internal.Domain)
+// func (u *Urlinsane) PreFilters(in <-chan internal.Domain) <-chan internal.Domain {
+// 	out := make(chan internal.Domain)
+// 	variants := make(map[string]bool)
 
-	go func() {
-		for domain := range in {
-			log.Debugf("Reading from cache: %s", domain.String())
-			if data, _ := u.cfg.Database().Read(domain.String()); data != "" {
-				domain.Json(data)
-				log.Debug("From cache", data)
-			}
-			out <- domain
-		}
-		close(out)
-	}()
+// 	go func() {
+// 		for typo := range in {
+// 			// Removing duplicates
+// 			if _, ok := variants[typo.String()]; !ok {
+// 				variants[typo.String()] = true
 
-	return out
-}
+// 				// Make sure the variant does not match the original
+// 				if typo != nil {
+
+// 					// Set Levenshtein distance
+// 					//   https://en.wikipedia.org/wiki/Levenshtein_distance
+// 					dist := fuzzy.Levenshtein(typo.String(), u.target.String())
+// 					logger := log.WithFields(log.Fields{"min": u.cfg.Distance(), "dist": dist, "d": typo.String()})
+// 					logger.Debug("Levenshtein distance")
+// 					typo.Ld(dist)
+
+// 					if dist <= u.cfg.Distance() {
+// 						out <- typo
+// 					} else {
+// 						logger.Warn("Does not have the levenshtein minimum distance")
+// 					}
+// 				}
+// 			}
+// 		}
+
+// 		// Update domain count
+// 		u.total = int64(len(variants))
+
+// 		// Show optional progress bar
+// 		if u.cfg.Progress() {
+// 			u.progress = progressbar.Default(u.total)
+// 		}
+// 		close(out)
+// 	}()
+
+// 	return out
+// }
+
+// func (u *Urlinsane) ReadCache(in <-chan internal.Domain) <-chan internal.Domain {
+// 	out := make(chan internal.Domain)
+
+// 	go func() {
+// 		for domain := range in {
+// 			log.Debugf("Reading from cache: %s", domain.String())
+// 			if data, _ := u.cfg.Database().Read(domain.String()); data != "" {
+// 				domain.Json(data)
+// 				log.Debug("From cache", data)
+// 			}
+// 			out <- domain
+// 		}
+// 		close(out)
+// 	}()
+
+// 	return out
+// }
 
 // func (u *Urlinsane) Collectors(in <-chan internal.Domain) <-chan internal.Domain {
 // 	out := make(chan internal.Domain)
@@ -373,8 +373,15 @@ func (u *Urlinsane) CollectorChain(funcs []internal.Collector, in <-chan interna
 			// Timing options
 			time.Sleep(u.cfg.Random() * u.cfg.Delay())
 
+			var ctx context.Context
+			var cancel context.CancelFunc
 			// Execute the collector and timeout if it takes too long
-			ctx, cancel := context.WithTimeout(context.Background(), u.cfg.Timeout())
+			if u.cfg.Timeout() != 0 {
+				ctx, cancel = context.WithTimeout(context.Background(), u.cfg.Timeout())
+			} else {
+				ctx, cancel = context.WithCancel(context.Background())
+			}
+
 			// acc := NewAccumulator(out)
 			u.runner(ctx, xfunc, variant, out)
 			cancel()
@@ -391,13 +398,6 @@ func (u *Urlinsane) CollectorChain(funcs []internal.Collector, in <-chan interna
 
 func (u *Urlinsane) runner(ctx context.Context, fn internal.Collector, domain internal.Domain, out chan internal.Domain) {
 	logger := log.WithFields(log.Fields{"c": fn.Id(), "d": domain.String()})
-
-	// if domain.Cache(fn.Id()) {
-	// 	out <- domain
-	// } else if err := fn.Exec(NewAccumulator(out, domain, u.cfg)); err != nil {
-	//    domain.Cache(fn.Id())
-	//  }
-	// }
 
 	if domain.Cached() {
 		out <- domain
@@ -425,8 +425,12 @@ func (u *Urlinsane) Analyzers(in <-chan internal.Domain) <-chan internal.Domain 
 // Progress adds a visible progesssbar if -p flag is set
 func (u *Urlinsane) Progress(in <-chan internal.Domain) <-chan internal.Domain {
 	if u.cfg.Progress() {
+		log.Debug("Total count ", u.cfg.Count())
+
 		out := make(chan internal.Domain)
 		go func(in <-chan internal.Domain, out chan<- internal.Domain) {
+			// Show optional progress bar
+			u.progress = progressbar.Default(int64(u.cfg.Count()))
 			for t := range in {
 				u.progress.Add(1)
 				out <- t
@@ -502,8 +506,12 @@ func (u *Urlinsane) Execute() (err error) {
 	typos := u.Init()
 	typos = u.Target(typos)
 	typos = u.Algorithms(typos)
-	typos = u.PreFilters(typos)
-	typos = u.ReadCache(typos)
+	typos = u.Constraints(typos,
+		DedupFilter,
+		RegexFilter,
+		LevenshteinFilter,
+		ReadCacheFilter,
+	)
 	typos = u.Collectors(typos)
 	typos = u.WriteCache(typos)
 	typos = u.PostFilters(typos)
@@ -517,8 +525,17 @@ func (u *Urlinsane) Execute() (err error) {
 
 func (u *Urlinsane) Stream() <-chan internal.Domain {
 	typos := u.Init()
+	typos = u.Target(typos)
 	typos = u.Algorithms(typos)
+	typos = u.Constraints(typos,
+		DedupFilter,
+		RegexFilter,
+		LevenshteinFilter,
+		ReadCacheFilter,
+	)
 	typos = u.Collectors(typos)
+	typos = u.WriteCache(typos)
+	typos = u.PostFilters(typos)
 	typos = u.Analyzers(typos)
 	return typos
 }
