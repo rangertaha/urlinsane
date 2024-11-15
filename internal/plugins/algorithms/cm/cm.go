@@ -54,7 +54,7 @@ func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err err
 	for _, language := range n.languages {
 		for _, variant := range algo.CommonMisspellings(original.Name(), language.Misspellings()...) {
 			if original.Name() != variant {
-				acc.Add(domain.NewVariant(n, original.Prefix(), variant, original.Suffix()))
+				acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
 			}
 		}
 	}
@@ -68,4 +68,3 @@ func init() {
 		return &Algo{}
 	})
 }
-

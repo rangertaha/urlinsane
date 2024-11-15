@@ -16,6 +16,7 @@ package web
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/gocolly/colly/v2"
 	"github.com/rangertaha/urlinsane/internal"
@@ -33,6 +34,7 @@ const (
 type Plugin struct {
 	conf   internal.Config
 	client *colly.Collector
+	dir    string
 }
 
 func (p *Plugin) Id() string {
@@ -47,7 +49,7 @@ func (i *Plugin) Init(c internal.Config) {
 	// i.db = c.Database()
 	i.conf = c
 	i.client = colly.NewCollector()
-	// i.dir = filepath.Join(c.Dir(), "domains")
+	i.dir = c.AssetDir()
 
 }
 
@@ -121,10 +123,14 @@ func (p *Plugin) Exec(acc internal.Accumulator) (err error) {
 			res.Headers = Header(*r.Headers)
 			res.URL = r.Request.URL.String()
 			// acc.Save("index.html", r.Body)
-			log.Debugf("Save file: %s", acc.Dir()+"/index.html")
-		
-			if err := r.Save(acc.Dir()+"/index.html"); err != nil {
-				log.Error(err)
+
+			if p.conf.AssetDir() != "" {
+				fpath := filepath.Join(p.dir, acc.Domain().String(), "/index.html")
+				log.Debugf("Save file: %s", fpath)
+
+				if err := r.Save(fpath); err != nil {
+					log.Error(err)
+				}
 			}
 
 			// SSDeep

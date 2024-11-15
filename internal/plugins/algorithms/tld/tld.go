@@ -44,7 +44,7 @@ func (n *Algo) Description() string {
 func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
 	for _, variant := range algo.TopLevelDomain(original.Suffix(), datasets.TLD...) {
 		if original.Suffix() != variant {
-			acc.Add(domain.NewVariant(n, original.Prefix(), original.Name(), variant))
+			acc.Add(domain.Variant(n, original.Prefix(), original.Name(), variant))
 		}
 	}
 	return
