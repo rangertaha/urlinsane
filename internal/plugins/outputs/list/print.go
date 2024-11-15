@@ -30,41 +30,27 @@ func (n *Plugin) Rows(domains ...internal.Domain) (rows []string) {
 }
 
 func (n *Plugin) Row(domain internal.Domain) (row string) {
+	var data []interface{}
+	if domain.Cached(){
+		data = append(data, fmt.Sprintf("*%d ", domain.Ld()))
+	} else {
+		data = append(data, fmt.Sprintf("%d  ", domain.Ld()))
+	}
+	if n.config.Verbose() {
+		data = append(data, fmt.Sprintf("%s  ", domain.Algorithm().Name()))
+	} else {
+		data = append(data, fmt.Sprintf("%s  ", strings.ToUpper(domain.Algorithm().Id())))
+	}
+	data = append(data, fmt.Sprintf("%s  ", domain.String()))
+
+	for _, v := range domain.Meta() {
+		data = append(data, fmt.Sprintf("%s  ", v))
+	}
+	//  Build content for output file
+	row = row + fmt.Sprint(data...)
+
 	if domain.Live() {
-		return n.ActiveRow(domain)
+		return text.FgGreen.Sprint(row)
 	}
-	var data []interface{}
-	data = append(data, fmt.Sprintf("%d  ", domain.Ld()))
-	if n.config.Verbose() {
-		data = append(data, fmt.Sprintf("%s  ", domain.Algorithm().Name()))
-	} else {
-		data = append(data, fmt.Sprintf("%s  ", strings.ToUpper(domain.Algorithm().Id())))
-	}
-	data = append(data, fmt.Sprintf("%s  ", domain.String()))
-
-	for _, v := range domain.Meta() {
-		data = append(data, fmt.Sprintf("%s  ", v))
-	}
-	//  Build content for output file
-	row = row + fmt.Sprint(data...)
 	return text.FgRed.Sprint(row)
-}
-
-func (n *Plugin) ActiveRow(domain internal.Domain) (row string) {
-	var data []interface{}
-	data = append(data, fmt.Sprintf("%d  ", domain.Ld()))
-	if n.config.Verbose() {
-		data = append(data, fmt.Sprintf("%s  ", domain.Algorithm().Name()))
-	} else {
-		data = append(data, fmt.Sprintf("%s  ", strings.ToUpper(domain.Algorithm().Id())))
-	}
-	data = append(data, fmt.Sprintf("%s  ", domain.String()))
-
-	for _, v := range domain.Meta() {
-		data = append(data, fmt.Sprintf("%s  ", v))
-	}
-	//  Build content for output file
-	row = row + fmt.Sprint(data...)
-
-	return text.FgGreen.Sprint(row)
 }

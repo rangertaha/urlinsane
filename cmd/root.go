@@ -22,7 +22,6 @@ import (
 	"time"
 
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/config"
 	"github.com/urfave/cli/v2"
 )
 
@@ -41,7 +40,6 @@ AUTHOR:
      
      `, cli.AppHelpTemplate)
 
-
 	cli.VersionFlag = &cli.BoolFlag{
 		Name:    "version",
 		Aliases: []string{"V"},
@@ -49,21 +47,20 @@ AUTHOR:
 	}
 
 	app := &cli.App{
-		Name:     "urlinsane",
-		Version:  internal.VERSION,
-		Compiled: time.Now(),
-		Suggest:  true,
+		Name:        "urlinsane",
+		Version:     internal.VERSION,
+		Compiled:    time.Now(),
+		Suggest:     true,
 		HelpName:    "urlinsane",
 		Usage:       "Urlinsane is an advanced cybersecurity typosquatting tool",
 		Description: "",
 		UsageText:   "urlinsane [global opts..] [command] [opts..]",
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
-				Name:    "debug",
-				Value:   false,
-				Usage:   "Log debug messags for development",
+				Name:  "debug",
+				Value: false,
+				Usage: "Log debug messags for development",
 				Action: func(ctx *cli.Context, v bool) error {
-					config.Conf.Set("debug", v)
 					return nil
 				},
 			},

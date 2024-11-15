@@ -20,6 +20,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -31,7 +32,7 @@ const (
 type Plugin struct {
 	// resolver resolver.Client
 	conf internal.Config
-	db   internal.Database
+	log  *log.Entry
 }
 
 func (n *Plugin) Id() string {
@@ -43,7 +44,7 @@ func (n *Plugin) Order() int {
 }
 
 func (i *Plugin) Init(c internal.Config) {
-	i.db = c.Database()
+	i.log = log.WithFields(log.Fields{"plugin": CODE, "method": "Exec"})
 	i.conf = c
 }
 
@@ -56,10 +57,15 @@ func (n *Plugin) Headers() []string {
 }
 
 func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
-	dns := make(pkg.DnsRecords, 0)
+	l := i.log.WithFields(log.Fields{"domain": acc.Domain().String()})
+	if acc.Domain().Cached() {
+		// l.Debug("Returning cache domain: ", acc.Domain().String())
+		return acc.Next()
+	}
 
+	dns := make(pkg.DnsRecords, 0)
 	if err := acc.Unmarshal("DNS", &dns); err != nil {
-		return err
+		l.Error("Unmarshal DNS: ", err)
 	}
 
 	cname, err := net.LookupCNAME(acc.Domain().String())
@@ -71,7 +77,6 @@ func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
 	acc.SetMeta("CNAME", cname)
 	acc.SetJson("DNS", dns.Json())
 	acc.Domain().Live(true)
-
 
 	return acc.Next()
 }

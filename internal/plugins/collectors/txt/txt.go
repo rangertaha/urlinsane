@@ -20,6 +20,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -32,7 +33,7 @@ const (
 type Plugin struct {
 	// resolver resolver.Client
 	conf internal.Config
-	db   internal.Database
+	log  *log.Entry
 }
 
 func (n *Plugin) Id() string {
@@ -44,7 +45,7 @@ func (n *Plugin) Order() int {
 }
 
 func (i *Plugin) Init(c internal.Config) {
-	i.db = c.Database()
+	i.log = log.WithFields(log.Fields{"plugin": CODE, "method": "Exec"})
 	i.conf = c
 }
 
@@ -57,14 +58,19 @@ func (n *Plugin) Headers() []string {
 }
 
 func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
-	dns := make(pkg.DnsRecords, 0)
-	if err := acc.Unmarshal("DNS", &dns); err != nil {
-		return err
+	l := i.log.WithFields(log.Fields{"domain": acc.Domain().String()})
+	if acc.Domain().Cached() {
+		// l.Debug("Returning cache domain: ", acc.Domain().String())
+		return acc.Next()
 	}
 
+	dns := make(pkg.DnsRecords, 0)
+	if err := acc.Unmarshal("DNS", &dns); err != nil {
+		l.Error("Unmarshal DNS: ", err)
+	}
 	records, err := net.LookupTXT(acc.Domain().String())
 	if err != nil {
-		return err
+		log.Error(err)
 	}
 	for _, record := range records {
 		dns.Add("TXT", 0, record)
@@ -74,25 +80,6 @@ func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
 	acc.Domain().Live(true)
 
 	return acc.Next()
-
-	// cname, _ := i.db.Read(domain.String(), "TXT")
-	// if cname != "" {
-	// 	domain.SetMeta("TXT", cname)
-	// 	domain.Live(true)
-	// 	acc.Add(domain)
-	// 	return
-	// }
-
-	// records, err := net.LookupTXT(domain.String())
-
-	// if records == nil {
-	// 	record := strings.Join(records, " ")
-	// 	domain.SetMeta("TXT", record)
-	// 	domain.Live(true)
-	// 	err = i.db.Write(record, domain.String(), "TXT")
-	// }
-	// acc.Add(domain)
-	// return
 }
 
 func (i *Plugin) Close() {}
