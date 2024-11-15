@@ -19,22 +19,29 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/pkg"
+	log "github.com/sirupsen/logrus"
 )
 
 //go:embed GeoLite2-City.mmdb
 var dataFile embed.FS
 
-type Plugin struct{}
+type Plugin struct {
+	log *log.Entry
+}
 
 func (i *Plugin) Init(c internal.Config) {
-
+	i.log = log.WithFields(log.Fields{"plugin": CODE, "method": "Exec"})
 }
 
 func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
-	dns := make(pkg.DnsRecords, 0)
+	l := i.log.WithFields(log.Fields{"domain": acc.Domain().String()})
+	// if acc.Domain().Cached() {
+	// 	return acc.Next()
+	// }
 
-	if err := acc.Unmarshal("DNS", &dns); err != nil {
-		return err
+	dns := make(pkg.DnsRecords, 0)
+	if err = acc.Unmarshal("DNS", dns); err != nil {
+		l.Error("Unmarshal DNS: ", err)
 	}
 
 	if gip, err := NewGeoIp(dns.Array("A")...); err == nil {

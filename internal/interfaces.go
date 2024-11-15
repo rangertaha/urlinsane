@@ -122,8 +122,10 @@ type Domain interface {
 	Valid() bool
 	Live(...bool) bool
 	Active(...bool) bool
+	Cached(...bool) bool
+	Dir(...string) string
 	Ld(...int) int
-	Json() string
+	Json(...string) string
 	Idn(...string) string
 }
 
@@ -156,8 +158,8 @@ type Domain interface {
 
 type Accumulator interface {
 	Add(Domain)
-	// Mkdir(root, dirname string) (string, error)
-	// Mkfile(dirname, filename string, content []byte) (string, error)
+
+	// Saving Files
 	Save(filename string, content []byte) error
 	Dir() string
 
@@ -165,10 +167,12 @@ type Accumulator interface {
 	GetJson(key string) json.RawMessage
 	SetJson(key string, data json.RawMessage)
 	Unmarshal(key string, v interface{}) error
+	Marshal(key string, v interface{}) error
 	GetMeta(key string) (data string)
 	SetMeta(key string, data string)
 	Next() (err error)
 	Live(...bool) bool
+	Cached(...bool) bool
 }
 
 type Language interface {
