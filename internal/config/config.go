@@ -44,8 +44,7 @@ const DIR_PRIMARY = ".config/urlinsane"
 
 type (
 	Config struct {
-		domain string // Target domain
-
+		domain    string // Target domain
 		directory string
 
 		// Plugins
@@ -56,6 +55,10 @@ type (
 		database   internal.Database
 		analyzers  []internal.Analyzer
 		output     internal.Output
+
+		// Constraints
+		regex       string
+		levenshtein int
 
 		// Performance
 		workers int
@@ -73,9 +76,11 @@ type (
 		progress     bool
 		registered   bool
 		unregistered bool
-		levenshtein  int
 		summary      bool
 		assets       string
+
+		// Metrics
+		total int
 	}
 
 	Infos             []internal.Collector
@@ -134,6 +139,10 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		analyzers  []string = csSplit(cli.String("analyzers"))  // Analyzers IDs
 		database   string   = "badger"
 
+		// Constraints
+		regex    string = cli.String("regex") //
+		distance int    = cli.Int("distance") //
+
 		// Outputs options
 		format       string = cli.String("format")     // Output format ID/Name
 		file         string = cli.String("file")       //
@@ -143,7 +152,6 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		verbose      bool   = cli.Bool("verbose")      //
 		progress     bool   = cli.Bool("progress")     //
 		debug        bool   = cli.Bool("debug")        //
-		distance     int    = cli.Int("distance")      //
 		assets       string = cli.Path("dir")          //
 		banner       bool   = true                     //
 
@@ -182,6 +190,10 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		analyzers,  // Analyzers IDs
 		database,   // Database ID
 
+		// Constraints
+		regex,
+		distance,
+
 		// Outputs options
 		format, //
 		file,
@@ -192,7 +204,6 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		progress,
 		banner,
 		debug,
-		distance,
 		assets,
 
 		// Performance options
@@ -213,6 +224,10 @@ func ConfigOption(
 	anlyzrs []string,
 	database string,
 
+	// Constraints
+	regex string,
+	distance int,
+
 	// Outputs options
 	format string,
 	file string,
@@ -223,7 +238,6 @@ func ConfigOption(
 	progress bool,
 	banner bool,
 	debug bool,
-	distance int,
 	assets string,
 
 	// Performance options
@@ -254,6 +268,10 @@ func ConfigOption(
 			log.Error(err)
 		}
 
+		// Constraints
+		c.regex = regex
+		c.levenshtein = distance
+
 		// Outputs options
 		c.format = format
 		c.file = file
@@ -263,7 +281,6 @@ func ConfigOption(
 		c.verbose = verbose
 		c.progress = progress
 		c.banner = banner
-		c.levenshtein = distance
 		c.assets = assets
 
 		// Performance options
@@ -284,6 +301,7 @@ func ConfigOption(
 			"collectors": cols,
 			"analyzers":  anlyzrs,
 			"database":   database,
+			"regex":      regex,
 			"format":     format,
 			"file":       file,
 			"summary":    summary,
@@ -332,6 +350,10 @@ func (c *Config) Analyzers() []internal.Analyzer   { return c.analyzers }
 func (c *Config) Output() internal.Output          { return c.output }
 func (c *Config) Database() internal.Database      { return c.database }
 
+// Constraint options
+func (c *Config) Regex() string { return c.regex }
+func (c *Config) Distance() int { return c.levenshtein }
+
 // Performance options
 func (c *Config) Workers() int           { return c.workers }
 func (c *Config) Delay() time.Duration   { return c.delay }
@@ -341,7 +363,6 @@ func (c *Config) Timeout() time.Duration { return c.timeout }
 
 // Outputs options
 func (c *Config) Filters() (fields []string) { return c.filters }
-func (c *Config) Distance() int              { return c.levenshtein }
 func (c *Config) Verbose() bool              { return c.verbose }
 func (c *Config) Registered() bool           { return c.registered }
 func (c *Config) Unregistered() bool         { return c.unregistered }
@@ -353,7 +374,13 @@ func (c *Config) File() string               { return c.file }
 func (c *Config) AssetDir() string           { return c.assets }
 
 func (c *Config) Dir() string { return c.directory }
+func (c *Config) Count(v ...int) int {
+	if len(v) > 0 {
+		c.total = v[0]
+	}
 
+	return c.total
+}
 func csSplit(value string) []string {
 	value = strings.TrimSpace(value)
 	value = strings.ReplaceAll(value, " ", ",")
