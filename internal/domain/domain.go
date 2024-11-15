@@ -33,13 +33,15 @@ type Domain struct {
 
 	IsLive   bool                       `json:"live,omitempty"`
 	Data     map[string]json.RawMessage `json:"data,omitempty"` // used for detailed JSON nested outputs
-	Metadata map[string]string          `json:"-"`              // Used for simplified table based output
+	Metadata map[string]string          `json:"meta,omitempty"` // Used for simplified table based output
 
 	// Internal use
-	input       string // Name provded by user
+	Input       string // Name provded by user  `json:"input,omitempty"`
 	algo        internal.Algorithm
-	levenshtein int
-	active      bool
+	Levenshtein int    `json:"ld,omitempty"`
+	Involved      bool   `json:"active,omitempty"`
+	Cache      bool   `json:"cached,omitempty"`
+	Directory   string `json:"dir,omitempty"`
 }
 
 // type DnsRecord struct {
@@ -68,7 +70,7 @@ func New(name string) internal.Domain {
 		SufName:  domainutil.DomainSuffix(name),
 		Metadata: make(map[string]string),
 		Data:     make(map[string]json.RawMessage),
-		input:    name,
+		Input:    name,
 	}
 }
 
@@ -82,7 +84,7 @@ func NewVariant(algo internal.Algorithm, names ...string) internal.Domain {
 		Metadata: make(map[string]string),
 		Data:     make(map[string]json.RawMessage),
 		algo:     algo,
-		input:    name,
+		Input:    name,
 	}
 }
 
@@ -152,7 +154,14 @@ func (d *Domain) String() string {
 	// name = strings.Join(names, ".")
 	// name = strings.ReplaceAll(name, "..", ".")
 	// name = strings.Trim(name, ".")
-	return d.input
+	return d.Input
+}
+func (d *Domain) Dir(v ...string) string {
+	if len(v) > 0 {
+		d.Directory = v[0]
+	}
+
+	return d.Directory
 }
 
 func (d *Domain) Live(v ...bool) bool {
@@ -163,12 +172,20 @@ func (d *Domain) Live(v ...bool) bool {
 	return d.IsLive
 }
 
-func (d *Domain) Active(v ...bool) bool {
+func (d *Domain) Cached(v ...bool) bool {
 	if len(v) > 0 {
-		d.active = v[0]
+		d.Cache = v[0]
 	}
 
-	return d.active
+	return d.Cache
+}
+
+func (d *Domain) Active(v ...bool) bool {
+	if len(v) > 0 {
+		d.Involved = v[0]
+	}
+
+	return d.Involved
 }
 
 // Ld returns the Levenshtein_distance
@@ -176,19 +193,31 @@ func (d *Domain) Active(v ...bool) bool {
 //	https://en.wikipedia.org/wiki/Levenshtein_distance
 func (d *Domain) Ld(v ...int) int {
 	if len(v) > 0 {
-		d.levenshtein = v[0]
+		d.Levenshtein = v[0]
 	}
 
-	return d.levenshtein
+	return d.Levenshtein
 }
 
-func (d *Domain) Json() string {
-	jsonData, err := json.Marshal(d)
-	if err != nil {
-		log.Error("Error:", err)
+func (d *Domain) Json(value ...string) (j string) {
+	if len(value) == 0 {
+		// Marshal the struct into JSON
+		jsonData, err := json.Marshal(d)
+		if err != nil {
+			log.Error("Marshal:", err)
+		}
+		return string(jsonData)
+	}
+	if len(value) > 0 {
+		data := value[0]
+		// Unmarshal the JSON back into struct
+		if err := json.Unmarshal([]byte(data), &d); err != nil {
+			log.Error("Unmarshal:", err)
+		}
+		d.Cache = true
 	}
 
-	return string(jsonData)
+	return
 }
 
 func (d *Domain) Idn(names ...string) string {

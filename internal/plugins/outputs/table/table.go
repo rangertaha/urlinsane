@@ -23,8 +23,8 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
 	"github.com/rangertaha/urlinsane/internal/utils"
-	"golang.org/x/term"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/term"
 )
 
 const (
@@ -36,7 +36,7 @@ type Plugin struct {
 	table   table.Writer
 	config  internal.Config
 	domains []internal.Domain
-	output string
+	output  string
 }
 
 func (n *Plugin) Id() string {
@@ -66,7 +66,7 @@ func (n *Plugin) Read(in internal.Domain) {
 }
 
 func (n *Plugin) Header() (row table.Row) {
-	// row = append(row, "LD")
+	row = append(row, "LD")
 	row = append(row, "TYPE")
 	row = append(row, "TYPO")
 
@@ -82,7 +82,7 @@ func (n *Plugin) Header() (row table.Row) {
 
 func (n *Plugin) Row(domain internal.Domain) (row table.Row) {
 	n.domains = append(n.domains, domain)
-	// row = append(row, typo.Dist())
+	row = append(row, domain.Ld())
 	if n.config.Verbose() {
 		row = append(row, domain.Algorithm().Name())
 	} else {
