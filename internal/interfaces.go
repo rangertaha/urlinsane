@@ -171,6 +171,7 @@ type Accumulator interface {
 	Marshal(key string, v interface{}) error
 	GetMeta(key string) (data string)
 	SetMeta(key string, data string)
+	Metadata() map[string]string
 	Next() (err error)
 	Live(...bool) bool
 	Cached(...bool) bool

@@ -49,13 +49,13 @@ func (p *Plugin) Order() int {
 }
 
 func (i *Plugin) Init(c internal.Config) {
-	i.db = c.Database()
+	// i.db = c.Database()
 	i.conf = c
-	i.dir = filepath.Join(c.Dir(), "domains")
+	i.dir = filepath.Join(c.AssetDir(), "domains")
 	i.ctx, i.cancel = chromedp.NewContext(context.Background())
 	// defer cancel()
 
-	i.ctx, i.cancel = context.WithTimeout(i.ctx, 60*time.Second)
+	i.ctx, i.cancel = context.WithTimeout(i.ctx, 2*time.Minute)
 	// defer cancel()
 }
 
@@ -90,7 +90,7 @@ func (p *Plugin) Exec(acc internal.Accumulator) (err error) {
 		if err := acc.Save("index.png", buf); err != nil {
 			log.Error(err)
 		} else {
-			acc.SetMeta("SCREENSHOT", acc.Domain().String()+"/"+"index.png")
+			acc.SetMeta("SCREENSHOT", "domains/index.png")
 		}
 	}
 	return

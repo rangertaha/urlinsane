@@ -69,3 +69,4 @@ debhelper-build-stamp
 /*/hello
 /tutorial-1/packageroot/usr
 GeoLite2-City.mmdb
+/domains
