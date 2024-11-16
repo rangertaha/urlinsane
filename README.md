@@ -8,8 +8,6 @@ It's inspired by [URLCrazy](https://morningstarsecurity.com/research/urlcrazy), 
 
 
 
-
-
 ## Installation
 
 This tool is primarily intended for Linux operating systems.
