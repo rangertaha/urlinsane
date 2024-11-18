@@ -59,15 +59,12 @@ func (n *Plugin) Headers() []string {
 
 func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
 	l := i.log.WithFields(log.Fields{"domain": acc.Domain().String()})
-	if acc.Domain().Cached() {
-		// l.Debug("Returning cache domain: ", acc.Domain().String())
-		return acc.Next()
-	}
 
 	dns := make(pkg.DnsRecords, 0)
 	if err := acc.Unmarshal("DNS", &dns); err != nil {
 		l.Error("Unmarshal DNS: ", err)
 	}
+	
 	records, err := net.LookupTXT(acc.Domain().String())
 	if err != nil {
 		log.Error(err)

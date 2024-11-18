@@ -457,13 +457,18 @@ func (u *Urlinsane) Output(in <-chan internal.Domain) {
 		// Send domain typos to the output plugin
 		if c.Algorithm() != nil {
 			output.Read(c)
+		} else {
+			// output.Print(c)
 		}
 
 		// Save domain to directory
 		if u.cfg.AssetDir() != "" {
-			if err := c.Save(u.cfg.AssetDir()); err != nil {
-				logger.Error("Saving: ", err)
+			if c.Live() {
+				if err := c.Save(u.cfg.AssetDir()); err != nil {
+					logger.Error("Saving: ", err)
+				}
 			}
+
 		}
 	}
 

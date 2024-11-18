@@ -24,7 +24,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type Banners map[string]string
+type Banner struct {
+	Port  string `json:"port,omitempty"`
+	String string `json:"string,omitempty"`
+}
+
+type Banners []Banner
 
 type Plugin struct {
 	// resolver resolver.Client
@@ -37,10 +42,14 @@ func (i *Plugin) Init(c internal.Config) {
 
 func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
 	ports := []string{"80", "21", "587"}
-	banners := make(Banners)
+	banners := Banners{}
 
 	for _, port := range ports {
-		banners[port] = i.Banner("tcp", acc.Domain().String(), port)
+		b := Banner{
+			Port:   port,
+			String: i.Banner("tcp", acc.Domain().String(), port),
+		}
+		banners = append(banners, b)
 	}
 	if len(banners) > 0 {
 		acc.SetMeta("BANNER", banners.String("80"))
@@ -56,7 +65,7 @@ func (i *Plugin) Close() {}
 
 func (i *Plugin) Banner(proto, host, port string) (bn string) {
 	address := fmt.Sprintf("%s:%s", host, port)
-	conn, err := net.DialTimeout(proto, address, 5*time.Second)
+	conn, err := net.DialTimeout(proto, address, 10*time.Second)
 	if err != nil {
 		log.Error("Error:", err.Error())
 		return
@@ -86,8 +95,10 @@ func (b *Banners) Json() json.RawMessage {
 }
 
 func (b *Banners) String(p string) (values string) {
-	if v, ok := (*b)[p]; ok {
-		return v
+	for _, banner := range *b {
+		if banner.Port == p {
+			return banner.String
+		}
 	}
 	return
 }
