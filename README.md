@@ -20,7 +20,7 @@ This tool is primarily intended for Linux operating systems.
 Download the binary, remove the previous version, and install it in /usr/local/bin:
 
 ```bash
-wget https://github.com/rangertaha/urlinsane/releases/download/0.8.1/urlinsane-0.8.0-linux-amd64 
+wget https://github.com/rangertaha/urlinsane/releases/download/0.8.1/urlinsane-0.8.1-linux-amd64 
 rm -f /usr/local/bin/urlinsane
 mv urlinsane-0.8.1-linux-amd64  /usr/local/bin/urlinsane
 ```
