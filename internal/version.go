@@ -17,7 +17,7 @@ package internal
 const (
 	// VERSION format is loosely based on
 	// [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-	VERSION = "0.8.0"
+	VERSION = "0.8.1"
 
 	DEBUG = false
 
