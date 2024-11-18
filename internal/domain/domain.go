@@ -35,7 +35,7 @@ type Domain struct {
 
 	IsLive   bool                       `json:"live,omitempty"`
 	Data     map[string]json.RawMessage `json:"data,omitempty"` // used for detailed JSON nested outputs
-	Metadata map[string]string          `json:"meta,omitempty"` // Used for simplified table based output
+	Metadata map[string]string          `json:"-"` // Used for simplified table based output
 	// Input       string                     `json:"input,omitempty"` // Name provded by user
 	Levenshtein int  `json:"ld,omitempty"`
 	Involved    bool `json:"active,omitempty"`
