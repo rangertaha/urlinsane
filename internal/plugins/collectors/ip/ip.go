@@ -35,25 +35,15 @@ func (i *Plugin) Init(c internal.Config) {
 }
 
 func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
-	// l := i.log.WithFields(log.Fields{"domain": acc.Domain().String()})
-	if acc.Domain().Cached() {
-		// l.Debug("Returning cache domain: ", acc.Domain().String())
-		return acc.Next()
+	l := i.log.WithFields(log.Fields{"domain": acc.Domain().String()})
+	
+	dns := make(pkg.DnsRecords, 0)
+	if err := acc.Unmarshal("DNS", &dns); err != nil {
+		l.Error("Unmarshal DNS: ", err)
 	}
-	// dns := make(pkg.DnsRecords, 0)
-	// if acc.Domain().Cached() {
-	// 	l.Debug("Returning cache domain: ", acc.Domain().String())
-
-	// 	if err = acc.Unmarshal("DNS", dns); err == nil {
-	// 		// Update simple table data
-	// 		acc.SetMeta("IPv4", dns.String("A"))
-	// 		acc.SetMeta("IPv6", dns.String("AAAA"))
-	// 		return acc.Next()
-	// 	}
-	// }
 
 	// Retrive data
-	dns := make(pkg.DnsRecords, 0)
+	// dns := make(pkg.DnsRecords, 0)
 	ipv4, ipv6 := i.getIp(acc.Domain().String())
 	if len(ipv4) > 0 || len(ipv6) > 0 {
 		dns.Add("A", 0, ipv4...)
