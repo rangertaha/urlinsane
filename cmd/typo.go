@@ -92,13 +92,14 @@ var Flags = []cli.Flag{
 	&cli.DurationFlag{
 		Name:     "timeout",
 		Aliases:  []string{"t"},
-		Value:    5 * time.Minute,
+		Value:    0 * time.Minute,
 		Category: "PERFORMANCE",
+		Hidden: true,
 		Usage:    "maximim duration tasks need to complete `DURATION`",
 	},
 	&cli.DurationFlag{
 		Name:     "ttl",
-		Value:    168 * time.Hour,
+		Value:    0 * time.Hour,
 		Category: "PERFORMANCE",
 		Usage:    "maximim duration to cache results, 0 deletes the cache `DURATION`",
 	},
@@ -170,13 +171,10 @@ var Flags = []cli.Flag{
 	},
 	&cli.PathFlag{
 		Name:     "dir",
-		Value:    "",
+		Value:    "domains",
 		Category: "OUTPUT",
 		Usage:    "directory to save scan results `DIR`",
 		Action: func(ctx *cli.Context, v string) error {
-			// if v >= 65536 {
-			// 	return fmt.Errorf("Flag port value %v out of range[0-65535]", v)
-			// }
 			return nil
 		},
 	},
@@ -196,7 +194,6 @@ var TypoCmd = cli.Command{
 	Description:            "URLInsane is designed to detect domain typosquatting by using advanced algorithms, information-gathering techniques, and data analysis to identify potentially harmful variations of targeted domains that cybercriminals might exploit. This tool is essential for defending against threats like typosquatting, brandjacking, URL hijacking, fraud, phishing, and corporate espionage. By detecting malicious domain variations, it provides an added layer of protection to brand integrity and user trust. Additionally, URLInsane enhances threat intelligence capabilities, strengthening proactive cybersecurity measures.",
 	UsageText:              "urlinsane [g opts..] typo [opts..] [domain]",
 	UseShortOptionHandling: true,
-	// Before:                 altsrc.InitInputSourceWithContext(Flags, altsrc.NewYamlSourceFromFlagFunc("load")),
 	Flags: Flags,
 	Action: func(cCtx *cli.Context) error {
 		if cCtx.NArg() == 0 {

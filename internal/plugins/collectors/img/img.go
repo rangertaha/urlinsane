@@ -34,7 +34,6 @@ const (
 
 type Plugin struct {
 	conf   internal.Config
-	db     internal.Database
 	dir    string
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -69,13 +68,6 @@ func (p *Plugin) Headers() []string {
 
 func (p *Plugin) Exec(acc internal.Accumulator) (err error) {
 	if acc.Live() {
-		// assetDir, _ := acc.Mkdir(p.dir, domain.String())
-		// create context
-		// ctx, cancel := chromedp.NewContext(context.Background())
-		// defer cancel()
-
-		// ctx, cancel = context.WithTimeout(ctx, 25*time.Second)
-		// defer cancel()
 
 		var buf []byte
 		url := fmt.Sprintf("http://%s", acc.Domain().String())
@@ -90,37 +82,11 @@ func (p *Plugin) Exec(acc internal.Accumulator) (err error) {
 		if err := acc.Save("index.png", buf); err != nil {
 			log.Error(err)
 		} else {
-			acc.SetMeta("SCREENSHOT", "domains/index.png")
+			acc.SetMeta("SCREENSHOT", "index.png")
 		}
 	}
-	return
+	return acc.Next()
 }
-
-// func (p *Plugin) Screenshot(domain string) (filename string) {
-// 	// create context
-// 	ctx, cancel := chromedp.NewContext(context.Background())
-// 	defer cancel()
-
-// 	ctx, cancel = context.WithTimeout(ctx, 25*time.Second)
-// 	defer cancel()
-
-// 	var buf []byte
-// 	url := fmt.Sprintf("http://%s", domain)
-// 	// capture entire browser viewport, returning png with quality=90
-// 	if err := chromedp.Run(ctx, fullScreenshot(url, 90, &buf)); err != nil {
-// 		url := fmt.Sprintf("https://%s", domain)
-// 		if err := chromedp.Run(ctx, fullScreenshot(url, 90, &buf)); err != nil {
-// 			// log.Fatal(err)
-// 			return ""
-// 		}
-// 	}
-// 	filename = fmt.Sprintf("main/files/%s.png", domain)
-// 	if err := os.WriteFile(filename, buf, 0o644); err != nil {
-// 		// log.Fatal(err)
-// 		return ""
-// 	}
-// 	return filename
-// }
 
 // elementScreenshot takes a screenshot of a specific element.
 func elementScreenshot(urlstr, sel string, res *[]byte) chromedp.Tasks {
