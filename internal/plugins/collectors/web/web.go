@@ -87,15 +87,6 @@ func (p *Plugin) Exec(acc internal.Accumulator) (err error) {
 			}
 		})
 
-		// p.client.OnHTML("*", func(e *colly.HTMLElement) {
-		// 	text := strings.TrimSpace(e.Text)
-
-		// 	if len(text) > 5 {
-		// 		res.HTML.Texts = append(res.HTML.Texts, text)
-		// 	}
-
-		// })
-
 		p.client.OnHTML("title", func(e *colly.HTMLElement) {
 			res.HTML.Title = e.Text
 		})
@@ -122,7 +113,6 @@ func (p *Plugin) Exec(acc internal.Accumulator) (err error) {
 			res.StatusCode = r.StatusCode
 			res.Headers = Header(*r.Headers)
 			res.URL = r.Request.URL.String()
-			// acc.Save("index.html", r.Body)
 
 			if p.conf.AssetDir() != "" {
 				fpath := filepath.Join(p.dir, acc.Domain().String(), "/index.html")
