@@ -94,7 +94,7 @@ func CharacterSwapping(token string) (tokens []string) {
 // keyboard layout.
 func AdjacentCharacterSubstitution(token string, keyboard ...string) (tokens []string) {
 	for i, char := range token {
-		for _, key := range AdjacentCharacters(string(char), keyboard...) {
+		for _, key := range adjacentCharacters(string(char), keyboard...) {
 			variant := token[:i] + string(key) + token[i+1:]
 			tokens = append(tokens, variant)
 		}
@@ -107,7 +107,7 @@ func AdjacentCharacterSubstitution(token string, keyboard ...string) (tokens []s
 // adjacent character "g" on an English QWERTY keyboard layout.
 func AdjacentCharacterInsertion(token string, keyboard ...string) (tokens []string) {
 	for i, char := range token {
-		for _, key := range AdjacentCharacters(string(char), keyboard...) {
+		for _, key := range adjacentCharacters(string(char), keyboard...) {
 			d1 := token[:i] + string(key) + string(char) + token[i+1:]
 			tokens = append(tokens, d1)
 
@@ -130,7 +130,6 @@ func HyphenInsertion(token string) (tokens []string) {
 		variant := token[:i] + "-" + string(char) + token[i+1:]
 		if i == len(token)-1 {
 			variant = token[:i] + string(char) + "-" + token[i+1:]
-			// variant = strings.Trim(variant, "-")
 		}
 		tokens = append(tokens, variant)
 	}
@@ -269,7 +268,7 @@ func RepetitionAdjacentReplacement(token string, keyboard ...string) (tokens []s
 	for i, char := range token {
 		if i < len(token)-1 {
 			if token[i] == token[i+1] {
-				for _, key := range AdjacentCharacters(string(char), keyboard...) {
+				for _, key := range adjacentCharacters(string(char), keyboard...) {
 					variant := token[:i] + string(key) + string(key) + token[i+2:]
 
 					tokens = append(tokens, variant)
@@ -346,9 +345,12 @@ func CommonMisspellings(token string, dataset ...[]string) (words []string) {
 }
 
 
-// VowelSwapping occurs when the vowels in the target token are swapped with each other, leading to a slightly altered version of the original word. 
-// This type of error typically involves exchanging one vowel for another, which can still make the altered token look similar to the original, 
-// but with a subtle change. For example, the word "example" could become "ixample", "exomple", or "exaple", where vowels like "a", "e", and "o" 
+// VowelSwapping occurs when the vowels in the target token are swapped with 
+// each other, leading to a slightly altered version of the original word. 
+// This type of error typically involves exchanging one vowel for another, 
+// which can still make the altered token look similar to the original, 
+// but with a subtle change. For example, the word "example" could become
+//  "ixample", "exomple", or "exaple", where vowels like "a", "e", and "o" 
 // are swapped, causing the token to differ from its correct form.
 func VowelSwapping(token string, vowels ...string) (words []string) {
 	for _, vchar := range vowels {
@@ -396,7 +398,7 @@ func HomophoneSwapping(token string, homophones ...[]string) (words []string) {
 // can trick people into clicking a fraudulent link or misreading text.
 func HomoglyphSwapping(token string, homoglyphs map[string][]string) (tokens []string) {
 	for i, char := range token {
-		for _, kchar := range SimilarChars(string(char), homoglyphs) {
+		for _, kchar := range similarChars(string(char), homoglyphs) {
 			variant := fmt.Sprint(token[:i], kchar, token[i+1:])
 			if token != variant {
 				tokens = append(tokens, variant)
@@ -407,7 +409,12 @@ func HomoglyphSwapping(token string, homoglyphs map[string][]string) (tokens []s
 }
 
 
-// BitFlipping
+// BitFlipping involves altering the binary representation of characters in a 
+// token by flipping one or more bits. This technique introduces subtle changes
+//  to the characters, which can result in visually similar but distinct tokens. 
+// For example, flipping a single bit in the character "a" might produce a
+//  different character entirely, such as "b", creating variants that are hard 
+// to detect visually but differ in encoding.
 func BitFlipping(token string, graphemes ...string) (variations []string) {
 	// Flip a single bit in a byte
 	flipBit := func(b byte, pos uint) byte {
@@ -427,10 +434,28 @@ func BitFlipping(token string, graphemes ...string) (variations []string) {
 	return
 }
 
+
+// TokenOrderSwap involves rearranging the order of words, numbers, or components 
+// within a token to create alternative versions. This method often results in 
+// tokens that are similar to the original but with a different sequence, 
+// which can be used to confuse or mislead users. For example, the token 
+// "2024example" could be altered to "example2024", or "shop-online" could
+//  become "online-shop", where the elements are swapped in position.
+func TokenOrderSwap(token string, tokens []string) (variations []string) {
+	
+
+	return
+}
+
+
+// CardinalSwap involves replacing numerical digits with their corresponding 
+// cardinal word forms, or vice versa. This process creates variants by 
+// converting numbers to words or words to numbers. For example, the token 
+// "file2" might be altered to "filetwo", or "chapterthree" could become "chapter3".
 func CardinalSwap(token string, numerals map[string][]string) (variations []string) {
 	var fn func(map[string]string, string, bool) map[string]bool
 
-	cardinals := NumeralMap(numerals, 0)
+	cardinals := numeralMap(numerals, 0)
 
 	fn = func(data map[string]string, str string, reverse bool) (tokens map[string]bool) {
 		tokens = make(map[string]bool)
@@ -468,9 +493,16 @@ func CardinalSwap(token string, numerals map[string][]string) (variations []stri
 	return
 }
 
+
+// OrdinalSwap involves substituting numerical digits with their corresponding 
+// ordinal word forms, or converting ordinal words back into numerical digits. 
+// This technique generates variations by switching between numeric and
+//  word-based representations of ordinals. For example, the token "file2" could
+//  be transformed into "filesecond", or "chapterthird" might be altered to 
+// "chapter3".
 func OrdinalSwap(token string, numerals map[string][]string) (variations []string) {
 	var fn func(map[string]string, string, bool) map[string]bool
-	ordinals := NumeralMap(numerals, 1)
+	ordinals := numeralMap(numerals, 1)
 
 	fn = func(data map[string]string, str string, reverse bool) (tokens map[string]bool) {
 		tokens = make(map[string]bool)
@@ -509,49 +541,44 @@ func OrdinalSwap(token string, numerals map[string][]string) (variations []strin
 	return
 }
 
-// SimilarChars returns homoglyphs, characters that look alike from other languages
-func SimilarChars(key string, data map[string][]string) (chars []string) {
-	chars = []string{}
-	char, ok := data[key]
-	if ok {
-		chars = append(chars, char...)
-	}
-	return chars
-}
 
-// SimilarSounds returns common homophones, words that sound alike
-func SimilarSounds(str string, data ...[]string) (words []string) {
-	words = []string{}
-	for _, wordset := range data {
-		for _, word := range wordset {
-			if strings.Contains(str, word) {
-				for _, w := range wordset {
-					if w != word {
-						words = append(words, strings.Replace(str, word, w, -1))
-					}
-				}
-
-			}
-		}
-	}
-	return
-}
-
-// DHUSubstitution substitutes (.-_) in a given token to produce variants that
-// look similar. Primarily used in package tokens
-func DHUSubstitution(token string) (variations []string) {
+// DotDashUnderscoreSub involves replacing dots (.), dashes (-), and 
+// underscores (_) in a given token with one another to produce alternative 
+// variants that closely resemble the original token. This technique is commonly 
+// applied in contexts like package names or identifiers, where these characters 
+// are frequently used for separation. For example, a token such as 
+// "my-package.name" might be altered to "my_package_name", "my.package-name", 
+// or "my-package_name", creating slight variations that can be easily mistaken 
+// for the original.
+func DotDashUnderscoreSub(token string) (variations []string) {
 
 	return
 }
 
-// DotHyphenSubstitution substitutes (.-) in a given token to produce variants that
-// look similar.
+
+// DotHyphenSubstitution involves substituting dots (.) with hyphens (-) or 
+// vice versa within a given token, creating alternative versions that resemble 
+// the original. This technique generates variants by interchanging these 
+// commonly used separators, often resulting in tokens that look similar but 
+// are structurally different. For example, a token like "my-example.com" 
+// might become "my.example.com", or "my.example-com" could be changed 
+// to "my-example.com".
 func DotHyphenSubstitution(token string) (variations []string) {
 
 	return
+}	
+
+// StemSwapping involves replacing words with their corresponding root or stem forms,
+// or vice versa. This process generates variations by switching between the 
+// base form of a word and its derived forms. For example, the token "running" 
+// might be altered to its root "run", or "player" could become "play".
+func StemSwapping(token string, tokens []string) (variations []string) {
+
+	return
 }
 
-func NumeralMap(data map[string][]string, pos int) (words map[string]string) {
+
+func numeralMap(data map[string][]string, pos int) (words map[string]string) {
 	words = make(map[string]string)
 
 	for num, tokens := range data {
@@ -567,7 +594,7 @@ func NumeralMap(data map[string][]string, pos int) (words map[string]string) {
 }
 
 // Adjacent returns adjacent characters on a given keyboard
-func AdjacentCharacters(char string, layout ...string) (chars []string) {
+func adjacentCharacters(char string, layout ...string) (chars []string) {
 	chars = []string{}
 	for r, row := range layout {
 		for c := range row {
@@ -601,4 +628,35 @@ func AdjacentCharacters(char string, layout ...string) (chars []string) {
 		}
 	}
 	return chars
+}
+
+
+
+
+// similarChars returns homoglyphs, characters that look alike from other languages
+func similarChars(key string, data map[string][]string) (chars []string) {
+	chars = []string{}
+	char, ok := data[key]
+	if ok {
+		chars = append(chars, char...)
+	}
+	return chars
+}
+
+// similarSounds returns common homophones, words that sound alike
+func similarSounds(str string, data ...[]string) (words []string) {
+	words = []string{}
+	for _, wordset := range data {
+		for _, word := range wordset {
+			if strings.Contains(str, word) {
+				for _, w := range wordset {
+					if w != word {
+						words = append(words, strings.Replace(str, word, w, -1))
+					}
+				}
+
+			}
+		}
+	}
+	return
 }
