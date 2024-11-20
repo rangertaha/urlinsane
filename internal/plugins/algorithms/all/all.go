@@ -12,7 +12,6 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/cr"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/cs"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/dcar"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/dcr"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/dhs"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/di"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/do"
