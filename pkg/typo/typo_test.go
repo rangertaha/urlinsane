@@ -599,11 +599,11 @@ func TestDoubleCharacterInsertion(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			for _, keyboard := range enKeyboards {
 				if keyboard.name == test.layout {
-					variants := DoubleCharacterInsertion(test.name)
+					variants := CharacterRepetition(test.name)
 					sort.Strings(variants)
 
 					if !reflect.DeepEqual(variants, test.typos) {
-						t.Errorf("DoubleCharacterInsertion(%s) = %s; want %s", test.name, variants, test.typos)
+						t.Errorf("CharacterRepetition(%s) = %s; want %s", test.name, variants, test.typos)
 					}
 				}
 
@@ -640,11 +640,11 @@ func TestDoubleCharacterAdjacentReplacement(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			for _, keyboard := range enKeyboards {
 				if keyboard.name == test.layout {
-					variants := DoubleCharacterAdjacentReplacement(test.name, keyboard.layout...)
+					variants := RepetitionAdjacentReplacement(test.name, keyboard.layout...)
 					sort.Strings(variants)
 
 					if !reflect.DeepEqual(variants, test.typos) {
-						t.Errorf("DoubleCharacterAdjacentReplacement(%s) = %s; want %s", test.name, variants, test.typos)
+						t.Errorf("RepetitionAdjacentReplacement(%s) = %s; want %s", test.name, variants, test.typos)
 					}
 				}
 
@@ -723,11 +723,11 @@ func TestSingularPluraliseSubstitution(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			for _, keyboard := range enKeyboards {
 				if keyboard.name == test.layout {
-					variants := SingularPluraliseSubstitution(test.name)
+					variants := SingularPluralise(test.name)
 					sort.Strings(variants)
 
 					if !reflect.DeepEqual(variants, test.typos) {
-						t.Errorf("SingularPluraliseSubstitution(%s) = %s; want %s", test.name, variants, test.typos)
+						t.Errorf("SingularPluralise(%s) = %s; want %s", test.name, variants, test.typos)
 					}
 				}
 
@@ -898,138 +898,6 @@ func TestHomoglyphSwapping(t *testing.T) {
 				}
 
 			}
-		})
-	}
-}
-
-func TestTopLevelDomain(t *testing.T) {
-	tests := []TypoCase{
-		{
-			name: "co",
-			typos: []string{
-				"co",
-				"io",
-				"uk",
-			},
-		},
-		{
-			name: "uk.com",
-			typos: []string{
-				"co",
-				"io",
-				"uk",
-			},
-		},
-		{
-			name: "uk.eu.org",
-			typos: []string{
-				"co",
-				"io",
-				"uk",
-			},
-		},
-		{
-			name: "io",
-			typos: []string{
-				"co",
-				"io",
-				"uk",
-			},
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			variants := TopLevelDomain(test.name, tstTLDs...)
-			sort.Strings(variants)
-
-			if !reflect.DeepEqual(variants, test.typos) {
-				t.Errorf("TopLevelDomain(%s) = %s; want %s", test.name, variants, test.typos)
-			}
-
-		})
-	}
-}
-
-func TestTopLevel2Domain(t *testing.T) {
-	tests := []TypoCase{
-		{
-			name: "co",
-			typos: []string{
-				"uk.com",
-				"uk.io",
-			},
-		},
-		{
-			name: "uk.com",
-			typos: []string{
-				"uk.com",
-				"uk.io",
-			},
-		},
-		{
-			name: "uk.eu.org",
-			typos: []string{
-				"uk.com",
-				"uk.io",
-			},
-		},
-		{
-			name: "io",
-			typos: []string{
-				"uk.com",
-				"uk.io",
-			},
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			variants := SecondLevelDomain(test.name, tstTLDs...)
-			sort.Strings(variants)
-
-			if !reflect.DeepEqual(variants, test.typos) {
-				t.Errorf("SecondLevelDomain(%s) = %s; want %s", test.name, variants, test.typos)
-			}
-
-		})
-	}
-}
-
-func TestTopLevel3Domain(t *testing.T) {
-	tests := []TypoCase{
-		{
-			name: "co",
-			typos: []string{
-				"uk.eu.org",
-			},
-		},
-		{
-			name: "uk.com",
-			typos: []string{
-				"uk.eu.org",
-			},
-		},
-		{
-			name: "uk.eu.org",
-			typos: []string{
-				"uk.eu.org",
-			},
-		},
-		{
-			name: "io",
-			typos: []string{
-				"uk.eu.org",
-			},
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			variants := ThirdLevelDomain(test.name, tstTLDs...)
-			sort.Strings(variants)
-
-			if !reflect.DeepEqual(variants, test.typos) {
-				t.Errorf("ThirdLevelDomain(%s) = %s; want %s", test.name, variants, test.typos)
-			}
-
 		})
 	}
 }

@@ -23,7 +23,7 @@ import (
 
 const (
 	CODE        = "cr"
-	NAME        = "Double Character Insertion"
+	NAME        = "Character Repetition"
 	DESCRIPTION = "Repeats a character of the domain name twice"
 )
 
@@ -51,7 +51,7 @@ func (n *Algo) Description() string {
 }
 
 func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
-	for _, variant := range algo.DoubleCharacterInsertion(original.Name()) {
+	for _, variant := range algo.CharacterRepetition(original.Name()) {
 		if original.Name() != variant {
 			acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
 		}

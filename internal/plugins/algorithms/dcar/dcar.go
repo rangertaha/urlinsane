@@ -37,8 +37,8 @@ import (
 
 const (
 	CODE        = "dcr"
-	NAME        = "Double Character Adjacent Replacement"
-	DESCRIPTION = "Double character adjacent replacement typos replace consecutive identical letters with adjacent keys on the keyboard."
+	NAME        = "Repetition Adjacent Replacement"
+	DESCRIPTION = "Typos created by replacing identical consecutive letters with adjacent keys on the keyboard."
 )
 
 type Algo struct {
@@ -66,7 +66,7 @@ func (n *Algo) Description() string {
 
 func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
 	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.DoubleCharacterAdjacentReplacement(original.Name(), keyboard.Layouts()...) {
+		for _, variant := range algo.RepetitionAdjacentReplacement(original.Name(), keyboard.Layouts()...) {
 			if original.Name() != variant {
 				acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
 			}
