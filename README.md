@@ -20,9 +20,9 @@ This tool is primarily intended for Linux operating systems.
 Download the binary, remove the previous version, and install it in /usr/local/bin:
 
 ```bash
-wget https://github.com/rangertaha/urlinsane/releases/download/0.8.0/urlinsane-0.8.0-linux-amd64 
+wget https://github.com/rangertaha/urlinsane/releases/download/0.8.1/urlinsane-0.8.0-linux-amd64 
 rm -f /usr/local/bin/urlinsane
-mv urlinsane-0.8.0-linux-amd64  /usr/local/bin/urlinsane
+mv urlinsane-0.8.1-linux-amd64  /usr/local/bin/urlinsane
 ```
 
 
@@ -221,6 +221,7 @@ A major limitation of the output format is its restricted display in the termina
 - Develop a script to download and build keyboard layouts from [kbdlayout.info](http://kbdlayout.info/).
 
 - Work on creating an advanced keyboard model that incorporates layer-shifting functionality.
+
 
 - Implement functionality for sending DNS queries to multiple DNS servers.
 
