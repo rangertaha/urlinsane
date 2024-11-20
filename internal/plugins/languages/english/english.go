@@ -117,7 +117,7 @@ var (
 			"1": {"one", "first"},
 			"2": {"two", "second"},
 			"3": {"three", "third"},
-			"4": {"four", "fourth", "for"},
+			"4": {"four", "fourth"},
 			"5": {"five", "fifth"},
 			"6": {"six", "sixth"},
 			"7": {"seven", "seventh"},
