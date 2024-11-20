@@ -305,10 +305,6 @@ can make the fake domain look credible, especially when users are quickly
 scanning URLs.
 
 
-## CharacterDeletion
-
-
-
 
 ## CommonMisspellings
 Created from  common misspellings in the given language.
@@ -357,3 +353,6 @@ can trick people into clicking a fraudulent link or misreading text.
 ## CardinalSwapping
 
 ## OrdinalSwapping
+
+
+## StemSwapping
