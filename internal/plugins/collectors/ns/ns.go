@@ -72,9 +72,11 @@ func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
 	for _, record := range records {
 		dns.Add("NS", 0, record.Host)
 	}
-	acc.SetMeta("NS", dns.String("NS"))
-	acc.SetJson("DNS", dns.Json())
-	acc.Domain().Live(true)
+	if len(records) > 0 {
+		acc.SetMeta("NS", dns.String("NS"))
+		acc.SetJson("DNS", dns.Json())
+		acc.Domain().Live(true)
+	}
 
 	return acc.Next()
 }
