@@ -382,7 +382,6 @@ func (u *Urlinsane) CollectorChain(funcs []internal.Collector, in <-chan interna
 				ctx, cancel = context.WithCancel(context.Background())
 			}
 
-			// acc := NewAccumulator(out)
 			u.runner(ctx, xfunc, variant, out)
 			cancel()
 		}
@@ -449,8 +448,10 @@ func (u *Urlinsane) Progress(in <-chan internal.Domain) <-chan internal.Domain {
 func (u *Urlinsane) Output(in <-chan internal.Domain) {
 	logger := log.WithFields(log.Fields{"output": u.cfg.Output().Id()})
 	output := u.cfg.Output()
+	var total int64
 
 	for c := range in {
+		total++
 		logger.WithFields(log.Fields{"d": c.String()}).
 			Debug("Sending to output")
 
@@ -486,11 +487,51 @@ func (u *Urlinsane) Output(in <-chan internal.Domain) {
 		summary := map[string]string{
 			"  TIME:":                             u.elapsed.String(),
 			text.FgGreen.Sprintf("%s", "  LIVE:"): fmt.Sprintf("%d", u.live),
-			text.FgRed.Sprintf("%s", "  OFFLINE"): fmt.Sprintf("%d", u.total-u.live),
-			"  TOTAL:":                            fmt.Sprintf("%d", u.total),
+			text.FgRed.Sprintf("%s", "  OFFLINE"): fmt.Sprintf("%d", total-u.live),
+			"  TOTAL:":                            fmt.Sprintf("%d", total),
 		}
 		output.Summary(summary)
 	}
+}
+
+func (u *Urlinsane) Details(in <-chan internal.Domain) {
+	// logger := log.WithFields(log.Fields{"output": u.cfg.Output().Id()})
+	// output := u.cfg.Output()
+
+	// for c := range in {
+	// 	logger.WithFields(log.Fields{"d": c.String()}).
+	// 		Debug("Sending to output")
+
+	// 	// Save domain to directory
+	// 	if u.cfg.AssetDir() != "" {
+	// 		if c.Live() {
+	// 			if err := c.Save(u.cfg.AssetDir()); err != nil {
+	// 				logger.Error("Saving: ", err)
+	// 			}
+	// 		}
+
+	// 	}
+	// }
+
+	// // Writes output if it can't stream
+	// output.Write()
+
+	// // Save typo records collected by the output plugin
+	// if fname := u.cfg.File(); fname != "" {
+	// 	output.Save(fname)
+	// }
+
+	// // Print summary
+	// if u.cfg.Summary() {
+	// 	u.elapsed = time.Since(u.started)
+	// 	summary := map[string]string{
+	// 		"  TIME:":                             u.elapsed.String(),
+	// 		text.FgGreen.Sprintf("%s", "  LIVE:"): fmt.Sprintf("%d", u.live),
+	// 		text.FgRed.Sprintf("%s", "  OFFLINE"): fmt.Sprintf("%d", total-u.live),
+	// 		"  TOTAL:":                            fmt.Sprintf("%d", total),
+	// 	}
+	// 	output.Summary(summary)
+	// }
 }
 
 func (u *Urlinsane) Close() {
@@ -528,6 +569,36 @@ func (u *Urlinsane) Execute() (err error) {
 	return
 }
 
+func (u *Urlinsane) Scan() (err error) {
+	typos := u.Init()
+	typos = u.Target(typos)
+	typos = u.Algorithms(typos)
+	typos = u.Constraints(typos,
+		DedupFilter,
+		RegexFilter,
+		LevenshteinFilter,
+		ReadCacheFilter,
+	)
+	typos = u.Collectors(typos)
+	typos = u.WriteCache(typos)
+	typos = u.PostFilters(typos)
+	typos = u.Analyzers(typos)
+	typos = u.Progress(typos)
+	u.Output(typos)
+	u.Close()
+
+	return
+}
+
+func (u *Urlinsane) Fetch() (err error) {
+	typos := u.Init()
+	typos = u.Target(typos)
+	typos = u.Collectors(typos)
+	u.Details(typos)
+	u.Close()
+	return
+}
+
 func (u *Urlinsane) Stream() <-chan internal.Domain {
 	typos := u.Init()
 	typos = u.Target(typos)
@@ -537,6 +608,7 @@ func (u *Urlinsane) Stream() <-chan internal.Domain {
 		RegexFilter,
 		LevenshteinFilter,
 		ReadCacheFilter,
+		GetTotal,
 	)
 	typos = u.Collectors(typos)
 	typos = u.WriteCache(typos)
