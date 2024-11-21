@@ -12,17 +12,17 @@ It's inspired by [URLCrazy](https://morningstarsecurity.com/research/urlcrazy), 
 
 This tool is primarily intended for Linux operating systems.
 
-* [urlinsane-0.8.1-darwin-amd64](https://github.com/rangertaha/urlinsane/releases/download/0.8.1/urlinsane-0.8.1-darwin-amd64)
-* [urlinsane-0.8.1-linux-amd64](https://github.com/rangertaha/urlinsane/releases/download/0.8.1/urlinsane-0.8.1-linux-amd64)
-* [urlinsane-0.8.1-windows-amd64.exe](https://github.com/rangertaha/urlinsane/releases/download/0.8.1/urlinsane-0.8.1-windows-amd64.exe)
+* [urlinsane-0.8.2-darwin-amd64](https://github.com/rangertaha/urlinsane/releases/download/0.8.2/urlinsane-0.8.2-darwin-amd64)
+* [urlinsane-0.8.2-linux-amd64](https://github.com/rangertaha/urlinsane/releases/download/0.8.2/urlinsane-0.8.2-linux-amd64)
+* [urlinsane-0.8.2-windows-amd64.exe](https://github.com/rangertaha/urlinsane/releases/download/0.8.2/urlinsane-0.8.2-windows-amd64.exe)
 
 ### Linux
 Download the binary, remove the previous version, and install it in /usr/local/bin:
 
 ```bash
-wget https://github.com/rangertaha/urlinsane/releases/download/0.8.1/urlinsane-0.8.1-linux-amd64 
+wget https://github.com/rangertaha/urlinsane/releases/download/0.8.2/urlinsane-0.8.2-linux-amd64 
 rm -f /usr/local/bin/urlinsane
-mv urlinsane-0.8.1-linux-amd64  /usr/local/bin/urlinsane
+mv urlinsane-0.8.2-linux-amd64  /usr/local/bin/urlinsane
 ```
 
 
