@@ -39,7 +39,7 @@ urlinsane typo example.com
 
 
 <video width="1280" height="720" controls autoplay muted loop>
-<source src="https://youtu.be/7yzyYHoJqp4" type="video/mp4">
+<source src="https://youtu.be/Iu9l0r0layU?si=ZB8MW3wFLAJfd_gV" type="video/mp4">
  Your browser does not support the video tag.
 </video>
 
