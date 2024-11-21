@@ -22,7 +22,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//go:embed GeoLite2-City.mmdb
+//go:embed GeoLite2-Country.mmdb
 var dataFile embed.FS
 
 type Plugin struct {
