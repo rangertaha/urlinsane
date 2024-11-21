@@ -133,7 +133,25 @@ func DedupFilter() func(in <-chan internal.Domain, c *config.Config) <-chan inte
 					out <- domain
 				}
 			}
-			c.Count(len(variants))
+			close(out)
+		}()
+		return out
+	}
+}
+
+func GetTotal() func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
+	return func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
+		out := make(chan internal.Domain)
+
+		go func() {
+			var count int
+			for domain := range in {
+				count++
+
+				out <- domain
+
+			}
+			c.Count(count)
 			close(out)
 		}()
 		return out

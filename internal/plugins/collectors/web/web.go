@@ -134,6 +134,8 @@ func (p *Plugin) Exec(acc internal.Accumulator) (err error) {
 
 		})
 
+		// p.client.Visit(fmt.Sprintf("http://%s/robot.txt", acc.Domain().String()))
+		// p.client.Visit(fmt.Sprintf("https://%s/robot.txt", acc.Domain().String()))
 		p.client.Visit(fmt.Sprintf("http://%s", acc.Domain().String()))
 		p.client.Visit(fmt.Sprintf("https://%s", acc.Domain().String()))
 
