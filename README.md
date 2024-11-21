@@ -35,7 +35,7 @@ urlinsane typo example.com
 ```
 
 
-![Urlinsane](https://github.com/rangertaha/urlinsane/blob/master/docs/vids/005.gif)
+![Urlinsane](https://github.com/rangertaha/urlinsane/blob/master/docs/vids/007.gif)
 
 
 <video width="1280" height="720" controls autoplay muted loop>
@@ -48,8 +48,8 @@ urlinsane typo example.com
 <div align="center">
   <a href="https://www.youtube.com/watch?v=ZjB8mZqg0mc" style="float:left">
   <img width="250" src="https://i.ytimg.com/vi/7yzyYHoJqp4/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFbyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLDB7XIfclBY8a9J5RGR_ckVs5nIFg" alt="Urlinsane"></a>
-  <a href="https://youtu.be/7yzyYHoJqp4" style="float:left">
-  <img width="250" src="https://i.ytimg.com/vi/7yzyYHoJqp4/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFbyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLDB7XIfclBY8a9J5RGR_ckVs5nIFg" alt="Urlinsane"></a>
+  <a href="https://youtu.be/SiLlWTxoI-c?si=IoQ8WToNknq06KY-" style="float:left">
+  <img width="250" src="https://i.ytimg.com/an_webp/SiLlWTxoI-c/mqdefault_6s.webp?du=3000&sqp=CPiS_LkG&rs=AOn4CLBQwbZM9nhSGbtgEsj5KPlKjIrEoQ" alt="Urlinsane"></a>
   <a href="https://youtu.be/7yzyYHoJqp4" style="float:left">
   <img width="250" src="https://i.ytimg.com/vi/7yzyYHoJqp4/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFbyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLDB7XIfclBY8a9J5RGR_ckVs5nIFg" alt="Urlinsane"></a>
 </div>
