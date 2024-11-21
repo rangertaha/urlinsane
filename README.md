@@ -35,7 +35,8 @@ urlinsane typo example.com
 ```
 
 
-![Urlinsane](https://github.com/rangertaha/urlinsane/blob/master/docs/vids/004.gif)
+![Urlinsane](https://github.com/rangertaha/urlinsane/blob/master/docs/vids/005.gif)
+
 
 <video width="1280" height="720" controls autoplay muted loop>
 <source src="https://youtu.be/7yzyYHoJqp4" type="video/mp4">
