@@ -95,7 +95,7 @@ type Location struct {
 }
 
 func GetGeo(ip string) (r *geoip.Record, err error) {
-	file, err := dataFile.Open("GeoLite2-City.mmdb")
+	file, err := dataFile.Open("GeoLite2-Country.mmdb")
 	if err != nil {
 		return nil, err
 	}
