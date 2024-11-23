@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Rangertaha
+// Copyright 2024 Rangertaha. All Rights Reserved.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@ const (
 	CODE        = "json"
 	DESCRIPTION = "Deeply nested JSON structured output"
 )
-
 
 type Plugin struct {
 	config  internal.Config

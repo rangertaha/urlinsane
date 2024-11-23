@@ -1,22 +1,26 @@
-// Package levenshtein is a Go implementation to calculate Levenshtein Distance.
+// Copyright 2024 Rangertaha. All Rights Reserved.
 //
-// Implementation taken from
-// https://gist.github.com/andrei-m/982927#gistcomment-1931258
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package fuzzy
 
 import "unicode/utf8"
 
-// minLengthThreshold is the length of the string beyond which
-// an allocation will be made. Strings smaller than this will be
-// zero alloc.
+
 const minLengthThreshold = 32
 
 // ComputeDistance computes the levenshtein distance between the two
 // strings passed as an argument. The return value is the levenshtein distance
-//
-// Works on runes (Unicode code points) but does not normalize
-// the input strings. See https://blog.golang.org/normalization
-// and the golang.org/x/text/unicode/norm package.
 func Levenshtein(a, b string) int {
 	if len(a) == 0 {
 		return utf8.RuneCountInString(b)
@@ -30,10 +34,7 @@ func Levenshtein(a, b string) int {
 		return 0
 	}
 
-	// We need to convert to []rune if the strings are non-ASCII.
-	// This could be avoided by using utf8.RuneCountInString
-	// and then doing some juggling with rune indices,
-	// but leads to far more bounds checks. It is a reasonable trade-off.
+
 	s1 := []rune(a)
 	s2 := []rune(b)
 

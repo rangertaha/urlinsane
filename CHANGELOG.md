@@ -19,6 +19,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - VSM(Vector Space Model) plugin for comparing the similarity of two domains
 
 
+## [0.8.0] - 2024-10-29
+### Major rewrite of the engine and plugin system
+- Using interfaces instead of functions for the plugins
+- Redesigned the plugins to make it easier to author new ones
+- Added support for arbitrary names, email addresses, and usernames
+- Added an optional progress bar
+- Improved output plugin that makes it easy to create new output formats
+- Better documentation around the algorithms
+- Publish a Debian package as well as binaries
+- Caching results to improve performance
+- Added combo squatting plugin that uses the keywords extracted from the text on the target domain
+- Added an information plugin that provides the topics of each online domain
+- VSM(Vector Space Model) plugin for comparing the similarity of two domains
+
+
 ## [0.7.0] - 2024-07-11
 ### Cleanup & reorganize codebase
 - Removed the server
