@@ -1,0 +1,6 @@
+urlinsane source: file-without-copyright-information *
+urlinsane source: maintainer-also-in-uploaders *
+urlinsane: no-manual-page *
+urlinsane source: superfluous-file-pattern *
+urlinsane: undeclared-elf-prerequisites *
+
