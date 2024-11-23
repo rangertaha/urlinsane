@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Rangertaha
+// Copyright 2024 Rangertaha. All Rights Reserved.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 package domain
 
 type URL struct {
-	Address  string   `json:"ip,omitempty"`
+	Address string `json:"ip,omitempty"`
 }
 
 // IPv4       []IP   `json:"ipv4,omitempty"`

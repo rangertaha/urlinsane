@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Rangertaha
+// Copyright 2024 Rangertaha. All Rights Reserved.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ import (
 	"github.com/gocolly/colly/v2"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
-	"github.com/rangertaha/urlinsane/pkg/fuzzy/ssdeep"
+	"github.com/glaslos/ssdeep"
 	log "github.com/sirupsen/logrus"
 )
 

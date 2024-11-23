@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Rangertaha
+// Copyright 2024 Rangertaha. All Rights Reserved.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ type Domain struct {
 
 	IsLive   bool                       `json:"live,omitempty"`
 	Data     map[string]json.RawMessage `json:"data,omitempty"` // used for detailed JSON nested outputs
-	Metadata map[string]string          `json:"-"` // Used for simplified table based output
+	Metadata map[string]string          `json:"-"`              // Used for simplified table based output
 	// Input       string                     `json:"input,omitempty"` // Name provded by user
 	Levenshtein int  `json:"ld,omitempty"`
 	Involved    bool `json:"active,omitempty"`
