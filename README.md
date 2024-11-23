@@ -46,13 +46,13 @@ urlinsane typo example.com
 
 <div align="center">
   <a href="https://youtu.be/SiLlWTxoI-c?si=wvYEK6w3G_8up5pS" style="float:left">
-  <img width="250" src="https://i.ytimg.com/an_webp/SiLlWTxoI-c/mqdefault_6s.webp?du=3000&sqp=COfKh7oG&rs=AOn4CLBVC2Uj-hNpAmQvdy0F6JKWY0xpKA" alt="Urlinsane"></a>
+  <img width="250" src="https://github.com/rangertaha/urlinsane/blob/master/docs/imgs/001.webp" alt="Urlinsane"></a>
   
   <a href="https://youtu.be/Iu9l0r0layU?si=Im_9tJ7L9wDXl6p7" style="float:left">
-  <img width="250" src="https://i.ytimg.com/an_webp/Iu9l0r0layU/mqdefault_6s.webp?du=3000&sqp=CJL4h7oG&rs=AOn4CLA8zr-JJYnfzVEJFIP8Ecdts8g4Fg" alt="Urlinsane"></a>
+  <img width="250" src="https://github.com/rangertaha/urlinsane/blob/master/docs/imgs/002.webp" alt="Urlinsane"></a>
   
   <a href="https://youtu.be/6QgCFVClTGY?si=NMigDRyI99lXE5EI" style="float:left">
-  <img width="250" src="https://i.ytimg.com/an_webp/6QgCFVClTGY/mqdefault_6s.webp?du=3000&sqp=COjNh7oG&rs=AOn4CLBjPXlt_nyjX5rTD7FBw9Fyh9oH0w" alt="Urlinsane"></a>
+  <img width="250" src="https://github.com/rangertaha/urlinsane/blob/master/docs/imgs/003.webp" alt="Urlinsane"></a>
 </div>
 
 
