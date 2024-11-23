@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Rangertaha
+// Copyright 2024 Rangertaha. All Rights Reserved.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err err
 	for _, keyboard := range n.keyboards {
 		for _, variant := range algo.AdjacentCharacterSubstitution(original.Name(), keyboard.Layouts()...) {
 			if original.Name() != variant {
-				acc.Add(domain.Variant(n,original.String(), original.Prefix(), variant, original.Suffix()))
+				acc.Add(domain.Variant(n, original.String(), original.Prefix(), variant, original.Suffix()))
 			}
 		}
 	}
