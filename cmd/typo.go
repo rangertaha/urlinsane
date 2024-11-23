@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Rangertaha
+// Copyright 2024 Rangertaha. All Rights Reserved.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -64,11 +64,11 @@ var Flags = []cli.Flag{
 		Usage:   "collectors IDs to use `[ID]`",
 	},
 	&cli.StringFlag{
-		Name:    "regex",
-		Aliases: []string{"e"},
-		Value:   "",
+		Name:     "regex",
+		Aliases:  []string{"e"},
+		Value:    "",
 		Category: "CONSTRAINTS",
-		Usage:   "regular expressions to match `[PATTERN]`",
+		Usage:    "regular expressions to match `[PATTERN]`",
 	},
 	&cli.IntFlag{
 		Name:     "workers",
@@ -94,7 +94,7 @@ var Flags = []cli.Flag{
 		Aliases:  []string{"t"},
 		Value:    0 * time.Minute,
 		Category: "PERFORMANCE",
-		Hidden: true,
+		Hidden:   true,
 		Usage:    "maximim duration tasks need to complete `DURATION`",
 	},
 	&cli.DurationFlag{
@@ -194,7 +194,7 @@ var TypoCmd = cli.Command{
 	Description:            "URLInsane is designed to detect domain typosquatting by using advanced algorithms, information-gathering techniques, and data analysis to identify potentially harmful variations of targeted domains that cybercriminals might exploit. This tool is essential for defending against threats like typosquatting, brandjacking, URL hijacking, fraud, phishing, and corporate espionage. By detecting malicious domain variations, it provides an added layer of protection to brand integrity and user trust. Additionally, URLInsane enhances threat intelligence capabilities, strengthening proactive cybersecurity measures.",
 	UsageText:              "urlinsane [g opts..] typo [opts..] [domain]",
 	UseShortOptionHandling: true,
-	Flags: Flags,
+	Flags:                  Flags,
 	Action: func(cCtx *cli.Context) error {
 		if cCtx.NArg() == 0 {
 			fmt.Println(text.FgRed.Sprint("\n  a domain name is needed!\n"))

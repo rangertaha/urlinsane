@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Rangertaha
+// Copyright 2024 Rangertaha. All Rights Reserved.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package geo
-
 
 // countries := []string{}
 // for i, ip := range vari.IPv4 {
@@ -70,8 +69,6 @@ package geo
 
 // in.Set(orig, vari)
 // in.SetMeta("GEO", strings.Join(countries, " "))
-
-
 
 // func (n *Plugin) getIp(ip string) *geoip.Record {
 // 	file, err := dataFile.Open("GeoLite2-City.mmdb")
