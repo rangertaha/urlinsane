@@ -68,5 +68,5 @@ debhelper-build-stamp
 /*/debian/files
 /*/hello
 /tutorial-1/packageroot/usr
-GeoLite2-City.mmdb
+*.mmdb
 /domains
