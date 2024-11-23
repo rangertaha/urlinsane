@@ -25,9 +25,6 @@ chmod +x urlinsane-0.8.2-linux-amd64
 sudo mv urlinsane-0.8.2-linux-amd64  /usr/local/bin/urlinsane
 ```
 
-
-
-
 ## Usage
 
 ```bash
