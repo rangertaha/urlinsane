@@ -9,7 +9,7 @@ BDIR=build
 BINARY_NAME=urlinsane
 VERSION=$(shell grep -e 'VERSION = ".*"' internal/version.go | cut -d= -f2 | sed  s/[[:space:]]*\"//g)
 
-.PHONY: help version build dpkg deps test clean doc
+.PHONY: help version build install deps test clean doc
 
 
 
@@ -22,19 +22,22 @@ version: ## Returns the version number
 
 build: deps ## Build the binaries for Windows, OSX, and Linux
 	mkdir -p $(BDIR)
-	# $(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME) -v
-	# env GOOS=darwin GOARCH=amd64 $(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 -v
-	# sha512sum $(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 > $(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64.sha512
+	$(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME) -v
+	env GOOS=darwin GOARCH=amd64 $(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 -v
+	sha512sum $(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 > $(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64.sha512
 
-	# env GOOS=linux GOARCH=amd64 $(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64 -v
-	# sha512sum $(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64 > $(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64.sha512
+	env GOOS=linux GOARCH=amd64 $(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64 -v
+	sha512sum $(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64 > $(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64.sha512
 
-	# env GOOS=windows GOARCH=amd64 $(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe -v
-	# sha512sum $(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe > $(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe.sha512
+	env GOOS=windows GOARCH=amd64 $(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe -v
+	sha512sum $(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe > $(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe.sha512
 
 
-install: build ## Install the binaries in Linux
-	mkdir -p $(BDIR)
+install: deps ## Install the binaries in Linux
+	@mkdir -p $(BDIR)
+	$(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME)
+	@chmod +x $(BDIR)/$(BINARY_NAME)
+	@sudo mv $(BDIR)/$(BINARY_NAME) /usr/local/bin/
 
 
 deps: ## Install dependencies
@@ -43,14 +46,12 @@ deps: ## Install dependencies
 test: deps ## Run unit test
 	$(GOTEST) -v ./...
 
-clean: ## Remove files created by the build
+clean: ## Remove files build files
 	$(GOCLEAN)
 	rm -rf build
 	
-
 doc: ## Go documentation
 	$(GODOC) -http=:6060
-
 
 update: ## Update data files
 	bash scripts/update.sh
