@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Rangertaha
+// Copyright 2024 Rangertaha. All Rights Reserved.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ func (n *Plugin) Rows(domains ...internal.Domain) (rows []string) {
 
 func (n *Plugin) Row(domain internal.Domain) (row string) {
 	var data []interface{}
-	if domain.Cached(){
+	if domain.Cached() {
 		data = append(data, fmt.Sprintf("*%d ", domain.Ld()))
 	} else {
 		data = append(data, fmt.Sprintf("%d  ", domain.Ld()))

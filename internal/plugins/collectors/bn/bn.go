@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Rangertaha
+// Copyright 2024 Rangertaha. All Rights Reserved.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ import (
 )
 
 type Banner struct {
-	Port  string `json:"port,omitempty"`
+	Port   string `json:"port,omitempty"`
 	String string `json:"string,omitempty"`
 }
 

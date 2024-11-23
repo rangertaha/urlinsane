@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Rangertaha
+// Copyright 2024 Rangertaha. All Rights Reserved.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -43,9 +43,9 @@ type HTML struct {
 }
 
 type Metatags struct {
-	Property   string `json:"property,omitempty"`
-	Name   string `json:"name,omitempty"`
-	Value string `json:"value,omitempty"`
+	Property string `json:"property,omitempty"`
+	Name     string `json:"name,omitempty"`
+	Value    string `json:"value,omitempty"`
 }
 
 func (s *Response) Json() []byte {

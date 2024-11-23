@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Rangertaha
+// Copyright 2024 Rangertaha. All Rights Reserved.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
 	if err := acc.Unmarshal("DNS", &dns); err != nil {
 		l.Error("Unmarshal DNS: ", err)
 	}
-	
+
 	records, err := net.LookupTXT(acc.Domain().String())
 	if err != nil {
 		log.Error(err)
