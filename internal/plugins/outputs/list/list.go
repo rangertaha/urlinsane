@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Rangertaha
+// Copyright 2024 Rangertaha. All Rights Reserved.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -47,12 +47,12 @@ func (n *Plugin) Init(conf internal.Config) {
 }
 
 func (n *Plugin) Read(in internal.Domain) {
-	
-		n.domains = append(n.domains, in)
 
-		if !n.config.Progress() {
-			fmt.Println(n.Row(in))
-		}
+	n.domains = append(n.domains, in)
+
+	if !n.config.Progress() {
+		fmt.Println(n.Row(in))
+	}
 
 }
 
