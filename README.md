@@ -21,9 +21,8 @@ Download the binary, remove the previous version, and install it in /usr/local/b
 
 ```bash
 wget https://github.com/rangertaha/urlinsane/releases/download/0.8.2/urlinsane-0.8.2-linux-amd64 
-rm -f /usr/local/bin/urlinsane
 chmod +x urlinsane-0.8.2-linux-amd64 
-mv urlinsane-0.8.2-linux-amd64  /usr/local/bin/urlinsane
+sudo mv urlinsane-0.8.2-linux-amd64  /usr/local/bin/urlinsane
 ```
 
 
