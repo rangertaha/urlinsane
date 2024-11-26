@@ -316,11 +316,12 @@ func VowelSwapping(token string, vowels ...string) (words []string) {
 	return
 }
 
-// HomophoneSwapping occurs when words that sound the same but have different
-// meanings or spellings are substituted for one another. This type of error
-// arises from words that are homophones—words that are pronounced the same but
-// may differ in spelling or meaning. For example, the word "base" could be
-// swapped with "bass", where "base" and "bass" are homophones, making the
+
+// HomophoneSwapping occurs when words that sound the same but have different 
+// meanings or spellings are substituted for one another. This type of error 
+// arises from words that are homophones—words that are pronounced the same but 
+// may differ in spelling or meaning. For example, the word "base" could be 
+// swapped with "bass", where "base" and "bass" are homophones, making the 
 // altered word sound the same when spoken, yet look different in writing.
 func HomophoneSwapping(token string, homophones ...[]string) (words []string) {
 	words = []string{}
