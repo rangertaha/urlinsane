@@ -230,7 +230,6 @@ func RepetitionAdjacentReplacement(token string, keyboard ...string) (tokens []s
 			}
 		}
 	}
-	// }
 	return
 }
 
@@ -359,13 +358,9 @@ func HomoglyphSwapping(token string, homoglyphs map[string][]string) (tokens []s
 
 // BitFlipping involves altering the binary representation of characters in a
 // token by flipping one or more bits. This technique introduces subtle changes
-//
 //	to the characters, which can result in visually similar but distinct tokens.
-//
 // For example, flipping a single bit in the character "a" might produce a
-//
 //	different character entirely, such as "b", creating variants that are hard
-//
 // to detect visually but differ in encoding.
 func BitFlipping(token string, graphemes ...string) (variations []string) {
 	// Flip a single bit in a byte
@@ -391,7 +386,6 @@ func BitFlipping(token string, graphemes ...string) (variations []string) {
 // tokens that are similar to the original but with a different sequence,
 // which can be used to confuse or mislead users. For example, the token
 // "2024example" could be altered to "example2024", or "shop-online" could
-//
 //	become "online-shop", where the elements are swapped in position.
 func TokenOrderSwap(token string, tokens []string) (variations []string) {
 
@@ -446,10 +440,8 @@ func CardinalSwap(token string, numerals map[string][]string) (variations []stri
 // OrdinalSwap involves substituting numerical digits with their corresponding
 // ordinal word forms, or converting ordinal words back into numerical digits.
 // This technique generates variations by switching between numeric and
-//
 //	word-based representations of ordinals. For example, the token "file2" could
 //	be transformed into "filesecond", or "chapterthird" might be altered to
-//
 // "chapter3".
 func OrdinalSwap(token string, numerals map[string][]string) (variations []string) {
 	var fn func(map[string]string, string, bool) map[string]bool
@@ -492,15 +484,9 @@ func OrdinalSwap(token string, numerals map[string][]string) (variations []strin
 	return
 }
 
-// DotDashUnderscoreSub involves replacing dots (.), dashes (-), and
-// underscores (_) in a given token with one another to produce alternative
-// variants that closely resemble the original token. This technique is commonly
-// applied in contexts like package names or identifiers, where these characters
-// are frequently used for separation. For example, a token such as
-// "my-package.name" might be altered to "my_package_name", "my.package-name",
-// or "my-package_name", creating slight variations that can be easily mistaken
-// for the original.
-func DotDashUnderscoreSub(token string) (variations []string) {
+// DHUSubstitution substitutes (.-_) in a given token to produce variants that
+// look similar. Primarily used in package tokens
+func DHUSubstitution(token string) (variations []string) {
 
 	return
 }
