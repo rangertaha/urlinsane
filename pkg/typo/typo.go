@@ -293,6 +293,7 @@ func CommonMisspellings(token string, dataset ...[]string) (words []string) {
 	return
 }
 
+<<<<<<< HEAD
 // VowelSwapping occurs when the vowels in the target token are swapped with
 // each other, leading to a slightly altered version of the original word.
 // This type of error typically involves exchanging one vowel for another,
@@ -301,6 +302,15 @@ func CommonMisspellings(token string, dataset ...[]string) (words []string) {
 //
 //	"ixample", "exomple", or "exaple", where vowels like "a", "e", and "o"
 //
+=======
+
+// VowelSwapping occurs when the vowels in the target token are swapped with 
+// each other, leading to a slightly altered version of the original word. 
+// This type of error typically involves exchanging one vowel for another, 
+// which can still make the altered token look similar to the original, 
+// but with a subtle change. For example, the word "example" could become
+//  "ixample", "exomple", or "exaple", where vowels like "a", "e", and "o" 
+>>>>>>> 03ae99b (updates)
 // are swapped, causing the token to differ from its correct form.
 func VowelSwapping(token string, vowels ...string) (words []string) {
 	for _, vchar := range vowels {
@@ -358,6 +368,7 @@ func HomoglyphSwapping(token string, homoglyphs map[string][]string) (tokens []s
 	return
 }
 
+<<<<<<< HEAD
 // BitFlipping involves altering the binary representation of characters in a
 // token by flipping one or more bits. This technique introduces subtle changes
 //
@@ -367,6 +378,14 @@ func HomoglyphSwapping(token string, homoglyphs map[string][]string) (tokens []s
 //
 //	different character entirely, such as "b", creating variants that are hard
 //
+=======
+
+// BitFlipping involves altering the binary representation of characters in a 
+// token by flipping one or more bits. This technique introduces subtle changes
+//  to the characters, which can result in visually similar but distinct tokens. 
+// For example, flipping a single bit in the character "a" might produce a
+//  different character entirely, such as "b", creating variants that are hard 
+>>>>>>> 03ae99b (updates)
 // to detect visually but differ in encoding.
 func BitFlipping(token string, graphemes ...string) (variations []string) {
 	// Flip a single bit in a byte
@@ -387,6 +406,7 @@ func BitFlipping(token string, graphemes ...string) (variations []string) {
 	return
 }
 
+<<<<<<< HEAD
 // TokenOrderSwap involves rearranging the order of words, numbers, or components
 // within a token to create alternative versions. This method often results in
 // tokens that are similar to the original but with a different sequence,
@@ -395,13 +415,31 @@ func BitFlipping(token string, graphemes ...string) (variations []string) {
 //
 //	become "online-shop", where the elements are swapped in position.
 func TokenOrderSwap(token string, tokens []string) (variations []string) {
+=======
+
+// TokenOrderSwap involves rearranging the order of words, numbers, or components 
+// within a token to create alternative versions. This method often results in 
+// tokens that are similar to the original but with a different sequence, 
+// which can be used to confuse or mislead users. For example, the token 
+// "2024example" could be altered to "example2024", or "shop-online" could
+//  become "online-shop", where the elements are swapped in position.
+func TokenOrderSwap(token string, tokens []string) (variations []string) {
+	
+>>>>>>> 03ae99b (updates)
 
 	return
 }
 
+<<<<<<< HEAD
 // CardinalSwap involves replacing numerical digits with their corresponding
 // cardinal word forms, or vice versa. This process creates variants by
 // converting numbers to words or words to numbers. For example, the token
+=======
+
+// CardinalSwap involves replacing numerical digits with their corresponding 
+// cardinal word forms, or vice versa. This process creates variants by 
+// converting numbers to words or words to numbers. For example, the token 
+>>>>>>> 03ae99b (updates)
 // "file2" might be altered to "filetwo", or "chapterthree" could become "chapter3".
 func CardinalSwap(token string, numerals map[string][]string) (variations []string) {
 	var fn func(map[string]string, string, bool) map[string]bool
@@ -444,6 +482,7 @@ func CardinalSwap(token string, numerals map[string][]string) (variations []stri
 	return
 }
 
+<<<<<<< HEAD
 // OrdinalSwap involves substituting numerical digits with their corresponding
 // ordinal word forms, or converting ordinal words back into numerical digits.
 // This technique generates variations by switching between numeric and
@@ -451,6 +490,14 @@ func CardinalSwap(token string, numerals map[string][]string) (variations []stri
 //	word-based representations of ordinals. For example, the token "file2" could
 //	be transformed into "filesecond", or "chapterthird" might be altered to
 //
+=======
+
+// OrdinalSwap involves substituting numerical digits with their corresponding 
+// ordinal word forms, or converting ordinal words back into numerical digits. 
+// This technique generates variations by switching between numeric and
+//  word-based representations of ordinals. For example, the token "file2" could
+//  be transformed into "filesecond", or "chapterthird" might be altered to 
+>>>>>>> 03ae99b (updates)
 // "chapter3".
 func OrdinalSwap(token string, numerals map[string][]string) (variations []string) {
 	var fn func(map[string]string, string, bool) map[string]bool
@@ -493,6 +540,7 @@ func OrdinalSwap(token string, numerals map[string][]string) (variations []strin
 	return
 }
 
+<<<<<<< HEAD
 // DotDashUnderscoreSub involves replacing dots (.), dashes (-), and
 // underscores (_) in a given token with one another to produce alternative
 // variants that closely resemble the original token. This technique is commonly
@@ -502,22 +550,66 @@ func OrdinalSwap(token string, numerals map[string][]string) (variations []strin
 // or "my-package_name", creating slight variations that can be easily mistaken
 // for the original.
 func DotDashUnderscoreSub(token string) (variations []string) {
+=======
+// SimilarChars returns homoglyphs, characters that look alike from other languages
+func SimilarChars(key string, data map[string][]string) (chars []string) {
+	chars = []string{}
+	char, ok := data[key]
+	if ok {
+		chars = append(chars, char...)
+	}
+	return chars
+}
+
+// SimilarSounds returns common homophones, words that sound alike
+func SimilarSounds(str string, data ...[]string) (words []string) {
+	words = []string{}
+	for _, wordset := range data {
+		for _, word := range wordset {
+			if strings.Contains(str, word) {
+				for _, w := range wordset {
+					if w != word {
+						words = append(words, strings.Replace(str, word, w, -1))
+					}
+				}
+
+			}
+		}
+	}
+	return
+}
+
+// DHUSubstitution substitutes (.-_) in a given token to produce variants that
+// look similar. Primarily used in package tokens
+func DHUSubstitution(token string) (variations []string) {
+>>>>>>> 03ae99b (updates)
 
 	return
 }
 
+<<<<<<< HEAD
 // DotHyphenSubstitution involves substituting dots (.) with hyphens (-) or
 // vice versa within a given token, creating alternative versions that resemble
 // the original. This technique generates variants by interchanging these
 // commonly used separators, often resulting in tokens that look similar but
 // are structurally different. For example, a token like "my-example.com"
 // might become "my.example.com", or "my.example-com" could be changed
+=======
+
+// DotHyphenSubstitution involves substituting dots (.) with hyphens (-) or 
+// vice versa within a given token, creating alternative versions that resemble 
+// the original. This technique generates variants by interchanging these 
+// commonly used separators, often resulting in tokens that look similar but 
+// are structurally different. For example, a token like "my-example.com" 
+// might become "my.example.com", or "my.example-com" could be changed 
+>>>>>>> 03ae99b (updates)
 // to "my-example.com".
 func DotHyphenSubstitution(token string) (variations []string) {
 
 	return
-}
+}	
 
+<<<<<<< HEAD
 // StemSwapping involves replacing words with their corresponding root or stem forms,
 // or vice versa. This process generates variations by switching between the
 // base form of a word and its derived forms. For example, the token "running"
@@ -525,4 +617,56 @@ func DotHyphenSubstitution(token string) (variations []string) {
 func StemSwapping(token string, tokens []string) (variations []string) {
 
 	return
+=======
+func NumeralMap(data map[string][]string, pos int) (words map[string]string) {
+	words = make(map[string]string)
+
+// 	for num, tokens := range data {
+// 		for i, token := range tokens {
+// 			if i == pos {
+// 				words[num] = token
+// 				// words[token] = num
+// 			}
+// 		}
+// 	}
+
+// 	return
+// }
+
+// Adjacent returns adjacent characters on a given keyboard
+func AdjacentCharacters(char string, layout ...string) (chars []string) {
+	chars = []string{}
+	for r, row := range layout {
+		for c := range row {
+			var top, bottom, left, right string
+			if char == string(layout[r][c]) {
+				if r > 0 {
+					top = string(layout[r-1][c])
+					if top != " " {
+						chars = append(chars, top)
+					}
+				}
+				if r < len(layout)-1 {
+					bottom = string(layout[r+1][c])
+					if bottom != " " {
+						chars = append(chars, bottom)
+					}
+				}
+				if c > 0 {
+					left = string(layout[r][c-1])
+					if left != " " {
+						chars = append(chars, left)
+					}
+				}
+				if c < len(row)-1 {
+					right = string(layout[r][c+1])
+					if right != " " {
+						chars = append(chars, right)
+					}
+				}
+			}
+		}
+	}
+	return chars
+>>>>>>> 03ae99b (updates)
 }
