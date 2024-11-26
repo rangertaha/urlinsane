@@ -12,7 +12,21 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package dcr
+package rar
+
+// Adjacent character substitution is where an attacker swaps characters
+// that are next to each other on a keyboard.
+
+// For example, if a user intends to visit "example.com," a typo-squatter
+// might register "exampel.com" or "exmaple.com." These small alterations
+// can trick users into clicking on the malicious sites, leading to phishing
+// scams, malware downloads, or other harmful activities.
+
+// Adjacent character substitution exploits common typing errors, making it a
+// particularly effective tactic, as users may not notice the difference,
+// especially if they are typing quickly. It highlights the importance of
+// vigilance and cybersecurity measures to protect against such deceptive
+// practices.
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
@@ -22,9 +36,9 @@ import (
 )
 
 const (
-	CODE        = "dcr"
-	NAME        = "Double Character Insertion"
-	DESCRIPTION = "Created by replacing identical, consecutive letters in the name."
+	CODE        = "rar"
+	NAME        = "Repetition Adjacent Replacement"
+	DESCRIPTION = "Typos created by replacing identical consecutive letters with adjacent keys on the keyboard."
 )
 
 type Algo struct {
@@ -51,9 +65,11 @@ func (n *Algo) Description() string {
 }
 
 func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
-	for _, variant := range algo.DoubleCharacterInsertion(original.Name()) {
-		if original.Name() != variant {
-			acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
+	for _, keyboard := range n.keyboards {
+		for _, variant := range algo.RepetitionAdjacentReplacement(original.Name(), keyboard.Layouts()...) {
+			if original.Name() != variant {
+				acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
+			}
 		}
 	}
 
