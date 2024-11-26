@@ -2,6 +2,26 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/rangertaha/urlinsane?style=flat-square)](https://goreportcard.com/report/github.com/rangertaha/urlinsane) [![Go Doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](http://godoc.org/github.com/rangertaha/urlinsane) [![PkgGoDev](https://pkg.go.dev/badge/github.com/rangertaha/urlinsane)](https://pkg.go.dev/github.com/github.com/rangertaha/urlinsane) [![Release](https://img.shields.io/github/release/rangertaha/urlinsane.svg?style=flat-square)](https://github.com/rangertaha/urlinsane/releases/latest) [![Build Status](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml/badge.svg)](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml)
 
+![Urlinsane](https://github.com/rangertaha/urlinsane/blob/master/docs/vids/007.gif)
+
+
+<video width="1280" height="720" controls autoplay muted loop>
+<source src="https://youtu.be/Iu9l0r0layU?si=ZB8MW3wFLAJfd_gV" type="video/mp4">
+ Your browser does not support video tags.
+</video>
+
+
+<div align="center">
+  <a href="https://youtu.be/SiLlWTxoI-c?si=wvYEK6w3G_8up5pS" style="float:left">
+  <img width="250" src="https://github.com/rangertaha/urlinsane/blob/master/docs/imgs/001.webp" alt="Urlinsane"></a>
+  
+  <a href="https://youtu.be/Iu9l0r0layU?si=Im_9tJ7L9wDXl6p7" style="float:left">
+  <img width="250" src="https://github.com/rangertaha/urlinsane/blob/master/docs/imgs/002.webp" alt="Urlinsane"></a>
+  
+  <a href="https://youtu.be/6QgCFVClTGY?si=NMigDRyI99lXE5EI" style="float:left">
+  <img width="250" src="https://github.com/rangertaha/urlinsane/blob/master/docs/imgs/003.webp" alt="Urlinsane"></a>
+</div>
+
 
 Urlinsane is a tool for detecting domain typosquatting and supporting OSINT investigations, designed to operate on multilingual target domains. It helps identify threats such as typosquatting, brandjacking, URL hijacking, phishing, fraud, corporate espionage, supply chain attacks, and more. This command-line tool generates and scans for potential typosquatting variants of a domain, assisting in uncovering and mitigating security risks.
 
@@ -33,25 +53,6 @@ urlinsane typo example.com
 ```
 
 
-![Urlinsane](https://github.com/rangertaha/urlinsane/blob/master/docs/vids/007.gif)
-
-
-<video width="1280" height="720" controls autoplay muted loop>
-<source src="https://youtu.be/Iu9l0r0layU?si=ZB8MW3wFLAJfd_gV" type="video/mp4">
- Your browser does not support video tags.
-</video>
-
-
-<div align="center">
-  <a href="https://youtu.be/SiLlWTxoI-c?si=wvYEK6w3G_8up5pS" style="float:left">
-  <img width="250" src="https://github.com/rangertaha/urlinsane/blob/master/docs/imgs/001.webp" alt="Urlinsane"></a>
-  
-  <a href="https://youtu.be/Iu9l0r0layU?si=Im_9tJ7L9wDXl6p7" style="float:left">
-  <img width="250" src="https://github.com/rangertaha/urlinsane/blob/master/docs/imgs/002.webp" alt="Urlinsane"></a>
-  
-  <a href="https://youtu.be/6QgCFVClTGY?si=NMigDRyI99lXE5EI" style="float:left">
-  <img width="250" src="https://github.com/rangertaha/urlinsane/blob/master/docs/imgs/003.webp" alt="Urlinsane"></a>
-</div>
 
 
 ## Plugins
