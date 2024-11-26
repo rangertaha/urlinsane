@@ -36,9 +36,9 @@ import (
 )
 
 const (
-	CODE        = "sps"
-	NAME        = "Singular Pluralise Substitution"
-	DESCRIPTION = "Singular-Plural Substitution is when singular forms of words are swapped for plural forms"
+	CODE        = "sp"
+	NAME        = "Singular Pluralise"
+	DESCRIPTION = "Singular-Plural substitution is when singular forms of words are swapped for plural forms"
 )
 
 type Algo struct {
@@ -65,7 +65,7 @@ func (n *Algo) Description() string {
 }
 
 func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
-	for _, variant := range algo.SingularPluraliseSubstitution(original.Name()) {
+	for _, variant := range algo.SingularPluralise(original.Name()) {
 		if original.Name() != variant {
 			acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
 		}

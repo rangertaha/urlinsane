@@ -222,6 +222,7 @@ A major limitation of the output format is its restricted display in the termina
 
 - Work on creating an advanced keyboard model that incorporates layer-shifting functionality.
 
+
 - Implement functionality for sending DNS queries to multiple DNS servers.
 
 - Store records in an embedded database, enabling plugins to access the data efficiently.
