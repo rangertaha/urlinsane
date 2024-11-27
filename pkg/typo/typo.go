@@ -511,3 +511,11 @@ func StemSwapping(token string, tokens []string) (variations []string) {
 
 	return
 }
+
+
+// EmojiInsertion inserts emojis in target names. This technique exploits 
+// the presence of emojis in the target name.
+func EmojiInsertion(token string, tokens []string) (variations []string) {
+
+	return
+}
