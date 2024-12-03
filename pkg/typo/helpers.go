@@ -36,6 +36,23 @@ func characterDeletion(token string, character string) (tokens []string) {
 	return
 }
 
+func characterReplace(token string, character, replacement string) (tokens []string) {
+	var nmap = map[string]bool{}
+
+	for i, char := range token {
+		if character == string(char) {
+			nmap[token[:i]+token[i+1:]] = true
+		}
+	}
+	nmap[strings.Replace(token, character, replacement, -1)] = true
+
+	for n := range nmap {
+		tokens = append(tokens, n)
+	}
+
+	return
+}
+
 // PrefixInsertion creates tokens by prepending each prefix from the given
 // list to the specified token. Example:
 // Inputs:
