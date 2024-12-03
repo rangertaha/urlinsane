@@ -358,9 +358,13 @@ func HomoglyphSwapping(token string, homoglyphs map[string][]string) (tokens []s
 
 // BitFlipping involves altering the binary representation of characters in a
 // token by flipping one or more bits. This technique introduces subtle changes
+//
 //	to the characters, which can result in visually similar but distinct tokens.
+//
 // For example, flipping a single bit in the character "a" might produce a
+//
 //	different character entirely, such as "b", creating variants that are hard
+//
 // to detect visually but differ in encoding.
 func BitFlipping(token string, graphemes ...string) (variations []string) {
 	// Flip a single bit in a byte
@@ -386,9 +390,10 @@ func BitFlipping(token string, graphemes ...string) (variations []string) {
 // tokens that are similar to the original but with a different sequence,
 // which can be used to confuse or mislead users. For example, the token
 // "2024example" could be altered to "example2024", or "shop-online" could
+//
 //	become "online-shop", where the elements are swapped in position.
 func TokenOrderSwap(token string, tokens []string) (variations []string) {
-
+	// TODO: create a multilingual tokenizer first
 	return
 }
 
@@ -440,8 +445,10 @@ func CardinalSwap(token string, numerals map[string][]string) (variations []stri
 // OrdinalSwap involves substituting numerical digits with their corresponding
 // ordinal word forms, or converting ordinal words back into numerical digits.
 // This technique generates variations by switching between numeric and
+//
 //	word-based representations of ordinals. For example, the token "file2" could
 //	be transformed into "filesecond", or "chapterthird" might be altered to
+//
 // "chapter3".
 func OrdinalSwap(token string, numerals map[string][]string) (variations []string) {
 	var fn func(map[string]string, string, bool) map[string]bool
@@ -484,7 +491,6 @@ func OrdinalSwap(token string, numerals map[string][]string) (variations []strin
 	return
 }
 
-
 // DotHyphenSubstitution involves substituting dots (.) with hyphens (-) or
 // vice versa within a given token, creating alternative versions that resemble
 // the original. This technique generates variants by interchanging these
@@ -501,12 +507,11 @@ func DotHyphenSubstitution(token string) (variations []string) {
 // base form of a word and its derived forms. For example, the token "running"
 // might be altered to its root "run", or "player" could become "play".
 func StemSwapping(token string, tokens []string) (variations []string) {
-
+	// TODO: create a multilingual stemmer first
 	return
 }
 
-
-// EmojiInsertion inserts emojis in target names. This technique exploits 
+// EmojiInsertion inserts emojis in target names. This technique exploits
 // the presence of emojis in the target name.
 func EmojiInsertion(token string, tokens []string) (variations []string) {
 
