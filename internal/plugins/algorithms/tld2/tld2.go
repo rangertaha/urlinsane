@@ -18,7 +18,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/domain"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
-	"github.com/rangertaha/urlinsane/internal/utils/datasets"
+	"github.com/rangertaha/urlinsane/datasets"
 	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 

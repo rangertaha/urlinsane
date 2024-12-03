@@ -32,7 +32,7 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/outputs/all"
-	"github.com/rangertaha/urlinsane/internal/utils"
+	"github.com/rangertaha/urlinsane/internal/pkg"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -268,7 +268,7 @@ AUTHOR:
 
 func CollectorTable() string {
 	t := table.NewWriter()
-	t.SetStyle(utils.StyleClear)
+	t.SetStyle(pkg.StyleClear)
 	t.AppendHeader(table.Row{"  ", "ID", "Description"})
 	for _, p := range collectors.List() {
 		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
@@ -288,7 +288,7 @@ func CollectorFields() (fields string) {
 
 func AlgorithmTable() string {
 	t := table.NewWriter()
-	t.SetStyle(utils.StyleClear)
+	t.SetStyle(pkg.StyleClear)
 	t.AppendHeader(table.Row{"  ", "ID", "Name"})
 	for _, p := range algorithms.List() {
 		t.AppendRow([]interface{}{"  ", p.Id(), p.Name()})
@@ -298,7 +298,7 @@ func AlgorithmTable() string {
 
 func LanguageTable() string {
 	t := table.NewWriter()
-	t.SetStyle(utils.StyleClear)
+	t.SetStyle(pkg.StyleClear)
 	t.AppendHeader(table.Row{"  ", "ID", "Name", "Glyphs", "Homophones",
 		"Antonyms", "Typos", "Cardinal", "Ordinal", "Stems"})
 	for _, p := range languages.Languages() {
@@ -311,7 +311,7 @@ func LanguageTable() string {
 
 func KeyboardTable() string {
 	t := table.NewWriter()
-	t.SetStyle(utils.StyleClear)
+	t.SetStyle(pkg.StyleClear)
 	rows := []table.Row{}
 	for _, lang := range languages.Languages() {
 		row := table.Row{" "}
@@ -330,7 +330,7 @@ func KeyboardTable() string {
 
 func OutputTable() string {
 	t := table.NewWriter()
-	t.SetStyle(utils.StyleClear)
+	t.SetStyle(pkg.StyleClear)
 	t.AppendHeader(table.Row{"  ", "ID", "Name"})
 	for _, p := range outputs.List() {
 		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
