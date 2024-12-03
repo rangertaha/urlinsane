@@ -21,8 +21,8 @@ import (
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/pkg"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
-	"github.com/rangertaha/urlinsane/internal/utils"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/term"
 )
@@ -119,7 +119,7 @@ func (n *Plugin) Filter(header string) bool {
 }
 
 func (n *Plugin) Config() (row table.Row) {
-	n.table.SetStyle(utils.StyleDefault)
+	n.table.SetStyle(pkg.StyleDefault)
 
 	// nameTransformer := text.Transformer(func(val interface{}) string {
 	// 	if val.(string) == "MD" {
