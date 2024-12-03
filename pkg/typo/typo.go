@@ -493,8 +493,7 @@ func OrdinalSwap(token string, numerals map[string][]string) (variations []strin
 // might become "my.example.com", or "my.example-com" could be changed
 // to "my-example.com".
 func DotHyphenSubstitution(token string) (variations []string) {
-
-	return
+	return characterReplace(token, ".", "-")
 }
 
 // StemSwapping involves replacing words with their corresponding root or stem forms,
