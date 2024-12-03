@@ -206,7 +206,9 @@ A major limitation of the output format is its restricted display in the termina
 
 ## In Progress
 
-- I’m working on creating a `.urlinsane` directory in the user's home directory to store screenshots, data dumps, and cache, along with a configuration file to provide additional tool customization options.
+- I am currently developing a database backend to store results, datasets, languages, and word embeddings. This approach aims to reduce the overall binary size, enable more advanced analysis, and allow the program to download updates in the future. Words often have interrelationships that are best represented in a database, ensuring better storage and improved efficiency.
+
+- Exploring the possibility of replacing the chained task pipeline with a DAG-based pipeline.
 
 
 ## TODO
