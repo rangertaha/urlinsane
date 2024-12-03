@@ -484,12 +484,6 @@ func OrdinalSwap(token string, numerals map[string][]string) (variations []strin
 	return
 }
 
-// DHUSubstitution substitutes (.-_) in a given token to produce variants that
-// look similar. Primarily used in package tokens
-func DHUSubstitution(token string) (variations []string) {
-
-	return
-}
 
 // DotHyphenSubstitution involves substituting dots (.) with hyphens (-) or
 // vice versa within a given token, creating alternative versions that resemble
