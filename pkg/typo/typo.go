@@ -218,7 +218,6 @@ func CharacterRepetition(token string) (tokens []string) {
 // letters are swapped with neighboring keys on the keyboard, causing the word
 // to be misspelled.
 func RepetitionAdjacentReplacement(token string, keyboard ...string) (tokens []string) {
-	// for _, keyboard := range tc.Keyboards {
 	for i, char := range token {
 		if i < len(token)-1 {
 			if token[i] == token[i+1] {
