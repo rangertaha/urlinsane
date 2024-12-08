@@ -47,7 +47,9 @@ developers to add functionality and support for additional languages. See
 
 # URLInsane
 
+
 [![Go Report Card](https://goreportcard.com/badge/github.com/rangertaha/urlinsane?style=flat-square)](https://goreportcard.com/report/github.com/rangertaha/urlinsane) [![Go Doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](http://godoc.org/github.com/rangertaha/urlinsane) [![PkgGoDev](https://pkg.go.dev/badge/github.com/rangertaha/urlinsane)](https://pkg.go.dev/github.com/github.com/rangertaha/urlinsane) [![Release](https://img.shields.io/github/release/rangertaha/urlinsane.svg?style=flat-square)](https://github.com/rangertaha/urlinsane/releases/latest) [![Build Status](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml/badge.svg)](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml)
+
 
 
 URLInsane is a robust command-line tool designed to detect typosquatting across domains, arbitrary names, usernames, and software packages. By leveraging advanced algorithms, information-gathering techniques, and data analysis, it identifies potentially harmful variations of targeted entities that cybercriminals might exploit. Essential for defending against typosquatting, brandjacking, URL hijacking, fraud, phishing attacks, and corporate espionage, URLInsane also enhances threat intelligence capabilities.
@@ -79,7 +81,7 @@ It's a plugin-based multilingual permutation engine that supports keyboard layou
 Plugins play a crucial role in extending the functionality, flexibility, and customization of Urlinsane and allow it to evolve alongside changing needs and technological advancements.
 
 
-Here's a structured summary of the plugin types and their roles in the application:
+Here's a structured summary of the plugin types and their roles in Urlinsane:
 | **Type**    | Count  | Decscription |
 |-------------|--------|--------------|
 | Languages   |    9   | Language plugins enable support for various language models, expanding the application's linguistic capability. |
@@ -93,18 +95,7 @@ Here's a structured summary of the plugin types and their roles in the applicati
 
 # Languages
 
-In typosquatting, language plays a significant role in manipulating legitimate terms and names to create deceptive variations that appear familiar to the target audience. Attackers use linguistic techniques to construct these variations in ways that exploit the visual similarity or familiarity of certain languages and alphabets.
-
-| Languages | Keyboards | Homoglyphs | Homophones | Antonyms | Misspellings | Cardinal | Ordinal | Vowels | Graphemes  | 
-|-----------|-----------|-----------|------------|-----------|--------------|--------|-----------|---------|-----------|
-| Arabic    |    4      |           |            |           |              |   |   |   |    | 
-| Armenian  |    3      |           |            |           |              |   |   |   |    | 
-| English   |    4      |           |            |           |              |   |   |   |    | 
-| Finnish   |    1      |           |            |           |              |   |   |   |    | 
-| Russian   |    3      |           |            |           |              |   |   |   |    | 
-| Spanish   |    2      |           |            |           |              |   |   |   |    | 
-| Hebrew    |    1      |           |            |           |              |   |   |   |    | 
-| Persian   |    1      |           |            |           |              |   |   |   |    | 
+In typosquatting, language plays a significant role in manipulating legitimate tokens or names to create deceptive variations that appear familiar to the target audience. Attackers exploit linguistic, topigraphical properties of human machine interface to construct these variations in ways that exploit the visual similarity or familiarity of certain languages and alphabets.
 
 ## Keyboards
 ## Homoglyphs
@@ -156,52 +147,288 @@ By carefully crafting typosquatted names that resonate linguistically and cultur
 
 
 
-## Algorithms
 
-| ID | Name   | Description  | 
-|--|------------|-------------|
-| |   |         |    
-| |    |           |   
-| |    |         |   
+# Algorithms
 
 
-| ID | Name            | Description ||
-|---|---------------------------------|--|
-| | Missing Dot                     ||
-| | Missing Dashes                  | |
-| | Strip Dashes                    | |
-| | Character Omission              | |
-| | Character Swap                  | |
-| | Adjacent Character Substitution | |
-| | Adjacent Character Insertion    ||
-| | Homoglyphs                      ||
-| | Singular Pluralise              | |
-| | Character Repeat                | |
-| | Double Character Replacement    | |
-| | Common Misspellings             | |
-| | Homophones                      ||
-| | Vowel Swapping                  | |
-| | Bitsquatting                    | |
-| | Wrong Top Level Domain          | | 
-| | Wrong Second Level Domain       | | 
-| | Wrong Third Level Domain        | |
-| | Ordinal Number Swap             | |
-| | Cardinal Number Swap            ||
-| | Hyphenation                     || 
-| | Multithreaded Algorithms        ||   
-| | Subdomain insertion             | |
-| | Period Insertion                | | 
-| | Combosquatting (Keywords)       | |
+Typosquatting algorithms can be categorized depending on how they manipulate target names
 
 
 
-## Information
+## Substitution
 
-| ID | Name   | Description  | 
-|----|------------|-------------|
-|    |   |         |    
-|    |    |           |   
-|    |    |         |   
+Algorithms in this category create typos by replacing one or more characters in the original name
+
+
+
+- **Neighboring Key Substitution**: Swaps characters with those near them on a keyboard (e.g., `example.com` → `exzmple.com`).
+- **Visual Substitution (Homoglyphs)**: Replaces characters with similar-looking alternatives (e.g., `google.com` → `g00gle.com`).
+- **TLD Substitution**: Uses a different valid TLD (e.g., `.com` → `.net`, `example.com` → `example.net`).
+- **Unicode Homoglyphs**: Substitutes characters with Unicode equivalents (e.g., `google.com` → `gοοgle.com` where `ο` is Greek).
+- **Brand Misspelling**: Slightly alters the brand name (e.g., `facebook.com` → `facebok.com`).
+
+
+### Adjacent Character Substitution
+
+These typos happen when a character in the original token is mistakenly replaced by a neighboring character from the same keyboard layout. This type of error often occurs due to hitting an adjacent key by accident.
+For example:
+
+
+// GraphemeReplacement, also known as alphabet replacement, occurs when characters
+// from the original token are replaced by other letters from the alphabet,
+// resulting in a modified version of the token. This type of error typically leads
+// to small changes in the original token, where one or more letters are swapped
+// for different characters. For example, the token "example" could be mistakenly
+// written as "axample", "bxample", "cxample", "dxample", or "eaample", where
+// letters like "a", "b", "c", "d", or "e" are substituted, altering the
+// word slightly but keeping its general structure.
+
+
+// DotHyphenSubstitution involves substituting dots (.) with hyphens (-) or
+// vice versa within a given token, creating alternative versions that resemble
+// the original. This technique generates variants by interchanging these
+// commonly used separators, often resulting in tokens that look similar but
+// are structurally different. For example, a token like "my-example.com"
+// might become "my.example.com", or "my.example-com" could be changed
+// to "my-example.com".
+
+
+
+## Insertion
+These types of typo algorithms add extra characters or tokens to target name.
+
+
+- **Single Character Insertion**: Adds a single character anywhere in the domain (e.g., `example.com` → `examp1e.com`).
+- **Double Insertion**: Adds two or more characters (e.g., `example.com` → `exampllee.com`).
+- **Hyphenation**: Adds or removes hyphens (e.g., `example.com` → `ex-ample.com`).
+- **Prefix Insertion**: Adds characters to the start (e.g., `example.com` → `wwwexample.com`).
+- **Suffix Addition**: Adds characters to the end (e.g., `example.com` → `example-com.net`).
+- **Subdomain Addition**: Adds subdomains to mimic legitimate structures (e.g., `example.com` → `login.example.com`).
+- **Keyword Insertion**: Adds popular or generic terms (e.g., `example.com` → `example-news.com`).
+- **Phrase Insertion**: Merges multiple brand-like terms (e.g., `example.com` → `bestexample.com`).
+- **Brand Affiliation**: Adds keywords associated with the brand (e.g., `facebook.com` → `facebooklogin.com`).
+
+
+// AdjacentCharacterInsertion typos occur when characters adjacent of each
+// letter are inserted. For example, googhle inserts "h" next to it's
+// adjacent character "g" on an English QWERTY keyboard layout.
+
+// GraphemeInsertion, also known as alphabet insertion, occurs when one or more
+// unintended letters are added to a valid token, leading to a modified or
+// misspelled version of the original token. These extra characters are typically
+// inserted either at the beginning or within the token, causing it to deviate
+// from its intended form. This type of error is often the result of a slip
+// of the finger or an accidental keystroke. For example, the token "example"
+// might be mistakenly typed as "aexample", "eaxample", "exaample", "examaple",
+//
+//	or "eaxampale", where additional letter like "a" are inserted throughout
+//
+// the token, distorting its original structure.
+
+
+// EmojiInsertion inserts emojis in target names. This technique exploits
+// the presence of emojis in the target name.
+
+
+
+// HyphenInsertion typos happen when hyphens are mistakenly placed between
+// characters in a token, often occurring in various positions around the
+// letters. This type of error can lead to unnecessary fragmentation of the
+// word, with hyphens inserted at different points throughout the token.
+// For example, the word "example" might be incorrectly written as "-example",
+//
+//	"e-xample", "ex-ample", "exa-mple", "exam-ple", "examp-le", or even
+//
+// "example-", with hyphens appearing before, between, or after the letters.
+
+// DotInsertion typos take place when periods (.) are mistakenly added at
+// various points within a token, leading to an incorrect placement of dots in
+// the target token. This type of error typically happens due to inadvertent
+// key presses or misplacement while typing. For instance, the word "example"
+// may be mistakenly written as "e.xample", "ex.ample", "exa.mple", "exam.ple",
+// or "examp.le", where the dot appears at different locations
+// within the token, disrupting the original structure.
+
+
+
+
+## Omission
+These types of typo algorithms involves removing characters or tokens from the target name.
+
+
+- **Single Character Omission**: Deletes one character (e.g., `example.com` → `exaple.com`).
+- **Double Omission**: Deletes two or more characters (e.g., `example.com` → `exmple.com`).
+- **Hyphenation**: Adds or removes hyphens (e.g., `example.com` → `ex-ample.com`).
+
+
+
+// DotOmission typos happen when periods (.) that should be present in the target
+// token are unintentionally omitted or left out. This type of error typically
+// occurs when the user fails to input the expected dots, often resulting in a
+// word or sequence that appears as a single string without proper separation.
+// For example, the sequence "one.two.three" might be mistakenly written
+// as "one.twothree", "onetwo.three", or even "onetwothree", where the dots
+// are missing between certain parts of the token, causing it to lose the
+// intended structure or meaning.
+
+
+
+// CharacterOmission occurs when one character is unintentionally omitted from
+// the token, leading to an incomplete version of the original word. This type
+// of typo can happen when a key is accidentally skipped or overlooked while
+// typing. For example, the word "google" might be mistakenly written as "gogle",
+// "gogle", "googe", "googl", "goole", or "oogle", where a single character is
+// missing from different positions in the word, causing it to deviate from
+// the correct spelling.
+
+
+
+// HyphenOmission typos occur when hyphens are unintentionally left out of a
+// token, resulting in a version of the token that misses the expected hyphenation.
+// For example, the token "one-for-all" might be mistakenly written as "onefor-all",
+// "one-forall", or even "oneforall", where the hyphens are omitted.
+func HyphenOmission(token string) (tokens []string) {
+	return characterDeletion(token, "-")
+}
+
+
+
+
+## Transposition
+This types of algorithms swap characters or tokens in the target name.
+
+### Character Swapping 
+
+Refers to a type of typo where two adjacent characters in the original token are exchanged or swapped. This often occurs when characters are unintentionally reversed in order, resulting in a misspelling.For example, the word "example" could become "examlpe" by swapping the position of the letters "l" and "p".
+
+/ VowelSwapping occurs when the vowels in the target token are swapped with
+// each other, leading to a slightly altered version of the original word.
+// This type of error typically involves exchanging one vowel for another,
+// which can still make the altered token look similar to the original,
+// but with a subtle change. For example, the word "example" could become
+//
+//	"ixample", "exomple", or "exaple", where vowels like "a", "e", and "o"
+//
+// are swapped, causing the token to differ from its correct form.
+
+// HomophoneSwapping occurs when words that sound the same but have different
+// meanings or spellings are substituted for one another. This type of error
+// arises from words that are homophones—words that are pronounced the same but
+// may differ in spelling or meaning. For example, the word "base" could be
+// swapped with "bass", where "base" and "bass" are homophones, making the
+// altered word sound the same when spoken, yet look different in writing.
+
+
+// HomoglyphSwapping is a technique where visually similar characters, called
+// homoglyphs, are swapped for one another in text. These characters look alike
+// but are actually different in code, often coming from different alphabets
+// or character sets. For example, an attacker might replace the letter "o" with
+// the Cyrillic letter "о" (which looks nearly identical) in a URL or word. This
+// can trick people into clicking a fraudulent link or misreading text.
+
+
+
+// TokenOrderSwap involves rearranging the order of words, numbers, or components
+// within a token to create alternative versions. This method often results in
+// tokens that are similar to the original but with a different sequence,
+// which can be used to confuse or mislead users. For example, the token
+// "2024example" could be altered to "example2024", or "shop-online" could
+//
+//	become "online-shop", where the elements are swapped in position.
+
+
+// CardinalSwap involves replacing numerical digits with their corresponding
+// cardinal word forms, or vice versa. This process creates variants by
+// converting numbers to words or words to numbers. For example, the token
+// "file2" might be altered to "filetwo", or "chapterthree" could become "chapter3".
+
+
+
+// StemSwapping involves replacing words with their corresponding root or stem forms,
+// or vice versa. This process generates variations by switching between the
+// base form of a word and its derived forms. For example, the token "running"
+// might be altered to its root "run", or "player" could become "play".
+
+
+
+
+
+// OrdinalSwap involves substituting numerical digits with their corresponding
+// ordinal word forms, or converting ordinal words back into numerical digits.
+// This technique generates variations by switching between numeric and
+//
+//	word-based representations of ordinals. For example, the token "file2" could
+//	be transformed into "filesecond", or "chapterthird" might be altered to
+//
+// "chapter3".
+
+
+
+## Repetition
+These types of algorithms repeat one or more characters or tokens in the given name.
+
+### Character Repetition 
+These are typos that occur when a letter is unintentionally repeated within a token, leading to a misspelled version. This type of error typically happens when a key is pressed twice or a letter is accidentally duplicated. 
+For example: 
+
+## Adjacent Character Repetition
+These typos occur when consecutive, identical letters in a token are replaced with adjacent keys on the keyboard, resulting in a slight alteration of the original word. This type of error often happens due
+// to accidental key presses of nearby characters. 
+For example:
+
+
+
+
+## Linguistics
+
+Linuistic typo algorithms exploit language tokens in the given name.
+
+
+### Singular Pluralise 
+Thse typos are where a word is altered by switching between its singular and plural forms. This subtle change can create a word that looks similar to the original, but with a small variation that is easy to overlook.
+For example:
+
+
+## Common Misspellings 
+These typos are created by frequent spelling errors or missteps that occur in the target language. These errors often involve slight
+// changes to the spelling of a word, making them appear similar to the original
+// but incorrect. For instance, the word "youtube" could be mistyped as
+// "youtub", and "abseil" could become "absail", where common mistakes in
+// spelling lead to slightly altered but recognizable versions of the original.
+
+
+
+
+## Digital
+
+Digital typo algorithms exploit computer hardware to generate typos in target name.
+
+
+// BitFlipping involves altering the binary representation of characters in a
+// token by flipping one or more bits. This technique introduces subtle changes
+//
+//	to the characters, which can result in visually similar but distinct tokens.
+//
+// For example, flipping a single bit in the character "a" might produce a
+//
+//	different character entirely, such as "b", creating variants that are hard
+//
+// to detect visually but differ in encoding.
+
+
+
+
+
+
+
+
+
+
+# Information
+
+Generating typos is not enought to identify posible typosquatting. We need to collect additional information on the variant that allows us to compare. 
+
+
 
 * **IDNA**  Show international domain name (Default)
 * **MX**    Checking for DNS's MX records

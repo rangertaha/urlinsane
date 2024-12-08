@@ -53,7 +53,6 @@ func SecondLevelDomain(tld string, tlds ...string) (records []string) {
 // for another, resulting in a domain that appears similar but leads to a different destination. For example, "www.example.com"
 // could be mistyped as "www.examples.com" or "www.exampel.com", where the second-level domain is altered but the TLD remains unchanged,
 // creating a deceptive resemblance to the original domain.
-
 func ThirdLevelDomain(tld string, tlds ...string) (records []string) {
 	for _, suffix := range tlds {
 		if len(strings.Split(suffix, ".")) == 3 {
