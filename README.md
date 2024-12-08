@@ -57,7 +57,7 @@ urlinsane typo example.com
 
 ## Plugins
 
-Plugins play a crucial role in extending the functionality, flexibility, and customization of Urlinsane and allow it to evolve alongside changing needs and technological advancements. Here's a structured summary of the plugin types and their roles in Urlinsane:
+Plugins play a crucial role in extending the functionality, flexibility, and customization of Urlinsane and allow it to evolve alongside changing needs and technological advancements. Here's a list of the plugin:
 
 |    Type       | Number | Description                                                             |
 |---------------|--------|-------------------------------------------------------------------------|
@@ -69,32 +69,7 @@ Plugins play a crucial role in extending the functionality, flexibility, and cus
 
 
 
-### Languages
-
-In typosquatting, language plays a significant role in manipulating legitimate terms and names to create deceptive variations that appear familiar to the target audience. Attackers use linguistic techniques to construct these variations in ways that exploit the visual similarity or familiarity of certain languages and alphabets.
-
-
-
-|ID| NAME | GLYPHS |HOMOPHONES |ANTONYMS |TYPOS  |CARDINAL |ORDINAL  |STEMS |
-|--|------|--------|-----------|---------|-------|---------|---------|------|                                                         
-|hy| Armenian| 38 | 1  |   1  |   1  |     24   |    0  |   0|
-|fi| Finnish | 29 | 1  |   1  |   1   |    11   |    1  |   0|
-|fr| French  | 27 | 1  |  1  |   1   |    11  |    10   |  0|
-|iw| Hebrew  | 22 | 2  |  1  |   5   |    11  |     0   |  0|
-|fa| Persian | 28 | 1  |  1  |   1    |   11  |     0  |   0|
-|ru| Russian | 41 | 1  |   1  |   1    |   44  |    10  |   0|
-|ar |Arabic  | 28 | 1  |   1  |   0    |   11  |    11  |   0|
-|en| English | 26 | 485|  93 | 4256    |   10  |     9  |   0|
-|es| Spanish | 27 | 1 |   1  |   1    |   31 |      4  |   0|
-
-
-
 ### Keyboard Layouts
-
-Keyboard layouts are central to typosquatting because certain common typing errors are directly related to the physical arrangement of keys. For example, in the QWERTY layout, adjacent letters (like "e" and "r" or "i" and "o") are frequently mistyped, leading to common typos. Urlinsane can exploit these patterns by generating alternative domain names that reflect plausible mistakes, relying on users inadvertently typing close-but-incorrect keys.
-
-Additionally, different keyboard layouts (such as AZERTY, QWERTZ, or Dvorak) produce unique typo patterns, allowing cybercriminals to target users in specific regions or with particular typing habits. By understanding these layout-specific errors, typosquatters can increase the likelihood of catching misdirected traffic, making keyboard layouts a significant factor in effective typosquatting strategies.
-
 
 |  Arabic | Armenian  | English  | Finnish |  French   | Russian | Spanish | Hebrew  | Persian | 
 |----------|----------|----------|---------|-----------|---------|--------|----------|---------|
@@ -104,21 +79,9 @@ Additionally, different keyboard layouts (such as AZERTY, QWERTZ, or Dvorak) pro
 | QWERTY   |          |  DVORAK  |         |           |         |        |         ||
 
 
-### Additional Datasets
-
-
-| NAME               |  RECORDS  |   UPDATED  |
-|--------------------|-----------|------------|                                                          
-| TLDs               |           |            |
-| Subdomains         |           |            |
-| Top Domains        | 1,000,000 |            |
-| MaxMind GeoIP City |    ?      | 2024/11/10 |
-
-
-
 ## Algorithms
 
-Algorithms systematically generate plausible misspelled domain variations by analyzing common typing errors and linguistic patterns. These algorithms account for mistakes like adjacent key errors, omitted letters, and character swaps to create likely typo-based domains. More advanced algorithms leverage multi-lingual datasets, enabling the detection of typographical errors across different languages and keyboard layouts. This approach broadens the scope of potential typos, increasing protection against international typosquatting attempts.
+Algorithms systematically generate plausible misspelled domain variations by analyzing common typing errors and linguistic patterns. 
 
 | ID   | Name                          | Description                                                                                      |
 |------|-------------------------------|--------------------------------------------------------------------------------------------------|
