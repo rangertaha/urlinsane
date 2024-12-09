@@ -70,7 +70,7 @@ We will also use the urlinsane tool to generate domain name variants and check i
 
 
 # Algorithms
-Typo algoryhms exploit typing errors and linguistic manipulation to generate named variants. 
+Typo algoryhms exploit typing errors and linguistic patterns to generate named variants. 
 
 These algorithms can be classified based on the way they manipulate names or tokens. 
 
@@ -84,24 +84,65 @@ Typo algorithms can fall into these categories: Insertion, Ommition, Transpositi
 
 
 
+For demo purposes we are going to focus only on domain typosquatting and use a tool called **urlinsane** that I created 
+
+
 ## Substitution
 
 Algorithms in this category create named variants by replacing one or more characters or tokens in the original name.
 
 
-### Adjacent Character
+### Adjacent Character Substitution
 
-These typos happen when a character in the original token is mistakenly replaced by a neighboring character from the same keyboard layout. This type of error often occurs due to hitting an adjacent key by accident.
+This algorithm generates named variants by replaces each character in the target name with one of the adjacent characters on the keyboard layout.
+
 For example:
+
+```sh
+urlinsane typo -k en1 -a acs a
+```
+
+-k en1 : Tells the tool to use the 'en1' keyboard layout which is the for the 'QWERTY' English langauge keyboard layout. 
+-a acs : Tells the tool to only use the Adjacent Character Substitution (ACS) algorithm to generate name variants
+     a : Is the named entity we are tageting
+
+Outputs:
+
+```sh
+1  ACS  q
+1  ACS  w
+1  ACS  s  
+1  ACS  z 
+```
+
+The numbers at the begining of the line are the levinshtine distance between the named entity and the named variant.
 
 
 ### Grapheme Substitution
 
-Also known as alphabet replacement, occurs when characters from the original token are replaced by other letters from the alphabet, resulting in a modified version of the token. This type of error typically leads to small changes in the original token, where one or more letters are swapped for different characters. For example:
+This algorithm generates named variants by replaces each character in the target name with a character in the alphabet of the given langauge. 
+
+For example:
+
+```sh
+urlinsane typo -l en -a gs a
+```
+-l en : Tells the tool to use the the english language. 
+-a gs : Tells the tool to only use the Grapheme Substitution (GS) algorithm to generate name variants
+     a : Is the named entity we are tageting
+
+Output (truncated):
+
+```sh
+1  GS  a
+1  GS  b
+1  GS  c  
+...
+1  GS  z 
+```
 
 
-
-### Dot Hyphen Substitution
+### Symbols Substitution
 
 Involves substituting dots (.) with hyphens (-) or vice versa within a given token, creating alternative versions that resemble the original. This technique generates variants by interchanging these commonly used separators, often resulting in tokens that look similar but are structurally different. For example, a token like "my-example.com" might become "my.example.com", or "my.example-com" could be changed to "my-example.com".
 
@@ -144,14 +185,8 @@ These typos are created by frequent spelling errors or missteps that occur in th
 ### Multilingual Token Substitution
     For international brands, typosquatting can incorporate hybrid language variations that mix English with local language elements. For instance, combining “amazon” with country-specific words like “amazonkaufen.com” (using the German word for “buy”) can mislead German-speaking users.
 
-### TLD Insertion
-Adds subdomains to mimic legitimate structures (e.g., `example.com` → `login.example.com`).
+### TLD Substitution
 
-### SLD Insertion
-Adds subdomains to mimic legitimate structures (e.g., `example.com` → `login.example.com`).
-
-### TLD Insertion
-Adds subdomains to mimic legitimate structures (e.g., `example.com` → `login.example.com`).
 
 
 
@@ -166,15 +201,8 @@ Adds characters to the start (e.g., `example.com` → `wwwexample.com`).
 ### Suffix Insertion
 Adds characters to the end (e.g., `example.com` → `example-com.net`).
 
-### Subdomain Insertion
-Adds subdomains to mimic legitimate structures (e.g., `example.com` → `login.example.com`).
 
-
-
-
-### Keyword Insertion
-
-### Multiple Keywords Insertion
+### Keywords Insertion
 
 ### Adjacent Character Insertion 
 
@@ -247,12 +275,6 @@ occurs when the vowels in the target token are swapped with each other, leading 
 involves rearranging the order of words, numbers, or components within a token to create alternative versions. This method often results in tokens that are similar to the original but with a different sequence, which can be used to confuse or mislead users. For example, the token "2024example" could be altered to "example2024", or "shop-online" could
  
  	become "online-shop", where the elements are swapped in position.
-
-
-
-## Linguistics
-
-Linuistic typo algorithms exploit language specific tokens in the given name.
 
 
 
