@@ -33,6 +33,7 @@ go.work.sum
 
 builds
 build
+releases
 tst
 
 # Personal files
@@ -46,8 +47,6 @@ old/
 .csv
 .json
 .html
-
-
 /main
 
 
@@ -70,3 +69,5 @@ debhelper-build-stamp
 /tutorial-1/packageroot/usr
 *.mmdb
 /domains
+/obj-x86_64-linux-gnu
+**/src
