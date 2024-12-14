@@ -34,12 +34,9 @@ release: deps ## Build the binaries for Windows, OSX, and Linux
 build: deps ## Build the binary
 	$(GOBUILD) -C cmd/$(BINARY_NAME) -o ../../$(BDIR)/$(BINARY_NAME)
 
-# install: deps ## Install the binaries in Linux
-# @mkdir -p $(BDIR)
-# $(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME)
-# @chmod +x $(BDIR)/$(BINARY_NAME)
-# @sudo mv $(BDIR)/$(BINARY_NAME) /usr/local/bin/
-
+install: build ## Install the binaries in Linux
+	@chmod +x $(BDIR)/$(BINARY_NAME)
+	@sudo mv $(BDIR)/$(BINARY_NAME) /usr/local/bin/
 
 deps: ## Install dependencies
 	$(GOGET) ./...
