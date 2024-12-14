@@ -1,0 +1,44 @@
+#!/usr/bin/make -f
+
+# output every command that modifies files on the build system.
+#export DH_VERBOSE = 1
+
+# see FEATURE AREAS in dpkg-buildflags(1)
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+# see ENVIRONMENT in dpkg-buildflags(1)
+# package maintainers to append CFLAGS
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+# package maintainers to append LDFLAGS
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+
+# export GOCACHE=$(CURDIR)/build
+# export GOPATH=$(CURDIR)/build
+
+%:
+	dh $@ --buildsystem=golang
+
+# override_dh_auto_build:
+# 	go install -C ./cmd/urlinsane -buildvcs=false 
+# 	go build -o debian/usr/bin/urlinsane  ./cmd/urlinsane
+
+override_dh_golang:
+	go install -C ./cmd/urlinsane -buildvcs=false 
+	go build -o debian/usr/bin/urlinsane  ./cmd/urlinsane
+
+# override_dh_dwz:
+# 	echo
+# #	https://lists.debian.org/debian-devel/2019/07/msg00162.html
+# #	don't run dh_dwz, it fails with
+# #	dwz: debian/urlinsane/usr/bin/urlinsane: Found compressed .debug_abbrev section, not attempting dwz compression
+# #	dh_dwz: error: dwz -- debian/urlinsane/usr/bin/urlinsane returned exit code 1
+# #	dh_dwz: error: Aborting due to earlier error
+
+
+# override_dh_auto_test:
+#	don't run test, it fails with
+#	"build/pkg/mod/github.com/go-kit/kit@v0.9.0/metrics/influx/influx.go:10:2:
+#	unknown import path "github.com/influxdata/influxdb1-client/v2":
+#	cannot find module providing package
+#	github.com/influxdata/influxdb1-client/v2"
