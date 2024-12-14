@@ -1,0 +1,5 @@
+urlinsane (0.8.2) UNRELEASED; urgency=medium
+
+  * Fixed some issues with getting the total record count and setting the live flag
+
+ -- Rangertaha <rangertaha@gmail.com>  Wed, 09 Dec 2024 11:08:06 +0200

@@ -4,12 +4,12 @@ GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
-GODOC=$(GOCMD)doc
-BDIR=build
+GODOC=$(GOCMD) doc
+BDIR=releases
 BINARY_NAME=urlinsane
 VERSION=$(shell grep -e 'VERSION = ".*"' internal/version.go | cut -d= -f2 | sed  s/[[:space:]]*\"//g)
 
-.PHONY: help version build install deps test clean doc
+.PHONY: help version release install dpkg deps test clean doc
 
 
 
@@ -20,9 +20,8 @@ version: ## Returns the version number
 	@echo $(VERSION)
 
 
-build: deps ## Build the binaries for Windows, OSX, and Linux
+release: deps ## Build the binaries for Windows, OSX, and Linux
 	mkdir -p $(BDIR)
-	$(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME) -v
 	env GOOS=darwin GOARCH=amd64 $(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 -v
 	sha512sum $(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 > $(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64.sha512
 
@@ -33,18 +32,19 @@ build: deps ## Build the binaries for Windows, OSX, and Linux
 	sha512sum $(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe > $(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe.sha512
 
 
-install: deps ## Install the binaries in Linux
-	@mkdir -p $(BDIR)
-	$(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME)
-	@chmod +x $(BDIR)/$(BINARY_NAME)
-	@sudo mv $(BDIR)/$(BINARY_NAME) /usr/local/bin/
+# install: deps ## Install the binaries in Linux
+# @mkdir -p $(BDIR)
+# $(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME)
+# @chmod +x $(BDIR)/$(BINARY_NAME)
+# @sudo mv $(BDIR)/$(BINARY_NAME) /usr/local/bin/
 
 
 deps: ## Install dependencies
 	$(GOGET) ./...
 
-test: deps ## Run unit test
-	$(GOTEST) -v ./...
+# test: deps ## Run unit test
+# 	# $(GOTEST) -v ./internal/... ./cmd/...
+# 	go test -v ./internal/... ./cmd/...
 
 clean: ## Remove files build files
 	$(GOCLEAN)
@@ -55,3 +55,7 @@ doc: ## Go documentation
 
 update: ## Update data files
 	bash scripts/update.sh
+
+dpkg:  ## Build debian package
+	# dpkg-buildpackage -b -rfakeroot -us -uc
+	debuild  -us -uc

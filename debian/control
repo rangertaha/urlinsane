@@ -1,0 +1,17 @@
+Source: urlinsane
+Section: utils
+Priority: optional
+Maintainer: Rangertaha <rangertaha@gmail.com>
+Build-Depends: debhelper-compat (= 12), golang-go, dh-golang
+Standards-Version: 4.6.2
+Homepage: https://rangertaha.github.io/urlinsane
+Vcs-Browser: https://github.com/rangertaha/urlinsane
+Vcs-Git: https://github.com/rangertaha/urlinsane.git
+XS-Go-Import-Path: github.com/rangertaha/urlinsane
+
+Package: urlinsane
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+# Built-Using: ${misc:Built-Using}
+Description: Typosquatting OSINT investigations
+ Generates domain typos and variations used to detect and perform typo squatting, URL hijacking, phishing, and corporate espionage. Inspired by URLCrazy I wanted to create a better version that supported multiple languages and linguistic typos. I also wanted it to be a binary with fast execution time.
