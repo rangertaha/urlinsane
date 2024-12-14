@@ -5,11 +5,12 @@ GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 GODOC=$(GOCMD) doc
-BDIR=releases
+BDIR=build
+$(shell mkdir -p $(BDIR))
 BINARY_NAME=urlinsane
 VERSION=$(shell grep -e 'VERSION = ".*"' internal/version.go | cut -d= -f2 | sed  s/[[:space:]]*\"//g)
 
-.PHONY: help version release install dpkg deps test clean doc
+.PHONY: help version build install dpkg deps test clean doc
 
 
 
@@ -21,16 +22,17 @@ version: ## Returns the version number
 
 
 release: deps ## Build the binaries for Windows, OSX, and Linux
-	mkdir -p $(BDIR)
-	env GOOS=darwin GOARCH=amd64 $(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 -v
+	env GOOS=darwin GOARCH=amd64 $(GOBUILD) -C cmd/$(BINARY_NAME) -o ../../$(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 -v
 	sha512sum $(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 > $(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64.sha512
 
-	env GOOS=linux GOARCH=amd64 $(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64 -v
+	env GOOS=linux GOARCH=amd64 $(GOBUILD) -C cmd/$(BINARY_NAME) -o ../../$(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64 -v
 	sha512sum $(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64 > $(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64.sha512
 
-	env GOOS=windows GOARCH=amd64 $(GOBUILD) -C cmd -o ../$(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe -v
+	env GOOS=windows GOARCH=amd64 $(GOBUILD) -C cmd/$(BINARY_NAME) -o ../../$(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe -v
 	sha512sum $(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe > $(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe.sha512
 
+build: deps ## Build the binary
+	$(GOBUILD) -C cmd/$(BINARY_NAME) -o ../../$(BDIR)/$(BINARY_NAME)
 
 # install: deps ## Install the binaries in Linux
 # @mkdir -p $(BDIR)
