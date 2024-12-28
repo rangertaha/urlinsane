@@ -23,6 +23,8 @@ import (
 	"strings"
 	"time"
 
+	_ "github.com/rangertaha/urlinsane/internal/db"
+
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
