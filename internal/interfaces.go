@@ -17,6 +17,8 @@ package internal
 import (
 	"encoding/json"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Initializer interface {
@@ -36,7 +38,7 @@ type Config interface {
 	Algorithms() []Algorithm
 	Collectors() []Collector
 	Analyzers() []Analyzer
-	Database() Database
+	Database() *gorm.DB
 	Output() Output
 
 	// Performance

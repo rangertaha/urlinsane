@@ -71,6 +71,7 @@ AUTHOR:
 		},
 		Commands: []*cli.Command{
 			&TypoCmd,
+			&ImportCmd,
 		},
 	}
 

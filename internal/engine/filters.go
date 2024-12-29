@@ -71,21 +71,21 @@ import (
 
 //		return out
 //	}
-func ReadCacheFilter() func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-	return func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-		out := make(chan internal.Domain)
-		go func() {
-			for domain := range in {
-				if data, _ := c.Database().Read(domain.String()); data != "" {
-					domain.Json(data)
-				}
-				out <- domain
-			}
-			close(out)
-		}()
-		return out
-	}
-}
+// func ReadCacheFilter() func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
+// 	return func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
+// 		out := make(chan internal.Domain)
+// 		go func() {
+// 			for domain := range in {
+// 				if data, _ := c.Database().Read(domain.String()); data != "" {
+// 					domain.Json(data)
+// 				}
+// 				out <- domain
+// 			}
+// 			close(out)
+// 		}()
+// 		return out
+// 	}
+// }
 
 func ExampleFilter() func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
 	return func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
