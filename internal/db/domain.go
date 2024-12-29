@@ -22,14 +22,16 @@ import (
 
 type Prefix struct {
 	gorm.Model
-	Name string
-	Rank int64
+	Name     string
+	Rank     int64
+	Imported bool
 }
 
 type Suffix struct {
 	gorm.Model
-	Name string
-	Rank int64
+	Name     string
+	Rank     int64
+	Imported bool
 }
 
 type Domain struct {

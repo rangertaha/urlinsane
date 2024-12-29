@@ -36,6 +36,7 @@ type Char struct {
 	Text       string      `json:"text,omitempty"`
 	Languages  []*Language `gorm:"many2many:langchars;"  json:"languages,omitempty"`
 	Homoglyphs []*Char     `gorm:"many2many:homoglyphs;" json:"homoglyphs,omitempty"`
+	Imported   bool        `json:"-"`
 }
 
 type Word struct {
@@ -46,4 +47,5 @@ type Word struct {
 	Homophones   []*Word     `gorm:"many2many:homophones;"   json:"homophones,omitempty"`
 	Misspellings []*Word     `gorm:"many2many:misspellings;" json:"misspellings,omitempty"`
 	Translations []*Word     `gorm:"many2many:translations;" json:"translations,omitempty"`
+	Imported     bool        `json:"-"`
 }

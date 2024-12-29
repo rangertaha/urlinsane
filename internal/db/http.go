@@ -25,11 +25,10 @@ type Page struct {
 	Description string  `json:"description,omitempty"`
 	Body        string  `json:"body,omitempty"`
 
-	// Ssdeep string `json:"ssdeep,omitempty"`
-
-	Images []*Image `gorm:"many2many:images;" json:"images,omitempty"`
-	Pages  []*Page  `gorm:"many2many:pages;" json:"pages,omitempty"`
-	Files  []*File  `gorm:"many2many:files;" json:"files,omitempty"`
+	// Media Relations
+	Images []*Image `gorm:"many2many:pimages;" json:"images,omitempty"`
+	Pages  []*Page  `gorm:"many2many:ppages;" json:"pages,omitempty"`
+	Files  []*File  `gorm:"many2many:pfiles;" json:"files,omitempty"`
 
 	// Language Analysis
 	// Languages
@@ -41,7 +40,7 @@ type Page struct {
 
 type Image struct {
 	gorm.Model
-	Url    string            `json:"uri,omitempty"`
+	Url    string            `json:"url,omitempty"`
 	Hashes map[string]string `gorm:"serializer:json"      json:"hashes,omitempty"`
 }
 

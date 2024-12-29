@@ -23,7 +23,8 @@ import (
 	"strings"
 	"time"
 
-	_ "github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/db"
+	"gorm.io/gorm"
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
@@ -32,7 +33,6 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/analyzers/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/all"
-	"github.com/rangertaha/urlinsane/internal/plugins/databases"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/databases/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/languages"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
@@ -48,13 +48,13 @@ type (
 	Config struct {
 		domain    string // Target domain
 		directory string
+		database  *gorm.DB
 
 		// Plugins
 		keyboards  []internal.Keyboard
 		languages  []internal.Language
 		algorithms []internal.Algorithm
 		collectors []internal.Collector
-		database   internal.Database
 		analyzers  []internal.Analyzer
 		output     internal.Output
 
@@ -139,7 +139,6 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		algorithms []string = csSplit(cli.String("algorithms")) // algorithms IDs
 		collectors []string = csSplit(cli.String("collectors")) // Collectors IDs
 		analyzers  []string = csSplit(cli.String("analyzers"))  // Analyzers IDs
-		database   string   = "badger"
 
 		// Constraints
 		regex    string = cli.String("regex") //
@@ -190,7 +189,6 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		algorithms, // algorithms IDs
 		collectors, // Collectors IDs
 		analyzers,  // Analyzers IDs
-		database,   // Database ID
 
 		// Constraints
 		regex,
@@ -224,7 +222,6 @@ func ConfigOption(
 	algos []string,
 	cols []string,
 	anlyzrs []string,
-	database string,
 
 	// Constraints
 	regex string,
@@ -262,9 +259,6 @@ func ConfigOption(
 		sort.Sort(InfosReverseOrder{c.collectors})
 
 		c.analyzers = analyzers.List(anlyzrs...)
-		if c.database, err = databases.Get(database); err != nil {
-			log.Error(err)
-		}
 
 		if c.output, err = outputs.Get(format); err != nil {
 			log.Error(err)
@@ -295,6 +289,9 @@ func ConfigOption(
 		// Create app directory if it does not exits
 		c.directory = createAppDir(DIR_PRIMARY)
 
+		// Create app directory if it does not exits
+		c.database = createDatabase(c.directory)
+
 		logger := log.WithFields(log.Fields{
 			"domain":     domain,
 			"languages":  langs,
@@ -302,7 +299,6 @@ func ConfigOption(
 			"algorithms": algos,
 			"collectors": cols,
 			"analyzers":  anlyzrs,
-			"database":   database,
 			"regex":      regex,
 			"format":     format,
 			"file":       file,
@@ -350,7 +346,7 @@ func (c *Config) Algorithms() []internal.Algorithm { return c.algorithms }
 func (c *Config) Collectors() []internal.Collector { return c.collectors }
 func (c *Config) Analyzers() []internal.Analyzer   { return c.analyzers }
 func (c *Config) Output() internal.Output          { return c.output }
-func (c *Config) Database() internal.Database      { return c.database }
+func (c *Config) Database() *gorm.DB               { return c.database }
 
 // Constraint options
 func (c *Config) Regex() string { return c.regex }
@@ -428,4 +424,9 @@ func deleteCacheDir(dirname string) {
 	if _, err := os.Stat(dbDir); !os.IsNotExist(err) {
 		os.RemoveAll(dbDir)
 	}
+}
+
+func createDatabase(dirname string) *gorm.DB {
+	db.Config(filepath.Join(dirname, "urlinsane.db"))
+	return db.DB
 }

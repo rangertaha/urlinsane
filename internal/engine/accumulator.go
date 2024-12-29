@@ -46,7 +46,7 @@ func NewAccumulator(out chan<- internal.Domain, domain internal.Domain, conf int
 		domain: domain,
 		cfg:    conf,
 		log:    *logger,
-		kv:     conf.Database(),
+		// kv:     conf.Database(),
 		dir:    dir,
 	}
 }

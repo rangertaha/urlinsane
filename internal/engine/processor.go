@@ -68,11 +68,11 @@ func (u *Urlinsane) Init() <-chan internal.Domain {
 		log.Fields{"fqdn": u.target.String(), "prefix": u.target.Prefix(),
 			"name": u.target.Name(), "suffix": u.target.Suffix()})
 
-	// Initialize database plugins if needed
-	if db, ok := u.cfg.Database().(internal.Initializer); ok {
-		log.Debug("Init database:", u.cfg.Database().Id())
-		db.Init(u.cfg)
-	}
+	// // Initialize database plugins if needed
+	// if db, ok := u.cfg.Database().(internal.Initializer); ok {
+	// 	log.Debug("Init database:", u.cfg.Database().Id())
+	// 	db.Init(u.cfg)
+	// }
 
 	// Initialize collector plugins if needed
 	log.Debug("Collectors:", len(u.cfg.Collectors()))
@@ -296,27 +296,27 @@ func (u *Urlinsane) Collectors(in <-chan internal.Domain) <-chan internal.Domain
 	return in
 }
 
-func (u *Urlinsane) WriteCache(in <-chan internal.Domain) <-chan internal.Domain {
-	out := make(chan internal.Domain)
+// func (u *Urlinsane) WriteCache(in <-chan internal.Domain) <-chan internal.Domain {
+// 	out := make(chan internal.Domain)
 
-	go func() {
-		kv := u.cfg.Database()
-		for domain := range in {
-			if !domain.Cached() {
-				json := domain.Json()
-				if err := kv.Write(json, domain.String()); err != nil {
-					log.Error(err)
-				}
-				log.Debug("Saved to cache:", json)
-			}
+// 	go func() {
+// 		kv := u.cfg.Database()
+// 		for domain := range in {
+// 			if !domain.Cached() {
+// 				json := domain.Json()
+// 				if err := kv.Write(json, domain.String()); err != nil {
+// 					log.Error(err)
+// 				}
+// 				log.Debug("Saved to cache:", json)
+// 			}
 
-			out <- domain
-		}
-		close(out)
-	}()
+// 			out <- domain
+// 		}
+// 		close(out)
+// 	}()
 
-	return out
-}
+// 	return out
+// }
 
 func (u *Urlinsane) PostFilters(in <-chan internal.Domain) <-chan internal.Domain {
 	out := make(chan internal.Domain)
@@ -543,7 +543,7 @@ func (u *Urlinsane) Close() {
 	}
 
 	// Close db
-	u.cfg.Database().Close()
+	// u.cfg.Database().Close()
 
 	// os.Exit(1)
 }
@@ -556,10 +556,9 @@ func (u *Urlinsane) Execute() (err error) {
 		DedupFilter,
 		RegexFilter,
 		LevenshteinFilter,
-		ReadCacheFilter,
 	)
 	typos = u.Collectors(typos)
-	typos = u.WriteCache(typos)
+	// typos = u.WriteCache(typos)
 	typos = u.PostFilters(typos)
 	typos = u.Analyzers(typos)
 	typos = u.Progress(typos)
@@ -577,10 +576,10 @@ func (u *Urlinsane) Scan() (err error) {
 		DedupFilter,
 		RegexFilter,
 		LevenshteinFilter,
-		ReadCacheFilter,
+		// ReadCacheFilter,
 	)
 	typos = u.Collectors(typos)
-	typos = u.WriteCache(typos)
+	// typos = u.WriteCache(typos)
 	typos = u.PostFilters(typos)
 	typos = u.Analyzers(typos)
 	typos = u.Progress(typos)
@@ -607,11 +606,11 @@ func (u *Urlinsane) Stream() <-chan internal.Domain {
 		DedupFilter,
 		RegexFilter,
 		LevenshteinFilter,
-		ReadCacheFilter,
+		// ReadCacheFilter,
 		GetTotal,
 	)
 	typos = u.Collectors(typos)
-	typos = u.WriteCache(typos)
+	// typos = u.WriteCache(typos)
 	typos = u.PostFilters(typos)
 	typos = u.Analyzers(typos)
 	return typos
