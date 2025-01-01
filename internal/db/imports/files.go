@@ -14,7 +14,4 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package imports
 
-func ImportDomains(language, dataset string, files []string) error {
-	return nil
-}
 
