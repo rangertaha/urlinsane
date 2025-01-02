@@ -25,9 +25,24 @@ import (
 
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/rangertaha/urlinsane/internal/config"
+	"github.com/rangertaha/urlinsane/internal/db"
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 )
+
+type importer func(string, string) error
+
+var datasets = map[string]importer{
+	"word.lst":        Words,
+	"vowel.lst":       Words,
+	"stopword.lst":    Words,
+	"numeral.lst":     Words,
+	"misspelling.lst": Words,
+	"homophone.lst":   Words,
+	"grapheme.lst":    Words,
+	"antonym.lst":     Words,
+	"homoglyph.lst":   Words,
+}
 
 var importFlags = []cli.Flag{
 	// &cli.StringFlag{
@@ -120,10 +135,7 @@ func Import(cli *cli.Context) error {
 }
 
 func Languages(files []string) (err error) {
-	type importer func(string, string) error
-	datasets := map[string]importer{
-		"words.lst": Words,
-	}
+
 	for _, file := range files {
 		segs := strings.Split(file, "/")
 		language := segs[len(segs)-2]
@@ -161,8 +173,14 @@ func Extract(file string) (lines [][]string) {
 
 func Words(lang, file string) (err error) {
 	for _, words := range Extract(file) {
-		fmt.Println(lang, words)
+		for _, w := range words {
+			fmt.Println(lang, words)
+			var word db.Word
+			db.DB.FirstOrCreate(&word, db.Word{Text: w})
+		}
 	}
 
 	return
 }
+
+
