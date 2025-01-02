@@ -14,11 +14,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package db
 
-import "gorm.io/gorm"
-
 type Language struct {
-	gorm.Model
-	Code        string `json:"code,omitempty"`
+	ID          uint
+	Code        string `gorm:"unique" json:"code,omitempty"`
 	Name        string `json:"name,omitempty"`
 	Description string `json:"description,omitempty"`
 
@@ -31,21 +29,19 @@ type Language struct {
 }
 
 type Char struct {
-	gorm.Model
-	Code       string      `json:"code,omitempty"`
-	Text       string      `json:"text,omitempty"`
+	ID         uint
+	// Code       string      `gorm:"unique" json:"code,omitempty"`
+	Text       string      `gorm:"unique" json:"text,omitempty"`
 	Languages  []*Language `gorm:"many2many:langchars;"  json:"languages,omitempty"`
 	Homoglyphs []*Char     `gorm:"many2many:homoglyphs;" json:"homoglyphs,omitempty"`
-	Imported   bool        `json:"-"`
 }
 
 type Word struct {
-	gorm.Model
-	Text         string      `json:"text,omitempty"`
+	ID           uint
+	Text         string      `gorm:"unique" json:"text,omitempty"`
 	Languages    []*Language `gorm:"many2many:langwords;"    json:"languages,omitempty"`
 	Antonyms     []*Word     `gorm:"many2many:antonyms;"     json:"antonyms,omitempty"`
 	Homophones   []*Word     `gorm:"many2many:homophones;"   json:"homophones,omitempty"`
 	Misspellings []*Word     `gorm:"many2many:misspellings;" json:"misspellings,omitempty"`
 	Translations []*Word     `gorm:"many2many:translations;" json:"translations,omitempty"`
-	Imported     bool        `json:"-"`
 }

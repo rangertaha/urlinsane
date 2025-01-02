@@ -51,7 +51,7 @@ var DB *gorm.DB
 func Config(filepath string) {
 	var err error
 
-	if DB, err = gorm.Open(sqlite.Open(filepath), &gorm.Config{}); err != nil {
+	if DB, err = gorm.Open(sqlite.Open(filepath), &gorm.Config{CreateBatchSize: 1000}); err != nil {
 		fmt.Println(err)
 	}
 
