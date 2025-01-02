@@ -65,7 +65,7 @@ type Dns struct {
 }
 
 type Whois struct {
-	gorm.Model
+	ID               uint
 	DomainID         uint
 	RegistrarID      uint
 	RegistrantID     uint

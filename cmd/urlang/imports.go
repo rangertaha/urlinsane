@@ -25,7 +25,6 @@ import (
 
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/rangertaha/urlinsane/internal/config"
-	"github.com/rangertaha/urlinsane/internal/db"
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 )
@@ -34,53 +33,18 @@ type importer func(string, string) error
 
 var datasets = map[string]importer{
 	"word.lst":        Words,
-	"vowel.lst":       Words,
-	"stopword.lst":    Words,
-	"numeral.lst":     Words,
-	"misspelling.lst": Words,
-	"homophone.lst":   Words,
-	"grapheme.lst":    Words,
-	"antonym.lst":     Words,
-	"homoglyph.lst":   Words,
+	"antonym.lst":     Antonyms,
+	"stopword.lst":    StopWords,
+	"numeral.lst":     Numerals,
+	"misspelling.lst": Misspellings,
+	"homophone.lst":   Homophones,
+
+	"vowel.lst":       Vowels,
+	"grapheme.lst":    Graphemes,
+	"homoglyph.lst":   Homoglyphs,
 }
 
-var importFlags = []cli.Flag{
-	// &cli.StringFlag{
-	// 	Name:    "language",
-	// 	Usage:   "language code of the content to import",
-	// 	Aliases: []string{"l"},
-	// 	Value:   "",
-	// },
-	// &cli.BoolFlag{
-	// 	Name:  "clear",
-	// 	Usage: "Remove previously imported datasets",
-	// 	Value: false,
-	// },
-	// &cli.BoolFlag{
-	// 	Name:     "words",
-	// 	Value:    false,
-	// 	Category: "TYPES",
-	// 	Usage:    "Import dataset as words",
-	// },
-	// &cli.BoolFlag{
-	// 	Name:     "stopwords",
-	// 	Value:    false,
-	// 	Category: "TYPES",
-	// 	Usage:    "Import dataset as stopwords",
-	// },
-	// &cli.BoolFlag{
-	// 	Name:     "graphemes",
-	// 	Value:    false,
-	// 	Category: "TYPES",
-	// 	Usage:    "Import dataset as graphemes",
-	// },
-	// &cli.BoolFlag{
-	// 	Name:     "vowels",
-	// 	Value:    false,
-	// 	Category: "TYPES",
-	// 	Usage:    "Import dataset as vowels",
-	// },
-}
+var importFlags = []cli.Flag{}
 
 var ImportCmd = cli.Command{
 	Name:                   "import",
@@ -164,23 +128,10 @@ func Extract(file string) (lines [][]string) {
 		m := regexp.MustCompile(`\s+`)
 		line = m.ReplaceAllString(line, " ")
 		line = strings.Trim(line, " ")
+		line = strings.TrimSpace(line)
 
 		lines = append(lines, strings.Split(line, " "))
 	}
 	readFile.Close()
 	return
 }
-
-func Words(lang, file string) (err error) {
-	for _, words := range Extract(file) {
-		for _, w := range words {
-			fmt.Println(lang, words)
-			var word db.Word
-			db.DB.FirstOrCreate(&word, db.Word{Text: w})
-		}
-	}
-
-	return
-}
-
-
