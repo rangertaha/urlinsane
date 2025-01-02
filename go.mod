@@ -16,7 +16,7 @@ require (
 	github.com/schollz/progressbar/v3 v3.17.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/urfave/cli/v2 v2.27.5
-	golang.org/x/net v0.31.0
+	golang.org/x/net v0.33.0
 	golang.org/x/term v0.26.0
 )
 
