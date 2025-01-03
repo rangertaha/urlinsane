@@ -12,22 +12,5 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package db
 
-import "gorm.io/gorm"
-
-type Keyboard struct {
-	gorm.Model
-	Code        string    `                             json:"code,omitempty"`
-	Name        string    `                             json:"name,omitempty"`
-	Description string    `                             json:"description,omitempty"`
-	Layouts     []Layout  `gorm:"serializer:json"       json:"layouts,omitempty"`
-	Languages   []*string `gorm:"many2many:langboards;" json:"languages,omitempty"`
-}
-
-type Layout struct {
-	Code        string   `json:"code,omitempty"`
-	Name        string   `json:"name,omitempty"`
-	Description string   `json:"description,omitempty"`
-	Layers      []string `json:"layers,omitempty"`
-}
+package main
