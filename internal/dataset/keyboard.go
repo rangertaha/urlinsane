@@ -12,22 +12,36 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package db
+package dataset
 
-import "gorm.io/gorm"
+const (
+	ISO105 = `
+	
+	`
+	ANSI104 = `
+	
+	`
+	ABNT = `
+	
+	`
+	OADG109A = `
+	
+	`
+)
 
 type Keyboard struct {
-	gorm.Model
-	Code        string    `                             json:"code,omitempty"`
-	Name        string    `                             json:"name,omitempty"`
-	Description string    `                             json:"description,omitempty"`
-	Layouts     []Layout  `gorm:"serializer:json"       json:"layouts,omitempty"`
-	Languages   []*string `gorm:"many2many:langboards;" json:"languages,omitempty"`
+	ID          uint
+	Code        string `gorm:"unique"`
+	Name        string
+	Description string
+	Arrangement string      // ISO105, ANSI104, ABNT, OADG109A
+	Languages   []*Language `gorm:"many2many:langboards;"`
+	Layout      []Key       `gorm:"serializer:json"`
 }
 
-type Layout struct {
-	Code        string   `json:"code,omitempty"`
-	Name        string   `json:"name,omitempty"`
-	Description string   `json:"description,omitempty"`
-	Layers      []string `json:"layers,omitempty"`
+type Key struct {
+	SC    string `json:"sc,omitempty"`
+	VK    string `json:"vk,omitempty"`
+	Name  string `json:"name,omitempty"`
+	Value string `json:"value,omitempty"`
 }

@@ -20,20 +20,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type Prefix struct {
-	gorm.Model
-	Name     string
-	Rank     int64
-	Imported bool
-}
-
-type Suffix struct {
-	gorm.Model
-	Name     string
-	Rank     int64
-	Imported bool
-}
-
 type Domain struct {
 	gorm.Model
 	Name     string `json:"name,omitempty"`

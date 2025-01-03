@@ -29,19 +29,26 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-type importer func(string, string) error
+type importFunc func(string, string) error
 
-var datasets = map[string]importer{
-	"word.lst":        Words,
-	"antonym.lst":     Antonyms,
-	"stopword.lst":    StopWords,
-	"numeral.lst":     Numerals,
-	"misspelling.lst": Misspellings,
-	"homophone.lst":   Homophones,
-
-	"vowel.lst":       Vowels,
-	"grapheme.lst":    Graphemes,
-	"homoglyph.lst":   Homoglyphs,
+var DATASETS = map[string]map[string]importFunc{
+	// Language datasets
+	"languages": {
+		"word.lst":        Words,
+		"antonym.lst":     Antonyms,
+		"stopword.lst":    StopWords,
+		"numeral.lst":     Numerals,
+		"misspelling.lst": Misspellings,
+		"homophone.lst":   Homophones,
+		"vowel.lst":       Vowels,
+		"grapheme.lst":    Graphemes,
+		"homoglyph.lst":   Homoglyphs,
+	},
+	"domains": {
+		"domain.lst": Domains,
+		"prefix.lst": Prefixes,
+		"suffix.lst": Suffixes,
+	},
 }
 
 var importFlags = []cli.Flag{}
@@ -69,49 +76,72 @@ var ImportCmd = cli.Command{
 	},
 }
 
-func Directory(dir, name string, processor func(paths []string) error) (err error) {
-	var files []string
-	err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+func Import(cli *cli.Context) error {
+	folder := cli.Args().First()
+	err := filepath.Walk(folder, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 		if !info.IsDir() {
-			if strings.Contains(path, name) {
-				files = append(files, path)
+			var namespace string
+			for dir, file := range DATASETS {
+				if strings.Contains(path, dir) {
+					for filename, processor := range file {
+						paths := strings.Split(path, "/")
+						if paths[len(paths)-1] == filename {
+							if paths[len(paths)-2] != dir {
+								namespace = paths[len(paths)-2]
+							} else {
+								namespace = ""
+							}
+							processor(namespace, path)
+						}
+					}
+				}
 			}
-
 		}
 		return nil
 	})
 	if err != nil {
 		return err
 	}
-	return processor(files)
-}
-
-func Import(cli *cli.Context) error {
-	folder := cli.Args().First()
-	if err := Directory(folder, "languages", Languages); err != nil {
-		return err
-	}
-
 	return nil
 }
 
-func Languages(files []string) (err error) {
+// func Directory(dir, name string, processor func(paths []string) error) (err error) {
+// 	var files []string
+// 	err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+// 		if err != nil {
+// 			return err
+// 		}
+// 		if !info.IsDir() {
+// 			if strings.Contains(path, name) {
+// 				files = append(files, path)
+// 			}
 
-	for _, file := range files {
-		segs := strings.Split(file, "/")
-		language := segs[len(segs)-2]
+// 		}
+// 		return nil
+// 	})
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return processor(files)
+// }
 
-		for name, ifunc := range datasets {
-			if strings.HasSuffix(file, name) {
-				ifunc(language, file)
-			}
-		}
-	}
-	return
-}
+// func Datasets(files []string) (err error) {
+
+// 	for _, file := range files {
+// 		segs := strings.Split(file, "/")
+// 		language := segs[len(segs)-2]
+
+// 		for name, ifunc := range DATASETS {
+// 			if strings.HasSuffix(file, name) {
+// 				ifunc(language, file)
+// 			}
+// 		}
+// 	}
+// 	return
+// }
 
 func Extract(file string) (lines [][]string) {
 	readFile, err := os.Open(file)

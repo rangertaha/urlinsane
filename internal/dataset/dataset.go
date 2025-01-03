@@ -12,29 +12,36 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package db
+package dataset
 
 import (
+	"fmt"
+
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
-type Vector struct {
-	gorm.Model
-}
+var Data *gorm.DB
 
-type Topic struct {
-	gorm.Model
-	Name      string  `json:"name,omitempty"`
-	TermFreqs []*Word `gorm:"many2many:termfreqs;"`
-}
+func Config(filepath string) {
+	var err error
 
-type TermFreq struct {
-	TopicID uint `gorm:"primaryKey"`
-	WordID  uint `gorm:"primaryKey"`
-	Freq    int64
-}
+	if Data, err = gorm.Open(sqlite.Open(filepath), &gorm.Config{CreateBatchSize: 10000}); err != nil {
+		fmt.Println(err)
+	}
 
-type NGram struct {
-	gorm.Model
-	Tokens []uint `gorm:"serializer:json"`
+	// Migrate the schema
+	Data.AutoMigrate(
+		// Language
+		&Keyboard{},
+		&Language{},
+		&Word{},
+		&Char{},
+		&Sym{},
+
+		// Domain
+		&Prefix{},
+		&Suffix{},
+		&Domain{},
+	)
 }
