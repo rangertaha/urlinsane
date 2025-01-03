@@ -29,7 +29,7 @@ func main() {
 	cli.AppHelpTemplate = fmt.Sprintf(`%s
 EXAMPLE:
 
-    urlang import directory
+    data import directory
 
 AUTHOR:
    Rangertaha (rangertaha@gmail.com)
@@ -44,14 +44,14 @@ AUTHOR:
 	}
 
 	app := &cli.App{
-		Name:        "urlang",
+		Name:        "data",
 		Version:     internal.VERSION,
 		Compiled:    time.Now(),
 		Suggest:     true,
-		HelpName:    "urlang",
-		Usage:       "Urlang is used to import and export lanague models by Urlinsane",
+		HelpName:    "data",
+		Usage:       "data is used to import and process data models",
 		Description: "",
-		UsageText:   "urlang [command] [opts..] [directory]",
+		UsageText:   "data [command] [opts..] [directory]",
 		Action: func(ctx *cli.Context) error {
 			cli.ShowAppHelpAndExit(ctx, 0)
 			return nil
