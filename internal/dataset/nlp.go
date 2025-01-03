@@ -12,22 +12,29 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package db
+package dataset
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
-type Keyboard struct {
+type Vector struct {
 	gorm.Model
-	Code        string    `                             json:"code,omitempty"`
-	Name        string    `                             json:"name,omitempty"`
-	Description string    `                             json:"description,omitempty"`
-	Layouts     []Layout  `gorm:"serializer:json"       json:"layouts,omitempty"`
-	Languages   []*string `gorm:"many2many:langboards;" json:"languages,omitempty"`
 }
 
-type Layout struct {
-	Code        string   `json:"code,omitempty"`
-	Name        string   `json:"name,omitempty"`
-	Description string   `json:"description,omitempty"`
-	Layers      []string `json:"layers,omitempty"`
+type Topic struct {
+	gorm.Model
+	Name      string
+	TermFreqs []*Word `gorm:"many2many:termfreqs;"`
+}
+
+type TermFreq struct {
+	TopicID uint `gorm:"primaryKey"`
+	WordID  uint `gorm:"primaryKey"`
+	Freq    int64
+}
+
+type NGram struct {
+	gorm.Model
+	Tokens []uint `gorm:"serializer:json"`
 }

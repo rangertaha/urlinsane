@@ -23,6 +23,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/rangertaha/urlinsane/internal/dataset"
 	"github.com/rangertaha/urlinsane/internal/db"
 	"gorm.io/gorm"
 
@@ -49,6 +50,7 @@ type (
 		domain    string // Target domain
 		directory string
 		database  *gorm.DB
+		dataset   *gorm.DB
 
 		// Plugins
 		keyboards  []internal.Keyboard
@@ -289,8 +291,11 @@ func ConfigOption(
 		// Create app directory if it does not exits
 		c.directory = createAppDir(DIR_PRIMARY)
 
-		// Create app directory if it does not exits
+		// Create app database if it does not exits
 		c.database = createDatabase(c.directory)
+
+		// Create app database if it does not exits
+		c.dataset = createDatasets(c.directory)
 
 		logger := log.WithFields(log.Fields{
 			"domain":     domain,
@@ -347,6 +352,7 @@ func (c *Config) Collectors() []internal.Collector { return c.collectors }
 func (c *Config) Analyzers() []internal.Analyzer   { return c.analyzers }
 func (c *Config) Output() internal.Output          { return c.output }
 func (c *Config) Database() *gorm.DB               { return c.database }
+func (c *Config) Dataset() *gorm.DB                { return c.dataset }
 
 // Constraint options
 func (c *Config) Regex() string { return c.regex }
@@ -429,4 +435,9 @@ func deleteCacheDir(dirname string) {
 func createDatabase(dirname string) *gorm.DB {
 	db.Config(filepath.Join(dirname, "urlinsane.db"))
 	return db.DB
+}
+
+func createDatasets(dirname string) *gorm.DB {
+	dataset.Config(filepath.Join(dirname, "dataset.db"))
+	return dataset.Data
 }
