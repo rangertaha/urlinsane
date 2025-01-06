@@ -128,7 +128,7 @@ func init() {
 				Num:       8,
 				Code:      CODE,
 				Title:     "Screenshot",
-				Summary:   "Download screeshot of domains",
+				Summary:   "Take screeshot of domains",
 				DependsOn: []string{},
 			},
 		}

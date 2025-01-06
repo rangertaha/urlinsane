@@ -18,43 +18,21 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
-	algo "github.com/rangertaha/urlinsane/pkg/typo"
+	"github.com/rangertaha/urlinsane/pkg/fuzzy"
+	"github.com/rangertaha/urlinsane/pkg/typo"
 )
 
-const (
-	CODE        = "bf"
-	NAME        = "Bit Flipping"
-	DESCRIPTION = "Relies on random bit-errors to redirect connections"
-)
-
-type Algo struct {
-	config    internal.Config
-	languages []internal.Language
-	keyboards []internal.Keyboard
+type Plugin struct {
+	algorithms.Plugin
 }
 
-func (n *Algo) Id() string {
-	return CODE
-}
+func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 
-func (n *Algo) Init(conf internal.Config) {
-	n.keyboards = conf.Keyboards()
-	n.languages = conf.Languages()
-	n.config = conf
-}
-
-func (n *Algo) Name() string {
-	return NAME
-}
-func (n *Algo) Description() string {
-	return DESCRIPTION
-}
-
-func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
-	for _, variant := range algo.BitFlipping(original.Name) {
+	algo := db.Algorithm{Code: p.Code, Name: p.Title}
+	for _, variant := range typo.BitFlipping(original.Name) {
 		if original.Name != variant {
-			// domains = append(domains, &db.Domain{Name: variant})
-			// acc.Add(domain.Variant(n, original.String(), original.Prefix(), variant, original.Suffix()))
+			dist := fuzzy.Levenshtein(original.Name, variant)
+			domains = append(domains, &db.Domain{Name: variant, Algorithm: algo, Levenshtein: dist})
 		}
 	}
 
@@ -63,7 +41,14 @@ func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 
 // Register the plugin
 func init() {
+	var CODE = "bf"
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{}
+		return &Plugin{
+			Plugin: algorithms.Plugin{
+				Code:    CODE,
+				Title:   "Bit Flipping",
+				Summary: "Relies on random bit-errors to redirect connections",
+			},
+		}
 	})
 }

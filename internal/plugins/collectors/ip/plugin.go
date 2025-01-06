@@ -33,18 +33,24 @@ func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
 		p.Log.Error("IP Lookup: ", err)
 	}
 
+	
+	server := db.Device{Name: domain.Name}
+
 	for _, ip := range ips {
 		record := strings.TrimSpace(ip.String())
 		record = strings.Trim(record, ".")
 
 		if strings.Contains(ip.String(), ":") {
 			domain.Dns = append(domain.Dns, &db.DnsRecord{Type: "AAAA", Value: record})
+			server.IPs = append(server.IPs, &db.IP{Address: record, Type: "IPv6"})
 
 		} else if strings.Contains(ip.String(), ".") {
 			domain.Dns = append(domain.Dns, &db.DnsRecord{Type: "A", Value: record})
+			server.IPs = append(server.IPs, &db.IP{Address: record, Type: "IPv4"})
 
 		}
 	}
+	domain.Servers = append(domain.Servers, &server)
 	return domain, err
 }
 
