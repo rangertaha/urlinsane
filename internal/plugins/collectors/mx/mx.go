@@ -16,75 +16,47 @@ package mx
 
 import (
 	"net"
+	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/pkg"
+	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
-	log "github.com/sirupsen/logrus"
-)
-
-const (
-	ORDER       = 2
-	CODE        = "mx"
-	NAME        = "MX Records"
-	DESCRIPTION = "DNS MX Records"
 )
 
 type Plugin struct {
-	conf internal.Config
-	log  *log.Entry
+	collectors.Plugin
 }
 
-func (n *Plugin) Id() string {
-	return CODE
-}
+func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
 
-func (n *Plugin) Order() int {
-	return ORDER
-}
-
-func (i *Plugin) Init(c internal.Config) {
-	i.log = log.WithFields(log.Fields{"plugin": CODE, "method": "Exec"})
-	i.conf = c
-}
-
-func (n *Plugin) Description() string {
-	return DESCRIPTION
-}
-
-func (n *Plugin) Headers() []string {
-	return []string{"MX"}
-}
-
-func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
-	l := i.log.WithFields(log.Fields{"domain": acc.Domain().String()})
-
-	dns := make(pkg.DnsRecords, 0)
-	if err := acc.Unmarshal("DNS", &dns); err != nil {
-		l.Error("Unmarshal DNS: ", err)
-	}
-	records, err := net.LookupMX(acc.Domain().String())
+	records, err := net.LookupMX(domain.Name)
 	if err != nil {
-		log.Error("MX Lookup: ", err)
+		p.Log.Error("MX Lookup: ", err)
 	}
 	for _, record := range records {
-		dns.Add("MX", 0, record.Host)
-	}
-	if len(records) > 0 {
-		acc.SetMeta("MX", dns.String("MX"))
-		acc.SetJson("DNS", dns.Json())
-		acc.Domain().Live(true)
+		record := strings.TrimSpace(record.Host)
+		record = strings.Trim(record, ".")
+		if record != "" {
+			domain.Dns = append(domain.Dns, &db.DnsRecord{Type: "MX", Value: record})
+		}
 	}
 
-	// }
-	return acc.Next()
+	return domain, err
+
 }
-
-func (i *Plugin) Close() {}
 
 // Register the plugin
 func init() {
+	var CODE = "mx"
 	collectors.Add(CODE, func() internal.Collector {
-		return &Plugin{}
+		return &Plugin{
+			Plugin: collectors.Plugin{
+				Num:       2,
+				Code:      CODE,
+				Title:     "MX Records",
+				Summary:   "DNS MX Records",
+				DependsOn: []string{},
+			},
+		}
 	})
 }

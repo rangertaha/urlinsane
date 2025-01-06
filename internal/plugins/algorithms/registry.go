@@ -54,11 +54,19 @@ func List(IDs ...string) (algos []internal.Algorithm) {
 	return
 }
 
-// func IsType(types []string, other string) bool {
-// 	for _, typ := range types {
-// 		if typ == other {
-// 			return true
-// 		}
-// 	}
-// 	return false
-// }
+type Plugin struct {
+	Summary string
+	Title   string
+	Code    string
+}
+
+func (p *Plugin) Id() string {
+	return p.Code
+}
+
+func (p *Plugin) Name() string {
+	return p.Title
+}
+func (p *Plugin) Description() string {
+	return p.Summary
+}

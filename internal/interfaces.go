@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/rangertaha/urlinsane/internal/db"
 	"gorm.io/gorm"
 )
 
@@ -70,7 +71,7 @@ type Algorithm interface {
 	Id() string
 	Name() string
 	Description() string
-	Exec(origin Domain, acc Accumulator) error
+	Exec(*db.Domain) ([]*db.Domain, error)
 }
 
 type Analyzer interface {
@@ -78,15 +79,16 @@ type Analyzer interface {
 	Order() int
 	Description() string
 	Headers() []string
-	Exec(origin Domain, variant Domain, acc Accumulator) error
+	Exec(origin *db.Domain, variant *db.Domain) (*db.Domain, error)
 }
 
 type Collector interface {
 	Id() string
 	Order() int
+	// Dependencies() []string
 	Description() string
-	Headers() []string
-	Exec(Accumulator) error
+	// Headers() []string
+	Exec(*db.Domain) (*db.Domain, error)
 }
 
 type Database interface {
@@ -100,12 +102,10 @@ type Database interface {
 type Output interface {
 	Id() string
 	Description() string
-
-	// Batching and streaming
-	Read(Domain)
+	Read(*db.Domain)
 	Write()
 	Save(filename string)
-	Summary(report map[string]string)
+	Summary()
 }
 
 type Domain interface {
@@ -161,22 +161,23 @@ type Domain interface {
 // }
 
 type Accumulator interface {
-	Add(Domain)
+	Add(*db.Domain)
+	Get() *db.Domain
 
 	// Saving Files
-	Save(filename string, content []byte) error
+	// Save(filename string, content []byte) error
 
-	Domain() Domain
-	GetJson(key string) json.RawMessage
-	SetJson(key string, data json.RawMessage)
-	Unmarshal(key string, v interface{}) error
-	Marshal(key string, v interface{}) error
-	GetMeta(key string) (data string)
-	SetMeta(key string, data string)
-	Metadata() map[string]string
-	Next() (err error)
-	Live(...bool) bool
-	Cached(...bool) bool
+	// Domain() Domain
+	// GetJson(key string) json.RawMessage
+	// SetJson(key string, data json.RawMessage)
+	// Unmarshal(key string, v interface{}) error
+	// Marshal(key string, v interface{}) error
+	// GetMeta(key string) (data string)
+	// SetMeta(key string, data string)
+	// Metadata() map[string]string
+	// Next() (err error)
+	// Live(...bool) bool
+	// Cached(...bool) bool
 }
 
 type Language interface {

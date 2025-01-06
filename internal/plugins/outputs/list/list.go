@@ -18,40 +18,43 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
+	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
-	log "github.com/sirupsen/logrus"
-)
-
-const (
-	CODE        = "list"
-	DESCRIPTION = "outputs one record per line"
 )
 
 type Plugin struct {
+	outputs.Plugin
+
 	config  internal.Config
-	domains []internal.Domain
+	domains []*db.Domain
+	elapsed time.Duration
+	started time.Time
+	offline int64
+	online  int64
+	total   int64
 }
 
-func (n *Plugin) Id() string {
-	return CODE
+func (p *Plugin) Init(conf internal.Config) {
+	p.started = time.Now()
+	p.config = conf
 }
 
-func (n *Plugin) Description() string {
-	return DESCRIPTION
-}
+func (p *Plugin) Read(in *db.Domain) {
+	p.domains = append(p.domains, in)
 
-func (n *Plugin) Init(conf internal.Config) {
-	n.config = conf
-}
+	p.total++
+	if in.Live() {
+		p.online++
+	} else {
+		p.offline++
+	}
 
-func (n *Plugin) Read(in internal.Domain) {
-
-	n.domains = append(n.domains, in)
-
-	if !n.config.Progress() {
-		fmt.Println(n.Row(in))
+	if !p.config.Progress() {
+		fmt.Println(p.Row(in))
 	}
 
 }
@@ -62,37 +65,37 @@ func (n *Plugin) Write() {
 	}
 }
 
-func (n *Plugin) Filter(header string) bool {
-	header = strings.TrimSpace(header)
-	header = strings.ToLower(header)
-	for _, filter := range n.config.Filters() {
-		filter = strings.TrimSpace(filter)
-		filter = strings.ToLower(filter)
-		if filter == header {
-			return true
-		}
+func (p *Plugin) Summary() {
+	p.elapsed = time.Since(p.started)
+	summary := map[string]string{
+		"  TIME:":                             p.elapsed.String(),
+		text.FgGreen.Sprintf("%s", "  LIVE:"): fmt.Sprintf("%d", p.online),
+		text.FgRed.Sprintf("%s", "  OFFLINE"): fmt.Sprintf("%d", p.offline),
+		"  TOTAL:":                            fmt.Sprintf("%d", p.total),
 	}
-	return false
-}
-
-func (n *Plugin) Summary(report map[string]string) {
 	fmt.Println("")
-	for k, v := range report {
+	for k, v := range summary {
 		fmt.Printf("%s %s   ", k, v)
 	}
 	fmt.Println("")
 }
 
-func (n *Plugin) Save(fname string) {
-	output := strings.Join(n.Rows(n.domains...), "\n")
+func (p *Plugin) Save(fname string) {
+	output := strings.Join(p.Rows(p.domains...), "\n")
 	if err := os.WriteFile(fname, []byte(output), 0644); err != nil {
-		log.Errorf("Saving file: %s", err)
+		fmt.Printf("Saving file: %s \n", err)
 	}
 }
 
 // Register the plugin
 func init() {
+	var CODE = "list"
 	outputs.Add(CODE, func() internal.Output {
-		return &Plugin{}
+		return &Plugin{
+			Plugin: outputs.Plugin{
+				ID:      CODE,
+				Summary: "outputs one record per line",
+			},
+		}
 	})
 }

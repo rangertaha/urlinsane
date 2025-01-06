@@ -12,20 +12,4 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package wi
-
-import (
-	"github.com/rangertaha/urlinsane/internal"
-	// 	log "github.com/sirupsen/logrus"
-)
-
-type Plugin struct{}
-
-func (i *Plugin) Init(c internal.Config) {
-
-}
-
-func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
-	acc.Next()
-	return
-}
+package geo

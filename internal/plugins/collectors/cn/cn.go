@@ -16,9 +16,10 @@ package cn
 
 import (
 	"net"
+	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/pkg"
+	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 	log "github.com/sirupsen/logrus"
 )
@@ -56,32 +57,21 @@ func (n *Plugin) Headers() []string {
 	return []string{"CNAME"}
 }
 
-func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
-	l := i.log.WithFields(log.Fields{"domain": acc.Domain().String()})
-	// if acc.Domain().Cached() {
-	// 	// l.Debug("Returning cache domain: ", acc.Domain().String())
-	// 	return acc.Next()
-	// }
+func (i *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
+	record, err := net.LookupCNAME(domain.Name)
+	record = strings.TrimSpace(record)
+	record = strings.Trim(record, ".")
 
-	dns := make(pkg.DnsRecords, 0)
-	if err := acc.Unmarshal("DNS", &dns); err != nil {
-		l.Error("Unmarshal DNS: ", err)
-	}
-
-	cname, err := net.LookupCNAME(acc.Domain().String())
 	if err != nil {
-		l.Error(err)
+		log.Error("CNAME Lookup: ", err)
 	}
-	if cname != "" {
-		dns.Add("CNAME", 0, cname)
-
-		acc.SetMeta("CNAME", cname)
-		acc.SetJson("DNS", dns.Json())
-		acc.Domain().Live(true)
+	if record != "" {
+		domain.Dns = append(domain.Dns, &db.DnsRecord{Type: "CNAME", Value: record})
 	}
-
-	return acc.Next()
+	return domain, err
 }
+
+
 
 func (i *Plugin) Close() {}
 

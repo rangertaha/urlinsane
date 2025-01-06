@@ -57,7 +57,7 @@ package ons
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/domain"
+	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
@@ -91,11 +91,12 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
+func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 	for _, language := range n.languages {
-		for _, variant := range algo.OrdinalSwap(original.Name(), language.Numerals()) {
-			if original.Name() != variant {
-				acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
+		for _, variant := range algo.OrdinalSwap(original.Name, language.Numerals()) {
+			if original.Name != variant {
+				domains = append(domains, &db.Domain{Name: variant})
+				// acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
 			}
 		}
 	}
