@@ -16,7 +16,7 @@ package db
 
 import "gorm.io/gorm"
 
-type Server struct {
+type Device struct {
 	gorm.Model
 	Name string `json:"name,omitempty"`
 

@@ -33,8 +33,8 @@ type Domain struct {
 
 	// Related Records
 	RedirectID *uint
-	Redirect   *Domain `json:"redirect,omitempty"`
-	// Servers    []*Server `gorm:"many2many:hosts;"     json:"servers,omitempty"`
+	Redirect   *Domain   `json:"redirect,omitempty"`
+	Servers    []*Device `gorm:"many2many:servers;"     json:"servers,omitempty"`
 	// Pages      []*Page        `gorm:"many2many:webpages;"  json:"pages,omitempty"`
 	// Whois      []*WhoisRecord `json:"whois,omitempty"`
 	Dns []*DnsRecord `gorm:"many2many:dns;"  json:"dns,omitempty"`

@@ -32,44 +32,23 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
-	algo "github.com/rangertaha/urlinsane/pkg/typo"
+	"github.com/rangertaha/urlinsane/pkg/fuzzy"
+	"github.com/rangertaha/urlinsane/pkg/typo"
 )
 
-const (
-	CODE        = "acs"
-	NAME        = "Adjacent Character Substitution"
-	DESCRIPTION = "Replaces adjacent character from the keyboard"
-)
-
-type Algo struct {
-	config    internal.Config
-	languages []internal.Language
-	keyboards []internal.Keyboard
+type Plugin struct {
+	algorithms.Plugin
 }
 
-func (n *Algo) Id() string {
-	return CODE
-}
+func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+	keyboards := p.Conf.Keyboards()
 
-func (n *Algo) Init(conf internal.Config) {
-	n.keyboards = conf.Keyboards()
-	n.languages = conf.Languages()
-	n.config = conf
-}
-
-func (n *Algo) Name() string {
-	return NAME
-}
-func (n *Algo) Description() string {
-	return DESCRIPTION
-}
-
-func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
-	for _, keyboard := range n.keyboards {
-		for _, variant := range algo.AdjacentCharacterSubstitution(original.Name, keyboard.Layouts()...) {
+	algo := db.Algorithm{Code: p.Code, Name: p.Title}
+	for _, keyboard := range keyboards {
+		for _, variant := range typo.AdjacentCharacterSubstitution(original.Name, keyboard.Layouts()...) {
 			if original.Name != variant {
-				domains = append(domains, &db.Domain{Name: variant})
-				// acc.Add(domain.Variant(n, original.String(), original.Prefix(), variant, original.Suffix()))
+				dist := fuzzy.Levenshtein(original.Name, variant)
+				domains = append(domains, &db.Domain{Name: variant, Algorithm: algo, Levenshtein: dist})
 			}
 		}
 	}
@@ -79,7 +58,14 @@ func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 
 // Register the plugin
 func init() {
+	var CODE = "acs"
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{}
+		return &Plugin{
+			Plugin: algorithms.Plugin{
+				Code:    CODE,
+				Title:   "Adjacent Character Substitution",
+				Summary: "Replaces adjacent character from the keyboard",
+			},
+		}
 	})
 }

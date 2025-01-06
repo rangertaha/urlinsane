@@ -8,6 +8,7 @@ import (
 )
 
 var DB *gorm.DB
+
 // var Meta *gorm.DB
 
 func Config(filepath string) {
@@ -21,20 +22,20 @@ func Config(filepath string) {
 	DB.AutoMigrate(
 		// Domains
 		// &Scan{},
-		// &Contact{},
+		&Contact{},
 		&Domain{},
-		// &WhoisRecord{},
+		&WhoisRecord{},
 		&DnsRecord{},
 
 		// Networking
-		// &IP{},
-		// &Port{},
-		// &Server{},
-		// &Service{},
+		&IP{},
+		&Port{},
+		&Device{},
+		&Service{},
 
 		// Geography
-		// &Place{},
-		// &Location{},
+		&Place{},
+		&Location{},
 
 		// Files
 		// &Page{},

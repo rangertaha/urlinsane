@@ -58,6 +58,7 @@ type Plugin struct {
 	Summary string
 	Title   string
 	Code    string
+	Conf    internal.Config
 }
 
 func (p *Plugin) Id() string {
@@ -69,4 +70,8 @@ func (p *Plugin) Name() string {
 }
 func (p *Plugin) Description() string {
 	return p.Summary
+}
+
+func (p *Plugin) Init(conf internal.Config) {
+	p.Conf = conf
 }
