@@ -19,33 +19,51 @@ import (
 	"strings"
 
 	"github.com/jedib0t/go-pretty/v6/text"
-	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/db"
 )
 
-func (n *Plugin) Rows(domains ...internal.Domain) (rows []string) {
+func (n *Plugin) Rows(domains ...*db.Domain) (rows []string) {
 	for _, domain := range domains {
 		rows = append(rows, n.Row(domain))
 	}
 	return
 }
 
-func (n *Plugin) Row(domain internal.Domain) (row string) {
+func (n *Plugin) Row(domain *db.Domain) (row string) {
 	var data []interface{}
-	if domain.Cached() {
-		data = append(data, fmt.Sprintf("*%d ", domain.Ld()))
-	} else {
-		data = append(data, fmt.Sprintf("%d  ", domain.Ld()))
-	}
-	if n.config.Verbose() {
-		data = append(data, fmt.Sprintf("%s  ", domain.Algorithm().Name()))
-	} else {
-		data = append(data, fmt.Sprintf("%s  ", strings.ToUpper(domain.Algorithm().Id())))
-	}
-	data = append(data, fmt.Sprintf("%s  ", domain.String()))
 
-	for _, v := range domain.Meta() {
-		data = append(data, fmt.Sprintf("%s  ", v))
+	data = append(data, fmt.Sprintf("%d  ", domain.Levenshtein))
+
+	if n.config.Verbose() {
+		data = append(data, fmt.Sprintf("%s  ", domain.Algorithm.Name))
+	} else {
+		data = append(data, fmt.Sprintf("%s  ", strings.ToUpper(domain.Algorithm.Code)))
 	}
+
+	data = append(data, fmt.Sprintf("%s  ", domain.Name))
+
+	data = append(data, fmt.Sprintf("%s  ", domain.Punycode))
+
+	if domain.Redirect != nil {
+		data = append(data, fmt.Sprintf("%s  ", domain.Redirect.Name))
+	}
+
+	for _, record := range domain.Dns {
+		data = append(data, fmt.Sprintf("%s  ", record.Value))
+	}
+
+	// for _, record := range domain.Dns {
+	// 	data = append(data, fmt.Sprintf("%s  ", record.Value))
+	// }
+
+	// for _, record := range domain.Dns {
+	// 	data = append(data, fmt.Sprintf("%s  ", record.Value))
+	// }
+
+	// for _, record := range domain.Dns {
+	// 	data = append(data, fmt.Sprintf("%s  ", record.Value))
+	// }
+
 	//  Build content for output file
 	row = row + fmt.Sprint(data...)
 

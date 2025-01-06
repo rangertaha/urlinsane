@@ -15,10 +15,10 @@
 package tld3
 
 import (
-	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/domain"
-	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	"github.com/rangertaha/urlinsane/datasets"
+	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 
@@ -41,10 +41,11 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
-	for _, variant := range algo.ThirdLevelDomain(original.Suffix(), datasets.TLD...) {
-		if original.Suffix() != variant {
-			acc.Add(domain.Variant(n, original.Prefix(), original.Name(), variant))
+func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+	for _, variant := range algo.ThirdLevelDomain(original.Name, datasets.TLD...) {
+		if original.Name != variant {
+			domains = append(domains, &db.Domain{Name: variant})
+			// acc.Add(domain.Variant(n, original.Prefix(), original.Name(), variant))
 		}
 	}
 	return

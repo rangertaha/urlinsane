@@ -21,46 +21,42 @@ package idn
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 	"golang.org/x/net/idna"
 )
 
-const (
-	ORDER       = 0
-	CODE        = "idn"
-	NAME        = "Internationalize"
-	DESCRIPTION = "Internationalized Domain Name"
-)
-
-type Plugin struct{}
-
-func (n *Plugin) Id() string {
-	return CODE
+type Plugin struct {
+	collectors.Plugin
 }
 
-func (n *Plugin) Order() int {
-	return ORDER
-}
+func (i *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
+	var idn string
+	idn, err = idna.Punycode.ToASCII(domain.Name)
 
-func (n *Plugin) Description() string {
-	return DESCRIPTION
-}
-
-func (n *Plugin) Headers() []string {
-	return []string{"IDN"}
-}
-
-func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
-	if punycode, err := idna.Punycode.ToASCII(acc.Domain().String()); err == nil {
-		acc.SetMeta("IDN", acc.Domain().Idn(punycode))
+	if domain.Name != idn {
+		domain.Punycode = idn
 	}
 
-	return acc.Next()
+	if err != nil {
+		i.Log.Error("IDN Lookup: ", err)
+	}
+
+	return domain, err
 }
 
 // Register the plugin
 func init() {
+	var CODE = "idn"
 	collectors.Add(CODE, func() internal.Collector {
-		return &Plugin{}
+		return &Plugin{
+			Plugin: collectors.Plugin{
+				Num:       0,
+				Code:      CODE,
+				Title:     "Internationalize",
+				Summary:   "Internationalized domain name",
+				DependsOn: []string{},
+			},
+		}
 	})
 }

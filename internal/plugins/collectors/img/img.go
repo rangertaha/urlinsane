@@ -16,40 +16,40 @@ package img
 
 import (
 	"context"
-	"fmt"
 	"path/filepath"
 	"time"
 
 	"github.com/chromedp/chromedp"
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
-	log "github.com/sirupsen/logrus"
 )
 
-const (
-	ORDER       = 8
-	CODE        = "img"
-	DESCRIPTION = "Download screeshot of domains"
-)
+// const (
+// 	ORDER       = 8
+// 	CODE        = "img"
+// 	DESCRIPTION = "Download screeshot of domains"
+// )
 
 type Plugin struct {
-	conf   internal.Config
+	collectors.Plugin
+	// conf   internal.Config
 	dir    string
 	ctx    context.Context
 	cancel context.CancelFunc
 }
 
-func (p *Plugin) Id() string {
-	return CODE
-}
+// func (p *Plugin) Id() string {
+// 	return CODE
+// }
 
-func (p *Plugin) Order() int {
-	return ORDER
-}
+// func (p *Plugin) Order() int {
+// 	return ORDER
+// }
 
 func (i *Plugin) Init(c internal.Config) {
 	// i.db = c.Database()
-	i.conf = c
+	i.Conf = c
 	i.dir = filepath.Join(c.AssetDir(), "domains")
 	i.ctx, i.cancel = chromedp.NewContext(context.Background())
 	// defer cancel()
@@ -58,34 +58,34 @@ func (i *Plugin) Init(c internal.Config) {
 	// defer cancel()
 }
 
-func (n *Plugin) Description() string {
-	return DESCRIPTION
-}
+// func (n *Plugin) Description() string {
+// 	return DESCRIPTION
+// }
 
-func (p *Plugin) Headers() []string {
-	return []string{"SCREENSHOT"}
-}
+// func (p *Plugin) Headers() []string {
+// 	return []string{"SCREENSHOT"}
+// }
 
-func (p *Plugin) Exec(acc internal.Accumulator) (err error) {
-	if acc.Live() {
+func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
+	// if acc.Live() {
 
-		var buf []byte
-		url := fmt.Sprintf("http://%s", acc.Domain().String())
-		// capture entire browser viewport, returning png with quality=90
-		if err := chromedp.Run(p.ctx, fullScreenshot(url, 90, &buf)); err != nil {
-			url := fmt.Sprintf("https://%s", acc.Domain().String())
-			if err := chromedp.Run(p.ctx, fullScreenshot(url, 90, &buf)); err != nil {
-				log.Error(err)
-			}
-		}
+	// 	var buf []byte
+	// 	url := fmt.Sprintf("http://%s", acc.Domain().String())
+	// 	// capture entire browser viewport, returning png with quality=90
+	// 	if err := chromedp.Run(p.ctx, fullScreenshot(url, 90, &buf)); err != nil {
+	// 		url := fmt.Sprintf("https://%s", acc.Domain().String())
+	// 		if err := chromedp.Run(p.ctx, fullScreenshot(url, 90, &buf)); err != nil {
+	// 			log.Error(err)
+	// 		}
+	// 	}
 
-		if err := acc.Save("index.png", buf); err != nil {
-			log.Error(err)
-		} else {
-			acc.SetMeta("SCREENSHOT", "index.png")
-		}
-	}
-	return acc.Next()
+	// 	if err := acc.Save("index.png", buf); err != nil {
+	// 		log.Error(err)
+	// 	} else {
+	// 		acc.SetMeta("SCREENSHOT", "index.png")
+	// 	}
+	// }
+	return domain, err
 }
 
 // elementScreenshot takes a screenshot of a specific element.
@@ -111,9 +111,26 @@ func (p *Plugin) Close() {
 	p.cancel()
 }
 
+// // Register the plugin
+// func init() {
+// 	var CODE = "img"
+// 	collectors.Add(CODE, func() internal.Collector {
+// 		return &Plugin{}
+// 	})
+// }
+
 // Register the plugin
 func init() {
+	var CODE = "img"
 	collectors.Add(CODE, func() internal.Collector {
-		return &Plugin{}
+		return &Plugin{
+			Plugin: collectors.Plugin{
+				Num:       8,
+				Code:      CODE,
+				Title:     "Screenshot",
+				Summary:   "Download screeshot of domains",
+				DependsOn: []string{},
+			},
+		}
 	})
 }

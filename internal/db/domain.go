@@ -20,37 +20,46 @@ import (
 	"gorm.io/gorm"
 )
 
+type Algorithm struct {
+	Code string
+	Name string
+}
+
 type Domain struct {
 	gorm.Model
-	Name     string `json:"name,omitempty"`
+	Name     string `gorm:"unique" json:"name,omitempty"`
 	Punycode string `json:"punycode,omitempty"`
 	Rank     int64  `json:"rank,omitempty"`
 
 	// Related Records
 	RedirectID *uint
-	Redirect   *Domain   `json:"redirect,omitempty"`
-	Servers    []*Server `gorm:"many2many:servers;"  json:"servers,omitempty"`
-	Pages      []*Page   `gorm:"many2many:pages;"    json:"pages,omitempty"`
-	Whois      []*Whois  `gorm:"many2many:whois;"    json:"whois,omitempty"`
-	Dns        []*Dns    `gorm:"many2many:dns;"      json:"dns,omitempty"`
+	Redirect   *Domain `json:"redirect,omitempty"`
+	// Servers    []*Server `gorm:"many2many:hosts;"     json:"servers,omitempty"`
+	// Pages      []*Page        `gorm:"many2many:webpages;"  json:"pages,omitempty"`
+	// Whois      []*WhoisRecord `json:"whois,omitempty"`
+	Dns []*DnsRecord `gorm:"many2many:dns;"  json:"dns,omitempty"`
 
 	// Language Analysis
 	// Languages
 	// Keywords
 	// Topics
 	// Vector
+
+	// Metadata
+	Algorithm   Algorithm `json:"algorithm" gorm:"-"`
+	Levenshtein int       `json:"distance" gorm:"-"`
 }
 
-type Dns struct {
+type DnsRecord struct {
 	gorm.Model
 	Type  string `json:"type,omitempty"`
-	Value string `json:"value,omitempty"`
+	Value string `gorm:"unique"  json:"value,omitempty"`
 	Ttl   string `json:"ttl,omitempty"`
 
 	Domains []*Domain `gorm:"many2many:dns;" json:"domains,omitempty"`
 }
 
-type Whois struct {
+type WhoisRecord struct {
 	ID               uint
 	DomainID         uint
 	RegistrarID      uint
@@ -85,4 +94,20 @@ type Contact struct {
 	FaxExt       string `json:"fax_ext,omitempty"`
 	Email        string `json:"email,omitempty"`
 	ReferralURL  string `json:"referral_url,omitempty"`
+}
+
+func (DnsRecord) TableName() string {
+	return "drecords"
+}
+
+func (WhoisRecord) TableName() string {
+	return "wrecords"
+}
+
+func (d *Domain) Save() {
+	DB.FirstOrCreate(d, Domain{Name: d.Name})
+}
+
+func (d *Domain) Live() bool {
+	return len(d.Dns) > 0
 }

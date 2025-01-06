@@ -51,7 +51,7 @@ package co
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/domain"
+	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	algo "github.com/rangertaha/urlinsane/pkg/typo"
 	log "github.com/sirupsen/logrus"
@@ -80,23 +80,19 @@ func (a *Algo) Init(conf internal.Config) {
 func (a *Algo) Name() string {
 	return NAME
 }
+
 func (a *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
-	l := n.log.WithFields(log.Fields{"domain": original.String(), "method": "Exec"})
-	var total int
-	for _, variant := range algo.CharacterOmission(original.Name()) {
-		if original.Name() != variant {
-			acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
-			total++
+func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+	for _, variant := range algo.CharacterOmission(original.Name) {
+		if original.Name != variant {
+			domains = append(domains, &db.Domain{Name: variant})
 		}
 	}
-	l.WithFields(log.Fields{"count": total}).
-		Debug("Completed")
 
-	return
+	return domains, err
 }
 
 // Register the plugin

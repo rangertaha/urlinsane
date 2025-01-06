@@ -16,6 +16,7 @@ package si
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 )
 
@@ -48,7 +49,7 @@ func (n *Algo) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
+func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 
 	return
 }

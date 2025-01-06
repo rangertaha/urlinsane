@@ -51,3 +51,16 @@ func List(IDs ...string) (outputs []internal.Output) {
 
 	return
 }
+
+type Plugin struct {
+	Summary string
+	ID      string
+}
+
+func (p *Plugin) Id() string {
+	return p.ID
+}
+
+func (p *Plugin) Description() string {
+	return p.Summary
+}

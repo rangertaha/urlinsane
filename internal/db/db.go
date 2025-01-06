@@ -8,7 +8,7 @@ import (
 )
 
 var DB *gorm.DB
-var Meta *gorm.DB
+// var Meta *gorm.DB
 
 func Config(filepath string) {
 	var err error
@@ -20,22 +20,32 @@ func Config(filepath string) {
 	// Migrate the schema
 	DB.AutoMigrate(
 		// Domains
-		&Contact{},
+		// &Scan{},
+		// &Contact{},
 		&Domain{},
-		&Whois{},
-		&Dns{},
+		// &WhoisRecord{},
+		&DnsRecord{},
 
 		// Networking
-		&Server{},
-		&Service{},
+		// &IP{},
+		// &Port{},
+		// &Server{},
+		// &Service{},
 
 		// Geography
-		&Place{},
-		&Location{},
+		// &Place{},
+		// &Location{},
 
 		// Files
-		&Page{},
-		&File{},
-		&Image{},
+		// &Page{},
+		// &File{},
+		// &Image{},
 	)
+}
+
+type Scan struct {
+	gorm.Model
+	DomainID uint
+	Domain   *Domain
+	Results  []*Domain
 }

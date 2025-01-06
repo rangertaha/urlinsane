@@ -16,76 +16,44 @@ package ns
 
 import (
 	"net"
+	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/pkg"
+	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
-	log "github.com/sirupsen/logrus"
-)
-
-const (
-	ORDER       = 2
-	CODE        = "ns"
-	NAME        = "NS Records"
-	DESCRIPTION = "DNS NS Records"
 )
 
 type Plugin struct {
-	// resolver resolver.Client
-	conf internal.Config
-	log  *log.Entry
+	collectors.Plugin
 }
 
-func (n *Plugin) Id() string {
-	return CODE
-}
-
-func (n *Plugin) Order() int {
-	return ORDER
-}
-
-func (i *Plugin) Init(c internal.Config) {
-	i.log = log.WithFields(log.Fields{"plugin": CODE, "method": "Exec"})
-	i.conf = c
-}
-
-func (n *Plugin) Description() string {
-	return DESCRIPTION
-}
-
-func (n *Plugin) Headers() []string {
-	return []string{"NS"}
-}
-
-func (i *Plugin) Exec(acc internal.Accumulator) (err error) {
-	l := i.log.WithFields(log.Fields{"domain": acc.Domain().String()})
-
-	dns := make(pkg.DnsRecords, 0)
-	if err := acc.Unmarshal("DNS", &dns); err != nil {
-		l.Error("MX Lookup: ", err)
-	}
-
-	records, err := net.LookupNS(acc.Domain().String())
+func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
+	records, err := net.LookupNS(domain.Name)
 	if err != nil {
-		l.Error("MX Lookup: ", err)
+		p.Log.Error("NS Lookup: ", err)
 	}
 	for _, record := range records {
-		dns.Add("NS", 0, record.Host)
+		record := strings.TrimSpace(record.Host)
+		record = strings.Trim(record, ".")
+		if record != "" {
+			domain.Dns = append(domain.Dns, &db.DnsRecord{Type: "NS", Value: record})
+		}
 	}
-	if len(records) > 0 {
-		acc.SetMeta("NS", dns.String("NS"))
-		acc.SetJson("DNS", dns.Json())
-		acc.Domain().Live(true)
-	}
-
-	return acc.Next()
+	return domain, err
 }
-
-func (i *Plugin) Close() {}
 
 // Register the plugin
 func init() {
+	var CODE = "ns"
 	collectors.Add(CODE, func() internal.Collector {
-		return &Plugin{}
+		return &Plugin{
+			Plugin: collectors.Plugin{
+				Num:       2,
+				Code:      CODE,
+				Title:     "NS Records",
+				Summary:   "DNS NS Records",
+				DependsOn: []string{},
+			},
+		}
 	})
 }

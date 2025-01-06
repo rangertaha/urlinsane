@@ -33,24 +33,16 @@ package aci
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/domain"
+	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	"github.com/rangertaha/urlinsane/pkg/fuzzy"
 	"github.com/rangertaha/urlinsane/pkg/typo"
 )
 
-const (
-	CODE        = "aci"
-	NAME        = "Adjacent Character Insertion"
-	DESCRIPTION = "Inserting adjacent character from the keyboard"
-)
-
 type Algo struct {
+	algorithms.Plugin
 	config    internal.Config
 	keyboards []internal.Keyboard
-}
-
-func (n *Algo) Id() string {
-	return CODE
 }
 
 func (n *Algo) Init(conf internal.Config) {
@@ -58,18 +50,13 @@ func (n *Algo) Init(conf internal.Config) {
 	n.config = conf
 }
 
-func (n *Algo) Name() string {
-	return NAME
-}
-func (n *Algo) Description() string {
-	return DESCRIPTION
-}
-
-func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err error) {
-	for _, keyboard := range n.keyboards {
-		for _, variant := range typo.AdjacentCharacterInsertion(original.Name(), keyboard.Layouts()...) {
-			if original.Name() != variant {
-				acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
+func (p *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+	algo := db.Algorithm{Code: p.Code, Name: p.Title}
+	for _, keyboard := range p.keyboards {
+		for _, variant := range typo.AdjacentCharacterInsertion(original.Name, keyboard.Layouts()...) {
+			if original.Name != variant {
+				dist := fuzzy.Levenshtein(original.Name, variant)
+				domains = append(domains, &db.Domain{Name: variant, Algorithm: algo, Levenshtein: dist})
 			}
 		}
 	}
@@ -78,7 +65,13 @@ func (n *Algo) Exec(original internal.Domain, acc internal.Accumulator) (err err
 
 // Register the plugin
 func init() {
-	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{}
+	algorithms.Add("aci", func() internal.Algorithm {
+		return &Algo{
+			Plugin: algorithms.Plugin{
+				Code:    "aci",
+				Title:   "Adjacent Character Insertion",
+				Summary: "Inserting adjacent character from the keyboard",
+			},
+		}
 	})
 }

@@ -24,6 +24,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/rangertaha/urlinsane/internal/config"
 	"github.com/rangertaha/urlinsane/internal/engine"
+	"github.com/rangertaha/urlinsane/internal/pkg"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
@@ -32,7 +33,6 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/outputs/all"
-	"github.com/rangertaha/urlinsane/internal/pkg"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -276,15 +276,15 @@ func CollectorTable() string {
 	return t.Render()
 }
 
-func CollectorFields() (fields string) {
-	headers := []string{}
-	for _, i := range collectors.List() {
-		for _, header := range i.Headers() {
-			headers = append(headers, strings.ToLower(header))
-		}
-	}
-	return strings.Join(headers, ",")
-}
+// func CollectorFields() (fields string) {
+// 	headers := []string{}
+// 	for _, i := range collectors.List() {
+// 		for _, header := range i.Headers() {
+// 			headers = append(headers, strings.ToLower(header))
+// 		}
+// 	}
+// 	return strings.Join(headers, ",")
+// }
 
 func AlgorithmTable() string {
 	t := table.NewWriter()

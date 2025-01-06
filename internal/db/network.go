@@ -21,23 +21,23 @@ type Server struct {
 	Name string `json:"name,omitempty"`
 
 	LocationID *uint
-	Location   *Location `                       json:"location,omitempty"`
-	IPs        []*IP     `gorm:"many2many:ips;"  json:"ips,omitempty"`
+	Location   *Location `json:"location,omitempty"`
+	IPs        []*IP     `gorm:"many2many:ipaddrs;"  json:"ips,omitempty"`
 }
 
 type IP struct {
 	gorm.Model
 	Address string  `json:"address,omitempty"`
 	Type    string  `json:"type,omitempty"`
-	Ports   []*Port `gorm:"many2many:ports;"   json:"ports,omitempty"`
+	Ports   []*Port `gorm:"many2many:ipports;"   json:"ports,omitempty"`
 }
 
 type Port struct {
 	gorm.Model
-	ServiceID *uint
-	Number    string   `json:"num,omitempty"`
+	Number    int      `json:"num,omitempty"`
 	State     string   `json:"state,omitempty"`
 	Service   *Service `json:"service,omitempty"`
+	ServiceID *uint
 }
 
 type Service struct {
@@ -45,5 +45,3 @@ type Service struct {
 	Name   string `json:"name,omitempty"`
 	Banner string `json:"banner,omitempty"`
 }
-
-

@@ -15,139 +15,118 @@
 package web
 
 import (
-	"fmt"
-	"path/filepath"
-
 	"github.com/gocolly/colly/v2"
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
-	"github.com/glaslos/ssdeep"
-	log "github.com/sirupsen/logrus"
-)
-
-const (
-	ORDER       = 8
-	CODE        = "web"
-	DESCRIPTION = "Web request and hasing hashing content"
 )
 
 type Plugin struct {
-	conf   internal.Config
+	collectors.Plugin
 	client *colly.Collector
-	dir    string
 }
 
-func (p *Plugin) Id() string {
-	return CODE
+func (p *Plugin) Init(c internal.Config) {
+	p.Plugin.Init(c)
+	p.client = colly.NewCollector()
 }
 
-func (p *Plugin) Order() int {
-	return ORDER
-}
+func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
+	// res := &Response{
+	// 	HTML: HTML{
+	// 		Meta: []Metatags{},
+	// 	},
+	// }
+	// if acc.Domain().Live() {
 
-func (i *Plugin) Init(c internal.Config) {
-	// i.db = c.Database()
-	i.conf = c
-	i.client = colly.NewCollector()
-	i.dir = c.AssetDir()
+	// 	p.client.OnRequest(func(r *colly.Request) {
+	// 		r.Headers.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
+	// 	})
 
-}
+	// 	p.client.OnHTML("a[href]", func(e *colly.HTMLElement) {
+	// 		href := e.Attr("href")
+	// 		if len(href) > len(acc.Domain().String())+10 {
+	// 			res.HTML.Links = append(res.HTML.Links, href)
+	// 		}
+	// 	})
 
-func (n *Plugin) Description() string {
-	return DESCRIPTION
-}
+	// 	p.client.OnHTML("img", func(e *colly.HTMLElement) {
+	// 		src := e.Attr("src")
+	// 		if len(src) > len(acc.Domain().String())+10 {
+	// 			res.HTML.Images = append(res.HTML.Images, src)
+	// 		}
+	// 	})
 
-func (p *Plugin) Headers() []string {
-	return []string{"STATUS"}
-}
+	// 	p.client.OnHTML("title", func(e *colly.HTMLElement) {
+	// 		res.HTML.Title = e.Text
+	// 	})
 
-func (p *Plugin) Exec(acc internal.Accumulator) (err error) {
-	res := &Response{
-		HTML: HTML{
-			Meta: []Metatags{},
-		},
-	}
-	if acc.Domain().Live() {
+	// 	p.client.OnHTML("meta", func(e *colly.HTMLElement) {
+	// 		res.HTML.Title = e.Text
+	// 		meta := Metatags{
+	// 			Property: e.Attr("property"),
+	// 			Name:     e.Attr("name"),
+	// 			Value:    e.Attr("content"),
+	// 		}
+	// 		res.HTML.Meta = append(res.HTML.Meta, meta)
 
-		p.client.OnRequest(func(r *colly.Request) {
-			r.Headers.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
-		})
+	// 	})
 
-		p.client.OnHTML("a[href]", func(e *colly.HTMLElement) {
-			href := e.Attr("href")
-			if len(href) > len(acc.Domain().String())+10 {
-				res.HTML.Links = append(res.HTML.Links, href)
-			}
-		})
+	// 	p.client.OnError(func(r *colly.Response, err error) {
+	// 		acc.SetMeta("STATUS", fmt.Sprint(r.StatusCode))
+	// 		res.StatusCode = r.StatusCode
+	// 	})
 
-		p.client.OnHTML("img", func(e *colly.HTMLElement) {
-			src := e.Attr("src")
-			if len(src) > len(acc.Domain().String())+10 {
-				res.HTML.Images = append(res.HTML.Images, src)
-			}
-		})
+	// 	// attach callbacks after login
+	// 	p.client.OnResponse(func(r *colly.Response) {
+	// 		acc.SetMeta("STATUS", fmt.Sprint(r.StatusCode))
+	// 		res.StatusCode = r.StatusCode
+	// 		res.Headers = Header(*r.Headers)
+	// 		res.URL = r.Request.URL.String()
 
-		p.client.OnHTML("title", func(e *colly.HTMLElement) {
-			res.HTML.Title = e.Text
-		})
+	// 		if p.conf.AssetDir() != "" {
+	// 			fpath := filepath.Join(p.dir, acc.Domain().String(), "/index.html")
+	// 			log.Debugf("Save file: %s", fpath)
 
-		p.client.OnHTML("meta", func(e *colly.HTMLElement) {
-			res.HTML.Title = e.Text
-			meta := Metatags{
-				Property: e.Attr("property"),
-				Name:     e.Attr("name"),
-				Value:    e.Attr("content"),
-			}
-			res.HTML.Meta = append(res.HTML.Meta, meta)
+	// 			if err := r.Save(fpath); err != nil {
+	// 				log.Error(err)
+	// 			}
+	// 		}
 
-		})
+	// 		// SSDeep
+	// 		hash, err := ssdeep.FuzzyBytes(r.Body)
+	// 		if err != nil {
+	// 			log.Error("SSDeep: ", err)
+	// 		}
+	// 		res.SSDeep = hash
 
-		p.client.OnError(func(r *colly.Response, err error) {
-			acc.SetMeta("STATUS", fmt.Sprint(r.StatusCode))
-			res.StatusCode = r.StatusCode
-		})
+	// 		// Keyword Extraction
 
-		// attach callbacks after login
-		p.client.OnResponse(func(r *colly.Response) {
-			acc.SetMeta("STATUS", fmt.Sprint(r.StatusCode))
-			res.StatusCode = r.StatusCode
-			res.Headers = Header(*r.Headers)
-			res.URL = r.Request.URL.String()
+	// 	})
 
-			if p.conf.AssetDir() != "" {
-				fpath := filepath.Join(p.dir, acc.Domain().String(), "/index.html")
-				log.Debugf("Save file: %s", fpath)
+	// 	// p.client.Visit(fmt.Sprintf("http://%s/robot.txt", acc.Domain().String()))
+	// 	// p.client.Visit(fmt.Sprintf("https://%s/robot.txt", acc.Domain().String()))
+	// 	p.client.Visit(fmt.Sprintf("http://%s", acc.Domain().String()))
+	// 	p.client.Visit(fmt.Sprintf("https://%s", acc.Domain().String()))
 
-				if err := r.Save(fpath); err != nil {
-					log.Error(err)
-				}
-			}
+	// 	acc.SetJson("WEB", res.Json())
 
-			// SSDeep
-			hash, err := ssdeep.FuzzyBytes(r.Body)
-			if err != nil {
-				log.Error("SSDeep: ", err)
-			}
-			res.SSDeep = hash
-
-			// Keyword Extraction
-
-		})
-
-		// p.client.Visit(fmt.Sprintf("http://%s/robot.txt", acc.Domain().String()))
-		// p.client.Visit(fmt.Sprintf("https://%s/robot.txt", acc.Domain().String()))
-		p.client.Visit(fmt.Sprintf("http://%s", acc.Domain().String()))
-		p.client.Visit(fmt.Sprintf("https://%s", acc.Domain().String()))
-
-		acc.SetJson("WEB", res.Json())
-
-	}
-	return acc.Next()
+	// }
+	return domain, err
 }
 
 // Register the plugin
 func init() {
+	var CODE = "web"
 	collectors.Add(CODE, func() internal.Collector {
-		return &Plugin{}
+		return &Plugin{
+			Plugin: collectors.Plugin{
+				Num:       8,
+				Code:      CODE,
+				Title:     "Web Request",
+				Summary:   "Gets the website content",
+				DependsOn: []string{},
+			},
+		}
 	})
 }

@@ -14,6 +14,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package wi
 
+import (
+	"net"
+	"strings"
+
+	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
+	log "github.com/sirupsen/logrus"
+)
+
 // import (
 // 	"encoding/json"
 // 	"fmt"
@@ -69,3 +79,36 @@ package wi
 // 	Email        string `json:"email,omitempty"`
 // 	ReferralURL  string `json:"referral_url,omitempty"`
 // }
+
+type Plugin struct {
+	collectors.Plugin
+}
+
+func (i *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
+	records, err := net.LookupTXT(domain.Name)
+	if err != nil {
+		log.Error("TXT Lookup: ", err)
+	}
+	for _, record := range records {
+		record := strings.TrimSpace(record)
+		record = strings.Trim(record, ".")
+		domain.Dns = append(domain.Dns, &db.DnsRecord{Type: "TXT", Value: record})
+	}
+	return domain, err
+}
+
+// Register the plugin
+func init() {
+	var CODE = "wi"
+	collectors.Add(CODE, func() internal.Collector {
+		return &Plugin{
+			Plugin: collectors.Plugin{
+				Num:       2,
+				Code:      CODE,
+				Title:     "WhoIs Lookup",
+				Summary:   "Domain registration lookup",
+				DependsOn: []string{},
+			},
+		}
+	})
+}
