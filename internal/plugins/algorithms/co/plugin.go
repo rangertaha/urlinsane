@@ -63,29 +63,29 @@ const (
 	DESCRIPTION = "Omitting a character from the name"
 )
 
-type Algo struct {
+type Plugin struct {
 	config internal.Config
 	log    *log.Entry
 }
 
-func (a *Algo) Id() string {
+func (a *Plugin) Id() string {
 	return CODE
 }
 
-func (a *Algo) Init(conf internal.Config) {
+func (a *Plugin) Init(conf internal.Config) {
 	a.log = log.WithFields(log.Fields{"type": "algo", "plugin": CODE})
 	a.config = conf
 }
 
-func (a *Algo) Name() string {
+func (a *Plugin) Name() string {
 	return NAME
 }
 
-func (a *Algo) Description() string {
+func (a *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 	for _, variant := range algo.CharacterOmission(original.Name) {
 		if original.Name != variant {
 			domains = append(domains, &db.Domain{Name: variant})
@@ -98,6 +98,6 @@ func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{}
+		return &Plugin{}
 	})
 }

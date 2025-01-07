@@ -12,7 +12,16 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package cr
+package ho
+
+// Missing Dashes
+//
+// Func omits a dash from the name. For example:
+//
+// Original: www.one-two-three.com
+//
+// Variants: www.onetwo-three.com
+//           www.one-twothree.com
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
@@ -22,36 +31,32 @@ import (
 )
 
 const (
-	CODE        = "cr"
-	NAME        = "Character Repetition"
-	DESCRIPTION = "Repeats a character of the domain name twice"
+	CODE        = "ho"
+	NAME        = "Hyphen Omission"
+	DESCRIPTION = "Created by removing hyphens from the name"
 )
 
-type Algo struct {
-	config    internal.Config
-	languages []internal.Language
-	keyboards []internal.Keyboard
+type Plugin struct {
+	config internal.Config
 }
 
-func (n *Algo) Id() string {
+func (n *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Algo) Init(conf internal.Config) {
-	n.keyboards = conf.Keyboards()
-	n.languages = conf.Languages()
+func (n *Plugin) Init(conf internal.Config) {
 	n.config = conf
 }
 
-func (n *Algo) Name() string {
+func (n *Plugin) Name() string {
 	return NAME
 }
-func (n *Algo) Description() string {
+func (n *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
-	for _, variant := range algo.CharacterRepetition(original.Name) {
+func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+	for _, variant := range algo.HyphenOmission(original.Name) {
 		if original.Name != variant {
 			domains = append(domains, &db.Domain{Name: variant})
 			// acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
@@ -64,6 +69,6 @@ func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{}
+		return &Plugin{}
 	})
 }

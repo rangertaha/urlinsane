@@ -12,10 +12,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package tld
+package hs
 
 import (
-	"github.com/rangertaha/urlinsane/datasets"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
@@ -23,37 +22,50 @@ import (
 )
 
 const (
-	CODE        = "tld"
-	NAME        = "Wrong TLD"
-	DESCRIPTION = "Wrong top level domain (TLD)"
+	CODE        = "hs"
+	NAME        = "Homophone Substitution"
+	DESCRIPTION = "Substitutes words that sound the same but have different spellings"
 )
 
-type Algo struct{}
+type Plugin struct {
+	config    internal.Config
+	languages []internal.Language
+	keyboards []internal.Keyboard
+}
 
-func (n *Algo) Id() string {
+func (n *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Algo) Name() string {
+func (n *Plugin) Init(conf internal.Config) {
+	n.keyboards = conf.Keyboards()
+	n.languages = conf.Languages()
+	n.config = conf
+}
+
+func (n *Plugin) Name() string {
 	return NAME
 }
-func (n *Algo) Description() string {
+func (n *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
-	for _, variant := range algo.TopLevelDomain(original.Name, datasets.TLD...) {
-		if original.Name != variant {
-			domains = append(domains, &db.Domain{Name: variant})
-			// acc.Add(domain.Variant(n, original.Prefix(), original.Name(), variant))
+func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+	for _, language := range n.languages {
+		for _, variant := range algo.HomophoneSwapping(original.Name, language.Homophones()...) {
+			if original.Name != variant {
+				domains = append(domains, &db.Domain{Name: variant})
+				// acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
+			}
 		}
 	}
+
 	return
 }
 
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{}
+		return &Plugin{}
 	})
 }

@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package gr
+package di
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
@@ -22,38 +22,35 @@ import (
 )
 
 const (
-	CODE        = "gr"
-	NAME        = "Grapheme Replacement"
-	DESCRIPTION = "Replaces an alphabet in the target domain"
+	CODE        = "di"
+	NAME        = "Dot Insertion"
+	DESCRIPTION = "Inserting periods in the target domain name"
 )
 
-type Algo struct {
-	config    internal.Config
-	languages []internal.Language
+type Plugin struct {
+	config internal.Config
 }
 
-func (n *Algo) Id() string {
+func (n *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Algo) Init(conf internal.Config) {
+func (n *Plugin) Init(conf internal.Config) {
 	n.config = conf
 }
 
-func (n *Algo) Name() string {
+func (n *Plugin) Name() string {
 	return NAME
 }
-func (n *Algo) Description() string {
+func (n *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
-	for _, language := range n.languages {
-		for _, variant := range algo.GraphemeReplacement(original.Name, language.Graphemes()...) {
-			if original.Name != variant {
-				// acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
-				domains = append(domains, &db.Domain{Name: variant})
-			}
+func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+	for _, variant := range algo.DotInsertion(original.Name) {
+		if original.Name != variant {
+			// acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
+			domains = append(domains, &db.Domain{Name: variant})
 		}
 	}
 
@@ -63,6 +60,6 @@ func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{}
+		return &Plugin{}
 	})
 }
