@@ -56,13 +56,13 @@ func List(IDs ...string) (infos []internal.Collector) {
 }
 
 type Plugin struct {
-	Conf      internal.Config
-	DependsOn []string
-	Summary   string
-	Title     string
-	Code      string
 	Num       int
+	Code      string
+	Title     string
+	Summary   string
+	DependsOn []string
 	Log       *log.Entry
+	Conf      internal.Config
 }
 
 func (p *Plugin) Id() string {

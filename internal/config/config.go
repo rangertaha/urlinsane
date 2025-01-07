@@ -34,7 +34,6 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/analyzers/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/all"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/databases/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/languages"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"

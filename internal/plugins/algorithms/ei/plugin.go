@@ -18,43 +18,21 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
-	algo "github.com/rangertaha/urlinsane/pkg/typo"
-)
-
-const (
-	CODE        = "ei"
-	NAME        = "Emoji Insertion"
-	DESCRIPTION = "Inserting emojis into target name"
+	"github.com/rangertaha/urlinsane/pkg/fuzzy"
+	"github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 type Plugin struct {
-	config    internal.Config
-	languages []internal.Language
-	keyboards []internal.Keyboard
+	algorithms.Plugin
 }
 
-func (n *Plugin) Id() string {
-	return CODE
-}
+func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+	algo := db.Algorithm{Code: p.Code, Name: p.Title}
 
-func (n *Plugin) Init(conf internal.Config) {
-	n.keyboards = conf.Keyboards()
-	n.languages = conf.Languages()
-	n.config = conf
-}
-
-func (n *Plugin) Name() string {
-	return NAME
-}
-func (n *Plugin) Description() string {
-	return DESCRIPTION
-}
-
-func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
-	for _, variant := range algo.EmojiInsertion(original.Name, []string{}) {
+	for _, variant := range typo.EmojiInsertion(original.Name, []string{}) {
 		if original.Name != variant {
-			// acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
-			domains = append(domains, &db.Domain{Name: variant})
+			dist := fuzzy.Levenshtein(original.Name, variant)
+			domains = append(domains, &db.Domain{Name: variant, Levenshtein: dist, Algorithm: algo})
 		}
 	}
 	return
@@ -62,7 +40,14 @@ func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 
 // Register the plugin
 func init() {
+	var CODE = "ei"
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Plugin{}
+		return &Plugin{
+			Plugin: algorithms.Plugin{
+				Code:    CODE,
+				Title:   "Emoji Insertion",
+				Summary: "Inserting emojis into target name",
+			},
+		}
 	})
 }

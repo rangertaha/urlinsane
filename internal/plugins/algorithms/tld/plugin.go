@@ -19,33 +19,21 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
-	algo "github.com/rangertaha/urlinsane/pkg/typo"
+	"github.com/rangertaha/urlinsane/pkg/fuzzy"
+	"github.com/rangertaha/urlinsane/pkg/typo"
 )
 
-const (
-	CODE        = "tld"
-	NAME        = "Wrong TLD"
-	DESCRIPTION = "Wrong top level domain (TLD)"
-)
-
-type Plugin struct{}
-
-func (n *Plugin) Id() string {
-	return CODE
+type Plugin struct {
+	algorithms.Plugin
 }
 
-func (n *Plugin) Name() string {
-	return NAME
-}
-func (n *Plugin) Description() string {
-	return DESCRIPTION
-}
+func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+	algo := db.Algorithm{Code: p.Code, Name: p.Title}
 
-func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
-	for _, variant := range algo.TopLevelDomain(original.Name, datasets.TLD...) {
+	for _, variant := range typo.TopLevelDomain(original.Name, datasets.TLD...) {
 		if original.Name != variant {
-			domains = append(domains, &db.Domain{Name: variant})
-			// acc.Add(domain.Variant(n, original.Prefix(), original.Name(), variant))
+			dist := fuzzy.Levenshtein(original.Name, variant)
+			domains = append(domains, &db.Domain{Name: variant, Levenshtein: dist, Algorithm: algo})
 		}
 	}
 	return
@@ -53,7 +41,14 @@ func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 
 // Register the plugin
 func init() {
+	var CODE = "tld"
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Plugin{}
+		return &Plugin{
+			Plugin: algorithms.Plugin{
+				Code:    CODE,
+				Title:   "Wrong TLD",
+				Summary: "Wrong top level domain (TLD)",
+			},
+		}
 	})
 }

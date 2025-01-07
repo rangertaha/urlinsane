@@ -36,11 +36,11 @@ type Plugin struct {
 	log  *log.Entry
 }
 
-func (n *Plugin) Id() string {
+func (p *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Plugin) Order() int {
+func (p *Plugin) Order() int {
 	return ORDER
 }
 
@@ -49,11 +49,11 @@ func (i *Plugin) Init(c internal.Config) {
 	i.conf = c
 }
 
-func (n *Plugin) Description() string {
+func (p *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Plugin) Headers() []string {
+func (p *Plugin) Headers() []string {
 	return []string{"CNAME"}
 }
 
@@ -70,8 +70,6 @@ func (i *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
 	}
 	return domain, err
 }
-
-
 
 func (i *Plugin) Close() {}
 
