@@ -20,42 +20,27 @@ import (
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 )
 
-const (
-	CODE        = "com"
-	NAME        = "Combo Squatting"
-	DESCRIPTION = "Creating domain names by combining a legitimate brand or word with another keyword"
-)
-
 type Plugin struct {
-	config    internal.Config
-	languages []internal.Language
-	keyboards []internal.Keyboard
+	algorithms.Plugin
 }
 
-func (n *Plugin) Id() string {
-	return CODE
-}
+func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+	// algo := db.Algorithm{Code: p.Code, Name: p.Title}
+	// dist := fuzzy.Levenshtein(original.Name, variant)
 
-func (n *Plugin) Init(conf internal.Config) {
-	n.keyboards = conf.Keyboards()
-	n.languages = conf.Languages()
-	n.config = conf
-}
-
-func (n *Plugin) Name() string {
-	return NAME
-}
-func (n *Plugin) Description() string {
-	return DESCRIPTION
-}
-
-func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 	return
 }
 
 // Register the plugin
 func init() {
+	var CODE = "com"
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Plugin{}
+		return &Plugin{
+			Plugin: algorithms.Plugin{
+				Code:    CODE,
+				Title:   "Combo Squatting",
+				Summary: "Creating domain names by combining keywords",
+			},
+		}
 	})
 }

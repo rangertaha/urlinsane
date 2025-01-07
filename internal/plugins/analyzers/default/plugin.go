@@ -27,27 +27,27 @@ const (
 
 type Plugin struct{}
 
-func (n *Plugin) Id() string {
+func (p *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Plugin) Order() int {
+func (p *Plugin) Order() int {
 	return ORDER
 }
 
-func (n *Plugin) Description() string {
+func (p *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Plugin) Init(conf internal.Config) {
+func (p *Plugin) Init(conf internal.Config) {
 
 }
 
-func (n *Plugin) Headers() []string {
+func (p *Plugin) Headers() []string {
 	return []string{"NONE"}
 }
 
-func (n *Plugin) Exec(original, variant internal.Domain, acc internal.Accumulator) (err error) {
+func (p *Plugin) Exec(original, variant internal.Domain, acc internal.Accumulator) (err error) {
 	return
 }
 

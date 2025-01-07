@@ -18,43 +18,22 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
-	algo "github.com/rangertaha/urlinsane/pkg/typo"
+	"github.com/rangertaha/urlinsane/pkg/fuzzy"
+	"github.com/rangertaha/urlinsane/pkg/typo"
 )
 
-const (
-	CODE        = "cr"
-	NAME        = "Character Repetition"
-	DESCRIPTION = "Created by replacing identical, consecutive letters in the name."
-)
 
 type Plugin struct {
-	config    internal.Config
-	languages []internal.Language
-	keyboards []internal.Keyboard
+	algorithms.Plugin
 }
 
-func (n *Plugin) Id() string {
-	return CODE
-}
+func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+	algo := db.Algorithm{Code: p.Code, Name: p.Title}
 
-func (n *Plugin) Init(conf internal.Config) {
-	n.keyboards = conf.Keyboards()
-	n.languages = conf.Languages()
-	n.config = conf
-}
-
-func (n *Plugin) Name() string {
-	return NAME
-}
-func (n *Plugin) Description() string {
-	return DESCRIPTION
-}
-
-func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
-	for _, variant := range algo.CharacterRepetition(original.Name) {
+	for _, variant := range typo.CharacterRepetition(original.Name) {
 		if original.Name != variant {
-			domains = append(domains, &db.Domain{Name: variant})
-			// acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
+			dist := fuzzy.Levenshtein(original.Name, variant)
+			domains = append(domains, &db.Domain{Name: variant, Levenshtein: dist, Algorithm: algo})
 		}
 	}
 
@@ -63,7 +42,14 @@ func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 
 // Register the plugin
 func init() {
+	var CODE = "cr"
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Plugin{}
+		return &Plugin{
+			Plugin: algorithms.Plugin{
+				Code:    CODE,
+				Title:   "Character Repetition",
+				Summary: "Created by replacing identical, consecutive letters in the name.",
+			},
+		}
 	})
 }

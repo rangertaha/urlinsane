@@ -39,15 +39,15 @@ type Plugin struct {
 	output  string
 }
 
-func (n *Plugin) Id() string {
+func (p *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Plugin) Description() string {
+func (p *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Plugin) Init(conf internal.Config) {
+func (p *Plugin) Init(conf internal.Config) {
 	n.config = conf
 	n.table = table.NewWriter()
 
@@ -61,11 +61,11 @@ func (n *Plugin) Init(conf internal.Config) {
 	n.Config()
 }
 
-func (n *Plugin) Read(in internal.Domain) {
+func (p *Plugin) Read(in internal.Domain) {
 	n.table.AppendRow(n.Row(in))
 }
 
-func (n *Plugin) Header() (row table.Row) {
+func (p *Plugin) Header() (row table.Row) {
 	row = append(row, "LD")
 	row = append(row, "TYPE")
 	row = append(row, "TYPO")
@@ -80,7 +80,7 @@ func (n *Plugin) Header() (row table.Row) {
 	return
 }
 
-func (n *Plugin) Row(domain internal.Domain) (row table.Row) {
+func (p *Plugin) Row(domain internal.Domain) (row table.Row) {
 	n.domains = append(n.domains, domain)
 	row = append(row, domain.Ld())
 	if n.config.Verbose() {
@@ -105,7 +105,7 @@ func (n *Plugin) Row(domain internal.Domain) (row table.Row) {
 	return
 }
 
-func (n *Plugin) Filter(header string) bool {
+func (p *Plugin) Filter(header string) bool {
 	header = strings.TrimSpace(header)
 	header = strings.ToLower(header)
 	for _, filter := range n.config.Filters() {
@@ -118,7 +118,7 @@ func (n *Plugin) Filter(header string) bool {
 	return false
 }
 
-func (n *Plugin) Config() (row table.Row) {
+func (p *Plugin) Config() (row table.Row) {
 	n.table.SetStyle(pkg.StyleDefault)
 
 	// nameTransformer := text.Transformer(func(val interface{}) string {
@@ -133,15 +133,15 @@ func (n *Plugin) Config() (row table.Row) {
 	n.table.SetColumnConfigs(ColumnConfig)
 	return
 }
-func (n *Plugin) Progress(typo <-chan internal.Domain) <-chan internal.Domain {
+func (p *Plugin) Progress(typo <-chan internal.Domain) <-chan internal.Domain {
 	return typo
 }
 
-func (n *Plugin) Write() {
+func (p *Plugin) Write() {
 	n.output = n.table.Render()
 }
 
-func (n *Plugin) Summary(report map[string]string) {
+func (p *Plugin) Summary(report map[string]string) {
 	fmt.Println("")
 	for k, v := range report {
 		fmt.Printf("%s %s   ", k, v)
@@ -149,7 +149,7 @@ func (n *Plugin) Summary(report map[string]string) {
 	fmt.Println("")
 }
 
-func (n *Plugin) Save(fname string) {
+func (p *Plugin) Save(fname string) {
 	results := []byte(n.output)
 	if err := os.WriteFile(fname, results, 0644); err != nil {
 		log.Errorf("Error: %s", err)

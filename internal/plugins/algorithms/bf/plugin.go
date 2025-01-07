@@ -27,8 +27,8 @@ type Plugin struct {
 }
 
 func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
-
 	algo := db.Algorithm{Code: p.Code, Name: p.Title}
+	
 	for _, variant := range typo.BitFlipping(original.Name) {
 		if original.Name != variant {
 			dist := fuzzy.Levenshtein(original.Name, variant)

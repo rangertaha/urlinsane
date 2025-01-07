@@ -35,19 +35,19 @@ type Plugin struct {
 	domains []internal.Domain
 }
 
-func (n *Plugin) Id() string {
+func (p *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Plugin) Description() string {
+func (p *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Plugin) Init(conf internal.Config) {
+func (p *Plugin) Init(conf internal.Config) {
 	n.config = conf
 }
 
-func (n *Plugin) Read(domain internal.Domain) {
+func (p *Plugin) Read(domain internal.Domain) {
 	n.domains = append(n.domains, domain)
 
 	if !n.config.Progress() {
@@ -55,7 +55,7 @@ func (n *Plugin) Read(domain internal.Domain) {
 	}
 }
 
-func (n *Plugin) Write() {
+func (p *Plugin) Write() {
 	if n.config.Progress() {
 		for _, domain := range n.domains {
 			fmt.Println(domain.Json())
@@ -63,7 +63,7 @@ func (n *Plugin) Write() {
 	}
 }
 
-func (n *Plugin) Filter(header string) bool {
+func (p *Plugin) Filter(header string) bool {
 	header = strings.TrimSpace(header)
 	header = strings.ToLower(header)
 	for _, filter := range n.config.Filters() {
@@ -76,9 +76,9 @@ func (n *Plugin) Filter(header string) bool {
 	return false
 }
 
-func (n *Plugin) Summary(report map[string]string) {}
+func (p *Plugin) Summary(report map[string]string) {}
 
-func (n *Plugin) Save(fname string) {
+func (p *Plugin) Save(fname string) {
 	// Open the file for writing
 	file, err := os.Create(fname)
 	if err != nil {

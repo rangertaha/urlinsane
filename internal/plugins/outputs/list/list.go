@@ -59,9 +59,9 @@ func (p *Plugin) Read(in *db.Domain) {
 
 }
 
-func (n *Plugin) Write() {
-	if n.config.Progress() {
-		fmt.Println(strings.Join(n.Rows(n.domains...), "\n"))
+func (p *Plugin) Write() {
+	if p.config.Progress() {
+		fmt.Println(strings.Join(p.Rows(p.domains...), "\n"))
 	}
 }
 

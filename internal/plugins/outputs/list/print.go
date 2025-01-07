@@ -22,19 +22,19 @@ import (
 	"github.com/rangertaha/urlinsane/internal/db"
 )
 
-func (n *Plugin) Rows(domains ...*db.Domain) (rows []string) {
+func (p *Plugin) Rows(domains ...*db.Domain) (rows []string) {
 	for _, domain := range domains {
-		rows = append(rows, n.Row(domain))
+		rows = append(rows, p.Row(domain))
 	}
 	return
 }
 
-func (n *Plugin) Row(domain *db.Domain) (row string) {
+func (p *Plugin) Row(domain *db.Domain) (row string) {
 	var data []interface{}
 
 	data = append(data, fmt.Sprintf("%d  ", domain.Levenshtein))
 
-	if n.config.Verbose() {
+	if p.config.Verbose() {
 		data = append(data, fmt.Sprintf("%s  ", domain.Algorithm.Name))
 	} else {
 		data = append(data, fmt.Sprintf("%s  ", strings.ToUpper(domain.Algorithm.Code)))

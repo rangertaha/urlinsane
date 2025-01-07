@@ -58,7 +58,7 @@ func (i *Plugin) Init(c internal.Config) {
 	// defer cancel()
 }
 
-// func (n *Plugin) Description() string {
+// func (p *Plugin) Description() string {
 // 	return DESCRIPTION
 // }
 

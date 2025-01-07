@@ -18,39 +18,21 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
-	algo "github.com/rangertaha/urlinsane/pkg/typo"
-)
-
-const (
-	CODE        = "di"
-	NAME        = "Dot Insertion"
-	DESCRIPTION = "Inserting periods in the target domain name"
+	"github.com/rangertaha/urlinsane/pkg/fuzzy"
+	"github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 type Plugin struct {
-	config internal.Config
+	algorithms.Plugin
 }
 
-func (n *Plugin) Id() string {
-	return CODE
-}
+func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+	algo := db.Algorithm{Code: p.Code, Name: p.Title}
 
-func (n *Plugin) Init(conf internal.Config) {
-	n.config = conf
-}
-
-func (n *Plugin) Name() string {
-	return NAME
-}
-func (n *Plugin) Description() string {
-	return DESCRIPTION
-}
-
-func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
-	for _, variant := range algo.DotInsertion(original.Name) {
+	for _, variant := range typo.DotInsertion(original.Name) {
 		if original.Name != variant {
-			// acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
-			domains = append(domains, &db.Domain{Name: variant})
+			dist := fuzzy.Levenshtein(original.Name, variant)
+			domains = append(domains, &db.Domain{Name: variant, Levenshtein: dist, Algorithm: algo})
 		}
 	}
 
@@ -59,7 +41,14 @@ func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 
 // Register the plugin
 func init() {
+	var CODE = "di"
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Plugin{}
+		return &Plugin{
+			Plugin: algorithms.Plugin{
+				Code:    CODE,
+				Title:   "Dot Insertion",
+				Summary: "Inserting periods in the target domain name",
+			},
+		}
 	})
 }
