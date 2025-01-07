@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package hs
+package cm
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
@@ -22,37 +22,37 @@ import (
 )
 
 const (
-	CODE        = "hs"
-	NAME        = "Homophone Substitution"
-	DESCRIPTION = "Substitutes words that sound the same but have different spellings"
+	CODE        = "cm"
+	NAME        = "Common Misspellings"
+	DESCRIPTION = "Created from a dictionary of commonly misspelled words in each language"
 )
 
-type Algo struct {
+type Plugin struct {
 	config    internal.Config
 	languages []internal.Language
 	keyboards []internal.Keyboard
 }
 
-func (n *Algo) Id() string {
+func (n *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Algo) Init(conf internal.Config) {
+func (n *Plugin) Init(conf internal.Config) {
 	n.keyboards = conf.Keyboards()
 	n.languages = conf.Languages()
 	n.config = conf
 }
 
-func (n *Algo) Name() string {
+func (n *Plugin) Name() string {
 	return NAME
 }
-func (n *Algo) Description() string {
+func (n *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 	for _, language := range n.languages {
-		for _, variant := range algo.HomophoneSwapping(original.Name, language.Homophones()...) {
+		for _, variant := range algo.CommonMisspellings(original.Name, language.Misspellings()...) {
 			if original.Name != variant {
 				domains = append(domains, &db.Domain{Name: variant})
 				// acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
@@ -66,6 +66,6 @@ func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{}
+		return &Plugin{}
 	})
 }

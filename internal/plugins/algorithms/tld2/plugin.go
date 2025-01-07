@@ -28,20 +28,20 @@ const (
 	DESCRIPTION = "Wrong second level domain (TLD2)"
 )
 
-type Algo struct{}
+type Plugin struct{}
 
-func (n *Algo) Id() string {
+func (n *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Algo) Name() string {
+func (n *Plugin) Name() string {
 	return NAME
 }
-func (n *Algo) Description() string {
+func (n *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 	for _, variant := range algo.SecondLevelDomain(original.Name, datasets.TLD...) {
 		if original.Name != variant {
 			domains = append(domains, &db.Domain{Name: variant})
@@ -54,6 +54,6 @@ func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{}
+		return &Plugin{}
 	})
 }

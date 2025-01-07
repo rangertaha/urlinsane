@@ -12,10 +12,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package tld3
+package cr
 
 import (
-	"github.com/rangertaha/urlinsane/datasets"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
@@ -23,37 +22,48 @@ import (
 )
 
 const (
-	CODE        = "tld3"
-	NAME        = "Wrong TLD3"
-	DESCRIPTION = "Wrong third level domain (TLD3)"
+	CODE        = "cr"
+	NAME        = "Character Repetition"
+	DESCRIPTION = "Created by replacing identical, consecutive letters in the name."
 )
 
-type Algo struct{}
+type Plugin struct {
+	config    internal.Config
+	languages []internal.Language
+	keyboards []internal.Keyboard
+}
 
-func (n *Algo) Id() string {
+func (n *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Algo) Name() string {
+func (n *Plugin) Init(conf internal.Config) {
+	n.keyboards = conf.Keyboards()
+	n.languages = conf.Languages()
+	n.config = conf
+}
+
+func (n *Plugin) Name() string {
 	return NAME
 }
-func (n *Algo) Description() string {
+func (n *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
-	for _, variant := range algo.ThirdLevelDomain(original.Name, datasets.TLD...) {
+func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+	for _, variant := range algo.CharacterRepetition(original.Name) {
 		if original.Name != variant {
 			domains = append(domains, &db.Domain{Name: variant})
-			// acc.Add(domain.Variant(n, original.Prefix(), original.Name(), variant))
+			// acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
 		}
 	}
+
 	return
 }
 
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{}
+		return &Plugin{}
 	})
 }

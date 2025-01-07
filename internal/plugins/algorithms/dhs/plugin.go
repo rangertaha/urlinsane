@@ -12,50 +12,48 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package cb
+package dhs
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
+	algo "github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 const (
-	CODE        = "com"
-	NAME        = "Combo Squatting"
-	DESCRIPTION = "Creating domain names by combining a legitimate brand or word with another keyword"
+	CODE        = "dh"
+	NAME        = "Dot Hyphen Substitution"
+	DESCRIPTION = "Swapping Dot and hyphen in a domain"
 )
 
-type Algo struct {
-	config    internal.Config
-	languages []internal.Language
-	keyboards []internal.Keyboard
-}
+type Plugin struct{}
 
-func (n *Algo) Id() string {
+func (n *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Algo) Init(conf internal.Config) {
-	n.keyboards = conf.Keyboards()
-	n.languages = conf.Languages()
-	n.config = conf
-}
-
-func (n *Algo) Name() string {
+func (n *Plugin) Name() string {
 	return NAME
 }
-func (n *Algo) Description() string {
+func (n *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+	for _, variant := range algo.DotHyphenSubstitution(original.Name) {
+		if original.Name != variant {
+			domains = append(domains, &db.Domain{Name: variant})
+			// acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
+		}
+	}
+
 	return
 }
 
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{}
+		return &Plugin{}
 	})
 }

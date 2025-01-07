@@ -57,30 +57,30 @@ const (
 	DESCRIPTION = "Replaces characters with characters that look similar"
 )
 
-type Algo struct {
+type Plugin struct {
 	config    internal.Config
 	languages []internal.Language
 	keyboards []internal.Keyboard
 }
 
-func (n *Algo) Id() string {
+func (n *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Algo) Init(conf internal.Config) {
+func (n *Plugin) Init(conf internal.Config) {
 	n.keyboards = conf.Keyboards()
 	n.languages = conf.Languages()
 	n.config = conf
 }
 
-func (n *Algo) Name() string {
+func (n *Plugin) Name() string {
 	return NAME
 }
-func (n *Algo) Description() string {
+func (n *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 	for _, language := range n.languages {
 		for _, variant := range algo.HomoglyphSwapping(original.Name, language.Homoglyphs()) {
 			if original.Name != variant {
@@ -96,6 +96,6 @@ func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{}
+		return &Plugin{}
 	})
 }

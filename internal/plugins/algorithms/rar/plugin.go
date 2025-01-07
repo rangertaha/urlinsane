@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package sp
+package rar
 
 // Adjacent character substitution is where an attacker swaps characters
 // that are next to each other on a keyboard.
@@ -36,39 +36,41 @@ import (
 )
 
 const (
-	CODE        = "sp"
-	NAME        = "Singular Pluralise"
-	DESCRIPTION = "Singular-Plural substitution is when singular forms of words are swapped for plural forms"
+	CODE        = "rar"
+	NAME        = "Repetition Adjacent Replacement"
+	DESCRIPTION = "Typos created by replacing identical consecutive letters with adjacent keys on the keyboard."
 )
 
-type Algo struct {
+type Plugin struct {
 	config    internal.Config
 	languages []internal.Language
 	keyboards []internal.Keyboard
 }
 
-func (n *Algo) Id() string {
+func (n *Plugin) Id() string {
 	return CODE
 }
 
-func (n *Algo) Init(conf internal.Config) {
+func (n *Plugin) Init(conf internal.Config) {
 	n.keyboards = conf.Keyboards()
 	n.languages = conf.Languages()
 	n.config = conf
 }
 
-func (n *Algo) Name() string {
+func (n *Plugin) Name() string {
 	return NAME
 }
-func (n *Algo) Description() string {
+func (n *Plugin) Description() string {
 	return DESCRIPTION
 }
 
-func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
-	for _, variant := range algo.SingularPluralise(original.Name) {
-		if original.Name != variant {
-			domains = append(domains, &db.Domain{Name: variant})
-			// acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
+func (n *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
+	for _, keyboard := range n.keyboards {
+		for _, variant := range algo.RepetitionAdjacentReplacement(original.Name, keyboard.Layouts()...) {
+			if original.Name != variant {
+				domains = append(domains, &db.Domain{Name: variant})
+				// acc.Add(domain.Variant(n, original.Prefix(), variant, original.Suffix()))
+			}
 		}
 	}
 
@@ -78,6 +80,6 @@ func (n *Algo) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 // Register the plugin
 func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {
-		return &Algo{}
+		return &Plugin{}
 	})
 }
