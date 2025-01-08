@@ -280,6 +280,7 @@ func (u *Urlinsane) Analyzers(in <-chan *db.Domain) <-chan *db.Domain {
 func (u *Urlinsane) Output(in <-chan *db.Domain) {
 	output := u.cfg.Output()
 
+	
 	for c := range in {
 		// Stream or collect domains
 		output.Read(c)
