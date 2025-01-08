@@ -22,11 +22,6 @@ import (
 	"github.com/rangertaha/urlinsane/pkg/typo"
 )
 
-const (
-	CODE        = "cr"
-	NAME        = "Character Repetition"
-	DESCRIPTION = "Repeats a character of the domain name twice"
-)
 
 type Plugin struct {
 	algorithms.Plugin
@@ -47,13 +42,13 @@ func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 
 // Register the plugin
 func init() {
-	var CODE = "cns"
+	var CODE = "cr"
 	algorithms.Add(CODE, func() internal.Algorithm {
 		return &Plugin{
 			Plugin: algorithms.Plugin{
 				Code:    CODE,
-				Title:   "Cardinal Substitution",
-				Summary: "Swapping digial numbers and carninal numbers",
+				Title:   "Character Repetition",
+				Summary: "Repeats a character of the domain name twice",
 			},
 		}
 	})

@@ -16,6 +16,7 @@ package none
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/analyzers"
 )
 
@@ -47,7 +48,7 @@ func (p *Plugin) Headers() []string {
 	return []string{"NONE"}
 }
 
-func (p *Plugin) Exec(original, variant internal.Domain, acc internal.Accumulator) (err error) {
+func (p *Plugin) Exec(original *db.Domain, variant *db.Domain) (domain *db.Domain, err error) {
 	return
 }
 
