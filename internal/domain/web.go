@@ -14,9 +14,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package domain
 
-type URL struct {
-	Address string `json:"ip,omitempty"`
-}
+// type URL struct {
+// 	Address string `json:"ip,omitempty"`
+// }
 
 // IPv4       []IP   `json:"ipv4,omitempty"`
 // IPv6       []IP   `json:"ipv6,omitempty"`

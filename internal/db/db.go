@@ -28,10 +28,11 @@ func Config(filepath string) {
 		&DnsRecord{},
 
 		// Networking
-		&IP{},
-		&Port{},
-		&Device{},
+		&Address{},
 		&Service{},
+		&Port{},
+		// &Device{},
+
 
 		// Geography
 		&Place{},

@@ -20,20 +20,22 @@ type Device struct {
 	gorm.Model
 	Name string `json:"name,omitempty"`
 
-	LocationID *uint
-	Location   *Location `json:"location,omitempty"`
-	IPs        []*IP     `gorm:"many2many:ipaddrs;"  json:"ips,omitempty"`
+	Addreses []*Address `gorm:"many2many:devaddrs;"  json:"ips,omitempty"`
 }
 
-type IP struct {
+type Address struct {
 	gorm.Model
-	Address string  `json:"address,omitempty"`
-	Type    string  `json:"type,omitempty"`
-	Ports   []*Port `gorm:"many2many:ipports;"   json:"ports,omitempty"`
+	Addr       string    `gorm:"unique"                json:"address"`
+	Type       string    `                             json:"type"`
+	Ports      []*Port   `gorm:"many2many:addrports;"  json:"ports,omitempty"`
+	Domians    []*Domain `gorm:"many2many:domaddrs;"   json:"domains,omitempty"`
+	LocationID *uint
+	Location   *Location `                             json:"location,omitempty"`
 }
 
 type Port struct {
 	gorm.Model
+	Proto     string   `json:"proto,omitempty"`
 	Number    int      `json:"num,omitempty"`
 	State     string   `json:"state,omitempty"`
 	Service   *Service `json:"service,omitempty"`

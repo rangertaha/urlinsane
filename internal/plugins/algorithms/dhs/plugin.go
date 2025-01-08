@@ -22,12 +22,6 @@ import (
 	"github.com/rangertaha/urlinsane/pkg/typo"
 )
 
-const (
-	CODE        = "dh"
-	NAME        = "Dot Hyphen Substitution"
-	DESCRIPTION = "Swapping Dot and hyphen in a domain"
-)
-
 type Plugin struct {
 	algorithms.Plugin
 }
@@ -47,13 +41,13 @@ func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 
 // Register the plugin
 func init() {
-	var CODE = "cns"
+	var CODE = "dh"
 	algorithms.Add(CODE, func() internal.Algorithm {
 		return &Plugin{
 			Plugin: algorithms.Plugin{
 				Code:    CODE,
-				Title:   "Cardinal Substitution",
-				Summary: "Swapping digial numbers and carninal numbers",
+				Title:   "Dot Hyphen Substitution",
+				Summary: "Swapping Dot and hyphen in a domain",
 			},
 		}
 	})

@@ -57,12 +57,6 @@ import (
 	"github.com/rangertaha/urlinsane/pkg/typo"
 )
 
-const (
-	CODE        = "co"
-	NAME        = "Character Omission"
-	DESCRIPTION = "Omitting a character from the name"
-)
-
 type Plugin struct {
 	algorithms.Plugin
 }
@@ -82,13 +76,13 @@ func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 
 // Register the plugin
 func init() {
-	var CODE = "cns"
+	var CODE = "co"
 	algorithms.Add(CODE, func() internal.Algorithm {
 		return &Plugin{
 			Plugin: algorithms.Plugin{
 				Code:    CODE,
-				Title:   "Cardinal Substitution",
-				Summary: "Swapping digial numbers and carninal numbers",
+				Title:   "Character Omission",
+				Summary: "Omitting a character from the name",
 			},
 		}
 	})
