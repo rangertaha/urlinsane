@@ -15,12 +15,11 @@
 package tld
 
 import (
-	"github.com/rangertaha/urlinsane/datasets"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/pkg/dns"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	"github.com/rangertaha/urlinsane/pkg/fuzzy"
-	"github.com/rangertaha/urlinsane/pkg/typo"
 )
 
 type Plugin struct {
@@ -30,7 +29,7 @@ type Plugin struct {
 func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 	algo := db.Algorithm{Code: p.Code, Name: p.Title}
 
-	for _, variant := range typo.TopLevelDomain(original.Name, datasets.TLD...) {
+	for _, variant := range dns.PermutateSuffix(original.Name) {
 		if original.Name != variant {
 			dist := fuzzy.Levenshtein(original.Name, variant)
 			domains = append(domains, &db.Domain{Name: variant, Levenshtein: dist, Algorithm: algo})
@@ -46,7 +45,7 @@ func init() {
 		return &Plugin{
 			Plugin: algorithms.Plugin{
 				Code:    CODE,
-				Title:   "Wrong TLD",
+				Title:   "Wrong TLDs",
 				Summary: "Wrong top level domain (TLD)",
 			},
 		}

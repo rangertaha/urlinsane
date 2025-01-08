@@ -12,4 +12,41 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package pkg
+package dataset
+
+import (
+	"fmt"
+
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+)
+
+var DB *gorm.DB
+
+func Config(filepath string) {
+	var err error
+
+	if DB, err = gorm.Open(sqlite.Open(filepath), &gorm.Config{CreateBatchSize: 10000}); err != nil {
+		fmt.Println(err)
+	}
+
+	// Migrate the schema
+	DB.AutoMigrate(
+		&Keyboard{},
+
+		// Language
+		&Language{},
+		&Word{},
+		&Char{},
+		&Sym{},
+
+		// Domain
+		&Prefix{},
+		&Suffix{},
+		&Domain{},
+
+		// NLP
+		// Topic
+		// 
+	)
+}

@@ -143,14 +143,14 @@ func Domains(language, file string) (err error) {
 	for _, line := range Extract(file) {
 		for _, domain := range line {
 			var dm dataset.Domain
-			dataset.Data.FirstOrInit(&dm, dataset.Domain{Name: domain})
+			dataset.DB.FirstOrInit(&dm, dataset.Domain{Name: domain})
 			domains = append(domains, &dm)
 		}
 	}
 
 	for chunk := range slices.Chunk(domains, 1000) {
 		fmt.Printf("Saving %v domains \n", len(chunk))
-		dataset.Data.Save(&chunk)
+		dataset.DB.Save(&chunk)
 		time.Sleep(time.Second)
 	}
 
@@ -163,14 +163,14 @@ func Suffixes(language, file string) (err error) {
 	for _, line := range Extract(file) {
 		for _, suffix := range line {
 			var s dataset.Suffix
-			dataset.Data.FirstOrInit(&s, dataset.Suffix{Name: suffix})
+			dataset.DB.FirstOrInit(&s, dataset.Suffix{Name: suffix})
 			suffixes = append(suffixes, &s)
 		}
 	}
 
 	for chunk := range slices.Chunk(suffixes, 1000) {
 		fmt.Printf("Saving %v suffixes \n", len(chunk))
-		dataset.Data.Save(&chunk)
+		dataset.DB.Save(&chunk)
 		time.Sleep(time.Second)
 	}
 
@@ -183,14 +183,14 @@ func Prefixes(language, file string) (err error) {
 	for _, line := range Extract(file) {
 		for _, domain := range line {
 			var p dataset.Prefix
-			dataset.Data.FirstOrInit(&p, dataset.Prefix{Name: domain})
+			dataset.DB.FirstOrInit(&p, dataset.Prefix{Name: domain})
 			prefixes = append(prefixes, &p)
 		}
 	}
 
 	for chunk := range slices.Chunk(prefixes, 1000) {
 		fmt.Printf("Saving %v prefixes \n", len(chunk))
-		dataset.Data.Save(&chunk)
+		dataset.DB.Save(&chunk)
 		time.Sleep(time.Second)
 	}
 
@@ -203,101 +203,101 @@ func Prefixes(language, file string) (err error) {
 
 func Words(language, file string) (err error) {
 	lng := &dataset.Language{Code: language}
-	dataset.Data.FirstOrCreate(lng)
+	dataset.DB.FirstOrCreate(lng)
 
 	fmt.Printf("Importing words from %s\n", file)
 	for _, wordslist := range Extract(file) {
 		for _, w := range wordslist {
 			if strings.TrimSpace(w) != "" {
 				var word dataset.Word
-				dataset.Data.FirstOrInit(&word, dataset.Word{Text: w})
+				dataset.DB.FirstOrInit(&word, dataset.Word{Text: w})
 				lng.Words = append(lng.Words, &word)
 			}
 		}
 	}
-	dataset.Data.Save(&lng)
+	dataset.DB.Save(&lng)
 	return
 }
 
 func Vowels(language, file string) (err error) {
 	lng := &dataset.Language{Code: language}
-	dataset.Data.FirstOrCreate(lng)
+	dataset.DB.FirstOrCreate(lng)
 
 	// fmt.Println("Importing vowels...")
 	fmt.Printf("Importing vowels from %s\n", file)
 	for _, lines := range Extract(file) {
 		for _, c := range lines {
 			var char dataset.Char
-			dataset.Data.FirstOrInit(&char, dataset.Char{Text: c})
+			dataset.DB.FirstOrInit(&char, dataset.Char{Text: c})
 			lng.Vowels = append(lng.Vowels, &char)
 		}
 	}
-	dataset.Data.Save(&lng)
+	dataset.DB.Save(&lng)
 	return
 }
 
 func Graphemes(language, file string) (err error) {
 	lng := &dataset.Language{Code: language}
-	dataset.Data.FirstOrCreate(lng)
+	dataset.DB.FirstOrCreate(lng)
 
 	// fmt.Println("Importing graphemes...")
 	fmt.Printf("Importing graphemes from %s\n", file)
 	for _, lines := range Extract(file) {
 		for _, c := range lines {
 			var char dataset.Char
-			dataset.Data.FirstOrInit(&char, dataset.Char{Text: c})
+			dataset.DB.FirstOrInit(&char, dataset.Char{Text: c})
 			lng.Graphemes = append(lng.Graphemes, &char)
 		}
 	}
-	dataset.Data.Save(&lng)
+	dataset.DB.Save(&lng)
 	return
 }
 
 func Antonyms(language, file string) (err error) {
 	lng := &dataset.Language{Code: language}
-	dataset.Data.FirstOrCreate(lng)
+	dataset.DB.FirstOrCreate(lng)
 
 	// fmt.Println("Importing antonyms...")
 	fmt.Printf("Importing antonyms from %s\n", file)
 	var words []*dataset.Word
 	for _, wordslist := range Extract(file) {
 		var word dataset.Word
-		dataset.Data.FirstOrInit(&word, dataset.Word{Text: wordslist[0]})
+		dataset.DB.FirstOrInit(&word, dataset.Word{Text: wordslist[0]})
 		for _, w := range wordslist[1:] {
 			var related dataset.Word
-			dataset.Data.FirstOrInit(&related, dataset.Word{Text: w})
+			dataset.DB.FirstOrInit(&related, dataset.Word{Text: w})
 			word.Antonyms = append(word.Antonyms, &related)
 		}
 		words = append(words, &word)
 	}
-	dataset.Data.Save(&words)
+	dataset.DB.Save(&words)
 	return
 }
 
 func Homophones(language, file string) (err error) {
 	lng := &dataset.Language{Code: language}
-	dataset.Data.FirstOrCreate(lng)
+	dataset.DB.FirstOrCreate(lng)
 
 	// fmt.Println("Importing homophones...")
 	fmt.Printf("Importing homophones from %s\n", file)
 	var words []*dataset.Word
 	for _, wordslist := range Extract(file) {
 		var word dataset.Word
-		dataset.Data.FirstOrInit(&word, dataset.Word{Text: wordslist[0]})
+		dataset.DB.FirstOrInit(&word, dataset.Word{Text: wordslist[0]})
 		for _, w := range wordslist[1:] {
 			var related dataset.Word
-			dataset.Data.FirstOrInit(&related, dataset.Word{Text: w})
+			dataset.DB.FirstOrInit(&related, dataset.Word{Text: w})
 			word.Homophones = append(word.Homophones, &related)
 		}
 		words = append(words, &word)
 	}
-	dataset.Data.Save(&words)
+	dataset.DB.Save(&words)
 	return
 }
 
 func Homoglyphs(language, file string) (err error) {
 	lng := &dataset.Language{Code: language}
-	dataset.Data.FirstOrCreate(lng)
+	dataset.DB.FirstOrCreate(lng)
 
 	// fmt.Println("Importing homoglyphs...")
 	fmt.Printf("Importing homoglyphs from %s\n", file)
@@ -305,70 +305,70 @@ func Homoglyphs(language, file string) (err error) {
 
 	for _, lines := range Extract(file) {
 		var char dataset.Char
-		dataset.Data.FirstOrInit(&char, dataset.Char{Text: lines[0]})
+		dataset.DB.FirstOrInit(&char, dataset.Char{Text: lines[0]})
 		for _, c := range lines[1:] {
 			var related dataset.Char
-			dataset.Data.FirstOrInit(&related, dataset.Char{Text: c})
+			dataset.DB.FirstOrInit(&related, dataset.Char{Text: c})
 			char.Homoglyphs = append(char.Homoglyphs, &related)
 		}
 		chars = append(chars, &char)
 
 	}
-	dataset.Data.Save(&chars)
+	dataset.DB.Save(&chars)
 	return
 }
 
 func StopWords(language, file string) (err error) {
 	lng := &dataset.Language{Code: language}
-	dataset.Data.FirstOrCreate(lng)
+	dataset.DB.FirstOrCreate(lng)
 
 	// fmt.Println("Importing stopwords...")
 	fmt.Printf("Importing stopwords from %s\n", file)
 	for _, wordslist := range Extract(file) {
 		for _, w := range wordslist {
 			var word dataset.Word
-			dataset.Data.FirstOrInit(&word, dataset.Word{Text: w})
+			dataset.DB.FirstOrInit(&word, dataset.Word{Text: w})
 			lng.Stopwords = append(lng.Stopwords, &word)
 		}
 	}
-	dataset.Data.Save(&lng)
+	dataset.DB.Save(&lng)
 	return
 }
 
 func Numerals(language, file string) (err error) {
 	lng := &dataset.Language{Code: language}
-	dataset.Data.FirstOrCreate(lng)
+	dataset.DB.FirstOrCreate(lng)
 
 	// fmt.Println("Importing numerals...")
 	fmt.Printf("Importing numerals from %s\n", file)
 	for _, wordslist := range Extract(file) {
 		for _, w := range wordslist {
 			var word dataset.Word
-			dataset.Data.FirstOrInit(&word, dataset.Word{Text: w})
+			dataset.DB.FirstOrInit(&word, dataset.Word{Text: w})
 			lng.Numerals = append(lng.Numerals, &word)
 		}
 	}
-	dataset.Data.Save(&lng)
+	dataset.DB.Save(&lng)
 	return
 }
 
 func Misspellings(language, file string) (err error) {
 	lng := &dataset.Language{Code: language}
-	dataset.Data.FirstOrCreate(lng)
+	dataset.DB.FirstOrCreate(lng)
 
 	// fmt.Println("Importing misspellings...")
 	fmt.Printf("Importing misspellings from %s\n", file)
 	var words []*dataset.Word
 	for _, wordslist := range Extract(file) {
 		var word dataset.Word
-		dataset.Data.FirstOrInit(&word, dataset.Word{Text: wordslist[0]})
+		dataset.DB.FirstOrInit(&word, dataset.Word{Text: wordslist[0]})
 		for _, w := range wordslist[1:] {
 			var related dataset.Word
-			dataset.Data.FirstOrInit(&related, dataset.Word{Text: w})
+			dataset.DB.FirstOrInit(&related, dataset.Word{Text: w})
 			word.Misspellings = append(word.Misspellings, &related)
 		}
 		words = append(words, &word)
 	}
-	dataset.Data.Save(&words)
+	dataset.DB.Save(&words)
 	return
 }

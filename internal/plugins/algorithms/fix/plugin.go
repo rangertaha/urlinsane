@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package si
+package fix
 
 import (
 	"github.com/rangertaha/urlinsane/internal"
@@ -29,10 +29,12 @@ type Plugin struct {
 func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 	algo := db.Algorithm{Code: p.Code, Name: p.Title}
 
-	for _, variant := range dns.PermutatePrefix(original.Name) {
-		if original.Name != variant {
-			dist := fuzzy.Levenshtein(original.Name, variant)
-			domains = append(domains, &db.Domain{Name: variant, Levenshtein: dist, Algorithm: algo})
+	for _, prefixVariant := range dns.PermutatePrefix(original.Name) {
+		for _, variant := range dns.PermutateSuffix(prefixVariant) {
+			if original.Name != variant {
+				dist := fuzzy.Levenshtein(original.Name, variant)
+				domains = append(domains, &db.Domain{Name: variant, Levenshtein: dist, Algorithm: algo})
+			}
 		}
 	}
 
@@ -41,13 +43,13 @@ func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 
 // Register the plugin
 func init() {
-	var CODE = "si"
+	var CODE = "fix"
 	algorithms.Add(CODE, func() internal.Algorithm {
 		return &Plugin{
 			Plugin: algorithms.Plugin{
 				Code:    CODE,
-				Title:   "Subdomain Insertion",
-				Summary: "Inserts common subdomain at the beginning of the domain",
+				Title:   "Subdomain & TLD Insertion",
+				Summary: "Inserts subdomain and TLD combinations",
 			},
 		}
 	})
