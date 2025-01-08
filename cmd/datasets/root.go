@@ -29,7 +29,11 @@ func main() {
 	cli.AppHelpTemplate = fmt.Sprintf(`%s
 EXAMPLE:
 
-    data import directory
+    datasets download datasets
+    go run ./cmd/datasets download datasets
+
+    datasets import datasets
+    go run ./cmd/datasets import datasets
 
 AUTHOR:
    Rangertaha (rangertaha@gmail.com)
@@ -58,6 +62,8 @@ AUTHOR:
 		},
 		Commands: []*cli.Command{
 			&ImportCmd,
+			&DownloadCmd,
+			&DevCmd,
 		},
 	}
 

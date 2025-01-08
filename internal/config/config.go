@@ -438,5 +438,5 @@ func createDatabase(dirname string) *gorm.DB {
 
 func createDatasets(dirname string) *gorm.DB {
 	dataset.Config(filepath.Join(dirname, "dataset.db"))
-	return dataset.Data
+	return dataset.DB
 }

@@ -9,8 +9,6 @@ import (
 
 var DB *gorm.DB
 
-// var Meta *gorm.DB
-
 func Config(filepath string) {
 	var err error
 
