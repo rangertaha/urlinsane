@@ -52,6 +52,7 @@ package co
 import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/pkg/dns"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	"github.com/rangertaha/urlinsane/pkg/fuzzy"
 	"github.com/rangertaha/urlinsane/pkg/typo"
@@ -63,9 +64,11 @@ type Plugin struct {
 
 func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 	algo := db.Algorithm{Code: p.Code, Name: p.Title}
+	prefix, name, suffix := dns.Split(original.Name)
 
-	for _, variant := range typo.CharacterOmission(original.Name) {
-		if original.Name != variant {
+	for _, variant := range typo.CharacterOmission(name) {
+		if name != variant {
+			variant = dns.Join(prefix, variant, suffix)
 			dist := fuzzy.Levenshtein(original.Name, variant)
 			domains = append(domains, &db.Domain{Name: variant, Levenshtein: dist, Algorithm: algo})
 		}

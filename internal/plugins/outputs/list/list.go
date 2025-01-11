@@ -68,11 +68,14 @@ func (p *Plugin) Write() {
 func (p *Plugin) Summary() {
 	p.elapsed = time.Since(p.started)
 	summary := map[string]string{
-		"  TIME:":                             p.elapsed.String(),
-		text.FgGreen.Sprintf("%s", "  LIVE:"): fmt.Sprintf("%d", p.online),
-		text.FgRed.Sprintf("%s", "  OFFLINE"): fmt.Sprintf("%d", p.offline),
-		"  TOTAL:":                            fmt.Sprintf("%d", p.total),
+		"  TIME:":  p.elapsed.String(),
+		"  TOTAL:": fmt.Sprintf("%d", p.total),
 	}
+	if len(p.config.Collectors()) > 0 {
+		summary[text.FgGreen.Sprintf("%s", "  LIVE:")] = fmt.Sprintf("%d", p.online)
+		summary[text.FgRed.Sprintf("%s", "  OFFLINE")] = fmt.Sprintf("%d", p.offline)
+	}
+
 	fmt.Println("")
 	for k, v := range summary {
 		fmt.Printf("%s %s   ", k, v)

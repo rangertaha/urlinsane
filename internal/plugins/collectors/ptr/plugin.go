@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package ip
+package ptr
 
 import (
 	"net"
@@ -44,28 +44,26 @@ func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
 		} else if strings.Contains(ip.String(), ".") {
 			domain.Dns = append(domain.Dns, &db.DnsRecord{Type: "A", Value: record})
 			domain.IPs = append(domain.IPs, &db.Address{Addr: record, Type: "IPv4"})
-			// addresses, _ := net.LookupAddr(record)
-			// for _, address := range addresses {
-			// 	domain.Dns = append(domain.Dns, &db.DnsRecord{Type: "PTR", Value: address})
-			// }
+			addresses, _ := net.LookupAddr(record)
+			for _, address := range addresses {
+				domain.Dns = append(domain.Dns, &db.DnsRecord{Type: "PTR", Value: address})
+			}
 		}
 	}
-	db.DB.FirstOrInit(domain, &db.Domain{Name: domain.Name})
-
 	return domain, err
 }
 
 // Register the plugin
 func init() {
-	var CODE = "ip"
+	var CODE = "ptr"
 	collectors.Add(CODE, func() internal.Collector {
 		return &Plugin{
 			Plugin: collectors.Plugin{
 				Num:       0,
 				Code:      CODE,
-				Title:     "Ip Address",
-				Summary:   "Domain IPv4 and IPv6 addresses",
-				DependsOn: []string{},
+				Title:     "PTR Records",
+				Summary:   "DNS PTR Records",
+				DependsOn: []string{"ip"},
 			},
 		}
 	})

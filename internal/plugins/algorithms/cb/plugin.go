@@ -27,6 +27,8 @@ type Plugin struct {
 func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 	// algo := db.Algorithm{Code: p.Code, Name: p.Title}
 	// dist := fuzzy.Levenshtein(original.Name, variant)
+	// prefix, name, suffix := dns.Split(original.Name)
+	// variant = dns.Join(prefix, variant, suffix)
 
 	return
 }
