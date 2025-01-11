@@ -24,37 +24,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const (
-	ORDER       = 3
-	CODE        = "cn"
-	DESCRIPTION = "DNS CNAME records"
-)
-
 type Plugin struct {
-	// resolver resolver.Client
-	conf internal.Config
-	log  *log.Entry
-}
-
-func (p *Plugin) Id() string {
-	return CODE
-}
-
-func (p *Plugin) Order() int {
-	return ORDER
-}
-
-func (i *Plugin) Init(c internal.Config) {
-	i.log = log.WithFields(log.Fields{"plugin": CODE, "method": "Exec"})
-	i.conf = c
-}
-
-func (p *Plugin) Description() string {
-	return DESCRIPTION
-}
-
-func (p *Plugin) Headers() []string {
-	return []string{"CNAME"}
+	collectors.Plugin
 }
 
 func (i *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
@@ -75,7 +46,16 @@ func (i *Plugin) Close() {}
 
 // Register the plugin
 func init() {
+	var CODE = "cn"
 	collectors.Add(CODE, func() internal.Collector {
-		return &Plugin{}
+		return &Plugin{
+			Plugin: collectors.Plugin{
+				Num:       3,
+				Code:      CODE,
+				Title:     "CNAME Record",
+				Summary:   "DNS CNAME records",
+				DependsOn: []string{},
+			},
+		}
 	})
 }

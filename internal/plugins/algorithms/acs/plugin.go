@@ -45,13 +45,12 @@ func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 	keyboards := p.Conf.Keyboards()
 	prefix, name, suffix := dns.Split(original.Name)
 
-	algo := db.Algorithm{Code: p.Code, Name: p.Title}
 	for _, keyboard := range keyboards {
 		for _, variant := range typo.AdjacentCharacterSubstitution(name, keyboard.Layouts()...) {
 			if name != variant {
 				variant = dns.Join(prefix, variant, suffix)
 				dist := fuzzy.Levenshtein(original.Name, variant)
-				domains = append(domains, &db.Domain{Name: variant, Algorithm: algo, Levenshtein: dist})
+				domains = append(domains, &db.Domain{Name: variant, Levenshtein: dist, Algorithm: p.Algo()})
 			}
 		}
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/db"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -74,4 +75,8 @@ func (p *Plugin) Description() string {
 
 func (p *Plugin) Init(conf internal.Config) {
 	p.Conf = conf
+}
+
+func (p *Plugin) Algo() db.Algorithm {
+	return db.Algorithm{Code: p.Code, Name: p.Title}
 }

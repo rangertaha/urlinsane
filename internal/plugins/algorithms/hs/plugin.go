@@ -28,7 +28,6 @@ type Plugin struct {
 }
 
 func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
-	algo := db.Algorithm{Code: p.Code, Name: p.Title}
 	languages := p.Conf.Languages()
 	prefix, name, suffix := dns.Split(original.Name)
 
@@ -37,7 +36,7 @@ func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 			if name != variant {
 				variant = dns.Join(prefix, variant, suffix)
 				dist := fuzzy.Levenshtein(original.Name, variant)
-				domains = append(domains, &db.Domain{Name: variant, Levenshtein: dist, Algorithm: algo})
+				domains = append(domains, &db.Domain{Name: variant, Levenshtein: dist, Algorithm: p.Algo()})
 			}
 		}
 	}
