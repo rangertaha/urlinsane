@@ -26,14 +26,7 @@ import (
 
 type Plugin struct {
 	collectors.Plugin
-	// conf internal.Config
-	// log  *log.Entry
 }
-
-// func (p *Plugin) Init(c internal.Config) {
-// 	p.log = log.WithFields(log.Fields{"plugin": p.Code, "method": "Exec"})
-// 	p.conf = c
-// }
 
 func (i *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
 	records, err := net.LookupTXT(domain.Name)

@@ -33,13 +33,11 @@ type Plugin struct {
 }
 
 func (i *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
-
 	for _, ip := range domain.IPs {
 		if ip.Type == "IPv4" {
 			ip.Location, err = GeoLookup(ip.Addr)
 		}
 	}
-
 	return domain, err
 }
 

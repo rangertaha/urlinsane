@@ -53,6 +53,18 @@ func (p *Plugin) Read(in *db.Domain) {
 		p.offline++
 	}
 
+	if p.config.Registered() {
+		if !in.Live() {
+			return
+		}
+	}
+
+	if p.config.Unregistered() {
+		if in.Live() {
+			return
+		}
+	}
+
 	if !p.config.Progress() {
 		fmt.Println(p.Row(in))
 	}
