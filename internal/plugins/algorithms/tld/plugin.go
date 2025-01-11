@@ -28,6 +28,8 @@ type Plugin struct {
 
 func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 	algo := db.Algorithm{Code: p.Code, Name: p.Title}
+	prefix, name, suffix := dns.Split(original.Name)
+	variant = dns.Join(prefix, variant, suffix)
 
 	for _, variant := range dns.PermutateSuffix(original.Name) {
 		if original.Name != variant {

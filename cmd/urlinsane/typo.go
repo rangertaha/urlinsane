@@ -60,7 +60,7 @@ var Flags = []cli.Flag{
 	&cli.StringFlag{
 		Name:    "collectors",
 		Aliases: []string{"c"},
-		Value:   "idn,ip,geo,ns,mx",
+		Value:   "",
 		Usage:   "collectors IDs to use `[ID]`",
 	},
 	&cli.StringFlag{
@@ -101,7 +101,7 @@ var Flags = []cli.Flag{
 		Name:     "ttl",
 		Value:    0 * time.Hour,
 		Category: "PERFORMANCE",
-		Usage:    "maximim duration to cache results, 0 deletes the cache `DURATION`",
+		Usage:    "duration to cache results, 0 clears the cache `DURATION`",
 	},
 	&cli.IntFlag{
 		Name:     "distance",
@@ -173,7 +173,7 @@ var Flags = []cli.Flag{
 		Name:     "dir",
 		Value:    "domains",
 		Category: "OUTPUT",
-		Usage:    "directory to save scan results `DIR`",
+		Usage:    "directory name to save files `DIR`",
 		Action: func(ctx *cli.Context, v string) error {
 			return nil
 		},

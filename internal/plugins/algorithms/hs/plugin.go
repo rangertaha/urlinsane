@@ -29,6 +29,8 @@ type Plugin struct {
 func (p *Plugin) Exec(original *db.Domain) (domains []*db.Domain, err error) {
 	algo := db.Algorithm{Code: p.Code, Name: p.Title}
 	languages := p.Conf.Languages()
+	prefix, name, suffix := dns.Split(original.Name)
+	variant = dns.Join(prefix, variant, suffix)
 
 	for _, language := range languages {
 		for _, variant := range typo.HomophoneSwapping(original.Name, language.Homophones()...) {

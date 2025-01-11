@@ -22,10 +22,10 @@ type Place struct {
 	// value is one of AF (Africa), AS (Asia), EU (Europe), OC (Oceania),
 	// NA (North America) and SA (South America). For countries, its
 	// their ISO 3166-1 2 letter code (see http://en.wikipedia.org/wiki/ISO_3166-1).
-	Code string `json:"code,omitempty"`
+	Code string `gorm:"unique" json:"code,omitempty"`
 	// GeonameID is the place's ID in the geonames database. See
 	// http://www.geonames.org for more information.
-	GeonameID int `json:"geoname,omitempty"`
+	GeonameID int `gorm:"unique" json:"geoname,omitempty"`
 	// Name is the place name, usually with several translations.
 	Name string `json:"name,omitempty"`
 }

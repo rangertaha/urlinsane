@@ -14,7 +14,6 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/dhs"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/di"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/do"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/fix"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/gi"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/gr"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/hi"
