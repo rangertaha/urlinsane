@@ -15,6 +15,7 @@
 package config
 
 import (
+	_ "embed"
 	"io"
 	"net/url"
 	"os"
@@ -42,7 +43,18 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-const DIR_PRIMARY = ".config/urlinsane"
+const (
+	DIR_PRIMARY = ".config/urlinsane"
+	PRIMARY_DB  = "urlinsane.db"
+	DATASET_DB  = "dataset.db"
+	MAXMIND_DB  = "maxmind.db"
+)
+
+//go:embed maxmind.db
+var MaxMindDB []byte
+
+//go:embed dataset.db
+var datasetDB []byte
 
 type (
 	Config struct {
@@ -101,9 +113,6 @@ func (l InfosOrder) Less(i, j int) bool {
 }
 
 func init() {
-	// Log as JSON instead of the default ASCII formatter.
-	// log.SetFormatter(&log.JSONFormatter{})
-
 	// Outputs to nowhere
 	log.SetOutput(io.Discard)
 
@@ -179,9 +188,9 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		progress = false
 	}
 
-	if ttl == 0 {
-		deleteCacheDir(DIR_PRIMARY)
-	}
+	// if ttl == 0 {
+	// 	deleteCacheDir(DIR_PRIMARY)
+	// }
 
 	return ConfigOption(
 		domain,     // Target domain
@@ -295,6 +304,9 @@ func ConfigOption(
 
 		// Create app database if it does not exits
 		c.dataset = createDatasets(c.directory)
+
+		// Create app database if it does not exits
+		createMaxMindDB(c.directory)
 
 		logger := log.WithFields(log.Fields{
 			"domain":     domain,
@@ -414,29 +426,30 @@ func createAppDir(dirname string) string {
 	return configDir
 }
 
-func deleteCacheDir(dirname string) {
-	var userDir string
-	var err error
-
-	if userDir, err = os.UserHomeDir(); err != nil {
-		if userDir, err = os.Getwd(); err != nil {
-			userDir = ""
-		}
-	}
-
-	// If .config exits lets put it in there
-	dbDir := filepath.Join(userDir, dirname, "db")
-	if _, err := os.Stat(dbDir); !os.IsNotExist(err) {
-		os.RemoveAll(dbDir)
-	}
-}
-
 func createDatabase(dirname string) *gorm.DB {
-	db.Config(filepath.Join(dirname, "urlinsane.db"))
+	db.Config(filepath.Join(dirname, PRIMARY_DB))
 	return db.DB
 }
 
 func createDatasets(dirname string) *gorm.DB {
-	dataset.Config(filepath.Join(dirname, "dataset.db"))
+	datasetPath := filepath.Join(dirname, DATASET_DB)
+
+	if _, err := os.Stat(datasetPath); os.IsNotExist(err) {
+		if err := os.WriteFile(datasetPath, datasetDB, 0666); err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	dataset.Config(datasetPath)
 	return dataset.DB
+}
+
+func createMaxMindDB(dirname string) {
+	datasetPath := filepath.Join(dirname, MAXMIND_DB)
+
+	if _, err := os.Stat(datasetPath); os.IsNotExist(err) {
+		if err := os.WriteFile(datasetPath, MaxMindDB, 0666); err != nil {
+			log.Fatal(err)
+		}
+	}
 }
