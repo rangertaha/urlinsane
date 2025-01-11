@@ -32,7 +32,8 @@ type Plugin struct {
 	collectors.Plugin
 }
 
-func (i *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
+func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
+	// p.Conf.Dir()
 	for _, ip := range domain.IPs {
 		if ip.Type == "IPv4" {
 			ip.Location, err = GeoLookup(ip.Addr)

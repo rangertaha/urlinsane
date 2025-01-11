@@ -106,7 +106,7 @@ var Flags = []cli.Flag{
 	&cli.IntFlag{
 		Name:     "distance",
 		Aliases:  []string{"d"},
-		Value:    25,
+		Value:    5,
 		Category: "CONSTRAINTS",
 		Usage:    "minimum Levenshtein distance `NUM`",
 	},
