@@ -52,9 +52,22 @@ func (p *Plugin) Row(domain *db.Domain) (row string) {
 		data = append(data, fmt.Sprintf("%s  ", record.Value))
 	}
 
-	// for _, record := range domain.Dns {
-	// 	data = append(data, fmt.Sprintf("%s  ", record.Value))
-	// }
+	for _, ip := range domain.IPs {
+		if ip.Location != nil {
+			data = append(data, fmt.Sprintf("%s  ", ip.Location.Name))
+			if ip.Location.Latitude > 0 {
+				data = append(data, fmt.Sprintf("%f %f  ", ip.Location.Latitude, ip.Location.Longitude))
+			}
+			if ip.Location.TimeZone != "" {
+				data = append(data, fmt.Sprintf("%s  ", ip.Location.TimeZone))
+			}
+		}
+	}
+
+	for _, record := range domain.Whois {
+		data = append(data, fmt.Sprintf("%s  ", record.Registrant.Name))
+	}
+
 
 	// for _, record := range domain.Dns {
 	// 	data = append(data, fmt.Sprintf("%s  ", record.Value))

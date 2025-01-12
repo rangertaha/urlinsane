@@ -19,11 +19,11 @@ func Config(filepath string) {
 	// Migrate the schema
 	DB.AutoMigrate(
 		// Domains
-		// &Scan{},
+		&Scan{},
 		&Contact{},
 		&Domain{},
-		&WhoisRecord{},
-		&DnsRecord{},
+		&Whois{},
+		&Dns{},
 
 		// Networking
 		&Address{},
@@ -31,9 +31,7 @@ func Config(filepath string) {
 		&Port{},
 		// &Device{},
 
-
 		// Geography
-		&Place{},
 		&Location{},
 
 		// Files
@@ -45,7 +43,6 @@ func Config(filepath string) {
 
 type Scan struct {
 	gorm.Model
-	DomainID uint
-	Domain   *Domain
-	Results  []*Domain
+	Query   string
+	Results []Domain `gorm:"many2many:results;"`
 }
