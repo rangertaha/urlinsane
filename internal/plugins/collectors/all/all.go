@@ -14,5 +14,5 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/ptr"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/txt"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/collectors/web"
-	// _ "github.com/rangertaha/urlinsane/internal/plugins/collectors/wi"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/wi"
 )

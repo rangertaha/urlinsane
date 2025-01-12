@@ -37,7 +37,7 @@ func (i *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
 		log.Error("CNAME Lookup: ", err)
 	}
 	if record != "" {
-		domain.Dns = append(domain.Dns, &db.DnsRecord{Type: "CNAME", Value: record})
+		domain.Dns = append(domain.Dns, &db.Dns{Type: "CNAME", Value: record})
 	}
 	return domain, err
 }

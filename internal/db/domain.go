@@ -35,9 +35,9 @@ type Domain struct {
 	RedirectID *uint
 	Redirect   *Domain    `json:"redirect,omitempty"`
 	IPs        []*Address `gorm:"many2many:domaddrs;"  json:"ips,omitempty"`
+	Dns        []*Dns     `gorm:"many2many:drecords;"  json:"dns,omitempty"`
+	Whois      []Whois    `json:"whois,omitempty"`
 	// Pages      []*Page        `gorm:"many2many:webpages;"  json:"pages,omitempty"`
-	// Whois      []*WhoisRecord `json:"whois,omitempty"`
-	Dns []*DnsRecord `gorm:"many2many:dns;"  json:"dns,omitempty"`
 
 	// Language Analysis
 	// Languages
@@ -50,37 +50,36 @@ type Domain struct {
 	Levenshtein int       `json:"distance" gorm:"-"`
 }
 
-type DnsRecord struct {
+type Dns struct {
 	gorm.Model
-	Type  string `json:"type,omitempty"`
-	Value string `gorm:"unique"  json:"value,omitempty"`
-	Ttl   string `json:"ttl,omitempty"`
-
-	Domains []*Domain `gorm:"many2many:dns;" json:"domains,omitempty"`
+	Type    string    `json:"type,omitempty"`
+	Value   string    `gorm:"unique"  json:"value,omitempty"`
+	Ttl     string    `json:"ttl,omitempty"`
+	Domains []*Domain `gorm:"many2many:drecords;" json:"domains,omitempty"`
 }
 
-type WhoisRecord struct {
-	ID               uint
+type Whois struct {
+	gorm.Model
 	DomainID         uint
 	RegistrarID      uint
 	RegistrantID     uint
 	AdministrativeID uint
 	TechnicalID      uint
 	BillingID        uint
-	Domain           *Domain    `json:"domain,omitempty"`
-	Registrar        *Contact   `json:"registrar,omitempty"`
-	Registrant       *Contact   `json:"registrant,omitempty"`
-	Administrative   *Contact   `json:"administrative,omitempty"`
-	Technical        *Contact   `json:"technical,omitempty"`
-	Billing          *Contact   `json:"billing,omitempty"`
-	Created          *time.Time `json:"created,omitempty"`
-	Updated          *time.Time `json:"updated,omitempty"`
-	Expiration       *time.Time `json:"expiration,omitempty"`
+	// Domain           *Domain    `json:"domain,omitempty"`
+	Registrar      *Contact   `json:"registrar,omitempty"`
+	Registrant     *Contact   `json:"registrant,omitempty"`
+	Administrative *Contact   `json:"administrative,omitempty"`
+	Technical      *Contact   `json:"technical,omitempty"`
+	Billing        *Contact   `json:"billing,omitempty"`
+	Created        *time.Time `json:"created,omitempty"`
+	Updated        *time.Time `json:"updated,omitempty"`
+	Expiration     *time.Time `json:"expiration,omitempty"`
 }
 
 // Contact storing domain contact info
 type Contact struct {
-	ID           uint   `json:"id,omitempty"`
+	gorm.Model
 	Name         string `json:"name,omitempty"`
 	Organization string `json:"organization,omitempty"`
 	Street       string `json:"street,omitempty"`
@@ -96,12 +95,12 @@ type Contact struct {
 	ReferralURL  string `json:"referral_url,omitempty"`
 }
 
-func (DnsRecord) TableName() string {
-	return "drecords"
+func (Dns) TableName() string {
+	return "dns"
 }
 
-func (WhoisRecord) TableName() string {
-	return "wrecords"
+func (Whois) TableName() string {
+	return "whois"
 }
 
 func (d *Domain) Save() {

@@ -15,8 +15,11 @@
 package geo
 
 import (
-	"embed"
+	"crypto/md5"
+	"encoding/hex"
+	"fmt"
 	"io"
+	"path/filepath"
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
@@ -25,21 +28,73 @@ import (
 	"github.com/rainycape/geoip"
 )
 
-//go:embed GeoLite2-Country.mmdb
-var dataFile embed.FS
-
 type Plugin struct {
 	collectors.Plugin
+	geoip *geoip.GeoIP
+}
+
+func (p *Plugin) Init(c internal.Config) {
+	p.Plugin.Init(c)
+	var err error
+
+	p.geoip, err = geoip.Open(filepath.Join(c.Dir(), "maxmind.db.gz"))
+	if err != nil {
+		p.Log.Error(err)
+	}
 }
 
 func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
-	// p.Conf.Dir()
 	for _, ip := range domain.IPs {
-		if ip.Type == "IPv4" {
-			ip.Location, err = GeoLookup(ip.Addr)
-		}
+		p.GeoLookup(ip)
 	}
 	return domain, err
+}
+
+func (p *Plugin) GeoLookup(ip *db.Address) {
+	record, err := p.geoip.Lookup(ip.Addr)
+	if err != nil {
+		p.Log.Error(err)
+	}
+	if record == nil {
+		return
+	}
+
+	if record.City != nil {
+		city := db.Location{}
+		db.DB.FirstOrInit(&city, db.Location{
+			Code:       SetCode(record, record.City.Name.String()),
+			Name:       record.City.Name.String(),
+			Latitude:   record.Latitude,
+			Longitude:  record.Longitude,
+			TimeZone:   record.TimeZone,
+			PostalCode: record.PostalCode,
+		})
+		ip.Location = &city
+
+	} else if record.Country != nil {
+		country := db.Location{}
+		db.DB.FirstOrInit(&country, db.Location{
+			Code:       SetCode(record, record.Country.Name.String()),
+			Name:       record.Country.Name.String(),
+			Latitude:   record.Latitude,
+			Longitude:  record.Longitude,
+			TimeZone:   record.TimeZone,
+			PostalCode: record.PostalCode,
+		})
+		ip.Location = &country
+
+	} else if record.Continent != nil {
+		continent := db.Location{}
+		db.DB.FirstOrInit(&continent, db.Location{
+			Code:       SetCode(record, record.Continent.Name.String()),
+			Name:       record.Continent.Name.String(),
+			Latitude:   record.Latitude,
+			Longitude:  record.Longitude,
+			TimeZone:   record.TimeZone,
+			PostalCode: record.PostalCode,
+		})
+		ip.Location = &continent
+	}
 }
 
 // Register the plugin
@@ -58,88 +113,11 @@ func init() {
 	})
 }
 
-func GeoLookup(ip string) (*db.Location, error) {
-	var err error
-	var r *geoip.Record
-	var loc db.Location
-	r, err = GetGeo(ip)
+func SetCode(l *geoip.Record, name string) string {
+	hasher := md5.New()
+	_, err := io.WriteString(hasher, fmt.Sprintf("%f-%f-%s-%s", l.Latitude, l.Longitude, l.PostalCode, name))
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
-	loc.Latitude = r.Latitude
-	loc.Longitude = r.Longitude
-	loc.IsAnonymousProxy = r.IsAnonymousProxy
-	loc.IsSatelliteProvider = r.IsSatelliteProvider
-	loc.MetroCode = r.MetroCode
-	loc.PostalCode = r.PostalCode
-	loc.TimeZone = r.TimeZone
-	if r.Continent != nil {
-
-	}
-
-	if r.Country != nil {
-		place := &db.Place{
-			Code:      r.Country.Code,
-			GeonameID: r.Country.GeonameID,
-			Name:      r.Country.Name.String(),
-		}
-		loc.Country = place
-
-	}
-
-	if r.City != nil {
-		place := &db.Place{
-			Code:      r.City.Code,
-			GeonameID: r.City.GeonameID,
-			Name:      r.City.Name.String(),
-		}
-		loc.City = place
-	}
-
-	if r.RegisteredCountry != nil {
-		place := &db.Place{
-			Code:      r.RegisteredCountry.Code,
-			GeonameID: r.RegisteredCountry.GeonameID,
-			Name:      r.RegisteredCountry.Name.String(),
-		}
-		loc.RegisteredCountry = place
-	}
-
-	if r.RepresentedCountry != nil {
-		place := &db.Place{
-			Code:      r.RepresentedCountry.Code,
-			GeonameID: r.RepresentedCountry.GeonameID,
-			Name:      r.RepresentedCountry.Name.String(),
-		}
-		loc.RepresentedCountry = place
-	}
-
-	for _, subd := range r.Subdivisions {
-		loc.Subdivisions = append(loc.Subdivisions, &db.Place{
-			Code:      subd.Code,
-			GeonameID: subd.GeonameID,
-			Name:      subd.Name.String(),
-		})
-
-	}
-
-	db.DB.FirstOrCreate(&loc, db.Location{Latitude: loc.Latitude, Longitude: loc.Longitude})
-
-	return &loc, err
-}
-
-func GetGeo(ip string) (r *geoip.Record, err error) {
-	file, err := dataFile.Open("GeoLite2-Country.mmdb")
-	if err != nil {
-		return nil, err
-	}
-
-	defer file.Close()
-
-	db, err := geoip.New(file.(io.ReadSeeker))
-	if err != nil {
-		return nil, err
-	}
-
-	return db.Lookup(ip)
+	return hex.EncodeToString(hasher.Sum(nil))
 }

@@ -37,7 +37,7 @@ func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
 		record := strings.TrimSpace(record.Host)
 		record = strings.Trim(record, ".")
 		if record != "" {
-			domain.Dns = append(domain.Dns, &db.DnsRecord{Type: "MX", Value: record})
+			domain.Dns = append(domain.Dns, &db.Dns{Type: "MX", Value: record})
 		}
 	}
 

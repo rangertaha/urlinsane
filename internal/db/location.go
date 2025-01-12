@@ -14,76 +14,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package db
 
-import "gorm.io/gorm"
-
-type Place struct {
-	gorm.Model
-	// Code is the given code for the place. For continents, this
-	// value is one of AF (Africa), AS (Asia), EU (Europe), OC (Oceania),
-	// NA (North America) and SA (South America). For countries, its
-	// their ISO 3166-1 2 letter code (see http://en.wikipedia.org/wiki/ISO_3166-1).
-	Code string `gorm:"unique" json:"code,omitempty"`
-	// GeonameID is the place's ID in the geonames database. See
-	// http://www.geonames.org for more information.
-	GeonameID int `gorm:"unique" json:"geoname,omitempty"`
-	// Name is the place name, usually with several translations.
-	Name string `json:"name,omitempty"`
-}
-
 type Location struct {
-	gorm.Model
-	// Continent contains information about the continent
-	// where the record is located.
-	ContinentID uint
-	Continent   *Place `json:"continent,omitempty"`
-	// Country contains information about the country
-	// where the record is located.
-	CountryID uint
-	Country   *Place `json:"country,omitempty"`
-	// RegisteredCountry contains information about the
-	// country where the ISP has registered the IP address
-	// for this record. Note that this field might be
-	// different from Country.
-	RegisteredCountryID uint
-	RegisteredCountry   *Place `json:"registered,omitempty"`
-	// RepresentedCountry is non nil only when the record
-	// belongs an entity representing a country, like an
-	// embassy or a military base. Note that it might be
-	// diferrent from Country.
-	RepresentedCountryID uint
-	RepresentedCountry   *Place `json:"represented,omitempty"`
-	// City contains information about the city where the
-	// record is located.
-	CityID uint
-	City   *Place `json:"city,omitempty"`
-	// Subdivisions contains details about the subdivisions
-	// of the country where the record is located. Subdivisions
-	// are arranged from largest to smallest and the number of
-	// them will vary depending on the country.
-	Subdivisions []*Place `gorm:"many2many:subdivisions;" json:"subdivisions,omitempty"`
-	// Latitude of the location associated with the record.
-	// Note that a 0 Latitude and a 0 Longitude means the
-	// coordinates are not known.
-	Latitude float64 `json:"lat,omitempty"`
-	// Longitude of the location associated with the record.
-	// Note that a 0 Latitude and a 0 Longitude means the
-	// coordinates are not known.
-	Longitude float64 `json:"lon,omitempty"`
-	// MetroCode contains the metro code associated with the
-	// record. These are only available in the US
-	MetroCode int `json:"metrocode,omitempty"`
-	// PostalCode associated with the record. These are available in
-	// AU, CA, FR, DE, IT, ES, CH, UK and US.
-	PostalCode string `json:"postcode,omitempty"`
-	// TimeZone associated with the record, in IANA format (e.g.
-	// America/New_York). See http://www.iana.org/time-zones.
-	TimeZone string `json:"timezone,omitempty"`
-	// IsAnonymousProxy is true iff the record belongs
-	// to an anonymous proxy.
-	IsAnonymousProxy bool `json:"proxy,omitempty"`
-	// IsSatelliteProvider is true iff the record is
-	// in a block managed by a satellite ISP that provides
-	// service to multiple countries. These IPs might be
-	// in high risk countries.
-	IsSatelliteProvider bool `json:"satellite,omitempty"`
+	ID         uint
+	ParentID   uint
+	Code       string     `gorm:"unique" json:"code,omitempty"`
+	Name       string     `json:"name,omitempty"`
+	TimeZone   string     `json:"timezone,omitempty"`
+	Latitude   float64    `json:"lat,omitempty"`
+	Longitude  float64    `json:"lon,omitempty"`
+	PostalCode string     `json:"postcode,omitempty"`
 }

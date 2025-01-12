@@ -38,15 +38,15 @@ func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
 		record = strings.Trim(record, ".")
 
 		if strings.Contains(ip.String(), ":") {
-			domain.Dns = append(domain.Dns, &db.DnsRecord{Type: "AAAA", Value: record})
+			domain.Dns = append(domain.Dns, &db.Dns{Type: "AAAA", Value: record})
 			domain.IPs = append(domain.IPs, &db.Address{Addr: record, Type: "IPv6"})
 
 		} else if strings.Contains(ip.String(), ".") {
-			domain.Dns = append(domain.Dns, &db.DnsRecord{Type: "A", Value: record})
+			domain.Dns = append(domain.Dns, &db.Dns{Type: "A", Value: record})
 			domain.IPs = append(domain.IPs, &db.Address{Addr: record, Type: "IPv4"})
 			addresses, _ := net.LookupAddr(record)
 			for _, address := range addresses {
-				domain.Dns = append(domain.Dns, &db.DnsRecord{Type: "PTR", Value: address})
+				domain.Dns = append(domain.Dns, &db.Dns{Type: "PTR", Value: address})
 			}
 		}
 	}

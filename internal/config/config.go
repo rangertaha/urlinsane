@@ -47,10 +47,10 @@ const (
 	DIR_PRIMARY = ".config/urlinsane"
 	PRIMARY_DB  = "urlinsane.db"
 	DATASET_DB  = "dataset.db"
-	MAXMIND_DB  = "maxmind.db"
+	MAXMIND_DB  = "maxmind.db.gz"
 )
 
-//go:embed maxmind.db
+//go:embed maxmind.db.gz
 var MaxMindDB []byte
 
 //go:embed dataset.db

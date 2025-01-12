@@ -36,7 +36,7 @@ func (i *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
 	for _, record := range records {
 		record := strings.TrimSpace(record)
 		record = strings.Trim(record, ".")
-		domain.Dns = append(domain.Dns, &db.DnsRecord{Type: "TXT", Value: record})
+		domain.Dns = append(domain.Dns, &db.Dns{Type: "TXT", Value: record})
 	}
 	return domain, err
 }
