@@ -15,7 +15,10 @@
 package db
 
 import (
+	"encoding/json"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"gorm.io/gorm"
 )
@@ -109,4 +112,12 @@ func (d *Domain) Save() {
 
 func (d *Domain) Live() bool {
 	return len(d.Dns) > 0
+}
+
+func (d *Domain) Json() (j string) {
+	jsonData, err := json.Marshal(d)
+	if err != nil {
+		log.Error("Marshal:", err)
+	}
+	return string(jsonData)
 }
