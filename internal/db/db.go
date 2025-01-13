@@ -27,9 +27,7 @@ func Config(filepath string) {
 
 		// Networking
 		&Address{},
-		&Service{},
 		&Port{},
-		// &Device{},
 
 		// Geography
 		&Location{},
@@ -44,5 +42,5 @@ func Config(filepath string) {
 type Scan struct {
 	gorm.Model
 	Query   string
-	Results []Domain `gorm:"many2many:results;"`
+	Results []*Domain `gorm:"many2many:results;"`
 }

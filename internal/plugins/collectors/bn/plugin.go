@@ -15,90 +15,59 @@
 package bn
 
 import (
-	"encoding/json"
-	"fmt"
-	"net"
-	"time"
-
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
-	log "github.com/sirupsen/logrus"
+	// log "github.com/sirupsen/logrus"
 )
-
-type Banner struct {
-	Port   string `json:"port,omitempty"`
-	String string `json:"string,omitempty"`
-}
-
-type Banners []Banner
 
 type Plugin struct {
 	collectors.Plugin
 }
 
 func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
-	// ports := []string{"80", "21", "587"}
-	// banners := Banners{}
-
-	// for _, port := range ports {
-	// 	b := Banner{
-	// 		Port:   port,
-	// 		String: i.Banner("tcp", acc.Domain().String(), port),
-	// 	}
-	// 	banners = append(banners, b)
-	// }
-	// if len(banners) > 0 {
-	// 	acc.SetMeta("BANNER", banners.String("80"))
-	// 	acc.SetJson("BANNER", banners.Json())
-	// 	acc.Domain().Live(true)
-	// 	acc.Save("banner.txt", []byte(banners.String("80")))
-	// }
+	for _, ip := range domain.IPs {
+		p.Banner(ip)
+	}
 
 	return domain, err
 }
 
+func (p *Plugin) Banner(addr *db.Address) (err error) {
+
+	// address := fmt.Sprintf("%s:%d", addr.Addr, 80)
+	// conn, err := net.DialTimeout("http", address, 10*time.Second)
+	// if err != nil {
+	// 	log.Error("Error:", err.Error())
+	// 	// conn.Close()
+	// 	return
+	// }
+
+	// // Send the request to the server
+	// // fmt.Fprintf(conn, "GET / HTTP/1.1\r\nHost: %s\r\n\r\n", host)
+
+	// // Read the response from the server
+	// buffer := make([]byte, 1024)
+	// n, err := conn.Read(buffer)
+	// if err != nil {
+	// 	log.Error("Error:", err.Error())
+	// 	return
+	// }
+	// var service db.Service
+	// svc := db.Service{
+	// 	Name:   "HTTP",
+	// 	Banner: string(buffer[:n]),
+	// }
+	// db.DB.FirstOrInit(service, svc)
+	// // var ip db.Address
+	// // db.DB.FirstOrInit(&ip, db.Address{Addr: addr.Addr})
+	// addr.Ports = append(addr.Ports, &db.Port{Number: 80, Service: &service})
+
+	// defer conn.Close()
+	return err
+}
+
 func (p *Plugin) Close() {}
-
-func (p *Plugin) Banner(proto, host, port string) (bn string) {
-	address := fmt.Sprintf("%s:%s", host, port)
-	conn, err := net.DialTimeout(proto, address, 10*time.Second)
-	if err != nil {
-		log.Error("Error:", err.Error())
-		return
-	}
-	defer conn.Close()
-
-	// Send the request to the server
-	fmt.Fprintf(conn, "GET / HTTP/1.1\r\nHost: %s\r\n\r\n", host)
-
-	// Read the response from the server
-	buffer := make([]byte, 1024)
-	n, err := conn.Read(buffer)
-	if err != nil {
-		log.Error("Error:", err.Error())
-		return
-	}
-
-	return string(buffer[:n])
-}
-
-func (b *Banners) Json() json.RawMessage {
-	records, err := json.Marshal(b)
-	if err != nil {
-		log.Error(err)
-	}
-	return json.RawMessage(records)
-}
-
-func (b *Banners) String(p string) (values string) {
-	for _, banner := range *b {
-		if banner.Port == p {
-			return banner.String
-		}
-	}
-	return
-}
 
 // Register the plugin
 func init() {
@@ -106,11 +75,11 @@ func init() {
 	collectors.Add(CODE, func() internal.Collector {
 		return &Plugin{
 			Plugin: collectors.Plugin{
-				Num:       0,
+				Num:       5,
 				Code:      CODE,
 				Title:     "Banner Grabber",
 				Summary:   "Capturing HTTP/SMTP banners",
-				DependsOn: []string{},
+				DependsOn: []string{"ip"},
 			},
 		}
 	})

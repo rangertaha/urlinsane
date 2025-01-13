@@ -15,11 +15,9 @@
 package list
 
 import (
-	"fmt"
-	"strings"
-
-	"github.com/jedib0t/go-pretty/v6/text"
+	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/pkg"
 )
 
 func (p *Plugin) Rows(domains ...*db.Domain) (rows []string) {
@@ -30,58 +28,85 @@ func (p *Plugin) Rows(domains ...*db.Domain) (rows []string) {
 }
 
 func (p *Plugin) Row(domain *db.Domain) (row string) {
-	var data []interface{}
+	return p.Print(domain)
+}
 
-	data = append(data, fmt.Sprintf("%d  ", domain.Levenshtein))
+func (p *Plugin) Print(d *db.Domain) (output string) {
+	tb := table.NewWriter()
+	tb.SetStyle(pkg.StyleClear)
 
-	if p.config.Verbose() {
-		data = append(data, fmt.Sprintf("%s  ", domain.Algorithm.Name))
+	// Basic domain info
+	if d.Redirect != nil {
+		tb.AppendRow(table.Row{d.Levenshtein, d.Algorithm.Code, d.Name, d.Punycode, d.Redirect.Name})
 	} else {
-		data = append(data, fmt.Sprintf("%s  ", strings.ToUpper(domain.Algorithm.Code)))
+		tb.AppendRow(table.Row{d.Levenshtein, d.Algorithm.Code, d.Name, d.Punycode})
 	}
 
-	data = append(data, fmt.Sprintf("%s  ", domain.Name))
-
-	data = append(data, fmt.Sprintf("%s  ", domain.Punycode))
-
-	if domain.Redirect != nil {
-		data = append(data, fmt.Sprintf("%s  ", domain.Redirect.Name))
+	if len(d.Dns) > 0 || len(d.Whois) > 0 {
+		output += tb.Render() + "\n"
+	} else {
+		output += tb.Render()
 	}
 
-	for _, record := range domain.Dns {
-		data = append(data, fmt.Sprintf("%s  ", record.Value))
+	// DNS Records
+	tb = table.NewWriter()
+	tb.SetStyle(pkg.StyleClear)
+	for _, record := range d.Dns {
+		tb.AppendRow(table.Row{"    ", record.Type, record.Value, record.Ttl})
+	}
+	if len(d.Dns) > 0 {
+		output += tb.Render() + "\n"
 	}
 
-	for _, ip := range domain.IPs {
-		if ip.Location != nil {
-			data = append(data, fmt.Sprintf("%s  ", ip.Location.Name))
-			if ip.Location.Latitude > 0 {
-				data = append(data, fmt.Sprintf("%f %f  ", ip.Location.Latitude, ip.Location.Longitude))
+	// Whois Records
+	tb = table.NewWriter()
+	tb.SetStyle(pkg.StyleClear)
+	for _, record := range d.Whois {
+		if record.Registrant != nil {
+			c := record.Registrant
+			for _, field := range []string{c.Name, c.Organization, c.Email, c.Phone, c.PhoneExt} {
+				if field != "" {
+					tb.AppendRow(table.Row{"     ", field})
+				}
 			}
-			if ip.Location.TimeZone != "" {
-				data = append(data, fmt.Sprintf("%s  ", ip.Location.TimeZone))
+		}
+		if record.Registrar != nil {
+			c := record.Registrar
+			for _, field := range []string{c.Name, c.Organization, c.Email, c.Phone, c.PhoneExt} {
+				if field != "" {
+					tb.AppendRow(table.Row{"     ", field})
+				}
+			}
+		}
+		if record.Administrative != nil {
+			c := record.Administrative
+			for _, field := range []string{c.Name, c.Organization, c.Email, c.Phone, c.PhoneExt} {
+				if field != "" {
+					tb.AppendRow(table.Row{"     ", field})
+				}
+			}
+		}
+		if record.Billing != nil {
+			c := record.Billing
+			for _, field := range []string{c.Name, c.Organization, c.Email, c.Phone, c.PhoneExt} {
+				if field != "" {
+					tb.AppendRow(table.Row{"     ", field})
+				}
+			}
+		}
+		if record.Technical != nil {
+			c := record.Technical
+			for _, field := range []string{c.Name, c.Organization, c.Email, c.Phone, c.PhoneExt} {
+				if field != "" {
+					tb.AppendRow(table.Row{"     ", field})
+				}
 			}
 		}
 	}
-
-	for _, record := range domain.Whois {
-		data = append(data, fmt.Sprintf("%s  ", record.Registrant.Name))
+	if len(d.Whois) > 0 {
+		tb.AppendRow(table.Row{""})
+		output += tb.Render()
 	}
 
-
-	// for _, record := range domain.Dns {
-	// 	data = append(data, fmt.Sprintf("%s  ", record.Value))
-	// }
-
-	// for _, record := range domain.Dns {
-	// 	data = append(data, fmt.Sprintf("%s  ", record.Value))
-	// }
-
-	//  Build content for output file
-	row = row + fmt.Sprint(data...)
-
-	if domain.Live() {
-		return text.FgGreen.Sprint(row)
-	}
-	return text.FgRed.Sprint(row)
+	return
 }

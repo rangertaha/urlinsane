@@ -35,15 +35,8 @@ type Address struct {
 
 type Port struct {
 	gorm.Model
-	Proto     string   `json:"proto,omitempty"`
-	Number    int      `json:"num,omitempty"`
-	State     string   `json:"state,omitempty"`
-	Service   *Service `json:"service,omitempty"`
-	ServiceID *uint
-}
-
-type Service struct {
-	gorm.Model
-	Name   string `json:"name,omitempty"`
-	Banner string `json:"banner,omitempty"`
+	Proto   string `json:"proto,omitempty"`
+	Number  int    `json:"num,omitempty"`
+	State   string `json:"state,omitempty"`
+	Service string `json:"service,omitempty"`
 }
