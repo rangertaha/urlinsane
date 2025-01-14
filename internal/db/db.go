@@ -18,19 +18,20 @@ func Config(filepath string) {
 
 	// Migrate the schema
 	DB.AutoMigrate(
-		// Domains
 		&Scan{},
+
+		// Domains
 		&Contact{},
 		&Domain{},
 		&Whois{},
 		&Dns{},
 
+		// Geography
+		&Location{},
+
 		// Networking
 		&Address{},
 		&Port{},
-
-		// Geography
-		&Location{},
 
 		// Files
 		// &Page{},

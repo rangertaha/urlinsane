@@ -40,11 +40,13 @@ func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
 	}
 
 	record := db.Whois{}
-	db.DB.FirstOrCreate(&record, db.Whois{
-		Created:    r.Domain.CreatedDateInTime,
-		Updated:    r.Domain.UpdatedDateInTime,
-		Expiration: r.Domain.ExpirationDateInTime,
-	})
+	if r.Domain != nil {
+		db.DB.FirstOrCreate(&record, db.Whois{
+			Created:    r.Domain.CreatedDateInTime,
+			Updated:    r.Domain.UpdatedDateInTime,
+			Expiration: r.Domain.ExpirationDateInTime,
+		})
+	}
 
 	if r.Administrative != nil {
 		administrative := db.Contact{
@@ -65,7 +67,7 @@ func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
 		db.DB.FirstOrInit(&administrative, administrative)
 		record.Administrative = &administrative
 	}
-	
+
 	if r.Billing != nil {
 		billing := db.Contact{
 			Name:         r.Billing.Name,
