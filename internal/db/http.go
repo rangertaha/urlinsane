@@ -26,9 +26,10 @@ type Page struct {
 	Body        string  `json:"body,omitempty"`
 
 	// Media Relations
-	Images []*Image `gorm:"many2many:pimages;" json:"images,omitempty"`
+	Images []*Image `gorm:"many2many:pimages;"json:"images,omitempty"`
 	Pages  []*Page  `gorm:"many2many:ppages;" json:"pages,omitempty"`
 	Files  []*File  `gorm:"many2many:pfiles;" json:"files,omitempty"`
+	Har    string   `gorm:"serializer:json"   json:"har,omitempty"`
 
 	// Language Analysis
 	// Languages
@@ -49,14 +50,3 @@ type File struct {
 	Url    string            `json:"uri,omitempty"`
 	Hashes map[string]string `gorm:"serializer:json"      json:"hashes,omitempty"`
 }
-
-// // Banner Details
-// Status        string `json:"status,omitempty"`
-// Protocol      string `json:"protocol,omitempty"`
-// Headers       string `json:"headers,omitempty"`
-// ContentLength int64  `json:"length,omitempty"`
-// Proto         string `json:"proto,omitempty"`
-// StatusCode    int    `json:"code,omitempty"`
-// TLS           string `json:"tls,omitempty"`
-// Cookies       string `json:"cookies,omitempty"`
-// Trailer       string `json:"trailer,omitempty"`
