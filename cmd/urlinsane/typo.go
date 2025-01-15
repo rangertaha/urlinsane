@@ -38,6 +38,38 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+var SubcommandHelpTemplate = `NAME:
+   {{template "helpNameTemplate" .}}
+
+USAGE:
+   {{if .UsageText}}{{wrap .UsageText 3}}{{else}}{{.HelpName}} {{if .VisibleFlags}}command [command options]{{end}}{{if .ArgsUsage}} {{.ArgsUsage}}{{else}}{{if .Args}} [arguments...]{{end}}{{end}}{{end}}{{if .Description}}
+
+DESCRIPTION:
+   {{template "descriptionTemplate" .}}{{end}}{{if .VisibleCommands}}
+
+COMMANDS:{{template "visibleCommandCategoryTemplate" .}}{{end}}{{if .VisibleFlagCategories}}
+
+OPTIONS:{{template "visibleFlagCategoryTemplate" .}}{{else if .VisibleFlags}}
+
+OPTIONS:{{template "visibleFlagTemplate" .}}{{end}}
+`
+
+var ShowIDHelpTemplate = `NAME:
+   {{template "helpNameTemplate" .}}
+
+USAGE:
+   {{if .UsageText}}{{wrap .UsageText 3}}{{else}}{{.HelpName}} {{if .VisibleFlags}}command [command options]{{end}}{{if .ArgsUsage}} {{.ArgsUsage}}{{else}}{{if .Args}} [arguments...]{{end}}{{end}}{{end}}{{if .Description}}
+
+DESCRIPTION:
+   {{template "descriptionTemplate" .}}{{end}}{{if .VisibleCommands}}
+
+COMMANDS:{{template "visibleCommandCategoryTemplate" .}}{{end}}{{if .VisibleFlagCategories}}
+
+OPTIONS:{{template "visibleFlagCategoryTemplate" .}}{{else if .VisibleFlags}}
+
+OPTIONS:{{template "visibleFlagTemplate" .}}{{end}}
+`
+
 var Flags = []cli.Flag{
 	&cli.StringFlag{
 		Name:    "languages",
@@ -169,6 +201,17 @@ var Flags = []cli.Flag{
 		Category: "OUTPUT",
 		Usage:    "show summary of scan results",
 	},
+	&cli.BoolFlag{
+		Name:    "options",
+		Aliases: []string{"ids", "opts"},
+		Value:   false,
+		Hidden:  false,
+		Usage:   "show IDs of keyboards, languages, algorithms, collectors",
+		Action: func(ctx *cli.Context, v bool) error {
+			ShowIDHelp()
+			return nil
+		},
+	},
 	&cli.PathFlag{
 		Name:     "dir",
 		Value:    "domains",
@@ -183,7 +226,7 @@ var Flags = []cli.Flag{
 		Value:    false,
 		Hidden:   true,
 		Category: "PERFORMANCE",
-		Usage:    "use random user agent for HTTP requests",
+		Usage:    "randomize user agent for HTTP requests",
 	},
 }
 
@@ -196,6 +239,12 @@ var TypoCmd = cli.Command{
 	UseShortOptionHandling: true,
 	Flags:                  Flags,
 	Action: func(cCtx *cli.Context) error {
+		if cCtx.Bool("options") {
+			cCtx.App.CustomAppHelpTemplate = ShowIDHelp()
+			cli.ShowAppHelpAndExit(cCtx, 0)
+			return nil
+		}
+
 		if cCtx.NArg() == 0 {
 			fmt.Println(text.FgRed.Sprint("\n  a domain name is needed!\n"))
 			cli.ShowSubcommandHelpAndExit(cCtx, 1)
@@ -214,56 +263,58 @@ var TypoCmd = cli.Command{
 		}
 		return engine.New(cfg).Execute()
 	},
-	CustomHelpTemplate: ShowSubcommandHelp(cli.SubcommandHelpTemplate),
+	CustomHelpTemplate: fmt.Sprintf(`%sEXAMPLE:
+
+    urlinsane typo example.com
+
+    urlinsane typo -a co        example.com
+    urlinsane typo -a co,oi,oy  example.com
+
+    urlinsane typo -c ip -a co        example.com
+    urlinsane typo -c ip,mx,ns -co   example.com
+
+    urlinsane typo -l en        example.com
+    urlinsane typo -l en,fr,ru  example.com
+
+    urlinsane typo -k en       example.com
+    urlinsane typo -k en1,en2  example.com
+
+    urlinsane typo --options
+
+
+AUTHOR:
+   Rangertaha (rangertaha@gmail.com)
+     
+     `, cli.SubcommandHelpTemplate),
 }
 
 func init() {
 
 }
 
-func ShowSubcommandHelp(template string) string {
+func ShowIDHelp() string {
 	collectors := CollectorTable()
 	algorithms := AlgorithmTable()
 	languages := LanguageTable()
 	keyboards := KeyboardTable()
 	outputs := OutputTable()
 
-	return fmt.Sprintf(`%sKEYBOARDS:
+	return fmt.Sprintf(`KEYBOARDS:
 %s
-
-			eg: urlinsane typo -k en1,en2,en3,en4 example.com
 
 LANGUAGES:
 %s
 
-			eg: urlinsane typo -l ru,hy,en example.com
-
 ALGORITHMS:
 %s
-
-			eg: urlinsane typo -a cs,gr,cm example.com
 
 COLLECTORS:
 %s
 
-			eg: urlinsane typo -c ip,idn example.com
-
 OUTPUTS:
 %s
 
-			eg: urlinsane typo -f table example.com
-
-EXAMPLE:
-
-    urlinsane typo example.com
-    urlinsane typo -a co example.com
-    urlinsane typo -a co,oi,oy -c ip,idna,ns example.com
-    urlinsane typo -l fr,en -k en1,en2 example.com
-
-AUTHOR:
-   Rangertaha (rangertaha@gmail.com)
-     
-     `, template, keyboards, languages, algorithms, collectors, outputs)
+`, keyboards, languages, algorithms, collectors, outputs)
 }
 
 func CollectorTable() string {
@@ -275,16 +326,6 @@ func CollectorTable() string {
 	}
 	return t.Render()
 }
-
-// func CollectorFields() (fields string) {
-// 	headers := []string{}
-// 	for _, i := range collectors.List() {
-// 		for _, header := range i.Headers() {
-// 			headers = append(headers, strings.ToLower(header))
-// 		}
-// 	}
-// 	return strings.Join(headers, ",")
-// }
 
 func AlgorithmTable() string {
 	t := table.NewWriter()
