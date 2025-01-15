@@ -26,10 +26,10 @@ type Page struct {
 	Body        string  `json:"body,omitempty"`
 
 	// Media Relations
-	Images []*Image `gorm:"many2many:pimages;"json:"images,omitempty"`
-	Pages  []*Page  `gorm:"many2many:ppages;" json:"pages,omitempty"`
-	Files  []*File  `gorm:"many2many:pfiles;" json:"files,omitempty"`
-	Har    string   `gorm:"serializer:json"   json:"har,omitempty"`
+	Images []*Image `gorm:"many2many:pimages;" json:"images,omitempty"`
+	Pages  []*Page  `gorm:"many2many:ppages;"  json:"pages,omitempty"`
+	Files  []*File  `gorm:"many2many:pfiles;"  json:"files,omitempty"`
+	Har    string   `gorm:"serializer:json"    json:"har,omitempty"`
 
 	// Language Analysis
 	// Languages
