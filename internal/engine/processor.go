@@ -65,7 +65,7 @@ func (u *Urlinsane) Init() <-chan *db.Domain {
 
 	// u.target = &db.Domain{Name: u.cfg.Target()}
 	db.DB.FirstOrInit(&u.target, db.Domain{Name: u.cfg.Target()})
-	// db.DB.FirstOrInit(&u.scan, db.Scan{Domain: &u.target})
+	db.DB.Preload("Results").FirstOrInit(&u.scan, db.Scan{Query: u.target.Name})
 
 	log := log.WithFields(
 		log.Fields{"domain": u.target.Name})
@@ -172,8 +172,6 @@ func (u *Urlinsane) Load(in <-chan *db.Domain) <-chan *db.Domain {
 		for d := range in {
 			var domain *db.Domain
 			result := db.DB.Preload("Dns").Preload("IPs").Preload("Redirect").FirstOrInit(&domain, db.Domain{Name: d.Name})
-			// result := db.DB.FirstOrInit(&domain, db.Domain{Name: d.Name})
-
 			if result.Error != nil {
 				log.Errorf("Loading %s failed: %s", d.Name, result.Error.Error())
 			}
@@ -280,7 +278,6 @@ func (u *Urlinsane) Analyzers(in <-chan *db.Domain) <-chan *db.Domain {
 func (u *Urlinsane) Output(in <-chan *db.Domain) {
 	output := u.cfg.Output()
 
-	
 	for c := range in {
 		// Stream or collect domains
 		output.Read(c)
@@ -290,16 +287,8 @@ func (u *Urlinsane) Output(in <-chan *db.Domain) {
 			c.Save()
 		}
 
-		// domains := []db.Domain{}
-		// db.DB.Where("name = ?", c.Name).Preload("IPs").Find(&domains)
-		// for _, domain := range domains {
-		// 	for _, ip := range domain.IPs {
-		// 		fmt.Println(ip.Addr)
-		// 		for _, d := range ip.Domians {
-		// 			fmt.Println(d.Name)
-		// 		}
-		// 	}
-		// }
+		// Collect scan results
+		u.scan.Results = append(u.scan.Results, c)
 	}
 
 	// Optionally, writes collected domains
@@ -309,6 +298,9 @@ func (u *Urlinsane) Output(in <-chan *db.Domain) {
 	if u.cfg.Summary() {
 		output.Summary()
 	}
+
+	// Save scans
+	db.DB.Save(&u.scan)
 }
 
 func (u *Urlinsane) Close() {
