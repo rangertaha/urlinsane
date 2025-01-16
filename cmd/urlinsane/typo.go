@@ -124,14 +124,14 @@ var Flags = []cli.Flag{
 	&cli.DurationFlag{
 		Name:     "timeout",
 		Aliases:  []string{"t"},
-		Value:    0 * time.Minute,
+		Value:    20 * time.Second,
 		Category: "PERFORMANCE",
 		Hidden:   true,
 		Usage:    "maximim duration tasks need to complete `DURATION`",
 	},
 	&cli.DurationFlag{
 		Name:     "ttl",
-		Value:    0 * time.Hour,
+		Value:    1 * time.Hour,
 		Category: "PERFORMANCE",
 		Usage:    "duration to cache results, 0 clears the cache `DURATION`",
 	},

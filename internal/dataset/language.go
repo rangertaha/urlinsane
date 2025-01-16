@@ -36,10 +36,11 @@ type Sym struct {
 }
 
 type Char struct {
-	ID         uint
-	Text       string      `gorm:"unique"`
-	Homoglyphs []*Char     `gorm:"many2many:homoglyphs;"`
-	Languages  []*Language `gorm:"many2many:graphemes;"`
+	ID               uint
+	Text             string      `gorm:"unique"`
+	Homoglyphs       []*Char     `gorm:"many2many:homoglyphs;"`
+	Languages        []*Language `gorm:"many2many:graphemes;"`
+	Transliterations []*Char     `gorm:"many2many:transliterations;"`
 }
 
 type Word struct {
