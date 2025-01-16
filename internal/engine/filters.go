@@ -72,25 +72,6 @@ func Dedup() func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
 	}
 }
 
-// func GetTotal() func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
-// 	return func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
-// 		out := make(chan *db.Domain)
-
-// 		go func() {
-// 			var count int
-// 			for domain := range in {
-// 				count++
-
-// 				out <- domain
-
-// 			}
-// 			c.Count(count)
-// 			close(out)
-// 		}()
-// 		return out
-// 	}
-// }
-
 func Regex() func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
 	return func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
 		out := make(chan *db.Domain)

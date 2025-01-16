@@ -105,7 +105,7 @@ type Output interface {
 	Read(*db.Domain)
 	Write()
 	Save(filename string)
-	Summary()
+	Report()
 }
 
 type Domain interface {

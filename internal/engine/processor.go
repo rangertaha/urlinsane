@@ -296,7 +296,7 @@ func (u *Urlinsane) Output(in <-chan *db.Domain) {
 
 	// Optionally print summary
 	if u.cfg.Summary() {
-		output.Summary()
+		output.Report()
 	}
 
 	// Save scans

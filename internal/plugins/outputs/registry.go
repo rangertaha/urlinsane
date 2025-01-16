@@ -2,8 +2,11 @@ package outputs
 
 import (
 	"fmt"
+	"time"
 
+	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/db"
 )
 
 type Creator func() internal.Output
@@ -55,6 +58,13 @@ func List(IDs ...string) (outputs []internal.Output) {
 type Plugin struct {
 	Summary string
 	ID      string
+	Config  internal.Config
+	Domains []*db.Domain
+	Elapsed time.Duration
+	Started time.Time
+	Offline int64
+	Online  int64
+	Total   int64
 }
 
 func (p *Plugin) Id() string {
@@ -63,4 +73,27 @@ func (p *Plugin) Id() string {
 
 func (p *Plugin) Description() string {
 	return p.Summary
+}
+
+func (p *Plugin) Init(conf internal.Config) {
+	p.Started = time.Now()
+	p.Config = conf
+}
+
+func (p *Plugin) Report() {
+	p.Elapsed = time.Since(p.Started)
+	summary := map[string]string{
+		"  TIME:":  p.Elapsed.String(),
+		"  TOTAL:": fmt.Sprintf("%d", p.Total),
+	}
+	if len(p.Config.Collectors()) > 0 {
+		summary[text.FgGreen.Sprintf("%s", "  LIVE:")] = fmt.Sprintf("%d", p.Online)
+		summary[text.FgRed.Sprintf("%s", "  OFFLINE")] = fmt.Sprintf("%d", p.Offline)
+	}
+
+	fmt.Println("")
+	for k, v := range summary {
+		fmt.Printf("%s %s   ", k, v)
+	}
+	fmt.Println("")
 }
