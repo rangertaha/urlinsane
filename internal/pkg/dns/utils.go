@@ -68,10 +68,3 @@ func PermutateSuffix(domain string) (domains []string) {
 	}
 	return
 }
-
-// func Permutate(domain string, prefixes, suffixes []string) (domains []string) {
-// 	for _, dm := range PermutatePrefix(domain, prefixes) {
-// 		domains = append(domains, PermutateSuffix(dm)...)
-// 	}
-// 	return
-// }
