@@ -60,13 +60,12 @@ func (p *Plugin) Header() (row table.Row) {
 	row = append(row, "TYPE")
 	row = append(row, "TYPO")
 
-	// for _, info := range p.Config.Collectors() {
-	// 	for _, header := range info.Headers() {
-	// 		// if n.Filter(header) {
-	// 		row = append(row, header)
-	// 		// }
-	// 	}
-	// }
+	for _, collector := range p.Config.Collectors() {
+		if collector.Id() == "ip" {
+			
+		}
+	}
+
 	return
 }
 

@@ -276,31 +276,33 @@ func (u *Urlinsane) Analyzers(in <-chan *db.Domain) <-chan *db.Domain {
 }
 
 func (u *Urlinsane) Output(in <-chan *db.Domain) {
-	output := u.cfg.Output()
+	if output := u.cfg.Output(); output != nil {
+		for c := range in {
+			// Stream or collect domains
+			output.Read(c)
 
-	for c := range in {
-		// Stream or collect domains
-		output.Read(c)
+			// Save domain to database
+			if c.Live() {
+				c.Save()
+			}
 
-		// Save domain to database
-		if c.Live() {
-			c.Save()
+			// Collect scan results
+			u.scan.Results = append(u.scan.Results, c)
 		}
 
-		// Collect scan results
-		u.scan.Results = append(u.scan.Results, c)
+		// Optionally, writes collected domains
+		output.Write()
+
+		// Optionally print summary
+		if u.cfg.Summary() {
+			output.Report()
+		}
+
+		// Save scans
+		db.DB.Save(&u.scan)
+	} else {
+		fmt.Println("Invalid output formater")
 	}
-
-	// Optionally, writes collected domains
-	output.Write()
-
-	// Optionally print summary
-	if u.cfg.Summary() {
-		output.Report()
-	}
-
-	// Save scans
-	db.DB.Save(&u.scan)
 }
 
 func (u *Urlinsane) Close() {
@@ -310,11 +312,6 @@ func (u *Urlinsane) Close() {
 			inf.Close()
 		}
 	}
-
-	// Close db
-	// u.cfg.Database().Close()
-
-	// os.Exit(1)
 }
 
 func (u *Urlinsane) Execute() (err error) {

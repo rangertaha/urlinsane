@@ -123,7 +123,7 @@ func init() {
 // New creates a new configuration
 func New(options ...func(*Config)) (*Config, error) {
 	s := &Config{
-		format: "json",
+		format: "list",
 	} // Default values
 
 	// Apply config options

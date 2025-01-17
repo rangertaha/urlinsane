@@ -169,7 +169,7 @@ var Flags = []cli.Flag{
 		Aliases:  []string{"f"},
 		Value:    "list",
 		Category: "OUTPUT",
-		Usage:    "output format: (csv,tsv,table,list,html,md,json) `FORMAT`",
+		Usage:    "output format: (list,json) `FORMAT`",
 	},
 	&cli.StringFlag{
 		Name:     "nameservers",

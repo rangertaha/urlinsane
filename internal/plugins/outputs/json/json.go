@@ -12,69 +12,51 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package txt
+package json
 
 import (
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
 	log "github.com/sirupsen/logrus"
 )
 
-const (
-	CODE        = "json"
-	DESCRIPTION = "Deeply nested JSON structured output"
-)
-
 type Plugin struct {
-	config  internal.Config
-	domains []internal.Domain
+	outputs.Plugin
 }
 
-func (p *Plugin) Id() string {
-	return CODE
-}
+func (p *Plugin) Read(domain *db.Domain) {
+	p.Domains = append(p.Domains, domain)
 
-func (p *Plugin) Description() string {
-	return DESCRIPTION
-}
-
-func (p *Plugin) Init(conf internal.Config) {
-	n.config = conf
-}
-
-func (p *Plugin) Read(domain internal.Domain) {
-	n.domains = append(n.domains, domain)
-
-	if !n.config.Progress() {
+	if !p.Config.Progress() {
 		fmt.Println(domain.Json())
 	}
 }
 
 func (p *Plugin) Write() {
-	if n.config.Progress() {
-		for _, domain := range n.domains {
+	if p.Config.Progress() {
+		for _, domain := range p.Domains {
 			fmt.Println(domain.Json())
 		}
 	}
 }
 
-func (p *Plugin) Filter(header string) bool {
-	header = strings.TrimSpace(header)
-	header = strings.ToLower(header)
-	for _, filter := range n.config.Filters() {
-		filter = strings.TrimSpace(filter)
-		filter = strings.ToLower(filter)
-		if filter == header {
-			return true
-		}
-	}
-	return false
-}
+// func (p *Plugin) Filter(header string) bool {
+// 	header = strings.TrimSpace(header)
+// 	header = strings.ToLower(header)
+// 	for _, filter := range p.Config.Filters() {
+// 		filter = strings.TrimSpace(filter)
+// 		filter = strings.ToLower(filter)
+// 		if filter == header {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }
 
 func (p *Plugin) Summary(report map[string]string) {}
 
@@ -91,7 +73,7 @@ func (p *Plugin) Save(fname string) {
 	writer := bufio.NewWriter(file)
 
 	// Stream data to the file
-	for _, domain := range n.domains {
+	for _, domain := range p.Domains {
 		_, err := writer.WriteString(domain.Json())
 		if err != nil {
 			log.Error("Error writing to file:", err)
@@ -107,7 +89,13 @@ func (p *Plugin) Save(fname string) {
 
 // Register the plugin
 func init() {
+	var CODE = "json"
 	outputs.Add(CODE, func() internal.Output {
-		return &Plugin{}
+		return &Plugin{
+			Plugin: outputs.Plugin{
+				ID:      CODE,
+				Summary: "nested JSON structured output",
+			},
+		}
 	})
 }
