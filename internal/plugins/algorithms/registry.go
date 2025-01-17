@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/db"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -54,11 +55,28 @@ func List(IDs ...string) (algos []internal.Algorithm) {
 	return
 }
 
-// func IsType(types []string, other string) bool {
-// 	for _, typ := range types {
-// 		if typ == other {
-// 			return true
-// 		}
-// 	}
-// 	return false
-// }
+type Plugin struct {
+	Summary string
+	Title   string
+	Code    string
+	Conf    internal.Config
+}
+
+func (p *Plugin) Id() string {
+	return p.Code
+}
+
+func (p *Plugin) Name() string {
+	return p.Title
+}
+func (p *Plugin) Description() string {
+	return p.Summary
+}
+
+func (p *Plugin) Init(conf internal.Config) {
+	p.Conf = conf
+}
+
+func (p *Plugin) Algo() db.Algorithm {
+	return db.Algorithm{Code: p.Code, Name: p.Title}
+}

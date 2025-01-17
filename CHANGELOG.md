@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2025-01-07
+### SQLite database backend
+- Load typosquatting and linguistic datasets from the database
+- Store results in the database for better analysis
+- Cleaned up the plugins and reduced repeating code
+- Updated net library
+
 ## [0.8.2] - 2024-11-17
 ### Fixed summary output
 - Fixed some issues with getting the total record count and setting the live flag
@@ -28,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.7.0] - 2024-07-11
 ### Cleanup & reorganize codebase
-- Removed the server
+- Removed the API server
 - Removed the Dockerfile
 - Improved plugins
 

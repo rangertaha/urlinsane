@@ -15,6 +15,7 @@
 package config
 
 import (
+	_ "embed"
 	"io"
 	"net/url"
 	"os"
@@ -23,6 +24,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/rangertaha/urlinsane/internal/dataset"
+	"github.com/rangertaha/urlinsane/internal/db"
+	"gorm.io/gorm"
+
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
@@ -30,8 +35,6 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/analyzers/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/all"
-	"github.com/rangertaha/urlinsane/internal/plugins/databases"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/databases/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/languages"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
@@ -40,19 +43,31 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-const DIR_PRIMARY = ".config/urlinsane"
+const (
+	DIR_PRIMARY = ".config/urlinsane"
+	PRIMARY_DB  = "urlinsane.db"
+	DATASET_DB  = "dataset.db"
+	MAXMIND_DB  = "maxmind.db.gz"
+)
+
+//go:embed maxmind.db.gz
+var MaxMindDB []byte
+
+//go:embed dataset.db
+var datasetDB []byte
 
 type (
 	Config struct {
 		domain    string // Target domain
 		directory string
+		database  *gorm.DB
+		dataset   *gorm.DB
 
 		// Plugins
 		keyboards  []internal.Keyboard
 		languages  []internal.Language
 		algorithms []internal.Algorithm
 		collectors []internal.Collector
-		database   internal.Database
 		analyzers  []internal.Analyzer
 		output     internal.Output
 
@@ -98,9 +113,6 @@ func (l InfosOrder) Less(i, j int) bool {
 }
 
 func init() {
-	// Log as JSON instead of the default ASCII formatter.
-	// log.SetFormatter(&log.JSONFormatter{})
-
 	// Outputs to nowhere
 	log.SetOutput(io.Discard)
 
@@ -111,7 +123,7 @@ func init() {
 // New creates a new configuration
 func New(options ...func(*Config)) (*Config, error) {
 	s := &Config{
-		format: "json",
+		format: "list",
 	} // Default values
 
 	// Apply config options
@@ -137,7 +149,6 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		algorithms []string = csSplit(cli.String("algorithms")) // algorithms IDs
 		collectors []string = csSplit(cli.String("collectors")) // Collectors IDs
 		analyzers  []string = csSplit(cli.String("analyzers"))  // Analyzers IDs
-		database   string   = "badger"
 
 		// Constraints
 		regex    string = cli.String("regex") //
@@ -177,9 +188,9 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		progress = false
 	}
 
-	if ttl == 0 {
-		deleteCacheDir(DIR_PRIMARY)
-	}
+	// if ttl == 0 {
+	// 	deleteCacheDir(DIR_PRIMARY)
+	// }
 
 	return ConfigOption(
 		domain,     // Target domain
@@ -188,7 +199,6 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		algorithms, // algorithms IDs
 		collectors, // Collectors IDs
 		analyzers,  // Analyzers IDs
-		database,   // Database ID
 
 		// Constraints
 		regex,
@@ -222,7 +232,6 @@ func ConfigOption(
 	algos []string,
 	cols []string,
 	anlyzrs []string,
-	database string,
 
 	// Constraints
 	regex string,
@@ -260,9 +269,6 @@ func ConfigOption(
 		sort.Sort(InfosReverseOrder{c.collectors})
 
 		c.analyzers = analyzers.List(anlyzrs...)
-		if c.database, err = databases.Get(database); err != nil {
-			log.Error(err)
-		}
 
 		if c.output, err = outputs.Get(format); err != nil {
 			log.Error(err)
@@ -293,6 +299,15 @@ func ConfigOption(
 		// Create app directory if it does not exits
 		c.directory = createAppDir(DIR_PRIMARY)
 
+		// Create app database if it does not exits
+		c.database = createDatabase(c.directory)
+
+		// Create app database if it does not exits
+		c.dataset = createDatasets(c.directory)
+
+		// Create app database if it does not exits
+		createMaxMindDB(c.directory)
+
 		logger := log.WithFields(log.Fields{
 			"domain":     domain,
 			"languages":  langs,
@@ -300,7 +315,6 @@ func ConfigOption(
 			"algorithms": algos,
 			"collectors": cols,
 			"analyzers":  anlyzrs,
-			"database":   database,
 			"regex":      regex,
 			"format":     format,
 			"file":       file,
@@ -348,7 +362,8 @@ func (c *Config) Algorithms() []internal.Algorithm { return c.algorithms }
 func (c *Config) Collectors() []internal.Collector { return c.collectors }
 func (c *Config) Analyzers() []internal.Analyzer   { return c.analyzers }
 func (c *Config) Output() internal.Output          { return c.output }
-func (c *Config) Database() internal.Database      { return c.database }
+func (c *Config) Database() *gorm.DB               { return c.database }
+func (c *Config) Dataset() *gorm.DB                { return c.dataset }
 
 // Constraint options
 func (c *Config) Regex() string { return c.regex }
@@ -411,19 +426,30 @@ func createAppDir(dirname string) string {
 	return configDir
 }
 
-func deleteCacheDir(dirname string) {
-	var userDir string
-	var err error
+func createDatabase(dirname string) *gorm.DB {
+	db.Config(filepath.Join(dirname, PRIMARY_DB))
+	return db.DB
+}
 
-	if userDir, err = os.UserHomeDir(); err != nil {
-		if userDir, err = os.Getwd(); err != nil {
-			userDir = ""
+func createDatasets(dirname string) *gorm.DB {
+	datasetPath := filepath.Join(dirname, DATASET_DB)
+
+	if _, err := os.Stat(datasetPath); os.IsNotExist(err) {
+		if err := os.WriteFile(datasetPath, datasetDB, 0666); err != nil {
+			log.Fatal(err)
 		}
 	}
 
-	// If .config exits lets put it in there
-	dbDir := filepath.Join(userDir, dirname, "db")
-	if _, err := os.Stat(dbDir); !os.IsNotExist(err) {
-		os.RemoveAll(dbDir)
+	dataset.Config(datasetPath)
+	return dataset.DB
+}
+
+func createMaxMindDB(dirname string) {
+	datasetPath := filepath.Join(dirname, MAXMIND_DB)
+
+	if _, err := os.Stat(datasetPath); os.IsNotExist(err) {
+		if err := os.WriteFile(datasetPath, MaxMindDB, 0666); err != nil {
+			log.Fatal(err)
+		}
 	}
 }

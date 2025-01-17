@@ -23,10 +23,8 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/kr"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/ons"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/rar"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/si"
+	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/si"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/sp"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/tld"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/tld2"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/tld3"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/vs"
 )

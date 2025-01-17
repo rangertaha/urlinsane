@@ -17,79 +17,14 @@ package engine
 import (
 	"regexp"
 
-	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/config"
-	"github.com/rangertaha/urlinsane/pkg/fuzzy"
+	"github.com/rangertaha/urlinsane/internal/db"
+	log "github.com/sirupsen/logrus"
 )
 
-// func Levenshtein(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-// 	out := make(chan internal.Domain)
-// 	go func() {
-// 		for domain := range in {
-// 			// Set Levenshtein distance
-// 			//   https://en.wikipedia.org/wiki/Levenshtein_distance
-// 			dist := fuzzy.Levenshtein(domain.String(), c.Target())
-
-// 			if dist <= c.Distance() {
-// 				domain.Ld(dist)
-// 				out <- domain
-// 			}
-// 		}
-// 		close(out)
-// 	}()
-// 	return out
-// }
-
-// func Dedup(in <-chan internal.Domain, c *config.Config, total *int64) <-chan internal.Domain {
-// 	out := make(chan internal.Domain)
-// 	variants := make(map[string]bool)
-// 	go func() {
-// 		for domain := range in {
-// 			if _, ok := variants[domain.String()]; !ok {
-// 				variants[domain.String()] = true
-// 				out <- domain
-// 				*total++
-// 			}
-// 		}
-// 		close(out)
-// 	}()
-// 	return out
-// }
-
-// func ReadCache(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-// 	out := make(chan internal.Domain)
-
-// 	go func() {
-// 		for domain := range in {
-// 			if data, _ := c.Database().Read(domain.String()); data != "" {
-// 				domain.Json(data)
-// 			}
-// 			out <- domain
-// 		}
-// 		close(out)
-// 	}()
-
-//		return out
-//	}
-func ReadCacheFilter() func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-	return func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-		out := make(chan internal.Domain)
-		go func() {
-			for domain := range in {
-				if data, _ := c.Database().Read(domain.String()); data != "" {
-					domain.Json(data)
-				}
-				out <- domain
-			}
-			close(out)
-		}()
-		return out
-	}
-}
-
-func ExampleFilter() func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-	return func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-		out := make(chan internal.Domain)
+func ExampleFilter() func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
+	return func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
+		out := make(chan *db.Domain)
 		go func() {
 			for domain := range in {
 
@@ -102,17 +37,15 @@ func ExampleFilter() func(in <-chan internal.Domain, c *config.Config) <-chan in
 	}
 }
 
-func LevenshteinFilter() func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-	return func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-		out := make(chan internal.Domain)
+func Levenshtein() func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
+	return func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
+		out := make(chan *db.Domain)
 		go func() {
 			for domain := range in {
 				// Set Levenshtein distance
 				//   https://en.wikipedia.org/wiki/Levenshtein_distance
-				dist := fuzzy.Levenshtein(domain.String(), c.Target())
-
-				if dist <= c.Distance() {
-					domain.Ld(dist)
+				log.Infof("Levenshtein distance %s: %d <= %d", domain.Name, domain.Levenshtein, c.Distance())
+				if domain.Levenshtein <= c.Distance() {
 					out <- domain
 				}
 			}
@@ -122,14 +55,14 @@ func LevenshteinFilter() func(in <-chan internal.Domain, c *config.Config) <-cha
 	}
 }
 
-func DedupFilter() func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-	return func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-		out := make(chan internal.Domain)
+func Dedup() func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
+	return func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
+		out := make(chan *db.Domain)
 		variants := make(map[string]bool)
 		go func() {
 			for domain := range in {
-				if _, ok := variants[domain.String()]; !ok {
-					variants[domain.String()] = true
+				if _, ok := variants[domain.Name]; !ok {
+					variants[domain.Name] = true
 					out <- domain
 				}
 			}
@@ -139,34 +72,14 @@ func DedupFilter() func(in <-chan internal.Domain, c *config.Config) <-chan inte
 	}
 }
 
-func GetTotal() func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-	return func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-		out := make(chan internal.Domain)
-
-		go func() {
-			var count int
-			for domain := range in {
-				count++
-
-				out <- domain
-
-			}
-			c.Count(count)
-			close(out)
-		}()
-		return out
-	}
-}
-
-func RegexFilter() func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-	return func(in <-chan internal.Domain, c *config.Config) <-chan internal.Domain {
-		out := make(chan internal.Domain)
+func Regex() func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
+	return func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
+		out := make(chan *db.Domain)
 		go func() {
 			for domain := range in {
-				if match, _ := regexp.MatchString(c.Regex(), domain.String()); match {
+				if match, _ := regexp.MatchString(c.Regex(), domain.Name); match {
 					out <- domain
 				}
-
 			}
 			close(out)
 		}()

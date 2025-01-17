@@ -15,36 +15,58 @@
 package ip
 
 import (
+	"net"
+	"strings"
+
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 )
 
-const (
-	ORDER       = 0 // We need this to run first
-	CODE        = "ip"
-	NAME        = "Ip Address"
-	DESCRIPTION = "Domain IPv4 and IPv6 addresses"
-)
-
-func (n *Plugin) Id() string {
-	return CODE
+type Plugin struct {
+	collectors.Plugin
 }
 
-func (n *Plugin) Order() int {
-	return ORDER
-}
+func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
+	ips, err := net.LookupIP(domain.Name)
+	if err != nil {
+		p.Log.Error("IP Lookup: ", err)
+	}
 
-func (n *Plugin) Description() string {
-	return DESCRIPTION
-}
+	for _, ip := range ips {
+		record := strings.TrimSpace(ip.String())
+		record = strings.Trim(record, ".")
 
-func (n *Plugin) Headers() []string {
-	return []string{"IPv4", "IPv6"}
+		if strings.Contains(ip.String(), ":") {
+			domain.Dns = append(domain.Dns, &db.Dns{Type: "AAAA", Value: record})
+			domain.IPs = append(domain.IPs, &db.Address{Addr: record, Type: "IPv6"})
+
+		} else if strings.Contains(ip.String(), ".") {
+			domain.Dns = append(domain.Dns, &db.Dns{Type: "A", Value: record})
+			domain.IPs = append(domain.IPs, &db.Address{Addr: record, Type: "IPv4"})
+			// addresses, _ := net.LookupAddr(record)
+			// for _, address := range addresses {
+			// 	domain.Dns = append(domain.Dns, &db.Dns{Type: "PTR", Value: address})
+			// }
+		}
+	}
+	db.DB.FirstOrInit(domain, &db.Domain{Name: domain.Name})
+
+	return domain, err
 }
 
 // Register the plugin
 func init() {
+	var CODE = "ip"
 	collectors.Add(CODE, func() internal.Collector {
-		return &Plugin{}
+		return &Plugin{
+			Plugin: collectors.Plugin{
+				Num:       0,
+				Code:      CODE,
+				Title:     "Ip Address",
+				Summary:   "Domain IPv4 and IPv6 addresses",
+				DependsOn: []string{},
+			},
+		}
 	})
 }
