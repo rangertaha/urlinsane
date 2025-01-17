@@ -15,40 +15,109 @@
 package geo
 
 import (
+	"crypto/md5"
+	"encoding/hex"
+	"fmt"
+	"io"
+	"path/filepath"
+
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
+
+	"github.com/rainycape/geoip"
 )
 
-const (
-	ORDER       = 10
-	CODE        = "geo"
-	NAME        = "GeoIP Lookup"
-	DESCRIPTION = "Retrieves location of IP addresses"
-)
-
-func (n *Plugin) Id() string {
-	return CODE
+type Plugin struct {
+	collectors.Plugin
+	geoip *geoip.GeoIP
 }
 
-func (n *Plugin) Order() int {
-	return ORDER
+func (p *Plugin) Init(c internal.Config) {
+	p.Plugin.Init(c)
+	var err error
+
+	p.geoip, err = geoip.Open(filepath.Join(c.Dir(), "maxmind.db.gz"))
+	if err != nil {
+		p.Log.Error(err)
+	}
 }
 
-func (n *Plugin) Name() string {
-	return NAME
+func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
+	for _, ip := range domain.IPs {
+		p.GeoLookup(ip)
+	}
+	return domain, err
 }
 
-func (n *Plugin) Description() string {
-	return DESCRIPTION
-}
+func (p *Plugin) GeoLookup(ip *db.Address) {
+	record, err := p.geoip.Lookup(ip.Addr)
+	if err != nil {
+		p.Log.Error(err)
+	}
+	if record == nil {
+		return
+	}
 
-func (n *Plugin) Headers() []string {
-	return []string{"GEO"}
+	if record.City != nil {
+		city := db.Location{}
+		db.DB.FirstOrInit(&city, db.Location{
+			Code:       SetCode(record, record.City.Name.String()),
+			Name:       record.City.Name.String(),
+			Latitude:   record.Latitude,
+			Longitude:  record.Longitude,
+			TimeZone:   record.TimeZone,
+			PostalCode: record.PostalCode,
+		})
+		ip.Location = &city
+
+	} else if record.Country != nil {
+		country := db.Location{}
+		db.DB.FirstOrInit(&country, db.Location{
+			Code:       SetCode(record, record.Country.Name.String()),
+			Name:       record.Country.Name.String(),
+			Latitude:   record.Latitude,
+			Longitude:  record.Longitude,
+			TimeZone:   record.TimeZone,
+			PostalCode: record.PostalCode,
+		})
+		ip.Location = &country
+
+	} else if record.Continent != nil {
+		continent := db.Location{}
+		db.DB.FirstOrInit(&continent, db.Location{
+			Code:       SetCode(record, record.Continent.Name.String()),
+			Name:       record.Continent.Name.String(),
+			Latitude:   record.Latitude,
+			Longitude:  record.Longitude,
+			TimeZone:   record.TimeZone,
+			PostalCode: record.PostalCode,
+		})
+		ip.Location = &continent
+	}
 }
 
 // Register the plugin
 func init() {
+	var CODE = "geo"
 	collectors.Add(CODE, func() internal.Collector {
-		return &Plugin{}
+		return &Plugin{
+			Plugin: collectors.Plugin{
+				Num:       10,
+				Code:      CODE,
+				Title:     "GeoIP Lookup",
+				Summary:   "Retrieves location of IP addresses",
+				DependsOn: []string{"ip"},
+			},
+		}
 	})
+}
+
+func SetCode(l *geoip.Record, name string) string {
+	hasher := md5.New()
+	_, err := io.WriteString(hasher, fmt.Sprintf("%f-%f-%s-%s", l.Latitude, l.Longitude, l.PostalCode, name))
+	if err != nil {
+		panic(err)
+	}
+	return hex.EncodeToString(hasher.Sum(nil))
 }

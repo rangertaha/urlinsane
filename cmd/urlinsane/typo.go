@@ -24,6 +24,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/rangertaha/urlinsane/internal/config"
 	"github.com/rangertaha/urlinsane/internal/engine"
+	"github.com/rangertaha/urlinsane/internal/pkg"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
@@ -32,11 +33,42 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/outputs/all"
-	"github.com/rangertaha/urlinsane/internal/pkg"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 )
+
+var SubcommandHelpTemplate = `NAME:
+   {{template "helpNameTemplate" .}}
+
+USAGE:
+   {{if .UsageText}}{{wrap .UsageText 3}}{{else}}{{.HelpName}} {{if .VisibleFlags}}command [command options]{{end}}{{if .ArgsUsage}} {{.ArgsUsage}}{{else}}{{if .Args}} [arguments...]{{end}}{{end}}{{end}}{{if .Description}}
+
+DESCRIPTION:
+   {{template "descriptionTemplate" .}}{{end}}{{if .VisibleCommands}}
+
+COMMANDS:{{template "visibleCommandCategoryTemplate" .}}{{end}}{{if .VisibleFlagCategories}}
+
+OPTIONS:{{template "visibleFlagCategoryTemplate" .}}{{else if .VisibleFlags}}
+
+OPTIONS:{{template "visibleFlagTemplate" .}}{{end}}
+`
+
+var ShowIDHelpTemplate = `NAME:
+   {{template "helpNameTemplate" .}}
+
+USAGE:
+   {{if .UsageText}}{{wrap .UsageText 3}}{{else}}{{.HelpName}} {{if .VisibleFlags}}command [command options]{{end}}{{if .ArgsUsage}} {{.ArgsUsage}}{{else}}{{if .Args}} [arguments...]{{end}}{{end}}{{end}}{{if .Description}}
+
+DESCRIPTION:
+   {{template "descriptionTemplate" .}}{{end}}{{if .VisibleCommands}}
+
+COMMANDS:{{template "visibleCommandCategoryTemplate" .}}{{end}}{{if .VisibleFlagCategories}}
+
+OPTIONS:{{template "visibleFlagCategoryTemplate" .}}{{else if .VisibleFlags}}
+
+OPTIONS:{{template "visibleFlagTemplate" .}}{{end}}
+`
 
 var Flags = []cli.Flag{
 	&cli.StringFlag{
@@ -60,7 +92,7 @@ var Flags = []cli.Flag{
 	&cli.StringFlag{
 		Name:    "collectors",
 		Aliases: []string{"c"},
-		Value:   "idn,ip,geo,ns,mx",
+		Value:   "",
 		Usage:   "collectors IDs to use `[ID]`",
 	},
 	&cli.StringFlag{
@@ -92,21 +124,21 @@ var Flags = []cli.Flag{
 	&cli.DurationFlag{
 		Name:     "timeout",
 		Aliases:  []string{"t"},
-		Value:    0 * time.Minute,
+		Value:    20 * time.Second,
 		Category: "PERFORMANCE",
 		Hidden:   true,
 		Usage:    "maximim duration tasks need to complete `DURATION`",
 	},
 	&cli.DurationFlag{
 		Name:     "ttl",
-		Value:    0 * time.Hour,
+		Value:    1 * time.Hour,
 		Category: "PERFORMANCE",
-		Usage:    "maximim duration to cache results, 0 deletes the cache `DURATION`",
+		Usage:    "duration to cache results, 0 clears the cache `DURATION`",
 	},
 	&cli.IntFlag{
 		Name:     "distance",
 		Aliases:  []string{"d"},
-		Value:    25,
+		Value:    5,
 		Category: "CONSTRAINTS",
 		Usage:    "minimum Levenshtein distance `NUM`",
 	},
@@ -137,7 +169,7 @@ var Flags = []cli.Flag{
 		Aliases:  []string{"f"},
 		Value:    "list",
 		Category: "OUTPUT",
-		Usage:    "output format: (csv,tsv,table,list,html,md,json) `FORMAT`",
+		Usage:    "output format: (list,json) `FORMAT`",
 	},
 	&cli.StringFlag{
 		Name:     "nameservers",
@@ -169,11 +201,22 @@ var Flags = []cli.Flag{
 		Category: "OUTPUT",
 		Usage:    "show summary of scan results",
 	},
+	&cli.BoolFlag{
+		Name:    "options",
+		Aliases: []string{"ids", "opts"},
+		Value:   false,
+		Hidden:  false,
+		Usage:   "show IDs of keyboards, languages, algorithms, collectors",
+		Action: func(ctx *cli.Context, v bool) error {
+			ShowIDHelp()
+			return nil
+		},
+	},
 	&cli.PathFlag{
 		Name:     "dir",
 		Value:    "domains",
 		Category: "OUTPUT",
-		Usage:    "directory to save scan results `DIR`",
+		Usage:    "directory name to save files `DIR`",
 		Action: func(ctx *cli.Context, v string) error {
 			return nil
 		},
@@ -183,7 +226,7 @@ var Flags = []cli.Flag{
 		Value:    false,
 		Hidden:   true,
 		Category: "PERFORMANCE",
-		Usage:    "use random user agent for HTTP requests",
+		Usage:    "randomize user agent for HTTP requests",
 	},
 }
 
@@ -196,6 +239,12 @@ var TypoCmd = cli.Command{
 	UseShortOptionHandling: true,
 	Flags:                  Flags,
 	Action: func(cCtx *cli.Context) error {
+		if cCtx.Bool("options") {
+			cCtx.App.CustomAppHelpTemplate = ShowIDHelp()
+			cli.ShowAppHelpAndExit(cCtx, 0)
+			return nil
+		}
+
 		if cCtx.NArg() == 0 {
 			fmt.Println(text.FgRed.Sprint("\n  a domain name is needed!\n"))
 			cli.ShowSubcommandHelpAndExit(cCtx, 1)
@@ -214,56 +263,58 @@ var TypoCmd = cli.Command{
 		}
 		return engine.New(cfg).Execute()
 	},
-	CustomHelpTemplate: ShowSubcommandHelp(cli.SubcommandHelpTemplate),
+	CustomHelpTemplate: fmt.Sprintf(`%sEXAMPLE:
+
+    urlinsane typo example.com
+
+    urlinsane typo -a co        example.com
+    urlinsane typo -a co,oi,oy  example.com
+
+    urlinsane typo -c ip -a co        example.com
+    urlinsane typo -c ip,mx,ns -co   example.com
+
+    urlinsane typo -l en        example.com
+    urlinsane typo -l en,fr,ru  example.com
+
+    urlinsane typo -k en       example.com
+    urlinsane typo -k en1,en2  example.com
+
+    urlinsane typo --options
+
+
+AUTHOR:
+   Rangertaha (rangertaha@gmail.com)
+     
+     `, cli.SubcommandHelpTemplate),
 }
 
 func init() {
 
 }
 
-func ShowSubcommandHelp(template string) string {
+func ShowIDHelp() string {
 	collectors := CollectorTable()
 	algorithms := AlgorithmTable()
 	languages := LanguageTable()
 	keyboards := KeyboardTable()
 	outputs := OutputTable()
 
-	return fmt.Sprintf(`%sKEYBOARDS:
+	return fmt.Sprintf(`KEYBOARDS:
 %s
-
-			eg: urlinsane typo -k en1,en2,en3,en4 example.com
 
 LANGUAGES:
 %s
 
-			eg: urlinsane typo -l ru,hy,en example.com
-
 ALGORITHMS:
 %s
-
-			eg: urlinsane typo -a cs,gr,cm example.com
 
 COLLECTORS:
 %s
 
-			eg: urlinsane typo -c ip,idn example.com
-
 OUTPUTS:
 %s
 
-			eg: urlinsane typo -f table example.com
-
-EXAMPLE:
-
-    urlinsane typo example.com
-    urlinsane typo -a co example.com
-    urlinsane typo -a co,oi,oy -c ip,idna,ns example.com
-    urlinsane typo -l fr,en -k en1,en2 example.com
-
-AUTHOR:
-   Rangertaha (rangertaha@gmail.com)
-     
-     `, template, keyboards, languages, algorithms, collectors, outputs)
+`, keyboards, languages, algorithms, collectors, outputs)
 }
 
 func CollectorTable() string {
@@ -274,16 +325,6 @@ func CollectorTable() string {
 		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
 	}
 	return t.Render()
-}
-
-func CollectorFields() (fields string) {
-	headers := []string{}
-	for _, i := range collectors.List() {
-		for _, header := range i.Headers() {
-			headers = append(headers, strings.ToLower(header))
-		}
-	}
-	return strings.Join(headers, ",")
 }
 
 func AlgorithmTable() string {
