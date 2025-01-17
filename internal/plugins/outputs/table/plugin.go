@@ -14,136 +14,136 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package table
 
-import (
-	"fmt"
-	"os"
-	"strings"
-	"time"
+// import (
+// 	"fmt"
+// 	"os"
+// 	"strings"
+// 	"time"
 
-	"github.com/jedib0t/go-pretty/text"
-	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/db"
-	"github.com/rangertaha/urlinsane/internal/pkg"
-	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
-	log "github.com/sirupsen/logrus"
-	"golang.org/x/term"
-)
+// 	"github.com/jedib0t/go-pretty/text"
+// 	"github.com/jedib0t/go-pretty/v6/table"
+// 	"github.com/rangertaha/urlinsane/internal"
+// 	"github.com/rangertaha/urlinsane/internal/db"
+// 	"github.com/rangertaha/urlinsane/internal/pkg"
+// 	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
+// 	log "github.com/sirupsen/logrus"
+// 	"golang.org/x/term"
+// )
 
-type Plugin struct {
-	outputs.Plugin
-	table  table.Writer
-	output string
-}
+// type Plugin struct {
+// 	outputs.Plugin
+// 	table  table.Writer
+// 	output string
+// }
 
-func (p *Plugin) Init(conf internal.Config) {
-	p.Plugin.Init(conf)
+// func (p *Plugin) Init(conf internal.Config) {
+// 	p.Plugin.Init(conf)
 
-	p.table = table.NewWriter()
+// 	p.table = table.NewWriter()
 
-	if width, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil {
-		p.table.SetAllowedRowLength(width - 4)
-	}
+// 	if width, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil {
+// 		p.table.SetAllowedRowLength(width - 4)
+// 	}
 
-	p.table.SetOutputMirror(os.Stdout)
-	p.table.AppendHeader(p.Header())
-	p.table.AppendFooter(p.Header())
-	p.Conf()
-}
+// 	p.table.SetOutputMirror(os.Stdout)
+// 	p.table.AppendHeader(p.Header())
+// 	p.table.AppendFooter(p.Header())
+// 	p.Conf()
+// }
 
-func (p *Plugin) Read(in *db.Domain) {
-	p.table.AppendRow(p.Row(in))
-}
+// func (p *Plugin) Read(in *db.Domain) {
+// 	p.table.AppendRow(p.Row(in))
+// }
 
-func (p *Plugin) Header() (row table.Row) {
-	row = append(row, "LD")
-	row = append(row, "TYPE")
-	row = append(row, "TYPO")
+// func (p *Plugin) Header() (row table.Row) {
+// 	row = append(row, "LD")
+// 	row = append(row, "TYPE")
+// 	row = append(row, "TYPO")
 
-	for _, collector := range p.Config.Collectors() {
-		if collector.Id() == "ip" {
-			
-		}
-	}
+// 	for _, collector := range p.Config.Collectors() {
+// 		if collector.Id() == "ip" {
 
-	return
-}
+// 		}
+// 	}
 
-func (p *Plugin) Row(domain *db.Domain) (row table.Row) {
-	p.Domains = append(p.Domains, domain)
-	row = append(row, domain.Levenshtein)
-	if p.Config.Verbose() {
-		row = append(row, domain.Algorithm.Name)
-	} else {
-		row = append(row, strings.ToUpper(domain.Algorithm.Code))
-	}
-	row = append(row, domain.Name)
+// 	return
+// }
 
-	// for _, info := range p.Config.Collectors() {
-	// 	// for _, header := range info.Headers() {
-	// 	// 	meta := domain.Meta()
-	// 	// 	if col, ok := meta[header]; ok {
-	// 	// 		row = append(row, col)
-	// 	// 	} else {
-	// 	// 		row = append(row, "")
-	// 	// 	}
-	// 	// }
-	// }
-	return
-}
+// func (p *Plugin) Row(domain *db.Domain) (row table.Row) {
+// 	p.Domains = append(p.Domains, domain)
+// 	row = append(row, domain.Levenshtein)
+// 	if p.Config.Verbose() {
+// 		row = append(row, domain.Algorithm.Name)
+// 	} else {
+// 		row = append(row, strings.ToUpper(domain.Algorithm.Code))
+// 	}
+// 	row = append(row, domain.Name)
 
-func (p *Plugin) Filter(header string) bool {
-	header = strings.TrimSpace(header)
-	header = strings.ToLower(header)
-	for _, filter := range p.Config.Filters() {
-		filter = strings.TrimSpace(filter)
-		filter = strings.ToLower(filter)
-		if filter == header {
-			return true
-		}
-	}
-	return false
-}
+// 	// for _, info := range p.Config.Collectors() {
+// 	// 	// for _, header := range info.Headers() {
+// 	// 	// 	meta := domain.Meta()
+// 	// 	// 	if col, ok := meta[header]; ok {
+// 	// 	// 		row = append(row, col)
+// 	// 	// 	} else {
+// 	// 	// 		row = append(row, "")
+// 	// 	// 	}
+// 	// 	// }
+// 	// }
+// 	return
+// }
 
-func (p *Plugin) Conf() (row table.Row) {
-	p.table.SetStyle(pkg.StyleDefault)
+// func (p *Plugin) Filter(header string) bool {
+// 	header = strings.TrimSpace(header)
+// 	header = strings.ToLower(header)
+// 	for _, filter := range p.Config.Filters() {
+// 		filter = strings.TrimSpace(filter)
+// 		filter = strings.ToLower(filter)
+// 		if filter == header {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }
 
-	// nameTransformer := text.Transformer(func(val interface{}) string {
-	// 	if val.(string) == "MD" {
-	// 		return text.Colors{text.BgBlack, text.FgGreen}.Sprint(val)
-	// 	}
-	// 	return fmt.Sprint(val)
-	// })
+// func (p *Plugin) Conf() (row table.Row) {
+// 	p.table.SetStyle(pkg.StyleDefault)
 
-	// n.table.SetRowPainter()
+// 	// nameTransformer := text.Transformer(func(val interface{}) string {
+// 	// 	if val.(string) == "MD" {
+// 	// 		return text.Colors{text.BgBlack, text.FgGreen}.Sprint(val)
+// 	// 	}
+// 	// 	return fmt.Sprint(val)
+// 	// })
 
-	p.table.SetColumnConfigs(ColumnConfig)
-	return
-}
-func (p *Plugin) Progress(typo <-chan internal.Domain) <-chan internal.Domain {
-	return typo
-}
+// 	// n.table.SetRowPainter()
 
-func (p *Plugin) Write() {
-	p.output = p.table.Render()
-}
+// 	p.table.SetColumnConfigs(ColumnConfig)
+// 	return
+// }
+// func (p *Plugin) Progress(typo <-chan internal.Domain) <-chan internal.Domain {
+// 	return typo
+// }
 
-func (p *Plugin) Save(fname string) {
-	results := []byte(p.output)
-	if err := os.WriteFile(fname, results, 0644); err != nil {
-		log.Errorf("Error: %s", err)
-	}
-}
+// func (p *Plugin) Write() {
+// 	p.output = p.table.Render()
+// }
 
-// Register the plugin
-func init() {
-	var CODE = "table"
-	outputs.Add(CODE, func() internal.Output {
-		return &Plugin{
-			Plugin: outputs.Plugin{
-				ID:      CODE,
-				Summary: "pretty table output format with color",
-			},
-		}
-	})
-}
+// func (p *Plugin) Save(fname string) {
+// 	results := []byte(p.output)
+// 	if err := os.WriteFile(fname, results, 0644); err != nil {
+// 		log.Errorf("Error: %s", err)
+// 	}
+// }
+
+// // Register the plugin
+// func init() {
+// 	var CODE = "table"
+// 	outputs.Add(CODE, func() internal.Output {
+// 		return &Plugin{
+// 			Plugin: outputs.Plugin{
+// 				ID:      CODE,
+// 				Summary: "pretty table output format with color",
+// 			},
+// 		}
+// 	})
+// }
