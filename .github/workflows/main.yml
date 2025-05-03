@@ -18,32 +18,6 @@ jobs:
     # Check out repository under $GITHUB_WORKSPACE, so the job can access it
     - uses: actions/checkout@v3
 
-    # Run using Python 3.8 for consistency and aiohttp
-    # - name: Set up Python 3.8
-    #   uses: actions/setup-python@v4
-    #   with:
-    #     python-version: '3.8'
-    #     architecture: 'x64'
-    #     cache: 'pip'
-
-    # # Install dependencies with `pip`
-    # - name: Install requirements
-    #   run: |
-    #     python3 -m pip install --upgrade pip setuptools wheel
-    #     python3 -m pip install -r requirements.txt
-
-    # Generate all statistics images
-    # - name: Generate images
-    #   run: |
-    #     python3 --version
-    #     python3 generate_images.py
-    #   env:
-    #     ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     EXCLUDED: ${{ secrets.EXCLUDED }}
-    #     EXCLUDED_LANGS: ${{ secrets.EXCLUDED_LANGS }}
-    #     EXCLUDE_FORKED_REPOS: true
-
     # Commit all changed files to the repository
     - name: Commit to the repo
       run: |
