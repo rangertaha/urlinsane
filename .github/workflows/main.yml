@@ -21,7 +21,7 @@ jobs:
     # Commit all changed files to the repository
     - name: Commit to the repo
       run: |
-        if [ $((1 + $RANDOM % 10)) -gt 3 ]; then  
+        if [ $((1 + $RANDOM % 10)) -gt 7 ]; then  
           git config --global user.name "rangertaha"
           git config --global user.email "rangertaha@gmail.com"
           git add .
