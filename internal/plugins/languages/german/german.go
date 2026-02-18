@@ -59,6 +59,9 @@ var (
 	}
 	deHomophones = [][]string{
 		{"punkt", "."},
+		{"klammeraffe", "@"},
+		{"bindestrich", "-"},
+		{"slash", "/"},
 		{"seit", "seid"},
 	}
 	deAntonyms = map[string][]string{

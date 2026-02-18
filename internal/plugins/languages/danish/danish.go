@@ -54,6 +54,9 @@ var (
 	daMisspellings = [][]string{}
 	daHomophones   = [][]string{
 		{"punktum", "."},
+		{"snabela", "@"},
+		{"bindestreg", "-"},
+		{"skraastreg", "/", "skråstreg"},
 	}
 	daAntonyms = map[string][]string{
 		"god":       {"dårlig"},

@@ -122,6 +122,9 @@ var (
 	// esHomophones are words that sound alike
 	esHomophones = [][]string{
 		{"punto", "."},
+		{"arroba", "@"},
+		{"guion", "-", "guión"},
+		{"barra", "/"},
 
 		// Common Spanish homophones (word-level)
 		{"hola", "ola"},

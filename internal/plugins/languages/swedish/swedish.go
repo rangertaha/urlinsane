@@ -54,6 +54,9 @@ var (
 	svMisspellings = [][]string{}
 	svHomophones   = [][]string{
 		{"punkt", "."},
+		{"snabela", "@"},
+		{"bindestreck", "-"},
+		{"snedstreck", "/"},
 	}
 	svAntonyms = map[string][]string{
 		"bra":      {"dålig"},

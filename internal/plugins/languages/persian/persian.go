@@ -116,6 +116,9 @@ var (
 	// faHomophones are words that sound alike
 	faHomophones = [][]string{
 		{"نقطه", "."},
+		{"ات", "@"},
+		{"خطتیره", "-"},
+		{"اسلش", "/"},
 
 		// Commonly confused in speech/writing (near-homophones)
 		{"گذارش", "گزارش"},

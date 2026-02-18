@@ -117,6 +117,8 @@ var (
 	// fiHomophones are words that sound alike
 	fiHomophones = [][]string{
 		{"piste", "."},
+		{"atmerkki", "@", "ätmerkki"},
+		{"tavuviiva", "-"},
 	}
 
 	// fiAntonyms are words opposite in meaning to another (e.g. bad and good ).

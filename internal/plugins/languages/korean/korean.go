@@ -53,6 +53,9 @@ func (l *Korean) Keyboards() (boards []internal.Keyboard) {
 var (
 	koHomophones = [][]string{
 		{"점", ".", "마침표"},
+		{"골뱅이", "@"},
+		{"대시", "-"},
+		{"슬래시", "/"},
 	}
 	koAntonyms = map[string][]string{
 		"좋다":   {"나쁘다"},

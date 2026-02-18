@@ -54,6 +54,9 @@ var (
 	}
 	nlHomophones = [][]string{
 		{"punt", "."},
+		{"apenstaartje", "@"},
+		{"streepje", "-"},
+		{"slash", "/"},
 	}
 	nlAntonyms = map[string][]string{
 		"goed":      {"slecht"},

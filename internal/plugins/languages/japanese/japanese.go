@@ -53,6 +53,9 @@ func (l *Japanese) Keyboards() (boards []internal.Keyboard) {
 var (
 	jaHomophones = [][]string{
 		{"てん", ".", "点"},
+		{"あっと", "@", "アット"},
+		{"だっしゅ", "-", "ダッシュ"},
+		{"すらっしゅ", "/", "スラッシュ"},
 	}
 	jaAntonyms = map[string][]string{
 		"良い":  {"悪い"},

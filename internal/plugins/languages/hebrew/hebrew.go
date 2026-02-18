@@ -118,6 +118,8 @@ var (
 	iwHomophones = [][]string{
 		{"נקודה", "."},
 		{"מקף", "-"},
+		{"שטרודל", "@"},
+		{"סלאש", "/"},
 	}
 
 	// iwAntonyms are words opposite in meaning to another (e.g. bad and good ).

@@ -143,6 +143,9 @@ var (
 	// ruHomophones are words that sound alike
 	ruHomophones = [][]string{
 		{"точка", "."},
+		{"собака", "@"},
+		{"дефис", "-"},
+		{"слэш", "/"},
 
 		// Final devoicing / voiced-vs-voiceless pairs (useful for domain variants)
 		{"лук", "луг"},

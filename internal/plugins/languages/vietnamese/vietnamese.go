@@ -69,6 +69,9 @@ var (
 	}
 	viHomophones = [][]string{
 		{"cham", ".", "chấm"},
+		{"acong", "@"},
+		{"gachngang", "-", "gạchngang"},
+		{"gachcheo", "/", "gạchchéo"},
 	}
 	viAntonyms = map[string][]string{
 		"tốt":    {"xấu"},

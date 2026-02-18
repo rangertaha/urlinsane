@@ -114,6 +114,8 @@ var (
 	hyHomophones = [][]string{
 		{"կետ", "."},
 		{"կետը", "."},
+		{"շնիկ", "@"},
+		{"գծիկ", "-"},
 	}
 
 	// hyAntonyms are words opposite in meaning to another (e.g. bad and good ).

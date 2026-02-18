@@ -54,6 +54,9 @@ var (
 	}
 	hiHomophones = [][]string{
 		{"बिंदु", "."},
+		{"ऐट", "@", "at"},
+		{"डैश", "-"},
+		{"स्लैश", "/"},
 	}
 	hiAntonyms = map[string][]string{
 		"अच्छा":    {"बुरा"},

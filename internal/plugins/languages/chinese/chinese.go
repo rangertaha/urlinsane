@@ -53,6 +53,9 @@ func (l *Chinese) Keyboards() (boards []internal.Keyboard) {
 var (
 	zhHomophones = [][]string{
 		{"句号", "。", "."},
+		{"艾特", "@"},
+		{"横杠", "-"},
+		{"斜杠", "/"},
 	}
 	zhAntonyms = map[string][]string{
 		"好":  {"坏"},

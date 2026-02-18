@@ -116,6 +116,9 @@ var (
 	// arHomophones are words that sound alike
 	arHomophones = [][]string{
 		{"نقطة", "."},
+		{"شرطة", "-"},
+		{"آت", "@"},
+		{"سلاش", "/"},
 	}
 
 	// arAntonyms are words opposite in meaning to another (e.g. bad and good ).

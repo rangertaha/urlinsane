@@ -51,6 +51,9 @@ func (l *Thai) Keyboards() (boards []internal.Keyboard) {
 var (
 	thHomophones = [][]string{
 		{"จุด", "."},
+		{"แอท", "@"},
+		{"ขีด", "-"},
+		{"สแลช", "/"},
 	}
 	thAntonyms = map[string][]string{
 		"ดี":        {"เลว"},

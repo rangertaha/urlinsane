@@ -75,6 +75,10 @@ func defaultSynonyms(langID string) [][]string {
 		return [][]string{{"شروع", "آغاز"}}
 	case "iw":
 		return [][]string{{"התחלה", "תחילת"}}
+	case "ps":
+		return [][]string{{"پیل", "شروع"}}
+	case "la":
+		return [][]string{{"initium", "principium", "exordium"}}
 	case "hy":
 		return [][]string{{"սկիզբ", "մեկնարկ"}}
 	case "ka":
@@ -139,6 +143,10 @@ func defaultPositive(langID string) []string {
 		return []string{"خوب", "عالی", "امن", "مطمئن"}
 	case "iw":
 		return []string{"טוב", "מצוין", "בטוח", "אמין"}
+	case "ps":
+		return []string{"ښه", "عالي", "امن", "باوري", "ريښتینی"}
+	case "la":
+		return []string{"bonus", "optimus", "tutus", "fidelis", "verus"}
 	case "hy":
 		return []string{"լավ", "հիանալի", "անվտանգ", "վստահելի"}
 	case "ka":
@@ -202,6 +210,10 @@ func defaultNegative(langID string) []string {
 		return []string{"بد", "ناامن", "جعلی", "کلاهبرداری"}
 	case "iw":
 		return []string{"רע", "מסוכן", "מזויף", "הונאה"}
+	case "ps":
+		return []string{"بد", "ناامن", "جعلي", "درغلۍ", "خطرناک"}
+	case "la":
+		return []string{"malus", "periculosus", "falsus", "fraus", "nocivus"}
 	case "hy":
 		return []string{"վատ", "վտանգավոր", "կեղծ", "խաբեություն"}
 	case "ka":

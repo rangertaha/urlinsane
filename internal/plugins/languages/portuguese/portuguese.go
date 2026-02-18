@@ -59,6 +59,12 @@ var (
 	}
 	ptHomophones = [][]string{
 		{"ponto", "."},
+		{"virgula", ","},
+		{"vírgula", ","},
+		{"arroba", "@"},
+		{"hifen", "-", "hífen"},
+		{"concerto", "conserto"},
+		{"sessao", "seção", "cessão"},
 	}
 	ptAntonyms = map[string][]string{
 		"bom":       {"mau"},

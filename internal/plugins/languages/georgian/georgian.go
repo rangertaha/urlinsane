@@ -53,6 +53,8 @@ func (l *Georgian) Keyboards() (boards []internal.Keyboard) {
 var (
 	kaHomophones = [][]string{
 		{"წერტილი", "."},
+		{"ეტ", "@"},
+		{"ტირე", "-"},
 	}
 	kaAntonyms = map[string][]string{
 		"კარგი":      {"ცუდი"},
