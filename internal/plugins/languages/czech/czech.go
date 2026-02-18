@@ -55,6 +55,8 @@ var (
 	csHomophones = [][]string{
 		{"tecka", "."},
 		{"tečka", "."},
+		{"zavinac", "@", "zavináč"},
+		{"pomlcka", "-", "pomlčka"},
 	}
 	csAntonyms = map[string][]string{
 		"dobrý":     {"špatný"},

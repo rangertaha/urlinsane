@@ -148,6 +148,9 @@ var (
 	// frHomophones are words that sound alike
 	frHomophones = [][]string{
 		{"point", "."},
+		{"arobase", "@"},
+		{"tiret", "-"},
+		{"slash", "/"},
 
 		// Classic French homophone sets (kept reasonably long to avoid exploding variants)
 		{"ces", "ses"},

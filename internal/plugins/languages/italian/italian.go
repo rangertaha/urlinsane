@@ -58,6 +58,11 @@ var (
 	}
 	itHomophones = [][]string{
 		{"punto", "."},
+		{"virgola", ","},
+		{"chiocciola", "@"},
+		{"trattino", "-"},
+		{"slash", "/"},
+		{"anno", "hanno"},
 	}
 	itAntonyms = map[string][]string{
 		"buono":     {"cattivo"},

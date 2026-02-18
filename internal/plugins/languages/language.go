@@ -19,37 +19,53 @@ import "strings"
 // Adjacent returns adjacent characters on the given keyboard
 func Adjacent(layout []string, char string) (chars []string) {
 	chars = []string{}
-	for r, row := range layout {
-		for c := range row {
-			var top, bottom, left, right string
-			if char == string(layout[r][c]) {
-				if r > 0 {
-					top = string(layout[r-1][c])
-					if top != " " {
-						chars = append(chars, top)
-					}
-				}
-				if r < len(layout)-1 {
-					bottom = string(layout[r+1][c])
-					if bottom != " " {
-						chars = append(chars, bottom)
-					}
-				}
-				if c > 0 {
-					left = string(layout[r][c-1])
-					if left != " " {
-						chars = append(chars, left)
-					}
-				}
-				if c < len(row)-1 {
-					right = string(layout[r][c+1])
-					if right != " " {
-						chars = append(chars, right)
-					}
-				}
-			}
+	r := []rune(char)
+	if len(r) != 1 {
+		return chars
+	}
+	target := r[0]
+
+	grid := make([][]rune, len(layout))
+	maxCols := 0
+	for i := range layout {
+		grid[i] = []rune(layout[i])
+		if len(grid[i]) > maxCols {
+			maxCols = len(grid[i])
 		}
 	}
+	for i := range grid {
+		if len(grid[i]) < maxCols {
+			padded := make([]rune, maxCols)
+			copy(padded, grid[i])
+			for j := len(grid[i]); j < maxCols; j++ {
+				padded[j] = ' '
+			}
+			grid[i] = padded
+		}
+	}
+
+	add := func(rr, cc int) {
+		if rr < 0 || rr >= len(grid) || cc < 0 || cc >= len(grid[rr]) {
+			return
+		}
+		if grid[rr][cc] == ' ' {
+			return
+		}
+		chars = append(chars, string(grid[rr][cc]))
+	}
+
+	for rr := range grid {
+		for cc := range grid[rr] {
+			if grid[rr][cc] != target {
+				continue
+			}
+			add(rr-1, cc)
+			add(rr+1, cc)
+			add(rr, cc-1)
+			add(rr, cc+1)
+		}
+	}
+
 	return chars
 }
 

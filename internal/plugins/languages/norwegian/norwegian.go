@@ -56,6 +56,9 @@ var (
 	}
 	noHomophones = [][]string{
 		{"punktum", "."},
+		{"krøllalfa", "@"},
+		{"bindestrek", "-"},
+		{"skråstrek", "/"},
 	}
 	noAntonyms = map[string][]string{
 		"bra":       {"dårlig"},

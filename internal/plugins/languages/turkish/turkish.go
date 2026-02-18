@@ -67,6 +67,9 @@ var (
 	}
 	trHomophones = [][]string{
 		{"nokta", "."},
+		{"et", "@"},
+		{"tire", "-"},
+		{"slash", "/"},
 	}
 	trAntonyms = map[string][]string{
 		"iyi":        {"kötü"},

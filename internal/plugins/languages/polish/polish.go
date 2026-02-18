@@ -57,6 +57,9 @@ var (
 	}
 	plHomophones = [][]string{
 		{"kropka", "."},
+		{"malpa", "@", "małpa"},
+		{"myslnik", "-", "myślnik"},
+		{"ukosnik", "/", "ukośnik"},
 	}
 	plAntonyms = map[string][]string{
 		"dobry":    {"zły"},
