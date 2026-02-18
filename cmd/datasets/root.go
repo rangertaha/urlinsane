@@ -64,6 +64,7 @@ AUTHOR:
 			&ImportCmd,
 			&DownloadCmd,
 			&DevCmd,
+			&SyncLanguagesCmd,
 		},
 	}
 

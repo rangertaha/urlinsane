@@ -4280,6 +4280,9 @@ var (
 	enHomophones = [][]string{
 		{"dot", "."},
 		{"dash", "-"},
+		{"at", "@"},
+		{"slash", "/"},
+		{"underscore", "_"},
 		{"accept", "except"},
 		{"acclamation", "acclimation"},
 		{"acts", "ax", "axe"},

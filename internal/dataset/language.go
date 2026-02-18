@@ -22,6 +22,8 @@ type Language struct {
 
 	Keyboards []*Keyboard `gorm:"many2many:langboards;"`
 	Stopwords []*Word     `gorm:"many2many:stopwords;"`
+	Positive  []*Word     `gorm:"many2many:positive;"`
+	Negative  []*Word     `gorm:"many2many:negative;"`
 	Numerals  []*Word     `gorm:"many2many:numerals;"`
 	Words     []*Word     `gorm:"many2many:langwords;"`
 	Graphemes []*Char     `gorm:"many2many:graphemes;"`
@@ -49,6 +51,7 @@ type Word struct {
 	Symbols      []*Sym      `gorm:"many2many:symbols;"`
 	Languages    []*Language `gorm:"many2many:langwords;"`
 	Antonyms     []*Word     `gorm:"many2many:antonyms;"`
+	Synonyms     []*Word     `gorm:"many2many:synonyms;"`
 	Homophones   []*Word     `gorm:"many2many:homophones;"`
 	Misspellings []*Word     `gorm:"many2many:misspellings;"`
 	Translations []*Word     `gorm:"many2many:translations;"`
