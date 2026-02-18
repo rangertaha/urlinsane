@@ -97,7 +97,8 @@ var Keyboards = []Keyboard{
 }
 
 func init() {
-	for _, kb := range Keyboards {
+	for i := range Keyboards {
+		kb := Keyboards[i]
 		languages.AddKeyboard(kb.code, func() internal.Keyboard {
 			return &kb
 		})

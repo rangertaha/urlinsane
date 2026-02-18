@@ -61,22 +61,47 @@ Plugins play a crucial role in extending the functionality, flexibility, and cus
 
 |    Type       | Number | Description                                                             |
 |---------------|--------|-------------------------------------------------------------------------|
-| Languages     |    9   | Language plugins that support linguistic capabilities.                  |
-| Keyboards     |    19  | Keyboard plugins offering layouts for various international keyboards.  |
+| Languages     |    30  | Language plugins that support linguistic capabilities.                  |
+| Keyboards     |    40  | Keyboard plugins offering layouts for various international keyboards.  |
 | Algorithms    |    24  | Generate typo variants for each target domain.                          |
 | Information   |    13  | Gather information on target domains.                                   |
 | Outputs       |    6   | Format and save results in various output formats.                      |
 
 
 
+### Language IDs
+
+To see all registered language IDs in your build:
+
+```bash
+urlinsane typo --options
+```
+
+Pashto is available as language ID `ps`. Latin is available as language ID `la`.
+
+### Language Datasets (`datasets/languages/`)
+
+The repo ships with a `datasets/languages/<lang>/` structure (e.g. `numeral.lst`, `homoglyph.lst`, `homophone.lst`, `positive.lst`, `negative.lst`, etc).
+
+You can generate/refresh these files from the currently registered language plugins using:
+
+```bash
+go run ./cmd/datasets sync-languages --dir datasets/languages
+```
+
+By default this **will not overwrite** any existing dataset files (so large curated datasets like `datasets/languages/en/*` are preserved). To overwrite files:
+
+```bash
+go run ./cmd/datasets sync-languages --dir datasets/languages --overwrite
+```
+
 ### Keyboard Layouts
 
-|  Arabic | Armenian  | English  | Finnish |  French   | Russian | Spanish | Hebrew  | Persian | 
-|----------|----------|----------|---------|-----------|---------|--------|----------|---------|
-| غفقثصض   | QWERTY   |  QWERTY  | QWERTY  | ACNOR     | ЯШЕРТЫ  | QWERTY | Standard | Farsi   |
-| AZERTY   | QWERTY   |  AZERTY  |         |           | ЙЦУКЕН  | QWERTY |         |   |
-| غفقثصض   |          |  QWERTZ  |         |           | ЙЦУКЕН  |        |         |  |
-| QWERTY   |          |  DVORAK  |         |           |         |        |         ||
+Keyboard layouts are separate plugins. This repo now includes at least one keyboard layout per language plugin. To list available keyboard layout IDs:
+
+```bash
+urlinsane typo --options
+```
 
 
 ## Algorithms
