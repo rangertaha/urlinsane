@@ -38,7 +38,10 @@ var DATASETS = map[string]map[string]importFunc{
 	"languages": {
 		"word.lst":        Words,
 		"antonym.lst":     Antonyms,
+		"synonym.lst":     Synonyms,
 		"stopword.lst":    StopWords,
+		"positive.lst":    PositiveWords,
+		"negative.lst":    NegativeWords,
 		"numeral.lst":     Numerals,
 		"misspelling.lst": Misspellings,
 		"homophone.lst":   Homophones,
@@ -274,6 +277,29 @@ func Antonyms(language, file string) (err error) {
 	return
 }
 
+func Synonyms(language, file string) (err error) {
+	lng := &dataset.Language{Code: language}
+	dataset.DB.FirstOrCreate(lng)
+
+	fmt.Printf("Importing synonyms from %s\n", file)
+	var words []*dataset.Word
+	for _, wordslist := range Extract(file) {
+		if len(wordslist) == 0 {
+			continue
+		}
+		var word dataset.Word
+		dataset.DB.FirstOrInit(&word, dataset.Word{Text: wordslist[0]})
+		for _, w := range wordslist[1:] {
+			var related dataset.Word
+			dataset.DB.FirstOrInit(&related, dataset.Word{Text: w})
+			word.Synonyms = append(word.Synonyms, &related)
+		}
+		words = append(words, &word)
+	}
+	dataset.DB.Save(&words)
+	return
+}
+
 func Homophones(language, file string) (err error) {
 	lng := &dataset.Language{Code: language}
 	dataset.DB.FirstOrCreate(lng)
@@ -329,6 +355,42 @@ func StopWords(language, file string) (err error) {
 			var word dataset.Word
 			dataset.DB.FirstOrInit(&word, dataset.Word{Text: w})
 			lng.Stopwords = append(lng.Stopwords, &word)
+		}
+	}
+	dataset.DB.Save(&lng)
+	return
+}
+
+func PositiveWords(language, file string) (err error) {
+	lng := &dataset.Language{Code: language}
+	dataset.DB.FirstOrCreate(lng)
+
+	fmt.Printf("Importing positive words from %s\n", file)
+	for _, wordslist := range Extract(file) {
+		for _, w := range wordslist {
+			if strings.TrimSpace(w) != "" {
+				var word dataset.Word
+				dataset.DB.FirstOrInit(&word, dataset.Word{Text: w})
+				lng.Positive = append(lng.Positive, &word)
+			}
+		}
+	}
+	dataset.DB.Save(&lng)
+	return
+}
+
+func NegativeWords(language, file string) (err error) {
+	lng := &dataset.Language{Code: language}
+	dataset.DB.FirstOrCreate(lng)
+
+	fmt.Printf("Importing negative words from %s\n", file)
+	for _, wordslist := range Extract(file) {
+		for _, w := range wordslist {
+			if strings.TrimSpace(w) != "" {
+				var word dataset.Word
+				dataset.DB.FirstOrInit(&word, dataset.Word{Text: w})
+				lng.Negative = append(lng.Negative, &word)
+			}
 		}
 	}
 	dataset.DB.Save(&lng)
