@@ -6,21 +6,18 @@
 <img src="docs/vids/007.gif" width="500" align="center"> 
 
 
-<video width="1280" height="720" controls autoplay muted loop>
-<source src="https://youtu.be/Iu9l0r0layU?si=ZB8MW3wFLAJfd_gV" type="video/mp4">
- Your browser does not support video tags.
-</video>
+[![URLInsane Demo](https://img.youtube.com/vi/Iu9l0r0layU/maxresdefault.jpg)](https://youtu.be/Iu9l0r0layU)
 
 
 <div align="center">
   <a href="https://youtu.be/SiLlWTxoI-c?si=wvYEK6w3G_8up5pS" style="float:left">
-  <img width="250" src="https://github.com/rangertaha/urlinsane/blob/master/docs/imgs/001.webp" alt="Urlinsane"></a>
+  <img width="250" src="docs/imgs/001.webp" alt="Urlinsane"></a>
   
   <a href="https://youtu.be/Iu9l0r0layU?si=Im_9tJ7L9wDXl6p7" style="float:left">
-  <img width="250" src="https://github.com/rangertaha/urlinsane/blob/master/docs/imgs/002.webp" alt="Urlinsane"></a>
+  <img width="250" src="docs/imgs/002.webp" alt="Urlinsane"></a>
   
   <a href="https://youtu.be/6QgCFVClTGY?si=NMigDRyI99lXE5EI" style="float:left">
-  <img width="250" src="https://github.com/rangertaha/urlinsane/blob/master/docs/imgs/003.webp" alt="Urlinsane"></a>
+  <img width="250" src="docs/imgs/003.webp" alt="Urlinsane"></a>
 </div>
 
 
