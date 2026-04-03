@@ -1,6 +1,7 @@
 module github.com/rangertaha/urlinsane
 
-go 1.23
+go 1.23.0
+
 toolchain go1.24.1
 
 require github.com/gocolly/colly/v2 v2.1.0
@@ -24,7 +25,7 @@ require (
 	github.com/andybalholm/cascadia v1.3.3 // indirect
 	github.com/antchfx/htmlquery v1.3.4 // indirect
 	github.com/antchfx/xmlquery v1.4.3 // indirect
-	github.com/antchfx/xpath v1.3.3 // indirect
+	github.com/antchfx/xpath v1.3.6 // indirect
 	github.com/chromedp/cdproto v0.0.0-20250113203156-3ff4b409e0d4 // indirect
 	github.com/chromedp/sysutil v1.1.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.6 // indirect
