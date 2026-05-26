@@ -22,6 +22,7 @@ import (
 	"github.com/chromedp/chromedp"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 )
 
@@ -130,6 +131,7 @@ func init() {
 				Title:     "Screenshot",
 				Summary:   "Take screeshot of domains",
 				DependsOn: []string{},
+				Entities:  []entity.Type{entity.Domain},
 			},
 		}
 	})

@@ -21,6 +21,7 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 )
 
@@ -65,6 +66,7 @@ func init() {
 				Title:     "PTR Records",
 				Summary:   "DNS PTR Records",
 				DependsOn: []string{"ip"},
+				Entities:  []entity.Type{entity.Domain},
 			},
 		}
 	})

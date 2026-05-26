@@ -102,6 +102,11 @@ var Flags = []cli.Flag{
 		Usage:   "analyzer IDs to use (e.g. 'all') `[ID]`",
 	},
 	&cli.StringFlag{
+		Name:  "type",
+		Value: "domain",
+		Usage: "entity type of the target: domain, name, user, package `[TYPE]`",
+	},
+	&cli.StringFlag{
 		Name:     "regex",
 		Aliases:  []string{"e"},
 		Value:    "",

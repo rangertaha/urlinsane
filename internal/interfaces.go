@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"gorm.io/gorm"
 )
 
@@ -33,6 +34,7 @@ type Closer interface {
 
 type Config interface {
 	Target() string
+	EntityType() entity.Type
 
 	// Plugins
 	Keyboards() []Keyboard
@@ -73,6 +75,9 @@ type Algorithm interface {
 	Id() string
 	Name() string
 	Description() string
+	// Types reports the entity types this algorithm applies to. An empty slice
+	// means it applies to all types.
+	Types() []entity.Type
 	Exec(*db.Domain) ([]*db.Domain, error)
 }
 
@@ -88,6 +93,9 @@ type Collector interface {
 	Id() string
 	Order() int
 	Dependencies() []string
+	// Types reports the entity types this collector applies to. An empty slice
+	// means it applies to all types.
+	Types() []entity.Type
 	Description() string
 	// Headers() []string
 	Exec(ctx context.Context, domain *db.Domain) (*db.Domain, error)

@@ -21,6 +21,7 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 	log "github.com/sirupsen/logrus"
 )
@@ -56,6 +57,7 @@ func init() {
 				Title:     "CNAME Record",
 				Summary:   "DNS CNAME records",
 				DependsOn: []string{},
+				Entities:  []entity.Type{entity.Domain},
 			},
 		}
 	})

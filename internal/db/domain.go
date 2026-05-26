@@ -20,6 +20,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"gorm.io/gorm"
 )
 
@@ -30,9 +31,12 @@ type Algorithm struct {
 
 type Domain struct {
 	gorm.Model
-	Name     string `gorm:"unique" json:"name,omitempty"`
-	Punycode string `json:"punycode,omitempty"`
-	Rank     int64  `json:"rank,omitempty"`
+	// Type classifies the named entity (domain, name, user, package). Empty is
+	// treated as domain for backward compatibility — see EntityType().
+	Type     entity.Type `json:"type,omitempty"`
+	Name     string      `gorm:"unique" json:"name,omitempty"`
+	Punycode string      `json:"punycode,omitempty"`
+	Rank     int64       `json:"rank,omitempty"`
 
 	// Related Records
 	RedirectID *uint
@@ -56,6 +60,15 @@ type Domain struct {
 	// pipeline-only metadata (never persisted) used to pair a variant with its
 	// origin in the Analyzers stage.
 	Origin *Domain `json:"-" gorm:"-"`
+}
+
+// EntityType returns the entity's type, defaulting to entity.Domain when unset
+// (records created before the type field existed, or plain domain scans).
+func (d *Domain) EntityType() entity.Type {
+	if d.Type == "" {
+		return entity.Domain
+	}
+	return d.Type
 }
 
 type Dns struct {

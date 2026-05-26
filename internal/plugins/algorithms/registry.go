@@ -5,6 +5,7 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -59,11 +60,19 @@ type Plugin struct {
 	Summary string
 	Title   string
 	Code    string
-	Conf    internal.Config
+	// Entities restricts this algorithm to specific entity types. Empty means
+	// it applies to all types (a pure, target-agnostic string mutation).
+	Entities []entity.Type
+	Conf     internal.Config
 }
 
 func (p *Plugin) Id() string {
 	return p.Code
+}
+
+// Types reports the entity types this algorithm applies to (all, if unset).
+func (p *Plugin) Types() []entity.Type {
+	return p.Entities
 }
 
 func (p *Plugin) Name() string {

@@ -24,6 +24,7 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"gorm.io/gorm"
 )
 
@@ -40,6 +41,7 @@ type fakeConfig struct {
 }
 
 func (c *fakeConfig) Target() string                   { return "example.com" }
+func (c *fakeConfig) EntityType() entity.Type          { return entity.Domain }
 func (c *fakeConfig) Keyboards() []internal.Keyboard   { return nil }
 func (c *fakeConfig) Languages() []internal.Language   { return nil }
 func (c *fakeConfig) Algorithms() []internal.Algorithm { return c.algorithms }
@@ -84,6 +86,7 @@ type fakeCollector struct {
 func (f *fakeCollector) Id() string             { return f.id }
 func (f *fakeCollector) Order() int             { return f.order }
 func (f *fakeCollector) Dependencies() []string { return f.deps }
+func (f *fakeCollector) Types() []entity.Type   { return nil }
 func (f *fakeCollector) Description() string    { return f.id }
 func (f *fakeCollector) Exec(ctx context.Context, d *db.Domain) (*db.Domain, error) {
 	if f.calls != nil {
@@ -104,9 +107,10 @@ func (f *fakeCollector) Exec(ctx context.Context, d *db.Domain) (*db.Domain, err
 // fakeAlgorithm produces two fixed variants from an origin.
 type fakeAlgorithm struct{ id string }
 
-func (a *fakeAlgorithm) Id() string          { return a.id }
-func (a *fakeAlgorithm) Name() string        { return a.id }
-func (a *fakeAlgorithm) Description() string { return a.id }
+func (a *fakeAlgorithm) Id() string           { return a.id }
+func (a *fakeAlgorithm) Name() string         { return a.id }
+func (a *fakeAlgorithm) Description() string  { return a.id }
+func (a *fakeAlgorithm) Types() []entity.Type { return nil }
 func (a *fakeAlgorithm) Exec(origin *db.Domain) ([]*db.Domain, error) {
 	return []*db.Domain{
 		{Name: origin.Name + ".v1"},

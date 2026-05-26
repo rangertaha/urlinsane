@@ -18,6 +18,7 @@ import (
 	"context"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 	// log "github.com/sirupsen/logrus"
 )
@@ -81,6 +82,7 @@ func init() {
 				Title:     "Banner Grabber",
 				Summary:   "Capturing HTTP/SMTP banners",
 				DependsOn: []string{"ip"},
+				Entities:  []entity.Type{entity.Domain},
 			},
 		}
 	})

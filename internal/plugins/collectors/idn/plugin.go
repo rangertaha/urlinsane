@@ -23,6 +23,7 @@ import (
 	"context"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 	"golang.org/x/net/idna"
 )
@@ -57,6 +58,7 @@ func init() {
 				Title:     "Internationalize",
 				Summary:   "Internationalized domain name",
 				DependsOn: []string{},
+				Entities:  []entity.Type{entity.Domain},
 			},
 		}
 	})

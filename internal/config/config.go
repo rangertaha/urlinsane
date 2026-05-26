@@ -28,6 +28,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/analyzers"
@@ -57,8 +58,9 @@ var datasetDB []byte
 
 type (
 	Config struct {
-		domain    string // Target domain
-		directory string
+		domain     string      // Target value (domain, username, package, ...)
+		entityType entity.Type // Kind of target being analyzed
+		directory  string
 		database  *gorm.DB
 		dataset   *gorm.DB
 
@@ -129,7 +131,7 @@ func CliOptions(cli *cli.Context) func(*Config) {
 	var (
 
 		// Basic input optoins
-		domain     string   = cli.Args().First()                // Target domain
+		domain     string   = cli.Args().First()                // Target value
 		languages  []string = csSplit(cli.String("languages"))  // Language IDs
 		keyboards  []string = csSplit(cli.String("keyboards"))  // Keybards IDs
 		algorithms []string = csSplit(cli.String("algorithms")) // algorithms IDs
@@ -160,6 +162,12 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		timeout time.Duration = cli.Duration("timeout") //
 	)
 
+	// Resolve the entity type, defaulting to domain for unknown/empty values.
+	entityType, ok := entity.Parse(strings.ToLower(strings.TrimSpace(cli.String("type"))))
+	if !ok {
+		entityType = entity.Domain
+	}
+
 	// Logs are disabled by default so we need to setup it up to log to stdout
 	if debug {
 		log.SetOutput(os.Stdout)
@@ -179,7 +187,8 @@ func CliOptions(cli *cli.Context) func(*Config) {
 	// }
 
 	return ConfigOption(
-		domain,     // Target domain
+		domain,     // Target value
+		entityType, // Kind of target
 		keyboards,  // Keybards IDs
 		languages,  // Language IDs
 		algorithms, // algorithms IDs
@@ -213,6 +222,7 @@ func CliOptions(cli *cli.Context) func(*Config) {
 
 func ConfigOption(
 	domain string,
+	entityType entity.Type,
 	boards []string,
 	langs []string,
 	algos []string,
@@ -247,13 +257,17 @@ func ConfigOption(
 	return func(c *Config) {
 		var err error
 		c.domain = domain
+		c.entityType = entityType
 		c.languages = languages.Languages(langs...)
 		c.keyboards = languages.Keyboards(boards...)
-		c.algorithms = algorithms.List(algos...)
+
+		// Keep only the algorithms/collectors that apply to this entity type
+		// (e.g. TLD swaps and DNS collectors apply to domains only).
+		c.algorithms = algosForType(algorithms.List(algos...), entityType)
 
 		// Collector execution order is determined by the dependency DAG at
 		// run time (internal/engine/dag), not by a static sort here.
-		c.collectors = collectors.List(cols...)
+		c.collectors = collectorsForType(collectors.List(cols...), entityType)
 
 		c.analyzers = analyzers.List(anlyzrs...)
 
@@ -341,6 +355,34 @@ func validateDomain(cfg *Config) (err error) {
 }
 
 func (c *Config) Target() string { return c.domain }
+
+// EntityType returns the kind of target being analyzed (defaults to domain).
+func (c *Config) EntityType() entity.Type {
+	if c.entityType == "" {
+		return entity.Domain
+	}
+	return c.entityType
+}
+
+// algosForType keeps only the algorithms that apply to the given entity type.
+func algosForType(in []internal.Algorithm, t entity.Type) (out []internal.Algorithm) {
+	for _, a := range in {
+		if entity.Supports(a.Types(), t) {
+			out = append(out, a)
+		}
+	}
+	return
+}
+
+// collectorsForType keeps only the collectors that apply to the given entity type.
+func collectorsForType(in []internal.Collector, t entity.Type) (out []internal.Collector) {
+	for _, c := range in {
+		if entity.Supports(c.Types(), t) {
+			out = append(out, c)
+		}
+	}
+	return
+}
 
 // Plugins options
 func (c *Config) Keyboards() []internal.Keyboard   { return c.keyboards }

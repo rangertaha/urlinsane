@@ -21,6 +21,7 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 )
 
@@ -54,6 +55,7 @@ func init() {
 				Title:     "NS Records",
 				Summary:   "DNS NS Records",
 				DependsOn: []string{},
+				Entities:  []entity.Type{entity.Domain},
 			},
 		}
 	})
