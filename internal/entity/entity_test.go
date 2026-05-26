@@ -46,6 +46,24 @@ func TestSupports(t *testing.T) {
 	}
 }
 
+func TestClassify(t *testing.T) {
+	cases := map[string]Type{
+		"example.com":       Domain,
+		"sub.example.co.uk": Domain,
+		"John Smith":        Name,
+		"@rangertaha":       User,
+		"user@example.com":  User,
+		"requests":          Package,
+		"lodash":            Package,
+		"":                  Domain,
+	}
+	for in, want := range cases {
+		if got := Classify(in); got != want {
+			t.Errorf("Classify(%q) = %q, want %q", in, got, want)
+		}
+	}
+}
+
 func TestAll(t *testing.T) {
 	if len(All()) != 4 {
 		t.Fatalf("expected 4 entity types, got %d", len(All()))

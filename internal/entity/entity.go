@@ -20,6 +20,11 @@
 // engine runs only the plugins that apply to the target's type.
 package entity
 
+import (
+	"regexp"
+	"strings"
+)
+
 // Type classifies a named entity.
 type Type string
 
@@ -28,7 +33,38 @@ const (
 	Name    Type = "name"    // a person or brand name
 	User    Type = "user"    // a username / handle
 	Package Type = "package" // a package in a registry (PyPI, npm, ...)
+
+	// Auto is not an entity type but a CLI sentinel: classify the target.
+	Auto = "auto"
 )
+
+// domainRe matches a hostname with at least one dot and an alphabetic TLD.
+var domainRe = regexp.MustCompile(`^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$`)
+
+// Classify infers the entity type of a target from its shape:
+//   - contains whitespace        -> name   ("John Smith")
+//   - starts with '@' or has '@' -> user   ("@handle", "a@b.com")
+//   - looks like a hostname      -> domain ("example.com")
+//   - otherwise (bare token)     -> package ("requests", "lodash")
+//
+// Bare identifiers are ambiguous (a username, a package, or a brand); they
+// default to package given urlinsane's supply-chain focus. Pass --type to
+// override.
+func Classify(s string) Type {
+	s = strings.TrimSpace(s)
+	switch {
+	case s == "":
+		return Domain
+	case strings.ContainsAny(s, " \t"):
+		return Name
+	case strings.HasPrefix(s, "@"), strings.Contains(s, "@"):
+		return User
+	case domainRe.MatchString(s):
+		return Domain
+	default:
+		return Package
+	}
+}
 
 // All returns every known entity type. A plugin that supports all types (a pure
 // string mutation, or a registry-agnostic collector) reports this set.
