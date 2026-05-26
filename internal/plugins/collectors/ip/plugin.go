@@ -52,7 +52,6 @@ func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain
 			// }
 		}
 	}
-	db.DB.FirstOrInit(domain, &db.Domain{Name: domain.Name})
 
 	return domain, err
 }

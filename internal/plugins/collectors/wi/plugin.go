@@ -43,115 +43,43 @@ func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain
 
 	record := db.Whois{}
 	if r.Domain != nil {
-		db.DB.FirstOrCreate(&record, db.Whois{
-			Created:    r.Domain.CreatedDateInTime,
-			Updated:    r.Domain.UpdatedDateInTime,
-			Expiration: r.Domain.ExpirationDateInTime,
-		})
+		record.Created = r.Domain.CreatedDateInTime
+		record.Updated = r.Domain.UpdatedDateInTime
+		record.Expiration = r.Domain.ExpirationDateInTime
 	}
-
-	if r.Administrative != nil {
-		administrative := db.Contact{
-			Name:         r.Administrative.Name,
-			Organization: r.Administrative.Organization,
-			Street:       r.Administrative.Street,
-			City:         r.Administrative.City,
-			Province:     r.Administrative.Province,
-			PostalCode:   r.Administrative.PostalCode,
-			Country:      r.Administrative.Country,
-			Phone:        r.Administrative.Phone,
-			PhoneExt:     r.Administrative.PhoneExt,
-			Fax:          r.Administrative.Fax,
-			FaxExt:       r.Administrative.FaxExt,
-			Email:        r.Administrative.Email,
-			ReferralURL:  r.Administrative.ReferralURL,
-		}
-		db.DB.FirstOrInit(&administrative, administrative)
-		record.Administrative = &administrative
-	}
-
-	if r.Billing != nil {
-		billing := db.Contact{
-			Name:         r.Billing.Name,
-			Organization: r.Billing.Organization,
-			Street:       r.Billing.Street,
-			City:         r.Billing.City,
-			Province:     r.Billing.Province,
-			PostalCode:   r.Billing.PostalCode,
-			Country:      r.Billing.Country,
-			Phone:        r.Billing.Phone,
-			PhoneExt:     r.Billing.PhoneExt,
-			Fax:          r.Billing.Fax,
-			FaxExt:       r.Billing.FaxExt,
-			Email:        r.Billing.Email,
-			ReferralURL:  r.Billing.ReferralURL,
-		}
-		db.DB.FirstOrInit(&billing, billing)
-		record.Administrative = &billing
-	}
-
-	if r.Registrant != nil {
-		registrant := db.Contact{
-			Name:         r.Registrant.Name,
-			Organization: r.Registrant.Organization,
-			Street:       r.Registrant.Street,
-			City:         r.Registrant.City,
-			Province:     r.Registrant.Province,
-			PostalCode:   r.Registrant.PostalCode,
-			Country:      r.Registrant.Country,
-			Phone:        r.Registrant.Phone,
-			PhoneExt:     r.Registrant.PhoneExt,
-			Fax:          r.Registrant.Fax,
-			FaxExt:       r.Registrant.FaxExt,
-			Email:        r.Registrant.Email,
-			ReferralURL:  r.Registrant.ReferralURL,
-		}
-		db.DB.FirstOrInit(&registrant, registrant)
-		record.Administrative = &registrant
-	}
-
-	if r.Technical != nil {
-		technical := db.Contact{
-			Name:         r.Technical.Name,
-			Organization: r.Technical.Organization,
-			Street:       r.Technical.Street,
-			City:         r.Technical.City,
-			Province:     r.Technical.Province,
-			PostalCode:   r.Technical.PostalCode,
-			Country:      r.Technical.Country,
-			Phone:        r.Technical.Phone,
-			PhoneExt:     r.Technical.PhoneExt,
-			Fax:          r.Technical.Fax,
-			FaxExt:       r.Technical.FaxExt,
-			Email:        r.Technical.Email,
-			ReferralURL:  r.Technical.ReferralURL,
-		}
-		db.DB.FirstOrInit(&technical, technical)
-		record.Administrative = &technical
-	}
-
-	if r.Registrar != nil {
-		registrar := &db.Contact{
-			Name:         r.Registrar.Name,
-			Organization: r.Registrar.Organization,
-			Street:       r.Registrar.Street,
-			City:         r.Registrar.City,
-			Province:     r.Registrar.Province,
-			PostalCode:   r.Registrar.PostalCode,
-			Country:      r.Registrar.Country,
-			Phone:        r.Registrar.Phone,
-			PhoneExt:     r.Registrar.PhoneExt,
-			Fax:          r.Registrar.Fax,
-			FaxExt:       r.Registrar.FaxExt,
-			Email:        r.Registrar.Email,
-			ReferralURL:  r.Registrar.ReferralURL,
-		}
-		db.DB.FirstOrInit(&registrar, registrar)
-		record.Administrative = registrar
-	}
+	// Assign each role to its own field (the previous code assigned every role
+	// to Administrative). Results are mutated in place; persistence happens at
+	// the store boundary.
+	record.Administrative = contact(r.Administrative)
+	record.Billing = contact(r.Billing)
+	record.Registrant = contact(r.Registrant)
+	record.Technical = contact(r.Technical)
+	record.Registrar = contact(r.Registrar)
 
 	domain.Whois = append(domain.Whois, record)
 	return domain, err
+}
+
+// contact converts a parsed whois contact into a db.Contact (nil-safe).
+func contact(c *parser.Contact) *db.Contact {
+	if c == nil {
+		return nil
+	}
+	return &db.Contact{
+		Name:         c.Name,
+		Organization: c.Organization,
+		Street:       c.Street,
+		City:         c.City,
+		Province:     c.Province,
+		PostalCode:   c.PostalCode,
+		Country:      c.Country,
+		Phone:        c.Phone,
+		PhoneExt:     c.PhoneExt,
+		Fax:          c.Fax,
+		FaxExt:       c.FaxExt,
+		Email:        c.Email,
+		ReferralURL:  c.ReferralURL,
+	}
 }
 
 // Register the plugin
