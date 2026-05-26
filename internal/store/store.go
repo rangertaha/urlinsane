@@ -16,13 +16,16 @@
 package store
 
 import (
+	"path/filepath"
 	"time"
 
 	"github.com/ipfs/go-cid"
 	cidlink "github.com/ipld/go-ipld-prime/linking/cid"
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/entity"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 // Store is the content-addressed result store: an IPLD blockstore (source of
@@ -30,6 +33,20 @@ import (
 type Store struct {
 	bs  Blockstore
 	idx *Index
+}
+
+// OpenDir creates a Store under dir: a filesystem blockstore at dir/blocks and
+// a SQLite index at dir/index.db. This is the production constructor; tests use
+// Open with an injected connection.
+func OpenDir(dir string) (*Store, error) {
+	gdb, err := gorm.Open(
+		sqlite.Open(filepath.Join(dir, "index.db")),
+		&gorm.Config{Logger: logger.Default.LogMode(logger.Silent)},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return Open(dir, gdb)
 }
 
 // Open creates a Store with a filesystem blockstore under dir/blocks and a

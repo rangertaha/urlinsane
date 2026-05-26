@@ -350,6 +350,7 @@ func (u *Urlinsane) Analyzers(ctx context.Context, in <-chan *db.Domain) <-chan 
 
 func (u *Urlinsane) Output(ctx context.Context, in <-chan *db.Domain) {
 	if output := u.cfg.Output(); output != nil {
+		var live []*db.Domain
 		for c := range in {
 			// Stream or collect domains
 			output.Read(c)
@@ -357,6 +358,7 @@ func (u *Urlinsane) Output(ctx context.Context, in <-chan *db.Domain) {
 			// Save domain to database
 			if c.Live() {
 				c.Save()
+				live = append(live, c)
 			}
 
 			// Collect scan results
@@ -373,6 +375,14 @@ func (u *Urlinsane) Output(ctx context.Context, in <-chan *db.Domain) {
 
 		// Save scans
 		db.DB.Save(&u.scan)
+
+		// Dual-write to the content-addressed store (IPLD). GORM remains the
+		// source of truth in this phase; this validates encoding on real data.
+		if s := u.cfg.Store(); s != nil {
+			if _, err := s.PutScan(u.cfg.Target(), live); err != nil {
+				log.Errorf("store PutScan failed: %s", err.Error())
+			}
+		}
 	} else {
 		fmt.Println("Invalid output formater")
 	}

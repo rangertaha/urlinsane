@@ -29,6 +29,8 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/entity"
+	"github.com/rangertaha/urlinsane/internal/store"
+
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
 	"github.com/rangertaha/urlinsane/internal/plugins/analyzers"
@@ -61,8 +63,9 @@ type (
 		domain     string      // Target value (domain, username, package, ...)
 		entityType entity.Type // Kind of target being analyzed
 		directory  string
-		database  *gorm.DB
-		dataset   *gorm.DB
+		database   *gorm.DB
+		dataset    *gorm.DB
+		store      *store.Store // content-addressed result store (IPLD)
 
 		// Plugins
 		keyboards  []internal.Keyboard
@@ -306,6 +309,11 @@ func ConfigOption(
 		// Create app database if it does not exits
 		c.dataset = createDatasets(c.directory)
 
+		// Open the content-addressed result store (IPLD blockstore + index)
+		if c.store, err = store.OpenDir(c.directory); err != nil {
+			log.Error("opening result store: ", err)
+		}
+
 		// Create app database if it does not exits
 		createMaxMindDB(c.directory)
 
@@ -355,6 +363,9 @@ func validateDomain(cfg *Config) (err error) {
 }
 
 func (c *Config) Target() string { return c.domain }
+
+// Store returns the content-addressed result store.
+func (c *Config) Store() *store.Store { return c.store }
 
 // EntityType returns the kind of target being analyzed (defaults to domain).
 func (c *Config) EntityType() entity.Type {

@@ -21,6 +21,7 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/entity"
+	"github.com/rangertaha/urlinsane/internal/store"
 	"gorm.io/gorm"
 )
 
@@ -43,6 +44,7 @@ type Config interface {
 	Collectors() []Collector
 	Analyzers() []Analyzer
 	Database() *gorm.DB
+	Store() *store.Store
 	Output() Output
 
 	// Performance
