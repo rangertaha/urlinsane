@@ -16,6 +16,7 @@
 </div>
 
 
+
 Urlinsane is a tool for detecting domain typosquatting and supporting OSINT investigations, designed to operate on multilingual target domains. It helps identify threats such as typosquatting, brandjacking, URL hijacking, phishing, fraud, corporate espionage, supply chain attacks, and more. This command-line tool generates and scans for potential typosquatting variants of a domain, assisting in uncovering and mitigating security risks.
 
 It's inspired by [URLCrazy](https://morningstarsecurity.com/research/urlcrazy), [Dnstwist](https://github.com/elceef/dnstwist), and a few other libraries and tools I was researching at the time.
