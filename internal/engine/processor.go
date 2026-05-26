@@ -43,7 +43,6 @@ type (
 
 		// Domain
 		target db.Domain
-		scan   db.Scan
 
 		// Metrics
 		progress *progressbar.ProgressBar
@@ -79,7 +78,6 @@ func (u *Urlinsane) Init(ctx context.Context) <-chan *db.Domain {
 			u.target = *cached
 		}
 	}
-	db.DB.Preload("Results").FirstOrInit(&u.scan, db.Scan{Query: u.target.Name})
 
 	log := log.WithFields(
 		log.Fields{"domain": u.target.Name})
@@ -362,14 +360,10 @@ func (u *Urlinsane) Output(ctx context.Context, in <-chan *db.Domain) {
 			// Stream or collect domains
 			output.Read(c)
 
-			// Save domain to database
+			// Collect live variants for persistence
 			if c.Live() {
-				c.Save()
 				live = append(live, c)
 			}
-
-			// Collect scan results
-			u.scan.Results = append(u.scan.Results, c)
 		}
 
 		// Optionally, writes collected domains
@@ -380,11 +374,7 @@ func (u *Urlinsane) Output(ctx context.Context, in <-chan *db.Domain) {
 			output.Report()
 		}
 
-		// Save scans
-		db.DB.Save(&u.scan)
-
-		// Dual-write to the content-addressed store (IPLD). GORM remains the
-		// source of truth in this phase; this validates encoding on real data.
+		// Persist the scan to the content-addressed store (the source of truth).
 		if s := u.cfg.Store(); s != nil {
 			if _, err := s.PutScan(u.cfg.Target(), live); err != nil {
 				log.Errorf("store PutScan failed: %s", err.Error())
