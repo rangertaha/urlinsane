@@ -174,6 +174,38 @@ func TestOutput_DualWritesToStore(t *testing.T) {
 	}
 }
 
+// TestLoad_HydratesFromStore verifies the Load stage reads cached result data
+// from the IPLD store (Phase 3) while preserving pipeline-only metadata.
+func TestLoad_HydratesFromStore(t *testing.T) {
+	s, err := store.OpenDir(t.TempDir())
+	if err != nil {
+		t.Fatalf("open store: %v", err)
+	}
+	cached := &db.Domain{Type: entity.Domain, Name: "exmaple.com", Dns: []*db.Dns{{Type: "A", Value: "9.9.9.9"}}}
+	if _, err := s.Put(cached); err != nil {
+		t.Fatalf("seed store: %v", err)
+	}
+
+	u := New(&fakeConfig{st: s})
+	origin := &db.Domain{Name: "example.com"}
+	in := &db.Domain{Type: entity.Domain, Name: "exmaple.com", Levenshtein: 1, Origin: origin}
+
+	out := u.Load(context.Background(), feed(in))
+	var got *db.Domain
+	for d := range out {
+		got = d
+	}
+	if got == nil {
+		t.Fatal("Load produced no output")
+	}
+	if len(got.Dns) != 1 || got.Dns[0].Value != "9.9.9.9" {
+		t.Fatalf("Load did not hydrate from store: %+v", got)
+	}
+	if got.Levenshtein != 1 || got.Origin != origin {
+		t.Fatalf("Load dropped pipeline metadata: lev=%d origin=%v", got.Levenshtein, got.Origin)
+	}
+}
+
 // drain reads the channel to completion, failing if it does not close in time.
 func drain(t *testing.T, out <-chan *db.Domain, within time.Duration) int {
 	t.Helper()
