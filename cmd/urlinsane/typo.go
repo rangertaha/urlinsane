@@ -103,8 +103,8 @@ var Flags = []cli.Flag{
 	},
 	&cli.StringFlag{
 		Name:  "type",
-		Value: "domain",
-		Usage: "entity type of the target: domain, name, user, package `[TYPE]`",
+		Value: "auto",
+		Usage: "entity type: auto, domain, name, user, package `[TYPE]`",
 	},
 	&cli.StringFlag{
 		Name:     "regex",

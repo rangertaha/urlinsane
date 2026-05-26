@@ -164,10 +164,11 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		timeout time.Duration = cli.Duration("timeout") //
 	)
 
-	// Resolve the entity type, defaulting to domain for unknown/empty values.
-	entityType, ok := entity.Parse(strings.ToLower(strings.TrimSpace(cli.String("type"))))
-	if !ok {
-		entityType = entity.Domain
+	// Resolve the entity type. "auto" (the default) and any unrecognized value
+	// classify the target from its shape; an explicit known type is honored.
+	entityType := entity.Classify(domain)
+	if t, ok := entity.Parse(strings.ToLower(strings.TrimSpace(cli.String("type")))); ok {
+		entityType = t
 	}
 
 	// Logs are disabled by default so we need to setup it up to log to stdout
