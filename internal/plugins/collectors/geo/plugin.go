@@ -61,41 +61,35 @@ func (p *Plugin) GeoLookup(ip *db.Address) {
 		return
 	}
 
+	// Mutate the in-flight address in place; persistence happens at the store
+	// boundary.
 	if record.City != nil {
-		city := db.Location{}
-		db.DB.FirstOrInit(&city, db.Location{
+		ip.Location = &db.Location{
 			Code:       SetCode(record, record.City.Name.String()),
 			Name:       record.City.Name.String(),
 			Latitude:   record.Latitude,
 			Longitude:  record.Longitude,
 			TimeZone:   record.TimeZone,
 			PostalCode: record.PostalCode,
-		})
-		ip.Location = &city
-
+		}
 	} else if record.Country != nil {
-		country := db.Location{}
-		db.DB.FirstOrInit(&country, db.Location{
+		ip.Location = &db.Location{
 			Code:       SetCode(record, record.Country.Name.String()),
 			Name:       record.Country.Name.String(),
 			Latitude:   record.Latitude,
 			Longitude:  record.Longitude,
 			TimeZone:   record.TimeZone,
 			PostalCode: record.PostalCode,
-		})
-		ip.Location = &country
-
+		}
 	} else if record.Continent != nil {
-		continent := db.Location{}
-		db.DB.FirstOrInit(&continent, db.Location{
+		ip.Location = &db.Location{
 			Code:       SetCode(record, record.Continent.Name.String()),
 			Name:       record.Continent.Name.String(),
 			Latitude:   record.Latitude,
 			Longitude:  record.Longitude,
 			TimeZone:   record.TimeZone,
 			PostalCode: record.PostalCode,
-		})
-		ip.Location = &continent
+		}
 	}
 }
 
