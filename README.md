@@ -3,14 +3,6 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/rangertaha/urlinsane?style=flat-square)](https://goreportcard.com/report/github.com/rangertaha/urlinsane) [![Go Doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](http://godoc.org/github.com/rangertaha/urlinsane) [![PkgGoDev](https://pkg.go.dev/badge/github.com/rangertaha/urlinsane)](https://pkg.go.dev/github.com/github.com/rangertaha/urlinsane) [![Release](https://img.shields.io/github/release/rangertaha/urlinsane.svg?style=flat-square)](https://github.com/rangertaha/urlinsane/releases/latest) [![Build Status](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml/badge.svg)](https://github.com/rangertaha/urlinsane/actions/workflows/go.yml)
 
 
-<img src="docs/vids/007.gif" width="500" align="center"> 
-
-
-<video width="1280" height="720" controls autoplay muted loop>
-<source src="https://youtu.be/Iu9l0r0layU?si=ZB8MW3wFLAJfd_gV" type="video/mp4">
- Your browser does not support video tags.
-</video>
-
 
 <div align="center">
   <a href="https://youtu.be/SiLlWTxoI-c?si=wvYEK6w3G_8up5pS" style="float:left">
