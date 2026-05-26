@@ -31,9 +31,74 @@ sudo mv urlinsane-0.8.2-linux-amd64  /usr/local/bin/urlinsane
 
 ## Usage
 
+Generate variations of a target and gather information on them with the `typo` command:
+
 ```bash
-urlinsane typo example.com 
+urlinsane typo example.com
 ```
+
+Typosquatting is not limited to domains. Use `--type` to target other named
+entities; the engine runs only the algorithms and collectors that apply to the
+selected entity type:
+
+```bash
+urlinsane typo example.com                 # a domain (default)
+urlinsane typo --type package requests     # a package name (PyPI, npm, ...)
+urlinsane typo --type user rangertaha      # a username / handle
+urlinsane typo --type name "John Smith"    # a person or brand name
+```
+
+List the IDs of registered languages, keyboards, algorithms and collectors:
+
+```bash
+urlinsane typo --options
+```
+
+### `typo` options
+
+Usage: `urlinsane typo [options] <target>`
+
+| Flag | Alias | Default | Description |
+|------|-------|---------|-------------|
+| `--type` | | `domain` | Entity type of the target: `domain`, `name`, `user`, `package` |
+| `--languages` | `-l` | `en` | Language IDs to use |
+| `--keyboards` | `-k` | `en1,en2,en3,en4` | Keyboard layout IDs to use |
+| `--algorithms` | `-a` | `all` | Algorithm IDs to use |
+| `--collectors` | `-c` | | Collector IDs to use |
+| `--analyzers` | `-z` | | Analyzer IDs to use (e.g. `all`) |
+| `--options` | `--ids`, `--opts` | `false` | Show registered keyboard, language, algorithm and collector IDs |
+
+**Constraints**
+
+| Flag | Alias | Default | Description |
+|------|-------|---------|-------------|
+| `--regex` | `-e` | | Regular expression a variant must match |
+| `--distance` | `-d` | `5` | Minimum Levenshtein distance |
+
+**Performance**
+
+| Flag | Alias | Default | Description |
+|------|-------|---------|-------------|
+| `--workers` | `-w` | `50` | Number of concurrent workers |
+| `--timeout` | `-t` | `20s` | Maximum duration per task |
+| `--delay` | | `1` | Delay between network calls |
+| `--random` | | `1` | Random network delay multiplier |
+| `--ttl` | | `1h` | Duration to cache results (`0` clears the cache) |
+| `--nameservers` | `-n` | | DNS or DoH servers to query (comma-separated) |
+| `--rua` | | `false` | Randomize the user agent for HTTP requests |
+
+**Output**
+
+| Flag | Alias | Default | Description |
+|------|-------|---------|-------------|
+| `--format` | `-f` | `list` | Output format: `list`, `json` |
+| `--file` | `-o` | | Filename to save scan output |
+| `--dir` | | `domains` | Directory to save files |
+| `--summary` | `-s` | `true` | Show a summary of scan results |
+| `--progress` | `-p` | `false` | Show a progress bar |
+| `--verbose` | `-v` | `false` | More detail in the output |
+| `--registered` | `-r` | `false` | Show only registered domain names |
+| `--unregistered` | `-u` | `false` | Show only unregistered domain names |
 
 
 
