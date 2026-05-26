@@ -17,13 +17,13 @@ package engine
 import (
 	"regexp"
 
-	"github.com/rangertaha/urlinsane/internal/config"
+	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
 	log "github.com/sirupsen/logrus"
 )
 
-func ExampleFilter() func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
-	return func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
+func ExampleFilter() func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
+	return func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
 		out := make(chan *db.Domain)
 		go func() {
 			for domain := range in {
@@ -37,8 +37,8 @@ func ExampleFilter() func(in <-chan *db.Domain, c *config.Config) <-chan *db.Dom
 	}
 }
 
-func Levenshtein() func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
-	return func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
+func Levenshtein() func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
+	return func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
 		out := make(chan *db.Domain)
 		go func() {
 			for domain := range in {
@@ -55,8 +55,8 @@ func Levenshtein() func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domai
 	}
 }
 
-func Dedup() func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
-	return func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
+func Dedup() func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
+	return func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
 		out := make(chan *db.Domain)
 		variants := make(map[string]bool)
 		go func() {
@@ -72,8 +72,8 @@ func Dedup() func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
 	}
 }
 
-func Regex() func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
-	return func(in <-chan *db.Domain, c *config.Config) <-chan *db.Domain {
+func Regex() func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
+	return func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
 		out := make(chan *db.Domain)
 		go func() {
 			for domain := range in {

@@ -15,6 +15,7 @@
 package web
 
 import (
+	"context"
 	"github.com/gocolly/colly/v2"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
@@ -31,7 +32,7 @@ func (p *Plugin) Init(c internal.Config) {
 	p.client = colly.NewCollector()
 }
 
-func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
+func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
 	// res := &Response{
 	// 	HTML: HTML{
 	// 		Meta: []Metatags{},

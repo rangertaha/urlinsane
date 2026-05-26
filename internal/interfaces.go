@@ -15,6 +15,7 @@
 package internal
 
 import (
+	"context"
 	"encoding/json"
 	"time"
 
@@ -51,6 +52,7 @@ type Config interface {
 
 	// Processing
 	Distance() int
+	Regex() string
 
 	// Output
 	Verbose() bool
@@ -79,16 +81,16 @@ type Analyzer interface {
 	Order() int
 	Description() string
 	Headers() []string
-	Exec(origin *db.Domain, variant *db.Domain) (*db.Domain, error)
+	Exec(ctx context.Context, origin *db.Domain, variant *db.Domain) (*db.Domain, error)
 }
 
 type Collector interface {
 	Id() string
 	Order() int
-	// Dependencies() []string
+	Dependencies() []string
 	Description() string
 	// Headers() []string
-	Exec(*db.Domain) (*db.Domain, error)
+	Exec(ctx context.Context, domain *db.Domain) (*db.Domain, error)
 }
 
 type Database interface {

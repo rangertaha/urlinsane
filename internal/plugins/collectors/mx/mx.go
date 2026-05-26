@@ -15,6 +15,7 @@
 package mx
 
 import (
+	"context"
 	"net"
 	"strings"
 
@@ -27,9 +28,9 @@ type Plugin struct {
 	collectors.Plugin
 }
 
-func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
+func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
 
-	records, err := net.LookupMX(domain.Name)
+	records, err := net.DefaultResolver.LookupMX(ctx, domain.Name)
 	if err != nil {
 		p.Log.Error("MX Lookup: ", err)
 	}

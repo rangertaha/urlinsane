@@ -15,6 +15,7 @@
 package cn
 
 import (
+	"context"
 	"net"
 	"strings"
 
@@ -28,8 +29,8 @@ type Plugin struct {
 	collectors.Plugin
 }
 
-func (i *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
-	record, err := net.LookupCNAME(domain.Name)
+func (i *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
+	record, err := net.DefaultResolver.LookupCNAME(ctx, domain.Name)
 	record = strings.TrimSpace(record)
 	record = strings.Trim(record, ".")
 

@@ -15,6 +15,7 @@
 package ptr
 
 import (
+	"context"
 	"net"
 	"strings"
 
@@ -27,8 +28,8 @@ type Plugin struct {
 	collectors.Plugin
 }
 
-func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
-	ips, err := net.LookupIP(domain.Name)
+func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
+	ips, err := net.DefaultResolver.LookupIP(ctx, "ip", domain.Name)
 	if err != nil {
 		p.Log.Error("IP Lookup: ", err)
 	}
@@ -44,7 +45,7 @@ func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
 		} else if strings.Contains(ip.String(), ".") {
 			domain.Dns = append(domain.Dns, &db.Dns{Type: "A", Value: record})
 			domain.IPs = append(domain.IPs, &db.Address{Addr: record, Type: "IPv4"})
-			addresses, _ := net.LookupAddr(record)
+			addresses, _ := net.DefaultResolver.LookupAddr(ctx, record)
 			for _, address := range addresses {
 				domain.Dns = append(domain.Dns, &db.Dns{Type: "PTR", Value: address})
 			}

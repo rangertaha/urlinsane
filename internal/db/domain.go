@@ -51,6 +51,11 @@ type Domain struct {
 	// Metadata
 	Algorithm   Algorithm `json:"algorithm" gorm:"-"`
 	Levenshtein int       `json:"distance" gorm:"-"`
+
+	// Origin is the source domain this variant was generated from. It is
+	// pipeline-only metadata (never persisted) used to pair a variant with its
+	// origin in the Analyzers stage.
+	Origin *Domain `json:"-" gorm:"-"`
 }
 
 type Dns struct {

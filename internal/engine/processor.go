@@ -23,8 +23,9 @@ import (
 
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/config"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/engine/dag"
+	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 	"github.com/schollz/progressbar/v3"
 	log "github.com/sirupsen/logrus"
 )
@@ -33,7 +34,12 @@ type (
 
 	// Urlinsane ...
 	Urlinsane struct {
-		cfg *config.Config
+		cfg internal.Config
+
+		// cols is the dependency-ordered collector set actually executed
+		// (includes any dependencies auto-included by the DAG). Set when the
+		// collector stage runs; used by Close.
+		cols []internal.Collector
 
 		// Domain
 		target db.Domain
@@ -46,11 +52,11 @@ type (
 		total    int64
 		live     int64
 	}
-	FilterFunc func() func(<-chan *db.Domain, *config.Config) <-chan *db.Domain
+	FilterFunc func() func(<-chan *db.Domain, internal.Config) <-chan *db.Domain
 )
 
 // NewUrlinsane ...
-func New(conf *config.Config) (u *Urlinsane) {
+func New(conf internal.Config) (u *Urlinsane) {
 	return &Urlinsane{
 		total:    0,
 		cfg:      conf,
@@ -59,8 +65,9 @@ func New(conf *config.Config) (u *Urlinsane) {
 	}
 }
 
-// Init
-func (u *Urlinsane) Init() <-chan *db.Domain {
+// Init seeds the pipeline with the original target domain and initializes the
+// algorithm, analyzer and output plugins.
+func (u *Urlinsane) Init(ctx context.Context) <-chan *db.Domain {
 	out := make(chan *db.Domain)
 
 	// u.target = &db.Domain{Name: u.cfg.Target()}
@@ -76,14 +83,8 @@ func (u *Urlinsane) Init() <-chan *db.Domain {
 	// 	db.Init(u.cfg)
 	// }
 
-	// Initialize collector plugins if needed
-	log.Debug("Collectors:", len(u.cfg.Collectors()))
-	for _, info := range u.cfg.Collectors() {
-		if inf, ok := info.(internal.Initializer); ok {
-			log.Debug("Init collector:", info.Id())
-			inf.Init(u.cfg)
-		}
-	}
+	// Collector plugins are initialized in the collector stage (Collectors),
+	// once the dependency DAG has resolved the full set to run.
 
 	// Initialize algorithm plugins if needed
 	log.Debug("Algorithms:", len(u.cfg.Algorithms()))
@@ -110,21 +111,24 @@ func (u *Urlinsane) Init() <-chan *db.Domain {
 	}
 
 	go func() {
+		defer close(out)
 		// Send original domain
-		out <- &u.target
+		select {
+		case out <- &u.target:
+		case <-ctx.Done():
+			return
+		}
 
 		if u.cfg.Banner() {
 			log.Debug("Show banner !")
 			Banner(u.cfg)
 		}
-
-		close(out)
 	}()
 	return out
 }
 
 // Algorithms generate typo variations using the algorithm plugins
-func (u *Urlinsane) Algorithms(in <-chan *db.Domain) <-chan *db.Domain {
+func (u *Urlinsane) Algorithms(ctx context.Context, in <-chan *db.Domain) <-chan *db.Domain {
 	if len(u.cfg.Algorithms()) > 0 {
 		out := make(chan *db.Domain)
 		var wg sync.WaitGroup
@@ -132,18 +136,25 @@ func (u *Urlinsane) Algorithms(in <-chan *db.Domain) <-chan *db.Domain {
 		for domain := range in {
 			for _, algo := range u.cfg.Algorithms() {
 				wg.Add(1)
-				go func(algo internal.Algorithm, in <-chan *db.Domain, out chan<- *db.Domain) {
+				go func(algo internal.Algorithm, origin *db.Domain) {
 					defer wg.Done()
 
-					domains, err := algo.Exec(domain)
+					domains, err := algo.Exec(origin)
 					if err != nil {
 						log.Errorf("Algorithm %s failed: %s", algo.Name(), err.Error())
 					}
-					for _, domain := range domains {
-						out <- domain
+					for _, variant := range domains {
+						// Carry the origin so the Analyzers stage can pair
+						// each variant with the domain it was derived from.
+						variant.Origin = origin
+						select {
+						case out <- variant:
+						case <-ctx.Done():
+							return
+						}
 					}
 
-				}(algo, in, out)
+				}(algo, domain)
 			}
 		}
 
@@ -158,124 +169,185 @@ func (u *Urlinsane) Algorithms(in <-chan *db.Domain) <-chan *db.Domain {
 }
 
 // Constrains apply pre-processing filters to exclude domain names from processing
-func (u *Urlinsane) Constraints(in <-chan *db.Domain, Filters ...FilterFunc) <-chan *db.Domain {
+func (u *Urlinsane) Constraints(ctx context.Context, in <-chan *db.Domain, Filters ...FilterFunc) <-chan *db.Domain {
 	for _, fn := range Filters {
 		in = fn()(in, u.cfg)
 	}
-	return u.Load(in)
+	return u.Load(ctx, in)
 }
 
-// Load gets the domain from the database
-func (u *Urlinsane) Load(in <-chan *db.Domain) <-chan *db.Domain {
+// Load preloads each variant's cached record (Dns/IPs/Redirect) from the
+// database so collectors can reuse it, and forwards the loaded record rather
+// than the bare in-flight variant. Pipeline-only metadata that a DB load drops
+// (Algorithm, Levenshtein, Origin) is carried over from the in-flight variant.
+func (u *Urlinsane) Load(ctx context.Context, in <-chan *db.Domain) <-chan *db.Domain {
 	out := make(chan *db.Domain)
 	go func() {
+		defer close(out)
 		for d := range in {
-			var domain *db.Domain
-			result := db.DB.Preload("Dns").Preload("IPs").Preload("Redirect").FirstOrInit(&domain, db.Domain{Name: d.Name})
+			loaded := &db.Domain{}
+			result := db.DB.Preload("Dns").Preload("IPs").Preload("Redirect").
+				FirstOrInit(loaded, db.Domain{Name: d.Name})
 			if result.Error != nil {
 				log.Errorf("Loading %s failed: %s", d.Name, result.Error.Error())
+				loaded = d // fall back to the in-flight variant
+			} else {
+				loaded.Algorithm = d.Algorithm
+				loaded.Levenshtein = d.Levenshtein
+				loaded.Origin = d.Origin
 			}
 
-			out <- d
+			select {
+			case out <- loaded:
+			case <-ctx.Done():
+				return
+			}
 		}
-		close(out)
 	}()
 
 	return out
 }
 
-func (u *Urlinsane) Collectors(in <-chan *db.Domain) <-chan *db.Domain {
-	if len(u.cfg.Collectors()) > 0 {
-		out := make(chan *db.Domain)
-		var wg sync.WaitGroup
-
-		for w := 1; w <= u.cfg.Workers(); w++ {
-			wg.Add(1)
-			go func(in <-chan *db.Domain, out chan<- *db.Domain) {
-				defer wg.Done()
-				for c := range u.CollectorChain(u.cfg.Collectors(), in) {
-					log.Debugf("Collection chain completed for %s", c.Name)
-					out <- c
-				}
-			}(in, out)
-		}
-		go func() {
-			wg.Wait()
-			close(out)
-		}()
-		return out
-	}
-	log.Debug("No collectors !")
-	return in
-}
-
-// CollectorChain creates a chain of information-gathering functions
-func (u *Urlinsane) CollectorChain(funcs []internal.Collector, in <-chan *db.Domain) <-chan *db.Domain {
-	if len(funcs) == 0 {
-		log.Debug("No collectors to chain !")
+// Collectors enriches each variant by running the collector plugins in
+// dependency order. The execution order is a DAG built from every collector's
+// declared Dependencies() (e.g. geo/ptr/wi/bn run after ip). Variants are
+// processed in parallel across a worker pool; within a single variant the
+// collectors run sequentially, level by level, so a collector always sees the
+// results of the collectors it depends on — and no two collectors mutate the
+// same variant concurrently.
+func (u *Urlinsane) Collectors(ctx context.Context, in <-chan *db.Domain) <-chan *db.Domain {
+	if len(u.cfg.Collectors()) == 0 {
+		log.Debug("No collectors !")
 		return in
 	}
-	var xfunc internal.Collector
-	out := make(chan *db.Domain)
-	xfunc, funcs = funcs[len(funcs)-1], funcs[:len(funcs)-1]
-	go func() {
-		for variant := range in {
-			if fn, ok := xfunc.(internal.Initializer); ok {
-				fn.Init(u.cfg)
-			}
-			// Timing options
-			time.Sleep(u.cfg.Random() * u.cfg.Delay())
 
-			var ctx context.Context
-			var cancel context.CancelFunc
-			// Execute the collector and timeout if it takes too long
-			if u.cfg.Timeout() != 0 {
-				ctx, cancel = context.WithTimeout(context.Background(), u.cfg.Timeout())
-			} else {
-				ctx, cancel = context.WithCancel(context.Background())
-			}
+	// Build the dependency DAG. Dependencies the user did not explicitly
+	// select are auto-included (closure) via collectorResolver.
+	levels, err := dag.Levels(u.cfg.Collectors(), collectorResolver)
+	if err != nil {
+		log.Errorf("Collector dependency error: %s; skipping collection", err)
+		return in
+	}
+	u.cols = dag.Flatten(levels)
 
-			u.runner(ctx, xfunc, variant, out)
-			cancel()
+	// Single Init pass over the full resolved set (fixes the previous
+	// double-initialization and covers DAG-included dependencies).
+	for _, c := range u.cols {
+		if init, ok := c.(internal.Initializer); ok {
+			log.Debug("Init collector:", c.Id())
+			init.Init(u.cfg)
 		}
-		close(out)
-	}()
-
-	if len(funcs) > 0 {
-		return u.CollectorChain(funcs, out)
 	}
 
+	out := make(chan *db.Domain)
+	var wg sync.WaitGroup
+	for w := 0; w < u.cfg.Workers(); w++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for variant := range in {
+				u.runCollectorLevels(ctx, levels, variant)
+				select {
+				case out <- variant:
+				case <-ctx.Done():
+					return
+				}
+			}
+		}()
+	}
+	go func() {
+		wg.Wait()
+		close(out)
+	}()
 	return out
 }
 
-func (u *Urlinsane) runner(ctx context.Context, fn internal.Collector, domain *db.Domain, out chan *db.Domain) {
-	logger := log.WithFields(log.Fields{"c": fn.Id(), "d": domain.Name})
-
-	var err error
-	domain, err = fn.Exec(domain)
-	if err != nil {
-		logger.Errorf("Collector err: %s", err.Error())
-	}
-
-	select {
-	case <-time.After(5 * time.Second):
-		logger.Infof("Collector %s completed", fn.Id())
-		out <- domain
-	case <-ctx.Done():
-		logger.Error("Collector timed out:", ctx.Err())
-		out <- domain
+// runCollectorLevels runs all collectors for one variant in dependency order:
+// level by level, sequentially within the variant. Sequential execution keeps
+// the shared *db.Domain race-free; parallelism comes from many variants in
+// flight across the worker pool.
+func (u *Urlinsane) runCollectorLevels(ctx context.Context, levels [][]internal.Collector, variant *db.Domain) {
+	for _, level := range levels {
+		for _, c := range level {
+			if ctx.Err() != nil {
+				return
+			}
+			u.execCollector(ctx, c, variant)
+		}
 	}
 }
 
-func (u *Urlinsane) Analyzers(in <-chan *db.Domain) <-chan *db.Domain {
+// execCollector runs a single collector against a single variant, applying the
+// configured throttle and a per-collector timeout. The timeout-bearing context
+// is passed to Exec so context-aware collectors honor the deadline.
+func (u *Urlinsane) execCollector(ctx context.Context, c internal.Collector, variant *db.Domain) {
+	logger := log.WithFields(log.Fields{"c": c.Id(), "d": variant.Name})
+
+	// Optional throttle between collector calls.
+	if d := u.cfg.Random() * u.cfg.Delay(); d > 0 {
+		select {
+		case <-time.After(d):
+		case <-ctx.Done():
+			return
+		}
+	}
+
+	cctx := ctx
+	var cancel context.CancelFunc = func() {}
+	if t := u.cfg.Timeout(); t > 0 {
+		cctx, cancel = context.WithTimeout(ctx, t)
+	}
+	defer cancel()
+
+	if _, err := c.Exec(cctx, variant); err != nil {
+		logger.Errorf("collector err: %s", err.Error())
+	}
+	logger.Debugf("collector %s completed", c.Id())
+}
+
+// collectorResolver constructs a collector by id so the DAG can auto-include
+// dependencies that were not explicitly selected.
+func collectorResolver(id string) (internal.Collector, bool) {
+	creator, err := collectors.Get(id)
+	if err != nil {
+		return nil, false
+	}
+	return creator(), true
+}
+
+// Analyzers runs the analyzer plugins on each variant, pairing it with the
+// origin domain it was derived from (carried on variant.Origin). Analyzers
+// enrich/score the variant in place.
+func (u *Urlinsane) Analyzers(ctx context.Context, in <-chan *db.Domain) <-chan *db.Domain {
 	if len(u.cfg.Analyzers()) == 0 {
 		log.Debug("No analyzers to run !")
 		return in
 	}
-	return in
+
+	out := make(chan *db.Domain)
+	go func() {
+		defer close(out)
+		for variant := range in {
+			origin := variant.Origin
+			if origin == nil {
+				origin = &u.target
+			}
+			for _, az := range u.cfg.Analyzers() {
+				if _, err := az.Exec(ctx, origin, variant); err != nil {
+					log.Errorf("Analyzer %s failed for %s: %s", az.Id(), variant.Name, err.Error())
+				}
+			}
+			select {
+			case out <- variant:
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+	return out
 }
 
-func (u *Urlinsane) Output(in <-chan *db.Domain) {
+func (u *Urlinsane) Output(ctx context.Context, in <-chan *db.Domain) {
 	if output := u.cfg.Output(); output != nil {
 		for c := range in {
 			// Stream or collect domains
@@ -306,26 +378,58 @@ func (u *Urlinsane) Output(in <-chan *db.Domain) {
 }
 
 func (u *Urlinsane) Close() {
-	// Initialize information plugins if needed
-	for _, info := range u.cfg.Collectors() {
+	cols := u.cols
+	if cols == nil {
+		cols = u.cfg.Collectors()
+	}
+	for _, info := range cols {
 		if inf, ok := info.(internal.Closer); ok {
 			inf.Close()
 		}
 	}
 }
 
-func (u *Urlinsane) Execute() (err error) {
-	typos := u.Init()
-	typos = u.Algorithms(typos)
-	typos = u.Constraints(typos, Dedup, Regex, Levenshtein)
-	typos = u.Collectors(typos)
-	typos = u.Analyzers(typos)
-	u.Output(typos)
-	u.Close()
-	return
+// stages returns the ordered pipeline of producer/transform stages. The final
+// sink (Output) is run separately by Execute since it produces no stream.
+func (u *Urlinsane) stages() []Stage {
+	return []Stage{
+		stageFunc{"init", func(ctx context.Context, _ <-chan *db.Domain) <-chan *db.Domain {
+			return u.Init(ctx)
+		}},
+		stageFunc{"algorithms", func(ctx context.Context, in <-chan *db.Domain) <-chan *db.Domain {
+			return u.Algorithms(ctx, in)
+		}},
+		stageFunc{"constraints", func(ctx context.Context, in <-chan *db.Domain) <-chan *db.Domain {
+			return u.Constraints(ctx, in, Dedup, Regex, Levenshtein)
+		}},
+		stageFunc{"collectors", func(ctx context.Context, in <-chan *db.Domain) <-chan *db.Domain {
+			return u.Collectors(ctx, in)
+		}},
+		stageFunc{"analyzers", func(ctx context.Context, in <-chan *db.Domain) <-chan *db.Domain {
+			return u.Analyzers(ctx, in)
+		}},
+	}
 }
 
-func Banner(cfg *config.Config) {
+// Execute runs the full scan pipeline as a composition of stages, threading a
+// single cancellable context through every stage and into the collectors.
+func (u *Urlinsane) Execute(ctx context.Context) (err error) {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	var stream <-chan *db.Domain
+	for _, st := range u.stages() {
+		stream = st.Run(ctx, stream)
+	}
+	u.Output(ctx, stream)
+	u.Close()
+	return ctx.Err()
+}
+
+func Banner(cfg internal.Config) {
 	var lang, board, algo, collectors []string
 	t := time.Now()
 	timestamp := t.Format("2006-01-02 15:04:05")

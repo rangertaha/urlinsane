@@ -20,6 +20,7 @@
 package idn
 
 import (
+	"context"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
@@ -30,7 +31,7 @@ type Plugin struct {
 	collectors.Plugin
 }
 
-func (i *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
+func (i *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
 	var idn string
 	idn, err = idna.Punycode.ToASCII(domain.Name)
 
