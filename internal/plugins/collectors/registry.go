@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/rangertaha/urlinsane/internal"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -61,12 +62,20 @@ type Plugin struct {
 	Title     string
 	Summary   string
 	DependsOn []string
-	Log       *log.Entry
-	Conf      internal.Config
+	// Entities restricts this collector to specific entity types. Empty means
+	// it applies to all types.
+	Entities []entity.Type
+	Log      *log.Entry
+	Conf     internal.Config
 }
 
 func (p *Plugin) Id() string {
 	return p.Code
+}
+
+// Types reports the entity types this collector applies to (all, if unset).
+func (p *Plugin) Types() []entity.Type {
+	return p.Entities
 }
 
 func (p *Plugin) Init(c internal.Config) {

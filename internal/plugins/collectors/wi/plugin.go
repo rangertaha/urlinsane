@@ -20,6 +20,7 @@ import (
 	parser "github.com/likexian/whois-parser"
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 )
 
@@ -164,6 +165,7 @@ func init() {
 				Title:     "Whois Lookup",
 				Summary:   "Domain registration lookup",
 				DependsOn: []string{"ip"},
+				Entities:  []entity.Type{entity.Domain},
 			},
 		}
 	})

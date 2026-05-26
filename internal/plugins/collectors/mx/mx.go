@@ -21,6 +21,7 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 )
 
@@ -57,6 +58,7 @@ func init() {
 				Title:     "MX Records",
 				Summary:   "DNS MX Records",
 				DependsOn: []string{},
+				Entities:  []entity.Type{entity.Domain},
 			},
 		}
 	})

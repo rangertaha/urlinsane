@@ -17,6 +17,7 @@ package tld
 import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/pkg/dns"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	"github.com/rangertaha/urlinsane/pkg/fuzzy"
@@ -42,9 +43,10 @@ func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {
 		return &Plugin{
 			Plugin: algorithms.Plugin{
-				Code:    CODE,
-				Title:   "Wrong TLDs",
-				Summary: "Wrong top level domain (TLD)",
+				Code:     CODE,
+				Title:    "Wrong TLDs",
+				Summary:  "Wrong top level domain (TLD)",
+				Entities: []entity.Type{entity.Domain},
 			},
 		}
 	})

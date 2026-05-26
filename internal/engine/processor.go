@@ -72,6 +72,7 @@ func (u *Urlinsane) Init(ctx context.Context) <-chan *db.Domain {
 
 	// u.target = &db.Domain{Name: u.cfg.Target()}
 	db.DB.FirstOrInit(&u.target, db.Domain{Name: u.cfg.Target()})
+	u.target.Type = u.cfg.EntityType()
 	db.DB.Preload("Results").FirstOrInit(&u.scan, db.Scan{Query: u.target.Name})
 
 	log := log.WithFields(

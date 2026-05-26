@@ -17,6 +17,7 @@ package si
 import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/pkg/dns"
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
 	"github.com/rangertaha/urlinsane/pkg/fuzzy"
@@ -46,9 +47,10 @@ func init() {
 	algorithms.Add(CODE, func() internal.Algorithm {
 		return &Plugin{
 			Plugin: algorithms.Plugin{
-				Code:    CODE,
-				Title:   "Subdomain Insertion",
-				Summary: "Inserts common subdomain at the beginning of the domain",
+				Code:     CODE,
+				Title:    "Subdomain Insertion",
+				Summary:  "Inserts common subdomain at the beginning of the domain",
+				Entities: []entity.Type{entity.Domain},
 			},
 		}
 	})

@@ -24,6 +24,7 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
 
 	"github.com/rainycape/geoip"
@@ -109,6 +110,7 @@ func init() {
 				Title:     "GeoIP Lookup",
 				Summary:   "Retrieves location of IP addresses",
 				DependsOn: []string{"ip"},
+				Entities:  []entity.Type{entity.Domain},
 			},
 		}
 	})
