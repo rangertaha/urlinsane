@@ -441,7 +441,7 @@ func Banner(cfg internal.Config) {
 	var lang, board, algo, collectors []string
 	t := time.Now()
 	timestamp := t.Format("2006-01-02 15:04:05")
-	name := text.FgRed.Sprint(cfg.Target())
+	name := fmt.Sprintf("%s  (%s)", text.FgRed.Sprint(cfg.Target()), cfg.EntityType())
 	for _, l := range cfg.Languages() {
 		lang = append(lang, l.Id())
 	}
