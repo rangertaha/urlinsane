@@ -96,6 +96,12 @@ var Flags = []cli.Flag{
 		Usage:   "collectors IDs to use `[ID]`",
 	},
 	&cli.StringFlag{
+		Name:    "analyzers",
+		Aliases: []string{"z"},
+		Value:   "",
+		Usage:   "analyzer IDs to use (e.g. 'all') `[ID]`",
+	},
+	&cli.StringFlag{
 		Name:     "regex",
 		Aliases:  []string{"e"},
 		Value:    "",
@@ -261,7 +267,7 @@ var TypoCmd = cli.Command{
 			fmt.Println(text.FgRed.Sprint(err))
 			cli.ShowSubcommandHelpAndExit(cCtx, 1)
 		}
-		return engine.New(cfg).Execute()
+		return engine.New(cfg).Execute(cCtx.Context)
 	},
 	CustomHelpTemplate: fmt.Sprintf(`%sEXAMPLE:
 

@@ -20,7 +20,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 	"time"
 
@@ -97,20 +96,7 @@ type (
 		// Metrics
 		total int
 	}
-
-	Infos             []internal.Collector
-	InfosOrder        struct{ Infos }
-	InfosReverseOrder struct{ Infos }
 )
-
-func (o Infos) Len() int      { return len(o) }
-func (o Infos) Swap(i, j int) { o[i], o[j] = o[j], o[i] }
-func (l InfosReverseOrder) Less(i, j int) bool {
-	return l.Infos[i].Order() > l.Infos[j].Order()
-}
-func (l InfosOrder) Less(i, j int) bool {
-	return l.Infos[i].Order() < l.Infos[j].Order()
-}
 
 func init() {
 	// Outputs to nowhere
@@ -265,8 +251,9 @@ func ConfigOption(
 		c.keyboards = languages.Keyboards(boards...)
 		c.algorithms = algorithms.List(algos...)
 
+		// Collector execution order is determined by the dependency DAG at
+		// run time (internal/engine/dag), not by a static sort here.
 		c.collectors = collectors.List(cols...)
-		sort.Sort(InfosReverseOrder{c.collectors})
 
 		c.analyzers = analyzers.List(anlyzrs...)
 

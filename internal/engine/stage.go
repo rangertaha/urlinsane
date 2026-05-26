@@ -12,51 +12,32 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-package none
+
+package engine
 
 import (
 	"context"
 
-	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
-	"github.com/rangertaha/urlinsane/internal/plugins/analyzers"
 )
 
-const (
-	CODE        = "a"
-	ORDER       = 1
-	DESCRIPTION = "Default "
-)
-
-type Plugin struct{}
-
-func (p *Plugin) Id() string {
-	return CODE
+// Stage is one phase of the scan pipeline. It consumes a stream of domains and
+// produces a stream of domains; ctx cancels the whole pipeline. The pipeline is
+// the ordered composition of stages — see Urlinsane.stages / Execute.
+type Stage interface {
+	Name() string
+	Run(ctx context.Context, in <-chan *db.Domain) <-chan *db.Domain
 }
 
-func (p *Plugin) Order() int {
-	return ORDER
+// stageFunc adapts a named closure to a Stage. Most stages are stateless
+// wrappers over an Urlinsane method, so a closure is all they need.
+type stageFunc struct {
+	name string
+	run  func(ctx context.Context, in <-chan *db.Domain) <-chan *db.Domain
 }
 
-func (p *Plugin) Description() string {
-	return DESCRIPTION
-}
+func (s stageFunc) Name() string { return s.name }
 
-func (p *Plugin) Init(conf internal.Config) {
-
-}
-
-func (p *Plugin) Headers() []string {
-	return []string{"NONE"}
-}
-
-func (p *Plugin) Exec(ctx context.Context, original *db.Domain, variant *db.Domain) (domain *db.Domain, err error) {
-	return
-}
-
-// Register the plugin
-func init() {
-	analyzers.Add(CODE, func() internal.Analyzer {
-		return &Plugin{}
-	})
+func (s stageFunc) Run(ctx context.Context, in <-chan *db.Domain) <-chan *db.Domain {
+	return s.run(ctx, in)
 }

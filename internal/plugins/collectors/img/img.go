@@ -66,7 +66,7 @@ func (i *Plugin) Init(c internal.Config) {
 // 	return []string{"SCREENSHOT"}
 // }
 
-func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
+func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
 	// if acc.Live() {
 
 	// 	var buf []byte

@@ -15,6 +15,7 @@
 package wi
 
 import (
+	"context"
 	"github.com/likexian/whois"
 	parser "github.com/likexian/whois-parser"
 	"github.com/rangertaha/urlinsane/internal"
@@ -26,7 +27,7 @@ type Plugin struct {
 	collectors.Plugin
 }
 
-func (p *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
+func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
 	raw, err := whois.Whois(domain.Name)
 	p.Log.Debug(raw)
 	if err != nil {

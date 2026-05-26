@@ -15,6 +15,7 @@
 package txt
 
 import (
+	"context"
 	"net"
 	"strings"
 
@@ -28,8 +29,8 @@ type Plugin struct {
 	collectors.Plugin
 }
 
-func (i *Plugin) Exec(domain *db.Domain) (vaiant *db.Domain, err error) {
-	records, err := net.LookupTXT(domain.Name)
+func (i *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
+	records, err := net.DefaultResolver.LookupTXT(ctx, domain.Name)
 	if err != nil {
 		log.Error("TXT Lookup: ", err)
 	}
