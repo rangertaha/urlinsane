@@ -17,6 +17,7 @@ package engine
 
 import (
 	"context"
+	"path/filepath"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -25,6 +26,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/entity"
+	"github.com/rangertaha/urlinsane/internal/store"
 	"gorm.io/gorm"
 )
 
@@ -34,6 +36,8 @@ type fakeConfig struct {
 	algorithms []internal.Algorithm
 	collectors []internal.Collector
 	analyzers  []internal.Analyzer
+	output     internal.Output
+	st         *store.Store
 	workers    int
 	timeout    time.Duration
 	delay      time.Duration
@@ -48,7 +52,8 @@ func (c *fakeConfig) Algorithms() []internal.Algorithm { return c.algorithms }
 func (c *fakeConfig) Collectors() []internal.Collector { return c.collectors }
 func (c *fakeConfig) Analyzers() []internal.Analyzer   { return c.analyzers }
 func (c *fakeConfig) Database() *gorm.DB               { return nil }
-func (c *fakeConfig) Output() internal.Output          { return nil }
+func (c *fakeConfig) Store() *store.Store              { return c.st }
+func (c *fakeConfig) Output() internal.Output          { return c.output }
 func (c *fakeConfig) Workers() int {
 	if c.workers == 0 {
 		return 1
@@ -134,6 +139,39 @@ func (a *fakeAnalyzer) Exec(ctx context.Context, origin, variant *db.Domain) (*d
 	*a.pairs = append(*a.pairs, [2]string{origin.Name, variant.Name})
 	a.mu.Unlock()
 	return variant, nil
+}
+
+// fakeOutput is a no-op internal.Output for exercising the Output stage.
+type fakeOutput struct{}
+
+func (fakeOutput) Id() string          { return "fake" }
+func (fakeOutput) Description() string { return "fake" }
+func (fakeOutput) Read(*db.Domain)     {}
+func (fakeOutput) Write()              {}
+func (fakeOutput) Save(string)         {}
+func (fakeOutput) Report()             {}
+
+// TestOutput_DualWritesToStore verifies the Output stage writes live results to
+// the IPLD store (Phase 2 dual-write) in addition to GORM.
+func TestOutput_DualWritesToStore(t *testing.T) {
+	db.Config(filepath.Join(t.TempDir(), "primary.db")) // init global db.DB
+	s, err := store.OpenDir(t.TempDir())
+	if err != nil {
+		t.Fatalf("open store: %v", err)
+	}
+	cfg := &fakeConfig{output: fakeOutput{}, st: s}
+	u := New(cfg)
+
+	live := &db.Domain{Type: entity.Domain, Name: "exmaple.com", Dns: []*db.Dns{{Type: "A", Value: "1.1.1.1"}}}
+	u.Output(context.Background(), feed(live))
+
+	got, ok, err := s.Get(entity.Domain, "exmaple.com")
+	if err != nil || !ok {
+		t.Fatalf("store missing dual-written entity: ok=%v err=%v", ok, err)
+	}
+	if len(got.Dns) != 1 || got.Dns[0].Value != "1.1.1.1" {
+		t.Fatalf("dual-written entity wrong: %+v", got)
+	}
 }
 
 // drain reads the channel to completion, failing if it does not close in time.
