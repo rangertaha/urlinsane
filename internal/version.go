@@ -30,8 +30,8 @@ const (
  \___/ |_| \_\|_____||___||_| |_||___/ \__,_||_| |_| \___|   
  v%s
     
-DOMAIN:     %s
-LANGUAGES:  %s 
+ENTITY:     %s
+LANGUAGES:  %s
 KEYBOARDS:  %s
 ALGORITMS:  %s
 COLLECTORS: %s
