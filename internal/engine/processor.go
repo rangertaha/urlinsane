@@ -71,8 +71,14 @@ func (u *Urlinsane) Init(ctx context.Context) <-chan *db.Domain {
 	out := make(chan *db.Domain)
 
 	// u.target = &db.Domain{Name: u.cfg.Target()}
-	db.DB.FirstOrInit(&u.target, db.Domain{Name: u.cfg.Target()})
-	u.target.Type = u.cfg.EntityType()
+	// Seed the target, hydrating from the content-addressed store if a prior
+	// scan cached it; otherwise start fresh.
+	u.target = db.Domain{Name: u.cfg.Target(), Type: u.cfg.EntityType()}
+	if s := u.cfg.Store(); s != nil {
+		if cached, ok, err := s.Get(u.cfg.EntityType(), u.cfg.Target()); err == nil && ok {
+			u.target = *cached
+		}
+	}
 	db.DB.Preload("Results").FirstOrInit(&u.scan, db.Scan{Query: u.target.Name})
 
 	log := log.WithFields(
@@ -186,16 +192,17 @@ func (u *Urlinsane) Load(ctx context.Context, in <-chan *db.Domain) <-chan *db.D
 	go func() {
 		defer close(out)
 		for d := range in {
-			loaded := &db.Domain{}
-			result := db.DB.Preload("Dns").Preload("IPs").Preload("Redirect").
-				FirstOrInit(loaded, db.Domain{Name: d.Name})
-			if result.Error != nil {
-				log.Errorf("Loading %s failed: %s", d.Name, result.Error.Error())
-				loaded = d // fall back to the in-flight variant
-			} else {
-				loaded.Algorithm = d.Algorithm
-				loaded.Levenshtein = d.Levenshtein
-				loaded.Origin = d.Origin
+			loaded := d // default: forward the in-flight variant
+			if s := u.cfg.Store(); s != nil {
+				if cached, ok, err := s.Get(d.EntityType(), d.Name); err != nil {
+					log.Errorf("Loading %s failed: %s", d.Name, err.Error())
+				} else if ok {
+					// Reuse cached result data; carry pipeline-only metadata.
+					cached.Algorithm = d.Algorithm
+					cached.Levenshtein = d.Levenshtein
+					cached.Origin = d.Origin
+					loaded = cached
+				}
 			}
 
 			select {
