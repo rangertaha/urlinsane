@@ -4,17 +4,6 @@
 
 
 
-<div align="center">
-  <a href="https://youtu.be/SiLlWTxoI-c?si=wvYEK6w3G_8up5pS" style="float:left">
-  <img width="250" src="https://github.com/rangertaha/urlinsane/blob/master/docs/imgs/001.webp" alt="Urlinsane"></a>
-  
-  <a href="https://youtu.be/Iu9l0r0layU?si=Im_9tJ7L9wDXl6p7" style="float:left">
-  <img width="250" src="https://github.com/rangertaha/urlinsane/blob/master/docs/imgs/002.webp" alt="Urlinsane"></a>
-  
-  <a href="https://youtu.be/6QgCFVClTGY?si=NMigDRyI99lXE5EI" style="float:left">
-  <img width="250" src="https://github.com/rangertaha/urlinsane/blob/master/docs/imgs/003.webp" alt="Urlinsane"></a>
-</div>
-
 
 
 Urlinsane is a tool for detecting domain typosquatting and supporting OSINT investigations, designed to operate on multilingual target domains. It helps identify threats such as typosquatting, brandjacking, URL hijacking, phishing, fraud, corporate espionage, supply chain attacks, and more. This command-line tool generates and scans for potential typosquatting variants of a domain, assisting in uncovering and mitigating security risks.
