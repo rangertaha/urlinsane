@@ -24,7 +24,6 @@ import (
 	"time"
 
 	"github.com/rangertaha/urlinsane/internal/dataset"
-	"github.com/rangertaha/urlinsane/internal/db"
 	"gorm.io/gorm"
 
 	"github.com/rangertaha/urlinsane/internal"
@@ -303,10 +302,10 @@ func ConfigOption(
 		// Create app directory if it does not exits
 		c.directory = createAppDir(DIR_PRIMARY)
 
-		// Create app database if it does not exits
-		c.database = createDatabase(c.directory)
+		// Scan results are stored in the content-addressed store (opened below),
+		// not a primary GORM database.
 
-		// Create app database if it does not exits
+		// Create the dataset (read-only reference data) if it does not exist
 		c.dataset = createDatasets(c.directory)
 
 		// Open the content-addressed result store (IPLD blockstore + index)
@@ -464,11 +463,6 @@ func createAppDir(dirname string) string {
 	}
 
 	return configDir
-}
-
-func createDatabase(dirname string) *gorm.DB {
-	db.Config(filepath.Join(dirname, PRIMARY_DB))
-	return db.DB
 }
 
 func createDatasets(dirname string) *gorm.DB {

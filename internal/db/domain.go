@@ -124,10 +124,6 @@ func (Whois) TableName() string {
 	return "whois"
 }
 
-func (d *Domain) Save() {
-	DB.FirstOrCreate(d, Domain{Name: d.Name})
-}
-
 func (d *Domain) Live() bool {
 	return len(d.Dns) > 0
 }

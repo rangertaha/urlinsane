@@ -17,7 +17,6 @@ package engine
 
 import (
 	"context"
-	"path/filepath"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -151,10 +150,9 @@ func (fakeOutput) Write()              {}
 func (fakeOutput) Save(string)         {}
 func (fakeOutput) Report()             {}
 
-// TestOutput_DualWritesToStore verifies the Output stage writes live results to
-// the IPLD store (Phase 2 dual-write) in addition to GORM.
-func TestOutput_DualWritesToStore(t *testing.T) {
-	db.Config(filepath.Join(t.TempDir(), "primary.db")) // init global db.DB
+// TestOutput_PersistsToStore verifies the Output stage persists live results to
+// the IPLD store as the sole source of truth (no GORM).
+func TestOutput_PersistsToStore(t *testing.T) {
 	s, err := store.OpenDir(t.TempDir())
 	if err != nil {
 		t.Fatalf("open store: %v", err)
