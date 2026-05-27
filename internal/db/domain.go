@@ -23,6 +23,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal/entity"
 )
 
+// Algorithm identifies the typo algorithm that produced a variant.
 type Algorithm struct {
 	Code string `json:"code,omitempty"`
 	Name string `json:"name,omitempty"`
@@ -63,12 +64,14 @@ func (d *Domain) EntityType() entity.Type {
 	return d.Type
 }
 
+// Dns is a single DNS record (e.g. A, AAAA, NS, MX, TXT, CNAME, PTR).
 type Dns struct {
 	Type  string `json:"type,omitempty"`
 	Value string `json:"value,omitempty"`
 	Ttl   string `json:"ttl,omitempty"`
 }
 
+// Whois holds the registration record and contact roles for a domain.
 type Whois struct {
 	Registrar      *Contact   `json:"registrar,omitempty"`
 	Registrant     *Contact   `json:"registrant,omitempty"`
@@ -97,10 +100,12 @@ type Contact struct {
 	ReferralURL  string `json:"referral_url,omitempty"`
 }
 
+// Live reports whether the entity resolved — i.e. it has any DNS records.
 func (d *Domain) Live() bool {
 	return len(d.Dns) > 0
 }
 
+// Json returns the entity marshaled as JSON.
 func (d *Domain) Json() (j string) {
 	jsonData, err := json.Marshal(d)
 	if err != nil {

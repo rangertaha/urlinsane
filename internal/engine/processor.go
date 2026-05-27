@@ -362,6 +362,9 @@ func (u *Urlinsane) Analyzers(ctx context.Context, in <-chan *db.Domain) <-chan 
 	return out
 }
 
+// Output is the terminal sink: it streams each result to the configured output
+// plugin, optionally saves it to a file and prints a summary, and persists the
+// scan's live results to the content-addressed store.
 func (u *Urlinsane) Output(ctx context.Context, in <-chan *db.Domain) {
 	if output := u.cfg.Output(); output != nil {
 		var live []*db.Domain
@@ -399,6 +402,7 @@ func (u *Urlinsane) Output(ctx context.Context, in <-chan *db.Domain) {
 	}
 }
 
+// Close releases resources held by the collectors that opened them.
 func (u *Urlinsane) Close() {
 	cols := u.cols
 	if cols == nil {
@@ -451,6 +455,8 @@ func (u *Urlinsane) Execute(ctx context.Context) (err error) {
 	return ctx.Err()
 }
 
+// Banner prints the scan header: the target entity and the selected languages,
+// keyboards, algorithms, collectors and output.
 func Banner(cfg internal.Config) {
 	var lang, board, algo, collectors []string
 	t := time.Now()

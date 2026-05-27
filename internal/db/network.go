@@ -14,11 +14,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package db
 
+// Device is a network host with one or more addresses.
 type Device struct {
 	Name     string     `json:"name,omitempty"`
 	Addreses []*Address `json:"ips,omitempty"`
 }
 
+// Address is an IP address (IPv4/IPv6) with optional open ports and geolocation.
 type Address struct {
 	Addr     string    `json:"address"`
 	Type     string    `json:"type"`
@@ -26,6 +28,7 @@ type Address struct {
 	Location *Location `json:"location,omitempty"`
 }
 
+// Port is a network port and the service detected on it.
 type Port struct {
 	Proto   string `json:"proto,omitempty"`
 	Number  int    `json:"num,omitempty"`
