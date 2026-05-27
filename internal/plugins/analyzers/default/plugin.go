@@ -19,6 +19,7 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
+	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/plugins/analyzers"
 )
 
@@ -36,6 +37,12 @@ func (p *Plugin) Id() string {
 
 func (p *Plugin) Order() int {
 	return ORDER
+}
+
+// Types reports the entity types this analyzer applies to. The default analyzer
+// is generic (empty == all types).
+func (p *Plugin) Types() []entity.Type {
+	return nil
 }
 
 func (p *Plugin) Description() string {

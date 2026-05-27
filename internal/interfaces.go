@@ -85,6 +85,9 @@ type Analyzer interface {
 	Id() string
 	Order() int
 	Description() string
+	// Types reports the entity types this analyzer applies to. An empty slice
+	// means it applies to all types.
+	Types() []entity.Type
 	Headers() []string
 	Exec(ctx context.Context, origin *db.Domain, variant *db.Domain) (*db.Domain, error)
 }
