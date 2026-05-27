@@ -151,7 +151,7 @@ var Flags = []cli.Flag{
 		Aliases:  []string{"d"},
 		Value:    5,
 		Category: "CONSTRAINTS",
-		Usage:    "minimum Levenshtein distance `NUM`",
+		Usage:    "maximum Levenshtein distance `NUM`",
 	},
 	&cli.BoolFlag{
 		Name:     "progress",

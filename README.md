@@ -73,7 +73,7 @@ Usage: `urlinsane typo [options] <target>`
 | Flag | Alias | Default | Description |
 |------|-------|---------|-------------|
 | `--regex` | `-e` | | Regular expression a variant must match |
-| `--distance` | `-d` | `5` | Minimum Levenshtein distance |
+| `--distance` | `-d` | `5` | Maximum Levenshtein distance |
 
 **Performance**
 
