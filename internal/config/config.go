@@ -281,7 +281,7 @@ func ConfigOption(
 		// run time (internal/engine/dag), not by a static sort here.
 		c.collectors = collectorsForType(collectors.List(cols...), entityType)
 
-		c.analyzers = analyzers.List(anlyzrs...)
+		c.analyzers = analyzersForType(analyzers.List(anlyzrs...), entityType)
 
 		if c.output, err = outputs.Get(format); err != nil {
 			log.Error(err)
@@ -399,6 +399,16 @@ func collectorsForType(in []internal.Collector, t entity.Type) (out []internal.C
 	for _, c := range in {
 		if entity.Supports(c.Types(), t) {
 			out = append(out, c)
+		}
+	}
+	return
+}
+
+// analyzersForType keeps only the analyzers that apply to the given entity type.
+func analyzersForType(in []internal.Analyzer, t entity.Type) (out []internal.Analyzer) {
+	for _, a := range in {
+		if entity.Supports(a.Types(), t) {
+			out = append(out, a)
 		}
 	}
 	return

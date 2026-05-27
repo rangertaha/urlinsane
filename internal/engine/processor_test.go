@@ -127,10 +127,11 @@ type fakeAnalyzer struct {
 	pairs *[][2]string
 }
 
-func (a *fakeAnalyzer) Id() string          { return a.id }
-func (a *fakeAnalyzer) Order() int          { return 0 }
-func (a *fakeAnalyzer) Description() string { return a.id }
-func (a *fakeAnalyzer) Headers() []string   { return nil }
+func (a *fakeAnalyzer) Id() string           { return a.id }
+func (a *fakeAnalyzer) Order() int           { return 0 }
+func (a *fakeAnalyzer) Description() string  { return a.id }
+func (a *fakeAnalyzer) Types() []entity.Type { return nil }
+func (a *fakeAnalyzer) Headers() []string    { return nil }
 func (a *fakeAnalyzer) Exec(ctx context.Context, origin, variant *db.Domain) (*db.Domain, error) {
 	a.mu.Lock()
 	*a.pairs = append(*a.pairs, [2]string{origin.Name, variant.Name})

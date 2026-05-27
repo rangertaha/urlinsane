@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- Dependency-aware DAG collector engine: collectors run in dependency order
+  (derived from each collector's declared dependencies), parallel across
+  variants and sequential within a variant; `context` is propagated end to end
+  with real per-collector timeouts.
+- Generalized typosquatting to any named **entity** via `--type`
+  (`domain`, `name`, `user`, `package`), including automatic classification of
+  the target; all processing plugins (algorithms, collectors, analyzers)
+  declare, and are filtered by, the entity types they support.
+- IPLD content-addressed result store (`internal/store`): a dag-cbor filesystem
+  blockstore with an IPLD schema (keyed union over entity types), a SQLite
+  secondary index for name lookups, and cross-scan diffing.
+
+### Changed
+- IPLD is now the source of truth for scan results, superseding the GORM/SQLite
+  results database (the `dataset.db` reference data stays on SQLite).
+- The Analyzers stage now runs with origin→variant pairing.
+- Cleaner JSON output (dropped persistence/ID noise from records).
+
+### Fixed
+- Self-heal a corrupt or unreadable `dataset.db` instead of panicking on startup.
+- Stop duplicating collected DNS/IP records across collectors and on re-scans.
+- `--format <invalid>` no longer panics; it fails fast with a clear error.
+- `--file`/`-o` now actually writes output (valid JSONL for the `json` format).
+- `--verbose` now enables logging, and `--debug`/`--verbose` logs go to stderr
+  instead of corrupting the results on stdout.
+- Removed the mandatory 5-second-per-collector delay and the per-variant double
+  plugin initialization.
+- Corrected the `--distance` description (it is the *maximum* Levenshtein
+  distance, not the minimum).
+
 ## [0.9.0] - 2025-01-07
 ### SQLite database backend
 - Load typosquatting and linguistic datasets from the database
