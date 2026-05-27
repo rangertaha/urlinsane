@@ -17,6 +17,7 @@ package engine
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"strings"
 	"sync"
 	"time"
@@ -265,8 +266,9 @@ func (u *Urlinsane) runCollectorLevels(ctx context.Context, levels [][]internal.
 func (u *Urlinsane) execCollector(ctx context.Context, c internal.Collector, variant *db.Domain) {
 	logger := log.WithFields(log.Fields{"c": c.Id(), "d": variant.Name})
 
-	// Optional throttle between collector calls.
-	if d := u.cfg.Random() * u.cfg.Delay(); d > 0 {
+	// Optional throttle between collector calls: a base delay plus up to
+	// --random of additional jitter.
+	if d := u.collectorDelay(); d > 0 {
 		select {
 		case <-time.After(d):
 		case <-ctx.Done():
@@ -285,6 +287,16 @@ func (u *Urlinsane) execCollector(ctx context.Context, c internal.Collector, var
 		logger.Errorf("collector err: %s", err.Error())
 	}
 	logger.Debugf("collector %s completed", c.Id())
+}
+
+// collectorDelay returns the throttle to apply before a collector call: the
+// base --delay plus up to --random of random jitter.
+func (u *Urlinsane) collectorDelay() time.Duration {
+	d := u.cfg.Delay()
+	if r := u.cfg.Random(); r > 0 {
+		d += time.Duration(rand.Int63n(int64(r) + 1))
+	}
+	return d
 }
 
 // collectorResolver constructs a collector by id so the DAG can auto-include
