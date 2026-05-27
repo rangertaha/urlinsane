@@ -79,6 +79,26 @@ func (i *Index) LatestCID(t entity.Type, name string) (cid.Cid, bool, error) {
 	return c, true, nil
 }
 
+// LatestFresh returns the latest root CID for (type, name) only if it was
+// updated within ttl. A non-positive ttl disables caching (always not-fresh).
+func (i *Index) LatestFresh(t entity.Type, name string, ttl time.Duration) (cid.Cid, bool, error) {
+	if ttl <= 0 {
+		return cid.Undef, false, nil
+	}
+	var rows []EntityIndex
+	if err := i.db.Limit(1).Find(&rows, "entity_type = ? AND name = ?", string(t), name).Error; err != nil {
+		return cid.Undef, false, err
+	}
+	if len(rows) == 0 || time.Since(rows[0].UpdatedAt) > ttl {
+		return cid.Undef, false, nil
+	}
+	c, err := cid.Decode(rows[0].RootCID)
+	if err != nil {
+		return cid.Undef, false, err
+	}
+	return c, true, nil
+}
+
 // PutLatest upserts the latest root CID for (type, name).
 func (i *Index) PutLatest(t entity.Type, name string, c cid.Cid) error {
 	return i.db.Save(&EntityIndex{

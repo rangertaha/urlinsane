@@ -16,7 +16,7 @@ package ptr
 
 import (
 	"context"
-	"net"
+	"github.com/rangertaha/urlinsane/internal/pkg/dns"
 	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
@@ -33,7 +33,7 @@ func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain
 	// ptr depends on the ip collector, which has already populated domain.IPs.
 	// Add only PTR records here (re-resolving A/AAAA would duplicate them).
 	for _, addr := range domain.IPs {
-		names, lerr := net.DefaultResolver.LookupAddr(ctx, addr.Addr)
+		names, lerr := dns.Resolver.LookupAddr(ctx, addr.Addr)
 		if lerr != nil {
 			p.Log.Debug("PTR Lookup: ", lerr)
 			continue

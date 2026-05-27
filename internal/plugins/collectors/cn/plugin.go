@@ -16,7 +16,7 @@ package cn
 
 import (
 	"context"
-	"net"
+	"github.com/rangertaha/urlinsane/internal/pkg/dns"
 	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
@@ -31,7 +31,7 @@ type Plugin struct {
 }
 
 func (i *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
-	record, err := net.DefaultResolver.LookupCNAME(ctx, domain.Name)
+	record, err := dns.Resolver.LookupCNAME(ctx, domain.Name)
 	record = strings.TrimSpace(record)
 	record = strings.Trim(record, ".")
 

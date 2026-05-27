@@ -18,6 +18,7 @@ package store
 import (
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/entity"
@@ -89,6 +90,26 @@ func TestPutGetRoundTrip(t *testing.T) {
 
 	if _, ok, _ := s.Get(entity.Domain, "absent.com"); ok {
 		t.Fatal("expected absent lookup to report not found")
+	}
+}
+
+func TestGetFresh(t *testing.T) {
+	s := testStore(t)
+	if _, err := s.Put(sampleDomain()); err != nil { // exmaple.com
+		t.Fatal(err)
+	}
+	// Fresh within a generous ttl.
+	if _, ok, err := s.GetFresh(entity.Domain, "exmaple.com", time.Hour); err != nil || !ok {
+		t.Fatalf("expected fresh cache hit: ok=%v err=%v", ok, err)
+	}
+	// ttl <= 0 disables caching.
+	if _, ok, _ := s.GetFresh(entity.Domain, "exmaple.com", 0); ok {
+		t.Fatal("ttl=0 should disable caching")
+	}
+	// Stale: a ttl shorter than the time already elapsed since Put.
+	time.Sleep(5 * time.Millisecond)
+	if _, ok, _ := s.GetFresh(entity.Domain, "exmaple.com", time.Millisecond); ok {
+		t.Fatal("expected stale miss")
 	}
 }
 

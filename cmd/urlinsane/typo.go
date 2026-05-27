@@ -186,9 +186,8 @@ var Flags = []cli.Flag{
 		Name:     "nameservers",
 		Aliases:  []string{"n"},
 		Value:    "",
-		Hidden:   true,
 		Category: "PERFORMANCE",
-		Usage:    "DNS or DoH servers to query (separated with commas) `[NAMES..]`",
+		Usage:    "custom DNS server(s) to query, host[:port], comma-separated `[NS..]`",
 	},
 	&cli.BoolFlag{
 		Name:     "registered",
