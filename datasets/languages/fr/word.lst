@@ -1,4 +1,6 @@
+-
 .
+/
 0
 1
 10
@@ -40,11 +42,13 @@
 80
 9
 90
+@
 a
 acceuil
 acceuillir
 accueil
 accueillir
+acheter
 addresse
 adresse
 ae
@@ -53,6 +57,7 @@ apparament
 apparemment
 appeler
 appeller
+arobase
 arriver
 b
 bas
@@ -100,6 +105,7 @@ dixieme
 dixneuf
 dixsept
 dl
+donner
 douze
 définitivement
 déjà
@@ -121,6 +127,7 @@ francais
 français
 froid
 g
+gagner
 grand
 h
 haut
@@ -149,6 +156,7 @@ lb
 lc
 lh
 lk
+loin
 m
 maire
 mal
@@ -187,15 +195,19 @@ ouvrir
 p
 partir
 pauvre
+perdre
 pere
 personel
 personnel
 petit
 peut
 peux
+plein
 point
 possible
 premier
+prendre
+proche
 professionel
 professionnel
 père
@@ -232,6 +244,7 @@ ses
 sest
 six
 sixieme
+slash
 societe
 société
 soixante
@@ -245,6 +258,7 @@ sécurité
 sûrement
 t
 tard
+tiret
 tot
 toujours
 treize
@@ -259,10 +273,12 @@ un
 universite
 université
 v
+vendre
 ver
 verre
 vers
 vert
+vide
 vieux
 vingt
 vingtcinq
