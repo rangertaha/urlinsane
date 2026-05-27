@@ -1,0 +1,16 @@
+pypi https://pypi.org/project/%s/
+npm https://www.npmjs.com/package/%s
+crates https://crates.io/crates/%s
+rubygems https://rubygems.org/gems/%s
+go https://pkg.go.dev/%s
+packagist https://packagist.org/packages/%s
+nuget https://www.nuget.org/packages/%s
+maven https://mvnrepository.com/artifact/%s
+dockerhub https://hub.docker.com/r/%s
+hex https://hex.pm/packages/%s
+cpan https://metacpan.org/dist/%s
+conda https://anaconda.org/anaconda/%s
+homebrew https://formulae.brew.sh/formula/%s
+cocoapods https://cocoapods.org/pods/%s
+pub https://pub.dev/packages/%s
+luarocks https://luarocks.org/modules/%s
