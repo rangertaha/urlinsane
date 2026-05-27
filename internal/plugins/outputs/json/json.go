@@ -72,9 +72,9 @@ func (p *Plugin) Save(fname string) {
 	// Create a buffered writer for efficiency
 	writer := bufio.NewWriter(file)
 
-	// Stream data to the file
+	// Stream data to the file, one JSON object per line (JSONL).
 	for _, domain := range p.Domains {
-		_, err := writer.WriteString(domain.Json())
+		_, err := writer.WriteString(domain.Json() + "\n")
 		if err != nil {
 			log.Error("Error writing to file:", err)
 			return
