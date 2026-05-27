@@ -181,37 +181,13 @@ func (u *Urlinsane) Constraints(ctx context.Context, in <-chan *db.Domain, Filte
 	return u.Load(ctx, in)
 }
 
-// Load preloads each variant's cached record (Dns/IPs/Redirect) from the
-// database so collectors can reuse it, and forwards the loaded record rather
-// than the bare in-flight variant. Pipeline-only metadata that a DB load drops
-// (Algorithm, Levenshtein, Origin) is carried over from the in-flight variant.
+// Load is a pass-through. Collectors are the source of truth for collected data
+// and repopulate each variant from scratch every scan, so the in-flight variant
+// must NOT be pre-seeded from the cache — doing so made collected records
+// (DNS/IPs/whois) accumulate and duplicate across re-scans. Persistence and
+// cross-scan diffing are handled by the content-addressed store at Output.
 func (u *Urlinsane) Load(ctx context.Context, in <-chan *db.Domain) <-chan *db.Domain {
-	out := make(chan *db.Domain)
-	go func() {
-		defer close(out)
-		for d := range in {
-			loaded := d // default: forward the in-flight variant
-			if s := u.cfg.Store(); s != nil {
-				if cached, ok, err := s.Get(d.EntityType(), d.Name); err != nil {
-					log.Errorf("Loading %s failed: %s", d.Name, err.Error())
-				} else if ok {
-					// Reuse cached result data; carry pipeline-only metadata.
-					cached.Algorithm = d.Algorithm
-					cached.Levenshtein = d.Levenshtein
-					cached.Origin = d.Origin
-					loaded = cached
-				}
-			}
-
-			select {
-			case out <- loaded:
-			case <-ctx.Done():
-				return
-			}
-		}
-	}()
-
-	return out
+	return in
 }
 
 // Collectors enriches each variant by running the collector plugins in

@@ -172,35 +172,32 @@ func TestOutput_PersistsToStore(t *testing.T) {
 	}
 }
 
-// TestLoad_HydratesFromStore verifies the Load stage reads cached result data
-// from the IPLD store (Phase 3) while preserving pipeline-only metadata.
-func TestLoad_HydratesFromStore(t *testing.T) {
+// TestLoad_PassThrough verifies Load forwards variants unchanged and does NOT
+// pre-populate collected data from the store (which caused records to duplicate
+// across re-scans, since collectors append).
+func TestLoad_PassThrough(t *testing.T) {
 	s, err := store.OpenDir(t.TempDir())
 	if err != nil {
 		t.Fatalf("open store: %v", err)
 	}
-	cached := &db.Domain{Type: entity.Domain, Name: "exmaple.com", Dns: []*db.Dns{{Type: "A", Value: "9.9.9.9"}}}
-	if _, err := s.Put(cached); err != nil {
+	// Seed the store with cached result data for the same name.
+	if _, err := s.Put(&db.Domain{Type: entity.Domain, Name: "exmaple.com", Dns: []*db.Dns{{Type: "A", Value: "9.9.9.9"}}}); err != nil {
 		t.Fatalf("seed store: %v", err)
 	}
 
 	u := New(&fakeConfig{st: s})
-	origin := &db.Domain{Name: "example.com"}
-	in := &db.Domain{Type: entity.Domain, Name: "exmaple.com", Levenshtein: 1, Origin: origin}
+	in := &db.Domain{Type: entity.Domain, Name: "exmaple.com", Levenshtein: 1}
 
 	out := u.Load(context.Background(), feed(in))
 	var got *db.Domain
 	for d := range out {
 		got = d
 	}
-	if got == nil {
-		t.Fatal("Load produced no output")
+	if got != in {
+		t.Fatal("Load should pass the in-flight variant through unchanged")
 	}
-	if len(got.Dns) != 1 || got.Dns[0].Value != "9.9.9.9" {
-		t.Fatalf("Load did not hydrate from store: %+v", got)
-	}
-	if got.Levenshtein != 1 || got.Origin != origin {
-		t.Fatalf("Load dropped pipeline metadata: lev=%d origin=%v", got.Levenshtein, got.Origin)
+	if len(got.Dns) != 0 {
+		t.Fatalf("Load must not pre-populate collected data; got %d dns records", len(got.Dns))
 	}
 }
 

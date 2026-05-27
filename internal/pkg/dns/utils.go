@@ -42,7 +42,9 @@ func PermutatePrefix(domain string) (domains []string) {
 	d := parser.Parse(domain)
 
 	var subdomains []dataset.Prefix
-	dataset.DB.Find(&subdomains)
+	if dataset.DB != nil {
+		dataset.DB.Find(&subdomains)
+	}
 
 	for _, sub := range subdomains {
 		domains = append(domains, Join(sub.Name, d.Name, d.Suffix))
