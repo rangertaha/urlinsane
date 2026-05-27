@@ -430,6 +430,10 @@ func Banner(cfg internal.Config) {
 	for _, c := range cfg.Collectors() {
 		collectors = append(collectors, c.Id())
 	}
+	output := "none"
+	if o := cfg.Output(); o != nil {
+		output = o.Id()
+	}
 	fmt.Printf(
 		internal.BANNER,
 		internal.VERSION,
@@ -438,7 +442,7 @@ func Banner(cfg internal.Config) {
 		strings.Join(board, ","),
 		strings.Join(algo, ","),
 		strings.Join(collectors, ","),
-		cfg.Output().Id(),
+		output,
 		timestamp,
 	)
 }
