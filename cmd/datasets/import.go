@@ -64,6 +64,7 @@ var DATASETS = map[string]map[string]importFunc{
 		"usernames.lst": Sources,
 		"packages.lst":  Sources,
 		"email.lst":     Sources,
+		"repos.lst":     Sources,
 	},
 }
 
@@ -99,13 +100,15 @@ func Sources(namespace, file string) (err error) {
 		typ = "username"
 	case "packages":
 		typ = "package"
+	case "repos":
+		typ = "repository"
 	}
 	// Idempotent: clear this source type before re-inserting.
 	dataset.DB.Where("type = ?", typ).Delete(&dataset.Source{})
 	var rows []*dataset.Source
 	for _, line := range Extract(file) {
-		if len(line) == 0 || line[0] == "" {
-			continue
+		if len(line) == 0 || line[0] == "" || strings.HasPrefix(line[0], "#") {
+			continue // skip blank lines and # comments
 		}
 		s := &dataset.Source{Type: typ, Code: line[0], Template: line[0]}
 		if len(line) > 1 {

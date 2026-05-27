@@ -17,6 +17,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - IPLD content-addressed result store (`internal/store`): a dag-cbor filesystem
   blockstore with an IPLD schema (keyed union over entity types), a SQLite
   secondary index for name lookups, and cross-scan diffing.
+- Supply-chain detection for package/username/repo squatting:
+  - `pkg` (13 package registries), `usr` (66 username platforms) and `repo`
+    (9 git forges) collectors that check each variant against a source's
+    existence API; reference lists live in `datasets/sources/`.
+  - `--manifest FILE` parses a project's declared dependencies
+    (requirements.txt, package.json, go.mod, Cargo.toml, pyproject.toml,
+    Gemfile, composer.json) and typosquat-checks each one.
+  - Package-registry squat algorithms: separator substitution (`sep`),
+    namespace/scope confusion (`nsc`) and affix combosquatting (`afx`).
+  - `dc` dependency-confusion analyzer: flags names that exist on some
+    registries but remain available (squattable) on others.
 
 ### Changed
 - IPLD is now the source of truth for scan results, superseding the GORM/SQLite

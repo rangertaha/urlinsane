@@ -65,23 +65,35 @@ func New(conf internal.Config) (u *Urlinsane) {
 	}
 }
 
-// Init seeds the pipeline with the original target domain and initializes the
-// algorithm, analyzer and output plugins.
+// Init seeds the pipeline with the target entities and initializes the
+// algorithm, analyzer and output plugins. A normal run seeds a single target;
+// a --manifest run seeds every dependency name parsed from the manifest.
 func (u *Urlinsane) Init(ctx context.Context) <-chan *db.Domain {
 	out := make(chan *db.Domain)
 
-	// u.target = &db.Domain{Name: u.cfg.Target()}
-	// Seed the target, hydrating from the content-addressed store if a prior
-	// scan cached it; otherwise start fresh.
-	u.target = db.Domain{Name: u.cfg.Target(), Type: u.cfg.EntityType()}
-	if s := u.cfg.Store(); s != nil {
-		if cached, ok, err := s.Get(u.cfg.EntityType(), u.cfg.Target()); err == nil && ok {
-			u.target = *cached
+	// Build the seed for each target, hydrating from the content-addressed
+	// store when a prior scan cached it; otherwise start fresh.
+	etype := u.cfg.EntityType()
+	store := u.cfg.Store()
+	var seeds []*db.Domain
+	for _, name := range u.cfg.Targets() {
+		seed := &db.Domain{Name: name, Type: etype}
+		if store != nil {
+			if cached, ok, err := store.Get(etype, name); err == nil && ok {
+				seed = cached
+			}
 		}
+		// Pair the seed origin with itself so the Analyzers stage never falls
+		// back to a mismatched target when there are several.
+		seed.Origin = seed
+		seeds = append(seeds, seed)
+	}
+	if len(seeds) > 0 {
+		u.target = *seeds[0]
 	}
 
 	log := log.WithFields(
-		log.Fields{"domain": u.target.Name})
+		log.Fields{"domain": u.cfg.Target()})
 
 	// // Initialize database plugins if needed
 	// if db, ok := u.cfg.Database().(internal.Initializer); ok {
@@ -118,11 +130,13 @@ func (u *Urlinsane) Init(ctx context.Context) <-chan *db.Domain {
 
 	go func() {
 		defer close(out)
-		// Send original domain
-		select {
-		case out <- &u.target:
-		case <-ctx.Done():
-			return
+		// Send each original/target entity into the pipeline.
+		for _, seed := range seeds {
+			select {
+			case out <- seed:
+			case <-ctx.Done():
+				return
+			}
 		}
 
 		if u.cfg.Banner() {

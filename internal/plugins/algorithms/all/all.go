@@ -4,6 +4,7 @@ package all
 import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/aci"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/acs"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/afx"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/bf"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/cb"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/cm"
@@ -21,8 +22,10 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/hr"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/hs"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/kr"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/nsc"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/ons"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/rar"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/sep"
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/si"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/sp"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/tld"

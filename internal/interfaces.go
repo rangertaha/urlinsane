@@ -34,6 +34,10 @@ type Closer interface {
 
 type Config interface {
 	Target() string
+	// Targets returns every entity to scan. It is a single-element slice of
+	// Target() for a normal run, or the dependency names parsed from a manifest
+	// (--manifest) when scanning a project's declared dependencies.
+	Targets() []string
 	EntityType() entity.Type
 
 	// Plugins

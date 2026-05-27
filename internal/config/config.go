@@ -30,6 +30,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/pkg/dns"
+	"github.com/rangertaha/urlinsane/internal/pkg/manifest"
 	"github.com/rangertaha/urlinsane/internal/store"
 
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
@@ -61,6 +62,7 @@ var datasetDB []byte
 type (
 	Config struct {
 		domain     string      // Target value (domain, username, package, ...)
+		targets    []string    // All targets to scan (manifest deps, or [domain])
 		entityType entity.Type // Kind of target being analyzed
 		directory  string
 		dataset    *gorm.DB
@@ -178,6 +180,23 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		entityType = t
 	}
 
+	// --manifest scans the dependency names declared by a project manifest
+	// (requirements.txt, package.json, go.mod, ...). The targets become the
+	// parsed package names and the entity type is forced to package.
+	var manifestTargets []string
+	if mpath := cli.String("manifest"); mpath != "" {
+		names, err := manifest.Parse(mpath)
+		if err != nil {
+			log.Errorf("manifest: %s", err)
+		} else {
+			manifestTargets = names
+			entityType = entity.Package
+			if strings.TrimSpace(domain) == "" {
+				domain = filepath.Base(mpath) // display / scan name
+			}
+		}
+	}
+
 	// Point the DNS collectors at custom servers if --nameservers is set.
 	dns.SetResolver(csSplit(cli.String("nameservers")))
 
@@ -203,7 +222,7 @@ func CliOptions(cli *cli.Context) func(*Config) {
 	// 	deleteCacheDir(DIR_PRIMARY)
 	// }
 
-	return ConfigOption(
+	base := ConfigOption(
 		domain,     // Target value
 		entityType, // Kind of target
 		keyboards,  // Keyboards IDs
@@ -235,6 +254,12 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		ttl,
 		timeout,
 	)
+
+	// Carry the manifest-derived target list (if any) onto the config.
+	return func(c *Config) {
+		base(c)
+		c.targets = manifestTargets
+	}
 }
 
 func ConfigOption(
@@ -377,6 +402,15 @@ func validateDomain(cfg *Config) (err error) {
 }
 
 func (c *Config) Target() string { return c.domain }
+
+// Targets returns every entity to scan: the manifest dependency names when
+// --manifest was given, otherwise the single Target().
+func (c *Config) Targets() []string {
+	if len(c.targets) > 0 {
+		return c.targets
+	}
+	return []string{c.domain}
+}
 
 // Store returns the content-addressed result store.
 func (c *Config) Store() *store.Store { return c.store }

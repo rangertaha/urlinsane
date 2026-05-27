@@ -55,6 +55,11 @@ type Domain struct {
 	Algorithm   Algorithm `json:"algorithm"`
 	Levenshtein int       `json:"distance"`
 
+	// Notes holds analyzer annotations (e.g. dependency-confusion gaps). Like
+	// the other pipeline-only fields it is emitted in JSON output but excluded
+	// from the content-addressed result.
+	Notes []string `json:"notes,omitempty"`
+
 	// Origin is the source entity this variant was generated from, used to pair
 	// a variant with its origin in the Analyzers stage.
 	Origin *Domain `json:"-"`
