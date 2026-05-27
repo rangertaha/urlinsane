@@ -54,6 +54,65 @@ var DATASETS = map[string]map[string]importFunc{
 		"prefix.lst": Prefixes,
 		"suffix.lst": Suffixes,
 	},
+	"packages": {
+		"pypi.lst":     Packages,
+		"npm.lst":      Packages,
+		"crates.lst":   Packages,
+		"rubygems.lst": Packages,
+	},
+	"sources": {
+		"usernames.lst": Sources,
+		"packages.lst":  Sources,
+		"email.lst":     Sources,
+	},
+}
+
+// Packages imports a registry's package-name corpus (one name per line); the
+// registry is derived from the file name (e.g. pypi.lst -> pypi).
+func Packages(namespace, file string) (err error) {
+	fmt.Printf("Importing packages from %s\n", file)
+	registry := strings.TrimSuffix(filepath.Base(file), ".lst")
+	var rows []*dataset.Package
+	for _, line := range Extract(file) {
+		for _, name := range line {
+			if name != "" {
+				rows = append(rows, &dataset.Package{Name: name, Registry: registry})
+			}
+		}
+	}
+	if len(rows) > 0 {
+		dataset.DB.Create(&rows)
+	}
+	return
+}
+
+// Sources imports an entity-source list. The Type is derived from the file name
+// (usernames.lst -> username, packages.lst -> package, email.lst -> email).
+// Lines are "code url_template"; for email lists the single token is both.
+func Sources(namespace, file string) (err error) {
+	fmt.Printf("Importing sources from %s\n", file)
+	typ := strings.TrimSuffix(filepath.Base(file), ".lst")
+	switch typ {
+	case "usernames":
+		typ = "username"
+	case "packages":
+		typ = "package"
+	}
+	var rows []*dataset.Source
+	for _, line := range Extract(file) {
+		if len(line) == 0 || line[0] == "" {
+			continue
+		}
+		s := &dataset.Source{Type: typ, Code: line[0], Template: line[0]}
+		if len(line) > 1 {
+			s.Template = line[1]
+		}
+		rows = append(rows, s)
+	}
+	if len(rows) > 0 {
+		dataset.DB.Create(&rows)
+	}
+	return
 }
 
 var importFlags = []cli.Flag{}
