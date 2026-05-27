@@ -30,7 +30,7 @@ type Plugin struct {
 	collectors.Plugin
 }
 
-func (i *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
+func (i *Plugin) Exec(ctx context.Context, domain *db.Domain) (variant *db.Domain, err error) {
 	records, err := dns.Resolver.LookupTXT(ctx, domain.Name)
 	if err != nil {
 		log.Error("TXT Lookup: ", err)

@@ -29,7 +29,7 @@ type Plugin struct {
 	collectors.Plugin
 }
 
-func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
+func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (variant *db.Domain, err error) {
 	// ptr depends on the ip collector, which has already populated domain.IPs.
 	// Add only PTR records here (re-resolving A/AAAA would duplicate them).
 	for _, addr := range domain.IPs {

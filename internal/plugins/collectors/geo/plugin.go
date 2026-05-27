@@ -45,7 +45,7 @@ func (p *Plugin) Init(c internal.Config) {
 	}
 }
 
-func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
+func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (variant *db.Domain, err error) {
 	for _, ip := range domain.IPs {
 		p.GeoLookup(ip)
 	}

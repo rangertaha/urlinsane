@@ -27,7 +27,7 @@ type Plugin struct {
 	collectors.Plugin
 }
 
-func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
+func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (variant *db.Domain, err error) {
 	for _, ip := range domain.IPs {
 		p.Banner(ip)
 	}

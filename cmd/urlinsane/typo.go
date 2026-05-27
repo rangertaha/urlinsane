@@ -138,7 +138,7 @@ var Flags = []cli.Flag{
 		Value:    20 * time.Second,
 		Category: "PERFORMANCE",
 		Hidden:   true,
-		Usage:    "maximim duration tasks need to complete `DURATION`",
+		Usage:    "maximum duration tasks need to complete `DURATION`",
 	},
 	&cli.DurationFlag{
 		Name:     "ttl",

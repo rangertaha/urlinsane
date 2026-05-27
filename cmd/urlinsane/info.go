@@ -87,13 +87,13 @@ package main
 // 		Aliases:  []string{"t"},
 // 		Value:    5 * time.Minute,
 // 		Category: "PERFORMANCE",
-// 		Usage:    "maximim duration tasks need to complete `DURATION`",
+// 		Usage:    "maximum duration tasks need to complete `DURATION`",
 // 	},
 // 	&cli.DurationFlag{
 // 		Name:     "ttl",
 // 		Value:    168 * time.Hour,
 // 		Category: "PERFORMANCE",
-// 		Usage:    "maximim duration to cache results, 0 deletes the cache `DURATION`",
+// 		Usage:    "maximum duration to cache results, 0 deletes the cache `DURATION`",
 // 	},
 // 	&cli.IntFlag{
 // 		Name:     "distance",

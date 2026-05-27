@@ -139,10 +139,10 @@ func New(options ...func(*Config)) (*Config, error) {
 func CliOptions(cli *cli.Context) func(*Config) {
 	var (
 
-		// Basic input optoins
+		// Basic input options
 		domain     string   = cli.Args().First()                // Target value
 		languages  []string = csSplit(cli.String("languages"))  // Language IDs
-		keyboards  []string = csSplit(cli.String("keyboards"))  // Keybards IDs
+		keyboards  []string = csSplit(cli.String("keyboards"))  // Keyboards IDs
 		algorithms []string = csSplit(cli.String("algorithms")) // algorithms IDs
 		collectors []string = csSplit(cli.String("collectors")) // Collectors IDs
 		analyzers  []string = csSplit(cli.String("analyzers"))  // Analyzers IDs
@@ -206,7 +206,7 @@ func CliOptions(cli *cli.Context) func(*Config) {
 	return ConfigOption(
 		domain,     // Target value
 		entityType, // Kind of target
-		keyboards,  // Keybards IDs
+		keyboards,  // Keyboards IDs
 		languages,  // Language IDs
 		algorithms, // algorithms IDs
 		collectors, // Collectors IDs
