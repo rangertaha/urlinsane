@@ -46,7 +46,6 @@ import (
 
 const (
 	DIR_PRIMARY = ".config/urlinsane"
-	PRIMARY_DB  = "urlinsane.db"
 	DATASET_DB  = "dataset.db"
 	MAXMIND_DB  = "maxmind.db.gz"
 )
@@ -62,7 +61,6 @@ type (
 		domain     string      // Target value (domain, username, package, ...)
 		entityType entity.Type // Kind of target being analyzed
 		directory  string
-		database   *gorm.DB
 		dataset    *gorm.DB
 		store      *store.Store // content-addressed result store (IPLD)
 
@@ -402,7 +400,6 @@ func (c *Config) Algorithms() []internal.Algorithm { return c.algorithms }
 func (c *Config) Collectors() []internal.Collector { return c.collectors }
 func (c *Config) Analyzers() []internal.Analyzer   { return c.analyzers }
 func (c *Config) Output() internal.Output          { return c.output }
-func (c *Config) Database() *gorm.DB               { return c.database }
 func (c *Config) Dataset() *gorm.DB                { return c.dataset }
 
 // Constraint options

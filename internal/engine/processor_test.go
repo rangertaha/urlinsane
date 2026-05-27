@@ -26,7 +26,6 @@ import (
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/store"
-	"gorm.io/gorm"
 )
 
 // fakeConfig is a minimal internal.Config for exercising the collector stage
@@ -50,7 +49,6 @@ func (c *fakeConfig) Languages() []internal.Language   { return nil }
 func (c *fakeConfig) Algorithms() []internal.Algorithm { return c.algorithms }
 func (c *fakeConfig) Collectors() []internal.Collector { return c.collectors }
 func (c *fakeConfig) Analyzers() []internal.Analyzer   { return c.analyzers }
-func (c *fakeConfig) Database() *gorm.DB               { return nil }
 func (c *fakeConfig) Store() *store.Store              { return c.st }
 func (c *fakeConfig) Output() internal.Output          { return c.output }
 func (c *fakeConfig) Workers() int {

@@ -22,7 +22,6 @@ import (
 	"github.com/rangertaha/urlinsane/internal/db"
 	"github.com/rangertaha/urlinsane/internal/entity"
 	"github.com/rangertaha/urlinsane/internal/store"
-	"gorm.io/gorm"
 )
 
 type Initializer interface {
@@ -43,7 +42,6 @@ type Config interface {
 	Algorithms() []Algorithm
 	Collectors() []Collector
 	Analyzers() []Analyzer
-	Database() *gorm.DB
 	Store() *store.Store
 	Output() Output
 

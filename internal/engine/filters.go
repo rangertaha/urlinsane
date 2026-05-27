@@ -19,7 +19,6 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/db"
-	log "github.com/sirupsen/logrus"
 )
 
 func ExampleFilter() func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
@@ -42,9 +41,8 @@ func Levenshtein() func(in <-chan *db.Domain, c internal.Config) <-chan *db.Doma
 		out := make(chan *db.Domain)
 		go func() {
 			for domain := range in {
-				// Set Levenshtein distance
+				// Keep variants within the maximum Levenshtein distance.
 				//   https://en.wikipedia.org/wiki/Levenshtein_distance
-				log.Infof("Levenshtein distance %s: %d <= %d", domain.Name, domain.Levenshtein, c.Distance())
 				if domain.Levenshtein <= c.Distance() {
 					out <- domain
 				}
