@@ -14,27 +14,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package db
 
-import "gorm.io/gorm"
-
 type Device struct {
-	gorm.Model
-	Name string `json:"name,omitempty"`
-
-	Addreses []*Address `gorm:"many2many:devaddrs;"  json:"ips,omitempty"`
+	Name     string     `json:"name,omitempty"`
+	Addreses []*Address `json:"ips,omitempty"`
 }
 
 type Address struct {
-	gorm.Model
-	Addr       string    `gorm:"unique"                json:"address"`
-	Type       string    `                             json:"type"`
-	Ports      []*Port   `gorm:"many2many:addrports;"  json:"ports,omitempty"`
-	Domians    []*Domain `gorm:"many2many:domaddrs;"   json:"domains,omitempty"`
-	LocationID *uint
-	Location   *Location `                             json:"location,omitempty"`
+	Addr     string    `json:"address"`
+	Type     string    `json:"type"`
+	Ports    []*Port   `json:"ports,omitempty"`
+	Location *Location `json:"location,omitempty"`
 }
 
 type Port struct {
-	gorm.Model
 	Proto   string `json:"proto,omitempty"`
 	Number  int    `json:"num,omitempty"`
 	State   string `json:"state,omitempty"`

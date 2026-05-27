@@ -15,12 +15,10 @@
 package db
 
 type Location struct {
-	ID         uint
-	ParentID   uint
-	Code       string     `gorm:"unique" json:"code,omitempty"`
-	Name       string     `json:"name,omitempty"`
-	TimeZone   string     `json:"timezone,omitempty"`
-	Latitude   float64    `json:"lat,omitempty"`
-	Longitude  float64    `json:"lon,omitempty"`
-	PostalCode string     `json:"postcode,omitempty"`
+	Code       string  `json:"code,omitempty"`
+	Name       string  `json:"name,omitempty"`
+	TimeZone   string  `json:"timezone,omitempty"`
+	Latitude   float64 `json:"lat,omitempty"`
+	Longitude  float64 `json:"lon,omitempty"`
+	PostalCode string  `json:"postcode,omitempty"`
 }

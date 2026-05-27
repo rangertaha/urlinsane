@@ -21,49 +21,41 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/rangertaha/urlinsane/internal/entity"
-	"gorm.io/gorm"
 )
 
 type Algorithm struct {
-	Code string
-	Name string
+	Code string `json:"code,omitempty"`
+	Name string `json:"name,omitempty"`
 }
 
+// Domain is the in-flight pipeline value for a scanned entity. It is no longer a
+// GORM model: results are persisted via the content-addressed store
+// (internal/store). The former relational/ID fields were removed with the GORM
+// result path.
 type Domain struct {
-	gorm.Model
 	// Type classifies the named entity (domain, name, user, package). Empty is
 	// treated as domain for backward compatibility — see EntityType().
 	Type     entity.Type `json:"type,omitempty"`
-	Name     string      `gorm:"unique" json:"name,omitempty"`
+	Name     string      `json:"name,omitempty"`
 	Punycode string      `json:"punycode,omitempty"`
 	Rank     int64       `json:"rank,omitempty"`
 
-	// Related Records
-	RedirectID *uint
-	Redirect   *Domain    `json:"redirect,omitempty"`
-	IPs        []*Address `gorm:"many2many:domaddrs;"  json:"ips,omitempty"`
-	Dns        []*Dns     `gorm:"many2many:drecords;"  json:"dns,omitempty"`
-	Whois      []Whois    `json:"whois,omitempty"`
-	// Pages      []*Page        `gorm:"many2many:webpages;"  json:"pages,omitempty"`
+	// Related records
+	Redirect *Domain    `json:"redirect,omitempty"`
+	IPs      []*Address `json:"ips,omitempty"`
+	Dns      []*Dns     `json:"dns,omitempty"`
+	Whois    []Whois    `json:"whois,omitempty"`
 
-	// Language Analysis
-	// Languages
-	// Keywords
-	// Topics
-	// Vector
+	// Pipeline-only metadata (not part of the content-addressed result).
+	Algorithm   Algorithm `json:"algorithm"`
+	Levenshtein int       `json:"distance"`
 
-	// Metadata
-	Algorithm   Algorithm `json:"algorithm" gorm:"-"`
-	Levenshtein int       `json:"distance" gorm:"-"`
-
-	// Origin is the source domain this variant was generated from. It is
-	// pipeline-only metadata (never persisted) used to pair a variant with its
-	// origin in the Analyzers stage.
-	Origin *Domain `json:"-" gorm:"-"`
+	// Origin is the source entity this variant was generated from, used to pair
+	// a variant with its origin in the Analyzers stage.
+	Origin *Domain `json:"-"`
 }
 
-// EntityType returns the entity's type, defaulting to entity.Domain when unset
-// (records created before the type field existed, or plain domain scans).
+// EntityType returns the entity's type, defaulting to entity.Domain when unset.
 func (d *Domain) EntityType() entity.Type {
 	if d.Type == "" {
 		return entity.Domain
@@ -72,22 +64,12 @@ func (d *Domain) EntityType() entity.Type {
 }
 
 type Dns struct {
-	gorm.Model
-	Type    string    `json:"type,omitempty"`
-	Value   string    `gorm:"unique"  json:"value,omitempty"`
-	Ttl     string    `json:"ttl,omitempty"`
-	Domains []*Domain `gorm:"many2many:drecords;" json:"domains,omitempty"`
+	Type  string `json:"type,omitempty"`
+	Value string `json:"value,omitempty"`
+	Ttl   string `json:"ttl,omitempty"`
 }
 
 type Whois struct {
-	gorm.Model
-	DomainID         uint
-	RegistrarID      uint
-	RegistrantID     uint
-	AdministrativeID uint
-	TechnicalID      uint
-	BillingID        uint
-	// Domain           *Domain    `json:"domain,omitempty"`
 	Registrar      *Contact   `json:"registrar,omitempty"`
 	Registrant     *Contact   `json:"registrant,omitempty"`
 	Administrative *Contact   `json:"administrative,omitempty"`
@@ -98,9 +80,8 @@ type Whois struct {
 	Expiration     *time.Time `json:"expiration,omitempty"`
 }
 
-// Contact storing domain contact info
+// Contact stores entity contact info (e.g. domain whois).
 type Contact struct {
-	gorm.Model
 	Name         string `json:"name,omitempty"`
 	Organization string `json:"organization,omitempty"`
 	Street       string `json:"street,omitempty"`
@@ -114,14 +95,6 @@ type Contact struct {
 	FaxExt       string `json:"fax_ext,omitempty"`
 	Email        string `json:"email,omitempty"`
 	ReferralURL  string `json:"referral_url,omitempty"`
-}
-
-func (Dns) TableName() string {
-	return "dns"
-}
-
-func (Whois) TableName() string {
-	return "whois"
 }
 
 func (d *Domain) Live() bool {
