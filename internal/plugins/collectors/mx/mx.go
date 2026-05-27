@@ -16,7 +16,7 @@ package mx
 
 import (
 	"context"
-	"net"
+	"github.com/rangertaha/urlinsane/internal/pkg/dns"
 	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
@@ -31,7 +31,7 @@ type Plugin struct {
 
 func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
 
-	records, err := net.DefaultResolver.LookupMX(ctx, domain.Name)
+	records, err := dns.Resolver.LookupMX(ctx, domain.Name)
 	if err != nil {
 		p.Log.Error("MX Lookup: ", err)
 	}

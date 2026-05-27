@@ -29,6 +29,7 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal"
 	"github.com/rangertaha/urlinsane/internal/entity"
+	"github.com/rangertaha/urlinsane/internal/pkg/dns"
 	"github.com/rangertaha/urlinsane/internal/store"
 
 	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
@@ -176,6 +177,9 @@ func CliOptions(cli *cli.Context) func(*Config) {
 	if t, ok := entity.Parse(strings.ToLower(strings.TrimSpace(cli.String("type")))); ok {
 		entityType = t
 	}
+
+	// Point the DNS collectors at custom servers if --nameservers is set.
+	dns.SetResolver(csSplit(cli.String("nameservers")))
 
 	// Logs are discarded by default. --debug and --verbose enable them on
 	// stderr (not stdout, which carries scan results).

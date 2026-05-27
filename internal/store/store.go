@@ -96,6 +96,20 @@ func (s *Store) Get(t entity.Type, name string) (*db.Domain, bool, error) {
 	return d, true, nil
 }
 
+// GetFresh returns the cached entity for (type, name) if it was stored within
+// ttl, else (nil, false). A non-positive ttl disables caching.
+func (s *Store) GetFresh(t entity.Type, name string, ttl time.Duration) (*db.Domain, bool, error) {
+	c, ok, err := s.idx.LatestFresh(t, name, ttl)
+	if err != nil || !ok {
+		return nil, false, err
+	}
+	d, err := s.GetCID(c)
+	if err != nil {
+		return nil, false, err
+	}
+	return d, true, nil
+}
+
 // GetCID decodes the block at a specific CID into a *db.Domain.
 func (s *Store) GetCID(c cid.Cid) (*db.Domain, error) {
 	block, err := s.bs.Get(c)

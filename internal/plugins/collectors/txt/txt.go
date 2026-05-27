@@ -16,7 +16,7 @@ package txt
 
 import (
 	"context"
-	"net"
+	"github.com/rangertaha/urlinsane/internal/pkg/dns"
 	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
@@ -31,7 +31,7 @@ type Plugin struct {
 }
 
 func (i *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
-	records, err := net.DefaultResolver.LookupTXT(ctx, domain.Name)
+	records, err := dns.Resolver.LookupTXT(ctx, domain.Name)
 	if err != nil {
 		log.Error("TXT Lookup: ", err)
 	}

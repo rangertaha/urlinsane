@@ -16,7 +16,7 @@ package ip
 
 import (
 	"context"
-	"net"
+	"github.com/rangertaha/urlinsane/internal/pkg/dns"
 	"strings"
 
 	"github.com/rangertaha/urlinsane/internal"
@@ -30,7 +30,7 @@ type Plugin struct {
 }
 
 func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
-	ips, err := net.DefaultResolver.LookupIP(ctx, "ip", domain.Name)
+	ips, err := dns.Resolver.LookupIP(ctx, "ip", domain.Name)
 	if err != nil {
 		p.Log.Error("IP Lookup: ", err)
 	}

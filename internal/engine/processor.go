@@ -229,7 +229,9 @@ func (u *Urlinsane) Collectors(ctx context.Context, in <-chan *db.Domain) <-chan
 		go func() {
 			defer wg.Done()
 			for variant := range in {
-				u.runCollectorLevels(ctx, levels, variant)
+				if !u.collectFromCache(variant) {
+					u.runCollectorLevels(ctx, levels, variant)
+				}
 				select {
 				case out <- variant:
 				case <-ctx.Done():
@@ -297,6 +299,25 @@ func (u *Urlinsane) collectorDelay() time.Duration {
 		d += time.Duration(rand.Int63n(int64(r) + 1))
 	}
 	return d
+}
+
+// collectFromCache adopts a fresh cached result (stored within --ttl) into the
+// variant and reports whether the cache hit let collection be skipped. Pipeline
+// metadata (Origin/Algorithm/Levenshtein) is preserved.
+func (u *Urlinsane) collectFromCache(variant *db.Domain) bool {
+	s := u.cfg.Store()
+	if s == nil {
+		return false
+	}
+	cached, ok, err := s.GetFresh(variant.EntityType(), variant.Name, u.cfg.TTL())
+	if err != nil || !ok {
+		return false
+	}
+	cached.Origin = variant.Origin
+	cached.Algorithm = variant.Algorithm
+	cached.Levenshtein = variant.Levenshtein
+	*variant = *cached
+	return true
 }
 
 // collectorResolver constructs a collector by id so the DAG can auto-include
