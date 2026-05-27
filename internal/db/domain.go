@@ -47,6 +47,10 @@ type Domain struct {
 	Dns      []*Dns     `json:"dns,omitempty"`
 	Whois    []Whois    `json:"whois,omitempty"`
 
+	// Hits are external sources (package registries, username platforms) where
+	// this entity was found to exist.
+	Hits []*Hit `json:"hits,omitempty"`
+
 	// Pipeline-only metadata (not part of the content-addressed result).
 	Algorithm   Algorithm `json:"algorithm"`
 	Levenshtein int       `json:"distance"`
@@ -62,6 +66,13 @@ func (d *Domain) EntityType() entity.Type {
 		return entity.Domain
 	}
 	return d.Type
+}
+
+// Hit records that an entity was found at an external source — a package on a
+// registry, or a username on a platform.
+type Hit struct {
+	Service string `json:"service,omitempty"`
+	URL     string `json:"url,omitempty"`
 }
 
 // Dns is a single DNS record (e.g. A, AAAA, NS, MX, TXT, CNAME, PTR).
@@ -100,9 +111,10 @@ type Contact struct {
 	ReferralURL  string `json:"referral_url,omitempty"`
 }
 
-// Live reports whether the entity resolved — i.e. it has any DNS records.
+// Live reports whether the entity exists — it resolved (has DNS records) or was
+// found at an external source (package registry, username platform).
 func (d *Domain) Live() bool {
-	return len(d.Dns) > 0
+	return len(d.Dns) > 0 || len(d.Hits) > 0
 }
 
 // Json returns the entity marshaled as JSON.

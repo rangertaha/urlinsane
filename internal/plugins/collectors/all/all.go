@@ -10,8 +10,10 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/ip"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/mx"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/ns"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/pkg"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/ptr"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/txt"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/usr"
 
 	// _ "github.com/rangertaha/urlinsane/internal/plugins/collectors/web"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/wi"

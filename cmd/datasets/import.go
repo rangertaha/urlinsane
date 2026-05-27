@@ -72,6 +72,8 @@ var DATASETS = map[string]map[string]importFunc{
 func Packages(namespace, file string) (err error) {
 	fmt.Printf("Importing packages from %s\n", file)
 	registry := strings.TrimSuffix(filepath.Base(file), ".lst")
+	// Idempotent: clear this registry's rows before re-inserting.
+	dataset.DB.Where("registry = ?", registry).Delete(&dataset.Package{})
 	var rows []*dataset.Package
 	for _, line := range Extract(file) {
 		for _, name := range line {
@@ -98,6 +100,8 @@ func Sources(namespace, file string) (err error) {
 	case "packages":
 		typ = "package"
 	}
+	// Idempotent: clear this source type before re-inserting.
+	dataset.DB.Where("type = ?", typ).Delete(&dataset.Source{})
 	var rows []*dataset.Source
 	for _, line := range Extract(file) {
 		if len(line) == 0 || line[0] == "" {
@@ -106,6 +110,9 @@ func Sources(namespace, file string) (err error) {
 		s := &dataset.Source{Type: typ, Code: line[0], Template: line[0]}
 		if len(line) > 1 {
 			s.Template = line[1]
+		}
+		if len(line) > 2 {
+			s.CheckURL = line[2] // existence-check URL (often an API endpoint)
 		}
 		rows = append(rows, s)
 	}

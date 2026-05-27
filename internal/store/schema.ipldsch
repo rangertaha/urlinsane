@@ -25,17 +25,25 @@ type DomainEntity struct {
 type NameEntity struct {
   name String
   rank Int
+  hits [Hit]
 }
 
 type UserEntity struct {
   name String
   rank Int
+  hits [Hit]
 }
 
 type PackageEntity struct {
   name     String
   rank     Int
   registry String
+  hits     [Hit]
+}
+
+type Hit struct {
+  service String
+  url     String
 }
 
 type DnsRecord struct {

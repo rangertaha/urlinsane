@@ -28,13 +28,13 @@ func (p *Plugin) Table() string {
 	tb := table.NewWriter()
 	tb.SetStyle(pkg.StyleClear)
 	tb.Style().Options.SeparateHeader = true
-	tb.AppendHeader(table.Row{"DIST", "ALGORITHM", "NAME", "ADDRESSES"})
+	tb.AppendHeader(table.Row{"DIST", "ALGORITHM", "NAME", "FOUND"})
 
 	for _, d := range p.Domains {
 		if p.hidden(d) {
 			continue
 		}
-		tb.AppendRow(table.Row{d.Levenshtein, d.Algorithm.Name, d.Name, addresses(d)})
+		tb.AppendRow(table.Row{d.Levenshtein, d.Algorithm.Name, d.Name, found(d)})
 	}
 	return tb.Render()
 }
@@ -50,14 +50,23 @@ func (p *Plugin) hidden(d *db.Domain) bool {
 	return false
 }
 
-// addresses joins a variant's collected IP addresses (deduplicated).
-func addresses(d *db.Domain) string {
+// found summarizes where a variant was found: resolved IP addresses for
+// domains, or the registries/platforms (hit services) for packages/usernames.
+func found(d *db.Domain) string {
 	seen := make(map[string]bool, len(d.IPs))
 	var out []string
 	for _, ip := range d.IPs {
 		if ip != nil && ip.Addr != "" && !seen[ip.Addr] {
 			seen[ip.Addr] = true
 			out = append(out, ip.Addr)
+		}
+	}
+	if len(out) > 0 {
+		return strings.Join(out, ", ")
+	}
+	for _, h := range d.Hits {
+		if h != nil && h.Service != "" {
+			out = append(out, h.Service)
 		}
 	}
 	return strings.Join(out, ", ")
