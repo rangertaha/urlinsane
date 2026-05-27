@@ -1,4 +1,6 @@
+-
 .
+/
 0
 1
 10
@@ -31,7 +33,9 @@
 80
 9
 90
+@
 a
+acong
 ae
 b
 ba
@@ -39,27 +43,40 @@ ba mươi
 bamuoi
 baymuoi
 bonmuoi
+bán
 b̔"
 bảy
 bảy mươi
 bốn
 bốn mươi
 c
+cao
 cham
 chinmuoi
 chín
 chín mươi
 chấm
+chậm
 cl
 congnghe
 có
 côngnghệ
+cũ
 d
 di
 dl
+dài
+dày
+dễ
 e
 f
 g
+gachcheo
+gachngang
+giả
+gạchchéo
+gạchngang
+gần
 h
 hai
 hai mươi
@@ -70,14 +87,18 @@ ih
 ik
 j
 k
+khó
 không
 l
 lb
 lc
 lh
 lk
+lên
+lạnh
 lớn
 m
+mua
 muoiba
 muoibay
 muoibon
@@ -97,31 +118,50 @@ mười lăm
 mười một
 mười sáu
 mười tám
+mạnh
+mỏng
 một
+mới
+mở
 n
 nammuoi
 ngan
 nghin
 nghìn
 ngàn
+ngắn
+nhanh
+nhiều
+nhẹ
 nhỏ
 nn
+nóng
 năm
 năm mươi
+nặng
 o
 oe
 p
+phải
 q
 r
+ra
 rn
 rr
 s
+sai
+sau
 saumuoi
 ss
+sáng
 sáu
 sáu mươi
 t
 tammuoi
+thua
+thấp
+thật
+thắng
 thứba
 thứbảy
 thứchín
@@ -143,10 +183,13 @@ thứtám
 thứtư
 trieu
 triệu
+trái
 trăm
+trước
 ty
 tám
 tám mươi
+tối
 tốt
 tỷ
 u
@@ -154,11 +197,15 @@ v
 viet
 việt
 vv
+vào
 v̇
 w
 x
+xa
+xuống
 xấu
 y
+yếu
 z
 ¡
 Þ
@@ -176,6 +223,7 @@ z
 ê
 ë
 í
+ít
 î
 ï
 ð
@@ -195,6 +243,10 @@ z
 ċ
 č
 đ
+đi
+đóng
+đúng
+đến
 ē
 ĕ
 ė
