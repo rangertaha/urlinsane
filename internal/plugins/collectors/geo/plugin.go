@@ -46,6 +46,10 @@ func (p *Plugin) Init(c internal.Config) {
 }
 
 func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (variant *db.Domain, err error) {
+	// The GeoIP database is optional; skip cleanly if it failed to open in Init.
+	if p.geoip == nil {
+		return domain, err
+	}
 	for _, ip := range domain.IPs {
 		p.GeoLookup(ip)
 	}
@@ -53,6 +57,9 @@ func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (variant *db.Domai
 }
 
 func (p *Plugin) GeoLookup(ip *db.Address) {
+	if p.geoip == nil || ip == nil {
+		return
+	}
 	record, err := p.geoip.Lookup(ip.Addr)
 	if err != nil {
 		p.Log.Error(err)
