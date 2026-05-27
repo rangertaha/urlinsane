@@ -14,39 +14,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package db
 
-import "gorm.io/gorm"
-
 type Page struct {
-	gorm.Model
-	DomainID    uint
 	Domain      *Domain `json:"domain,omitempty"`
 	Uri         string  `json:"uri,omitempty"`
 	Title       string  `json:"title,omitempty"`
 	Description string  `json:"description,omitempty"`
 	Body        string  `json:"body,omitempty"`
 
-	// Media Relations
-	Images []*Image `gorm:"many2many:pimages;" json:"images,omitempty"`
-	Pages  []*Page  `gorm:"many2many:ppages;"  json:"pages,omitempty"`
-	Files  []*File  `gorm:"many2many:pfiles;"  json:"files,omitempty"`
-	Har    string   `gorm:"serializer:json"    json:"har,omitempty"`
-
-	// Language Analysis
-	// Languages
-	// Keywords
-	// Topics
-	// Vector
-	// SSDeep
+	// Media relations
+	Images []*Image `json:"images,omitempty"`
+	Pages  []*Page  `json:"pages,omitempty"`
+	Files  []*File  `json:"files,omitempty"`
+	Har    string   `json:"har,omitempty"`
 }
 
 type Image struct {
-	gorm.Model
 	Url    string            `json:"url,omitempty"`
-	Hashes map[string]string `gorm:"serializer:json"      json:"hashes,omitempty"`
+	Hashes map[string]string `json:"hashes,omitempty"`
 }
 
 type File struct {
-	gorm.Model
 	Url    string            `json:"uri,omitempty"`
-	Hashes map[string]string `gorm:"serializer:json"      json:"hashes,omitempty"`
+	Hashes map[string]string `json:"hashes,omitempty"`
 }
