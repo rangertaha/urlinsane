@@ -41,6 +41,10 @@ func models() []interface{} {
 		&Prefix{},
 		&Suffix{},
 		&Domain{},
+
+		// Entity sources / package corpus
+		&Source{},
+		&Package{},
 	}
 }
 
