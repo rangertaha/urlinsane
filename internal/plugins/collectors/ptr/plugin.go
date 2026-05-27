@@ -30,25 +30,18 @@ type Plugin struct {
 }
 
 func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
-	ips, err := net.DefaultResolver.LookupIP(ctx, "ip", domain.Name)
-	if err != nil {
-		p.Log.Error("IP Lookup: ", err)
-	}
-
-	for _, ip := range ips {
-		record := strings.TrimSpace(ip.String())
-		record = strings.Trim(record, ".")
-
-		if strings.Contains(ip.String(), ":") {
-			domain.Dns = append(domain.Dns, &db.Dns{Type: "AAAA", Value: record})
-			domain.IPs = append(domain.IPs, &db.Address{Addr: record, Type: "IPv6"})
-
-		} else if strings.Contains(ip.String(), ".") {
-			domain.Dns = append(domain.Dns, &db.Dns{Type: "A", Value: record})
-			domain.IPs = append(domain.IPs, &db.Address{Addr: record, Type: "IPv4"})
-			addresses, _ := net.DefaultResolver.LookupAddr(ctx, record)
-			for _, address := range addresses {
-				domain.Dns = append(domain.Dns, &db.Dns{Type: "PTR", Value: address})
+	// ptr depends on the ip collector, which has already populated domain.IPs.
+	// Add only PTR records here (re-resolving A/AAAA would duplicate them).
+	for _, addr := range domain.IPs {
+		names, lerr := net.DefaultResolver.LookupAddr(ctx, addr.Addr)
+		if lerr != nil {
+			p.Log.Debug("PTR Lookup: ", lerr)
+			continue
+		}
+		for _, name := range names {
+			name = strings.Trim(strings.TrimSpace(name), ".")
+			if name != "" {
+				domain.Dns = append(domain.Dns, &db.Dns{Type: "PTR", Value: name})
 			}
 		}
 	}

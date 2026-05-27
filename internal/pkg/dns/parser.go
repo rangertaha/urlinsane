@@ -34,7 +34,9 @@ type Domain struct {
 
 func New() (parser Parser) {
 	var tlds []dataset.Suffix
-	dataset.DB.Find(&tlds)
+	if dataset.DB != nil {
+		dataset.DB.Find(&tlds)
+	}
 
 	for _, tld := range tlds {
 		parser.suffixes = append(parser.suffixes, tld.Name)
