@@ -345,6 +345,11 @@ func (u *Urlinsane) Output(ctx context.Context, in <-chan *db.Domain) {
 		// Optionally, writes collected domains
 		output.Write()
 
+		// Optionally save the output to a file (--file/-o)
+		if f := u.cfg.File(); f != "" {
+			output.Save(f)
+		}
+
 		// Optionally print summary
 		if u.cfg.Summary() {
 			output.Report()
