@@ -176,10 +176,14 @@ func CliOptions(cli *cli.Context) func(*Config) {
 		entityType = t
 	}
 
-	// Logs are disabled by default so we need to setup it up to log to stdout
+	// Logs are discarded by default. --debug and --verbose enable them on
+	// stderr (not stdout, which carries scan results).
 	if debug {
-		log.SetOutput(os.Stdout)
+		log.SetOutput(os.Stderr)
 		log.SetLevel(log.DebugLevel)
+	} else if verbose {
+		log.SetOutput(os.Stderr)
+		log.SetLevel(log.InfoLevel)
 	}
 
 	// We need to remove anything that is not json for output to work with
