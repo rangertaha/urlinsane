@@ -31,14 +31,40 @@ import (
 func ToEntity(d *db.Domain) *Entity {
 	switch d.EntityType() {
 	case entity.Name:
-		return &Entity{NameEntity: &NameEntity{Name: d.Name, Rank: d.Rank}}
+		return &Entity{NameEntity: &NameEntity{Name: d.Name, Rank: d.Rank, Hits: toHits(d.Hits)}}
 	case entity.User:
-		return &Entity{UserEntity: &UserEntity{Name: d.Name, Rank: d.Rank}}
+		return &Entity{UserEntity: &UserEntity{Name: d.Name, Rank: d.Rank, Hits: toHits(d.Hits)}}
 	case entity.Package:
-		return &Entity{PackageEntity: &PackageEntity{Name: d.Name, Rank: d.Rank}}
+		return &Entity{PackageEntity: &PackageEntity{Name: d.Name, Rank: d.Rank, Hits: toHits(d.Hits)}}
 	default: // domain
 		return &Entity{DomainEntity: toDomainEntity(d)}
 	}
+}
+
+// toHits converts and sorts result hits for a deterministic CID.
+func toHits(in []*db.Hit) []Hit {
+	var out []Hit
+	for _, h := range in {
+		if h != nil {
+			out = append(out, Hit{Service: h.Service, URL: h.URL})
+		}
+	}
+	sort.Slice(out, func(i, j int) bool {
+		if out[i].Service != out[j].Service {
+			return out[i].Service < out[j].Service
+		}
+		return out[i].URL < out[j].URL
+	})
+	return out
+}
+
+// fromHits converts stored hits back into result hits.
+func fromHits(in []Hit) []*db.Hit {
+	var out []*db.Hit
+	for _, h := range in {
+		out = append(out, &db.Hit{Service: h.Service, URL: h.URL})
+	}
+	return out
 }
 
 func toDomainEntity(d *db.Domain) *DomainEntity {
@@ -129,11 +155,11 @@ func fmtTime(t *time.Time) string {
 func ToDomain(e *Entity) *db.Domain {
 	switch {
 	case e.NameEntity != nil:
-		return &db.Domain{Type: entity.Name, Name: e.NameEntity.Name, Rank: e.NameEntity.Rank}
+		return &db.Domain{Type: entity.Name, Name: e.NameEntity.Name, Rank: e.NameEntity.Rank, Hits: fromHits(e.NameEntity.Hits)}
 	case e.UserEntity != nil:
-		return &db.Domain{Type: entity.User, Name: e.UserEntity.Name, Rank: e.UserEntity.Rank}
+		return &db.Domain{Type: entity.User, Name: e.UserEntity.Name, Rank: e.UserEntity.Rank, Hits: fromHits(e.UserEntity.Hits)}
 	case e.PackageEntity != nil:
-		return &db.Domain{Type: entity.Package, Name: e.PackageEntity.Name, Rank: e.PackageEntity.Rank}
+		return &db.Domain{Type: entity.Package, Name: e.PackageEntity.Name, Rank: e.PackageEntity.Rank, Hits: fromHits(e.PackageEntity.Hits)}
 	case e.DomainEntity != nil:
 		return fromDomainEntity(e.DomainEntity)
 	default:

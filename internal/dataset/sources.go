@@ -15,13 +15,16 @@
 package dataset
 
 // Source is a place to look up an entity: a username platform, a package
-// registry, or an email provider. Template is a URL containing %s (replaced by
-// the entity value); for email providers it is just the provider domain.
+// registry, or an email provider. Template is the human display URL (%s replaced
+// by the entity value; for email providers, just the provider domain). Check is
+// the URL used to test existence (often an API endpoint that returns a clean
+// 404 for missing entries); when empty, Template is used.
 type Source struct {
 	ID       uint
 	Type     string `gorm:"index"` // username | package | email
 	Code     string
 	Template string
+	CheckURL string // existence-check URL (API); falls back to Template
 }
 
 // Package is a known package name in a code registry — a corpus of common

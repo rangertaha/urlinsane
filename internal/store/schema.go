@@ -71,12 +71,14 @@ type DomainEntity struct {
 type NameEntity struct {
 	Name string
 	Rank int64
+	Hits []Hit
 }
 
 // UserEntity is the stored form of a scanned username/handle.
 type UserEntity struct {
 	Name string
 	Rank int64
+	Hits []Hit
 }
 
 // PackageEntity is the stored form of a scanned package name.
@@ -84,6 +86,13 @@ type PackageEntity struct {
 	Name     string
 	Rank     int64
 	Registry string
+	Hits     []Hit
+}
+
+// Hit is an external source where an entity was found (registry/platform).
+type Hit struct {
+	Service string
+	URL     string
 }
 
 // DnsRecord is a single DNS record.
