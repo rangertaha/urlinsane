@@ -17,7 +17,6 @@ package list
 import (
 	"fmt"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/rangertaha/urlinsane/internal"
@@ -43,34 +42,16 @@ func (p *Plugin) Read(in *db.Domain) {
 	} else {
 		p.Offline++
 	}
-
-	if p.Config.Registered() {
-		if !in.Live() {
-			return
-		}
-	}
-
-	if p.Config.Unregistered() {
-		if in.Live() {
-			return
-		}
-	}
-
-	if !p.Config.Progress() {
-		fmt.Println(p.Row(in))
-	}
-
 }
 
+// Write renders all collected variants as one aligned table once the scan
+// completes (filtering by --registered/--unregistered is applied in Table).
 func (p *Plugin) Write() {
-	if p.Config.Progress() {
-		fmt.Println(strings.Join(p.Rows(p.Domains...), "\n"))
-	}
+	fmt.Println(p.Table())
 }
 
 func (p *Plugin) Save(fname string) {
-	output := strings.Join(p.Rows(p.Domains...), "\n")
-	if err := os.WriteFile(fname, []byte(output), 0644); err != nil {
+	if err := os.WriteFile(fname, []byte(p.Table()+"\n"), 0644); err != nil {
 		fmt.Printf("Saving file: %s \n", err)
 	}
 }
