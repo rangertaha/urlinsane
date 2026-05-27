@@ -29,7 +29,7 @@ type Plugin struct {
 	collectors.Plugin
 }
 
-func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
+func (p *Plugin) Exec(ctx context.Context, domain *db.Domain) (variant *db.Domain, err error) {
 
 	records, err := dns.Resolver.LookupMX(ctx, domain.Name)
 	if err != nil {

@@ -30,7 +30,7 @@ type Plugin struct {
 	collectors.Plugin
 }
 
-func (i *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
+func (i *Plugin) Exec(ctx context.Context, domain *db.Domain) (variant *db.Domain, err error) {
 	record, err := dns.Resolver.LookupCNAME(ctx, domain.Name)
 	record = strings.TrimSpace(record)
 	record = strings.Trim(record, ".")

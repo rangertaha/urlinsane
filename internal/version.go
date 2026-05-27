@@ -33,7 +33,7 @@ const (
 ENTITY:     %s
 LANGUAGES:  %s
 KEYBOARDS:  %s
-ALGORITMS:  %s
+ALGORITHMS: %s
 COLLECTORS: %s
 OUTPUT:     %s
 TIME:       %s

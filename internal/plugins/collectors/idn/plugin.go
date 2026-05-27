@@ -32,7 +32,7 @@ type Plugin struct {
 	collectors.Plugin
 }
 
-func (i *Plugin) Exec(ctx context.Context, domain *db.Domain) (vaiant *db.Domain, err error) {
+func (i *Plugin) Exec(ctx context.Context, domain *db.Domain) (variant *db.Domain, err error) {
 	var idn string
 	idn, err = idna.Punycode.ToASCII(domain.Name)
 
