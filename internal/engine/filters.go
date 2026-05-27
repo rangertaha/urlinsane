@@ -21,6 +21,8 @@ import (
 	"github.com/rangertaha/urlinsane/internal/db"
 )
 
+// ExampleFilter is a no-op pass-through filter, kept as a template for writing
+// new constraint filters.
 func ExampleFilter() func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
 	return func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
 		out := make(chan *db.Domain)
@@ -36,6 +38,8 @@ func ExampleFilter() func(in <-chan *db.Domain, c internal.Config) <-chan *db.Do
 	}
 }
 
+// Levenshtein keeps only variants whose edit distance from the target is within
+// the configured maximum (--distance).
 func Levenshtein() func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
 	return func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
 		out := make(chan *db.Domain)
@@ -53,6 +57,7 @@ func Levenshtein() func(in <-chan *db.Domain, c internal.Config) <-chan *db.Doma
 	}
 }
 
+// Dedup drops variants whose name has already been seen.
 func Dedup() func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
 	return func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
 		out := make(chan *db.Domain)
@@ -70,6 +75,7 @@ func Dedup() func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
 	}
 }
 
+// Regex keeps only variants whose name matches the configured pattern (--regex).
 func Regex() func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
 	return func(in <-chan *db.Domain, c internal.Config) <-chan *db.Domain {
 		out := make(chan *db.Domain)

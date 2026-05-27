@@ -16,7 +16,6 @@ package pkg
 
 import "unicode/utf8"
 
-
 const minLengthThreshold = 32
 
 // ComputeDistance computes the levenshtein distance between the two
@@ -33,7 +32,6 @@ func Levenshtein(a, b string) int {
 	if a == b {
 		return 0
 	}
-
 
 	s1 := []rune(a)
 	s2 := []rune(b)

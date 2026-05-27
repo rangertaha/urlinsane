@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package db
 
+// Page is a captured web page for a domain (content, media, HAR).
 type Page struct {
 	Domain      *Domain `json:"domain,omitempty"`
 	Uri         string  `json:"uri,omitempty"`
@@ -28,11 +29,13 @@ type Page struct {
 	Har    string   `json:"har,omitempty"`
 }
 
+// Image is an image referenced by a page, with perceptual/content hashes.
 type Image struct {
 	Url    string            `json:"url,omitempty"`
 	Hashes map[string]string `json:"hashes,omitempty"`
 }
 
+// File is a file referenced by a page, with content hashes.
 type File struct {
 	Url    string            `json:"uri,omitempty"`
 	Hashes map[string]string `json:"hashes,omitempty"`

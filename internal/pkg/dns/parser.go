@@ -21,17 +21,22 @@ import (
 	"github.com/rangertaha/urlinsane/internal/dataset"
 )
 
+// Parser splits domains into prefix/name/suffix using the public suffix list
+// loaded from the dataset.
 type Parser struct {
 	sa       *suffixarray.Index
 	suffixes []string
 }
 
+// Domain is a parsed domain: its subdomain Prefix, registrable Name, and public
+// Suffix.
 type Domain struct {
 	Prefix string
 	Name   string
 	Suffix string
 }
 
+// New builds a Parser, loading the public-suffix list from the dataset.
 func New() (parser Parser) {
 	var tlds []dataset.Suffix
 	if dataset.DB != nil {
@@ -47,6 +52,8 @@ func New() (parser Parser) {
 	return
 }
 
+// Offset returns the index, within the dot-separated parts, of the registrable
+// name (the label immediately left of the public suffix).
 func (p *Parser) Offset(parts []string) int {
 	counter := 2
 	for counter > 0 {
@@ -69,6 +76,7 @@ func (p *Parser) Offset(parts []string) int {
 	return 0
 }
 
+// Parse splits a domain into its prefix, registrable name, and suffix.
 func (p *Parser) Parse(domain string) Domain {
 	parts := strings.Split(domain, ".")
 	offset := p.Offset(parts)
@@ -79,24 +87,28 @@ func (p *Parser) Parse(domain string) Domain {
 	}
 }
 
+// GetDomain returns the registrable name label of the domain.
 func (p *Parser) GetDomain(domain string) string {
 	parts := strings.Split(domain, ".")
 	offset := p.Offset(parts)
 	return parts[offset]
 }
 
+// GetPrefix returns the subdomain prefix of the domain (may be empty).
 func (p *Parser) GetPrefix(domain string) string {
 	parts := strings.Split(domain, ".")
 	offset := p.Offset(parts)
 	return strings.Join(parts[:offset], ".")
 }
 
+// GetFQDN returns the registrable domain (name plus suffix, without subdomains).
 func (p *Parser) GetFQDN(domain string) string {
 	parts := strings.Split(domain, ".")
 	offset := p.Offset(parts)
 	return strings.Join(parts[offset:], ".")
 }
 
+// GetSuffix returns the public suffix (TLD) of the domain.
 func (p *Parser) GetSuffix(domain string) string {
 	parts := strings.Split(domain, ".")
 	offset := p.Offset(parts)

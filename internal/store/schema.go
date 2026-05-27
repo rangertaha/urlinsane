@@ -56,6 +56,7 @@ type Entity struct {
 	PackageEntity *PackageEntity
 }
 
+// DomainEntity is the stored (content-addressed) form of a scanned domain.
 type DomainEntity struct {
 	Name     string
 	Punycode string
@@ -66,28 +67,33 @@ type DomainEntity struct {
 	Whois    []Whois
 }
 
+// NameEntity is the stored form of a scanned person/brand name.
 type NameEntity struct {
 	Name string
 	Rank int64
 }
 
+// UserEntity is the stored form of a scanned username/handle.
 type UserEntity struct {
 	Name string
 	Rank int64
 }
 
+// PackageEntity is the stored form of a scanned package name.
 type PackageEntity struct {
 	Name     string
 	Rank     int64
 	Registry string
 }
 
+// DnsRecord is a single DNS record.
 type DnsRecord struct {
 	Type  string
 	Value string
 	Ttl   string
 }
 
+// Address is an IP address with its ports and geolocation.
 type Address struct {
 	Addr     string
 	Type     string
@@ -95,6 +101,7 @@ type Address struct {
 	Location *Location
 }
 
+// Port is a network port and detected service.
 type Port struct {
 	Proto   string
 	Number  int64
@@ -102,6 +109,7 @@ type Port struct {
 	Service string
 }
 
+// Location is an IP geolocation.
 type Location struct {
 	Code       string
 	Name       string
@@ -111,6 +119,7 @@ type Location struct {
 	PostalCode string
 }
 
+// Whois is a domain registration record with its contact roles.
 type Whois struct {
 	Created        string
 	Updated        string
@@ -122,6 +131,7 @@ type Whois struct {
 	Billing        *Contact
 }
 
+// Contact is a whois contact.
 type Contact struct {
 	Name         string
 	Organization string
@@ -138,6 +148,8 @@ type Contact struct {
 	ReferralURL  string
 }
 
+// Scan links the result CIDs produced for one query (target), enabling
+// cross-scan diffing.
 type Scan struct {
 	Query   string
 	Created string
