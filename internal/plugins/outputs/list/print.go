@@ -34,7 +34,17 @@ func (p *Plugin) Table() string {
 		if p.hidden(d) {
 			continue
 		}
-		tb.AppendRow(table.Row{d.Levenshtein, d.Algorithm.Name, d.Name, found(d)})
+		info := found(d)
+		// Append analyzer notes (e.g. dependency-confusion gaps) when present.
+		if len(d.Notes) > 0 {
+			notes := strings.Join(d.Notes, "; ")
+			if info != "" {
+				info += "  ⚠ " + notes
+			} else {
+				info = "⚠ " + notes
+			}
+		}
+		tb.AppendRow(table.Row{d.Levenshtein, d.Algorithm.Name, d.Name, info})
 	}
 	return tb.Render()
 }

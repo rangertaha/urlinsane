@@ -43,6 +43,7 @@ type fakeConfig struct {
 }
 
 func (c *fakeConfig) Target() string                   { return "example.com" }
+func (c *fakeConfig) Targets() []string                { return []string{"example.com"} }
 func (c *fakeConfig) EntityType() entity.Type          { return entity.Domain }
 func (c *fakeConfig) Keyboards() []internal.Keyboard   { return nil }
 func (c *fakeConfig) Languages() []internal.Language   { return nil }

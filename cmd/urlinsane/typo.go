@@ -107,6 +107,12 @@ var Flags = []cli.Flag{
 		Usage: "entity type: auto, domain, name, user, package `[TYPE]`",
 	},
 	&cli.StringFlag{
+		Name:    "manifest",
+		Aliases: []string{"m"},
+		Value:   "",
+		Usage:   "scan dependency names from a project manifest `FILE`",
+	},
+	&cli.StringFlag{
 		Name:     "regex",
 		Aliases:  []string{"e"},
 		Value:    "",
@@ -255,13 +261,13 @@ var TypoCmd = cli.Command{
 			return nil
 		}
 
-		if cCtx.NArg() == 0 {
-			fmt.Println(text.FgRed.Sprint("\n  a domain name is needed!\n"))
+		if cCtx.String("manifest") == "" && cCtx.NArg() == 0 {
+			fmt.Println(text.FgRed.Sprint("\n  a name or --manifest FILE is needed!\n"))
 			cli.ShowSubcommandHelpAndExit(cCtx, 1)
 
 		}
 		if cCtx.NArg() > 1 {
-			fmt.Println(text.FgRed.Sprint("\n  only one domain name at at time!\n"))
+			fmt.Println(text.FgRed.Sprint("\n  only one name at a time (use --manifest for many)!\n"))
 			cli.ShowSubcommandHelpAndExit(cCtx, 1)
 		}
 

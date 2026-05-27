@@ -1,0 +1,18 @@
+# Code-repository hosts (git forges) for repo/namespace squatting checks.
+# Columns: code  display-url  check-url
+# %s is the org/user/project namespace. The check-url must return a clean,
+# direct 404 for a missing namespace (the HTTP client follows redirects, so a
+# soft-404 that 302-redirects to a login/landing page would false-positive).
+# GitLab-based forges (gitlab.com, salsa, framagit, gnome, freedesktop),
+# Bitbucket and SourceHut are intentionally omitted: unauthenticated their
+# missing-namespace responses redirect to a 200 page and cannot be checked
+# reliably by status code alone.
+github https://github.com/%s https://api.github.com/users/%s
+gitea https://gitea.com/%s https://gitea.com/api/v1/users/%s
+codeberg https://codeberg.org/%s https://codeberg.org/api/v1/users/%s
+gitee https://gitee.com/%s https://gitee.com/api/v5/users/%s
+launchpad https://launchpad.net/~%s https://api.launchpad.net/1.0/~%s
+sourceforge https://sourceforge.net/projects/%s https://sourceforge.net/rest/p/%s
+pagure https://pagure.io/%s https://pagure.io/api/0/user/%s
+notabug https://notabug.org/%s https://notabug.org/%s
+savannah https://savannah.gnu.org/users/%s https://savannah.gnu.org/users/%s
