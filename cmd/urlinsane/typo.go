@@ -120,17 +120,17 @@ var Flags = []cli.Flag{
 		Category: "PERFORMANCE",
 		Usage:    "number of concurrent workers `NUM`",
 	},
-	&cli.IntFlag{
+	&cli.DurationFlag{
 		Name:     "random",
-		Value:    1,
+		Value:    0,
 		Category: "PERFORMANCE",
-		Usage:    "random network delay multiplier `NUM`",
+		Usage:    "extra random delay added per network call, up to this `DURATION`",
 	},
-	&cli.IntFlag{
+	&cli.DurationFlag{
 		Name:     "delay",
-		Value:    1,
+		Value:    0,
 		Category: "PERFORMANCE",
-		Usage:    "delay between network calls `NUM`",
+		Usage:    "delay between network calls `DURATION`",
 	},
 	&cli.DurationFlag{
 		Name:     "timeout",

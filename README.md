@@ -81,8 +81,8 @@ Usage: `urlinsane typo [options] <target>`
 |------|-------|---------|-------------|
 | `--workers` | `-w` | `50` | Number of concurrent workers |
 | `--timeout` | `-t` | `20s` | Maximum duration per task |
-| `--delay` | | `1` | Delay between network calls |
-| `--random` | | `1` | Random network delay multiplier |
+| `--delay` | | `0` | Delay between network calls (e.g. `200ms`) |
+| `--random` | | `0` | Extra random delay added per call, up to this duration |
 | `--ttl` | | `1h` | Duration to cache results (`0` clears the cache) |
 | `--nameservers` | `-n` | | DNS or DoH servers to query (comma-separated) |
 | `--rua` | | `false` | Randomize the user agent for HTTP requests |
