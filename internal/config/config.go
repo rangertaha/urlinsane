@@ -126,8 +126,9 @@ func New(options ...func(*Config)) (*Config, error) {
 	}
 
 	// Fail fast on an unknown output format (otherwise a nil output plugin
-	// would later panic in the banner / output stage).
-	if s.output == nil {
+	// would later panic in the banner / output stage). An empty format means no
+	// output was requested (e.g. the dataset import tooling), which is fine.
+	if s.format != "" && s.output == nil {
 		return s, fmt.Errorf("unknown output format %q (supported: list, json)", s.format)
 	}
 
