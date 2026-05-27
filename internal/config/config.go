@@ -16,6 +16,7 @@ package config
 
 import (
 	_ "embed"
+	"fmt"
 	"io"
 	"net/url"
 	"os"
@@ -122,6 +123,12 @@ func New(options ...func(*Config)) (*Config, error) {
 	// Validate the domain name input
 	if err := validateDomain(s); err != nil {
 		return s, err
+	}
+
+	// Fail fast on an unknown output format (otherwise a nil output plugin
+	// would later panic in the banner / output stage).
+	if s.output == nil {
+		return s, fmt.Errorf("unknown output format %q (supported: list, json)", s.format)
 	}
 
 	return s, nil
