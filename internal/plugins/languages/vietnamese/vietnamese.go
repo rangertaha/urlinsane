@@ -118,6 +118,17 @@ var (
 		{"trân", "chân"},
 		{"trai", "chai"},
 		{"tre", "che"},
+		{"sửa", "sữa"},
+		{"nghỉ", "nghĩ"},
+		{"bảo", "bão"},
+		{"ngã", "ngả"},
+		{"cải", "cãi"},
+		{"mỏi", "mõi"},
+		{"hỏi", "hõi"},
+		{"giả", "giã"},
+		{"lảnh", "lãnh"},
+		{"chuẩn", "chẩn"},
+		{"xán", "sáng"},
 	}
 	viAntonyms = map[string][]string{
 		"tốt":   {"xấu"},

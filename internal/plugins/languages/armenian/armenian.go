@@ -137,6 +137,11 @@ var (
 		{"քույր", "քոյր"},
 		{"տարբեր", "տարբէր"},
 		{"երկիր", "երկիրը"},
+		{"թույն", "թոյն"},
+		{"սույն", "սոյն"},
+		{"ամեն", "ամէն"},
+		{"կյանք", "կեանք"},
+		{"նույն", "նոյն"},
 	}
 
 	// hyAntonyms are words opposite in meaning to another (e.g. bad and good ).
@@ -203,7 +208,7 @@ var (
 			"չ", "պ", "ջ", "ռ", "ս", "վ", "տ", "ր",
 			"ց", "փ", "ք", "և", "օ", "ֆ",
 		},
-		vowels:       []string{},
+		vowels:       []string{"ա", "ե", "է", "ը", "ի", "ո", "օ", "ու", "և"},
 		misspellings: hyMisspellings,
 		homophones:   hyHomophones,
 		antonyms:     hyAntonyms,

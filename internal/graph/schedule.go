@@ -111,6 +111,17 @@ type Scheduler struct {
 func NewScheduler(g *Graph, ops []Operator, lim Limits) *Scheduler {
 	sorted := append([]Operator(nil), ops...)
 	sort.Slice(sorted, func(i, j int) bool { return sorted[i].Id() < sorted[j].Id() })
+
+	// Tell the graph which operators actually look something up, so Existence
+	// does not read a decomposer's "I parsed this" as "this exists" (§9).
+	var observers []string
+	for _, o := range sorted {
+		if o.Resource() != "" {
+			observers = append(observers, o.Id())
+		}
+	}
+	g.SetObservers(observers)
+
 	return &Scheduler{
 		g:         g,
 		ops:       sorted,

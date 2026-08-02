@@ -168,6 +168,14 @@ var (
 		{"hjälp", "jälp"},
 		{"hjärta", "järta"},
 		{"vitt", "hvitt"},
+		{"avsett", "avsätt"},
+		{"enda", "ända"},
+		{"ess", "äss"},
+		{"gjuta", "ljuta"},
+		{"sex", "säcks"},
+		{"uppblåst", "upplåst"},
+		{"chippa", "kippa"},
+		{"kex", "checks", "tjecks"},
 	}
 	svAntonyms = map[string][]string{
 		"bra":     {"dålig"},

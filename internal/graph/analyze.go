@@ -180,7 +180,7 @@ func (e Existence) String() string {
 func (a *Analysis) Existence(id NodeID) Existence {
 	var sawEmpty, sawAny bool
 	for k, s := range a.g.status {
-		if k.node != id {
+		if k.node != id || !a.g.observes(k.op) {
 			continue
 		}
 		sawAny = true

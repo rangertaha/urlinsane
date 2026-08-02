@@ -103,6 +103,16 @@ var (
 		{"innocuo", "innoquo"},
 		{"acqua", "aqua"},
 		{"lacrime", "lagrime"},
+		{"soqquadro", "socquadro"},
+		{"proficuo", "profiquo"},
+		{"evacuare", "evaquare"},
+		{"percuotere", "perquotere"},
+		{"riscuotere", "risquotere"},
+		{"taccuino", "tacquino"},
+		{"cospicuo", "cospiquo"},
+		{"scempio", "sciempio"},
+		{"crescente", "cresciente"},
+		{"conoscenza", "conoscienza"},
 	}
 	itAntonyms = map[string][]string{
 		"buono":     {"cattivo"},

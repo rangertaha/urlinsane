@@ -136,6 +136,9 @@ const (
 	RejectKindMismatch
 	// RejectClosure — a variant edge whose source is outside the seed closure.
 	RejectClosure
+	// RejectSelfVariant — a variant edge whose source and target canonicalize
+	// to the same node.
+	RejectSelfVariant
 	// RejectScope — a variant edge whose source type the run's scope excludes.
 	// Distinct from RejectClosure: the node is a legitimate variant root, the
 	// user simply asked for a narrower scan, and conflating the two would make
@@ -161,6 +164,8 @@ func (k RejectKind) String() string {
 		return "kind-mismatch"
 	case RejectClosure:
 		return "outside-seed-closure"
+	case RejectSelfVariant:
+		return "self-variant"
 	case RejectScope:
 		return "outside-scope"
 	case RejectDenied:

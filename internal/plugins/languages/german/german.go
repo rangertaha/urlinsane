@@ -441,6 +441,9 @@ var (
 		{"wieder", "wider"},
 		{"wird", "wirt"},
 		{"zunahme", "zuname"},
+		{"als", "alls"},
+		{"fällen", "fellen"},
+		{"weiht", "weit"},
 	}
 	deAntonyms = map[string][]string{
 		"gut":         {"schlecht"},

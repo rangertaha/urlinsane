@@ -86,6 +86,18 @@ var (
 		{"lege", "leje"},
 		{"maler", "måler"},
 		{"hval", "val"},
+		{"hjul", "jul"},
+		{"hjord", "jord"},
+		{"hvid", "vid"},
+		{"hvor", "vor"},
+		{"hvis", "vis"},
+		{"hvad", "vad"},
+		{"bord", "bor"},
+		{"kunne", "kunde"},
+		{"hælder", "heller"},
+		{"ligge", "lægge"},
+		{"vejr", "hver"},
+		{"vær", "værd"},
 	}
 	daAntonyms = map[string][]string{
 		"god":     {"dårlig"},

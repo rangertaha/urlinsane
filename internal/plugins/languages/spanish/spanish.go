@@ -254,6 +254,21 @@ var (
 		{"sesión", "cesión"},
 		{"silva", "silba"},
 		{"vaya", "valla"},
+		{"abalar", "avalar"},
+		{"abocar", "avocar"},
+		{"acerbo", "acervo"},
+		{"acechar", "asechar"},
+		{"bacía", "vacía"},
+		{"bale", "vale"},
+		{"cabe", "cave"},
+		{"cauce", "cause"},
+		{"cebo", "sebo"},
+		{"ceda", "seda"},
+		{"cierra", "sierra"},
+		{"enebro", "enhebro"},
+		{"gira", "jira"},
+		{"rebelar", "revelar"},
+		{"recabar", "recavar"},
 	}
 
 	// 	Here’s a list of some commonly known Spanish homophones—words that sound alike but have different meanings or spellings:
