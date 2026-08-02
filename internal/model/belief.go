@@ -70,8 +70,11 @@ func UniformBelief() graph.BeliefModel { return NewBelief(Uniform(), nil) }
 func (b *Belief) Model() *HMM { return b.h }
 
 // Initial is the seed's prior. The seed has no parent, so barrier 0 takes it
-// straight from the initial distribution.
-func (b *Belief) Initial() float64 { return b.h.Mass(b.h.logInit) }
+// straight from the initial distribution — and carries that distribution
+// forward as the state its children step from.
+func (b *Belief) Initial() (float64, graph.State) {
+	return b.h.Mass(b.h.logInit), b.dist(b.h.logInit)
+}
 
 // Step is the forward filtering step: the parent's belief pushed through the
 // relation that admitted this node, then conditioned on the node's props as of
@@ -81,20 +84,39 @@ func (b *Belief) Initial() float64 { return b.h.Mass(b.h.logInit) }
 // is what makes it independent of which operator returned first — only which
 // round an edge belongs to matters, and that is deterministic (§10.3).
 //
-// The scalar round trip is the one lossy part. graph.BeliefModel carries a
-// float64 between parent and child, not a distribution, so the parent's
-// posterior is reconstructed by Lift before the step and collapsed by Mass
-// after it. For a binary model — the shape §10.2 actually needs to rank a
-// frontier — the reconstruction is exact. For three or more states it is the
-// maximum-entropy distribution consistent with the scalar, and some shape is
-// genuinely lost. See the note in the package report; widening the interface to
-// carry a distribution is the fix, and it belongs in graph, not here.
-func (b *Belief) Step(parent float64, rel string, v graph.View) float64 {
+// The parent's full posterior travels in graph.State, so nothing is
+// reconstructed and nothing is lost. An earlier version received only the
+// parent's scalar and had to Lift it back into a distribution — exact for two
+// states, and for three or more the maximum-entropy distribution consistent
+// with that one number, which is not the posterior the parent actually had.
+func (b *Belief) Step(parent graph.State, rel string, v graph.View) (float64, graph.State) {
 	var obs []string
 	if b.features != nil && v != nil {
 		obs = b.features(v)
 	}
-	return b.h.Mass(b.h.Forward(b.h.Lift(parent), rel, obs))
+	next := b.h.Forward(b.prior(parent), rel, obs)
+	return b.h.Mass(next), b.dist(next)
+}
+
+// prior recovers the parent's log-space distribution.
+//
+// A nil state means the parent has not been stepped yet, which the interface
+// defines as "use the initial distribution". A state of the wrong width means
+// the model was swapped mid-run — impossible today, but falling back beats
+// indexing past the end of a slice.
+func (b *Belief) prior(s graph.State) []float64 {
+	d, ok := s.([]float64)
+	if !ok || len(d) != len(b.h.states) {
+		return b.h.logInit
+	}
+	return d
+}
+
+// dist hands out a copy. The graph holds this value for the node's lifetime and
+// Forward allocates a fresh slice per call today, but a caller that later
+// reused a buffer would silently rewrite every descendant's recorded state.
+func (b *Belief) dist(d []float64) graph.State {
+	return append([]float64(nil), d...)
 }
 
 // PropFeatures builds a Featurizer that renders the named fields as

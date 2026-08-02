@@ -91,6 +91,7 @@ type Graph struct {
 
 	model      BeliefModel
 	belief     map[NodeID]float64
+	bstate     map[NodeID]State
 	parent     map[NodeID]parentRef
 	candidates map[NodeID][]parentRef
 
@@ -137,6 +138,7 @@ func New(reg *Registry) *Graph {
 		ledger:     map[ledgerKey]LedgerRow{},
 		model:      uniformModel{},
 		belief:     map[NodeID]float64{},
+		bstate:     map[NodeID]State{},
 		parent:     map[NodeID]parentRef{},
 		candidates: map[NodeID][]parentRef{},
 		counts:     map[string]int{},
@@ -313,6 +315,12 @@ func (g *Graph) Apply(by Provenance, subject NodeID, d Delta) Result {
 	for _, ps := range d.Props {
 		g.applyProp(ps, admit, by, &res)
 	}
+
+	// Rejections are recorded run-wide as well as returned. Returning them only
+	// in the Result made Graph.Rejections() an accessor that always answered
+	// "nothing was refused" — worse than not existing, because a caller asking
+	// what the applier turned away gets a confident wrong answer.
+	g.rejections = append(g.rejections, res.Rejected...)
 	return res
 }
 

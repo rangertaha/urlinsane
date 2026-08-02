@@ -108,6 +108,15 @@ func classify(target string) (typ, cleaned string, err error) {
 	if key, err := canonDomain(host); err == nil && hasRegistrySuffix(key) {
 		return TypeDomain, host, nil
 	}
+	// An address is a real entity but not a *nameable* one: varying "192.0.2.1"
+	// character by character produces addresses with no relationship to the
+	// original, and `ip` is Observed precisely so it cannot root variants.
+	// Falling through to username would accept the scan and emit nonsense.
+	if _, err := canonIP(s); err == nil {
+		return "", "", fmt.Errorf(
+			"%q is an IP address; there is nothing to typosquat — scan the name that resolves to it", s)
+	}
+
 	if _, err := canonUsername(s); err == nil {
 		return TypeUsername, s, nil
 	}

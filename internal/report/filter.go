@@ -112,6 +112,43 @@ func ParseFilters(specs []string) ([]Filter, error) {
 	return out, nil
 }
 
+// TypeName returns the node type this filter selects on, if it is a type
+// filter. It exists so a caller holding the registry can validate the name —
+// this package deliberately does not know what types exist.
+func (f Filter) TypeName() (string, bool) {
+	field, op, arg, ok := split(strings.ToLower(f.spec))
+	if !ok || field != "type" || (op != "=" && op != "==") {
+		return "", false
+	}
+	return arg, true
+}
+
+// ValidateTypes rejects a type filter naming a type that is not registered.
+//
+// Without it `--filter type=domian` parses, matches nothing, and renders an
+// empty report that looks exactly like a scan which found nothing — the same
+// silent-narrowing failure the scope positional had. A filter the user believes
+// is working and is not is worse than one that refuses to start.
+func ValidateTypes(filters []Filter, known []string) error {
+	if len(known) == 0 {
+		return nil
+	}
+	set := make(map[string]bool, len(known))
+	for _, k := range known {
+		set[strings.ToLower(k)] = true
+	}
+	for _, f := range filters {
+		name, ok := f.TypeName()
+		if !ok || set[name] {
+			continue
+		}
+		return fmt.Errorf(
+			"report: filter %q names an unknown node type; want one of %s",
+			f.spec, strings.Join(known, ", "))
+	}
+	return nil
+}
+
 func existence(spec string, want graph.Existence) Filter {
 	return Filter{spec: spec, fn: func(n NodeRow) bool { return n.existence == want }}
 }

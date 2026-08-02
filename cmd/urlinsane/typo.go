@@ -152,6 +152,15 @@ func runTypo(c *cli.Context) error {
 	if err != nil {
 		return exit(err, exitError)
 	}
+	if reg, err := scan.Registry(); err == nil {
+		var names []string
+		for _, t := range reg.Types() {
+			names = append(names, t.Name())
+		}
+		if err := report.ValidateTypes(filters, names); err != nil {
+			return exit(err, exitError)
+		}
+	}
 	format := c.String("output")
 	if !validFormat(format) {
 		return exit(fmt.Errorf("unknown output format %q; want one of %s",

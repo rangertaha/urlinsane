@@ -106,7 +106,13 @@ func renderNDJSON(w io.Writer, r Report) error {
 // and a reason, and the `declined` column is what distinguishes them.
 func renderCSV(w io.Writer, r Report) error {
 	c := csv.NewWriter(w)
-	if err := c.Write([]string{
+	write := func(row []string) error {
+		for i := range row {
+			row[i] = defuse(row[i])
+		}
+		return c.Write(row)
+	}
+	if err := write([]string{
 		"type", "key", "depth", "existence", "risk", "in_closure", "props", "findings", "declined",
 	}); err != nil {
 		return err
@@ -124,7 +130,7 @@ func renderCSV(w io.Writer, r Report) error {
 		for _, p := range n.Props {
 			props = append(props, p.Name+"="+p.Text())
 		}
-		if err := c.Write([]string{
+		if err := write([]string{
 			n.Type, n.Key, strconv.Itoa(n.Depth), n.Existence, n.Risk,
 			strconv.FormatBool(n.InClosure),
 			strings.Join(props, " "),
@@ -135,7 +141,7 @@ func renderCSV(w io.Writer, r Report) error {
 		}
 	}
 	for _, d := range r.Ledger {
-		if err := c.Write([]string{
+		if err := write([]string{
 			d.Type, d.Key, strconv.Itoa(d.Depth), "", "", "", "", "", d.Reason,
 		}); err != nil {
 			return err
@@ -145,6 +151,30 @@ func renderCSV(w io.Writer, r Report) error {
 	return c.Error()
 }
 
+// defuse neutralises spreadsheet formula injection.
+//
+// This matters more here than in most tools: urlinsane exists to collect
+// attacker-chosen strings, and a username or package name may legitimately
+// begin with "=", "+", "-" or "@". Excel and LibreOffice treat such a cell as a
+// formula, so `=cmd|' /c calc'!a0` as a variant name becomes code execution on
+// the analyst's machine when they open the report — an attacker-controlled
+// payload delivered by the security tool examining it.
+//
+// A leading apostrophe is the portable fix: spreadsheets read it as "this cell
+// is text" and strip it, while csv, jq and every other consumer see one extra
+// character rather than a mangled value. Quoting alone does not help — the
+// formula still evaluates.
+func defuse(s string) string {
+	if s == "" {
+		return s
+	}
+	switch s[0] {
+	case '=', '+', '-', '@', '\t', '\r':
+		return "'" + s
+	}
+	return s
+}
+
 // renderDOT writes a graphviz digraph.
 //
 // This is the format the whole data model was chosen for: shared infrastructure
@@ -152,11 +182,6 @@ func renderCSV(w io.Writer, r Report) error {
 // exactly the campaign shape §9 clusters on, and which no row-per-domain
 // rendering can show at all.
 func renderDOT(w io.Writer, r Report) error {
-	risk := map[string]string{}
-	for _, n := range r.Nodes {
-		risk[n.Type+":"+n.Key] = n.Risk
-	}
-
 	fmt.Fprintln(w, "digraph urlinsane {")
 	fmt.Fprintln(w, `  rankdir=LR;`)
 	fmt.Fprintln(w, `  node [shape=box style=rounded fontname="sans-serif"];`)
