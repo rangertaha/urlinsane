@@ -9,8 +9,19 @@ BDIR=build
 $(shell mkdir -p $(BDIR))
 BINARY_NAME=urlinsane
 VERSION=$(shell grep -e 'VERSION = ".*"' internal/version.go | cut -d= -f2 | sed  s/[[:space:]]*\"//g)
+COMMIT=$(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
 
-.PHONY: help version build install dpkg deps test clean doc
+# -trimpath removes local filesystem paths from the binary, so the same source
+# builds byte-identically on another machine. -s -w drop the symbol table and
+# DWARF; the data this embeds is the size, not the debug info, but there is no
+# reason to ship both.
+LDFLAGS=-s -w -X github.com/rangertaha/urlinsane/internal.COMMIT=$(COMMIT)
+BUILDFLAGS=-trimpath -ldflags "$(LDFLAGS)"
+
+.PHONY: help version build install dpkg deps test race vet fmt check dataset clean doc release update
+
+# Every package, so a new top-level directory is covered without editing this.
+PKGS=./...
 
 
 
@@ -21,32 +32,68 @@ version: ## Returns the version number
 	@echo $(VERSION)
 
 
-release: deps ## Build the binaries for Windows, OSX, and Linux
-	env GOOS=darwin GOARCH=amd64 $(GOBUILD) -C cmd/$(BINARY_NAME) -o ../../$(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 -v
-	sha512sum $(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 > $(BDIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64.sha512
+# Every target Go supports that this tool makes sense on. Cross-compiling is
+# only possible because the sqlite driver is pure Go: with the cgo driver each
+# of these needed its own C toolchain, and CGO_ENABLED=0 built a binary that
+# ran but could not open the database.
+PLATFORMS=\
+	darwin/amd64 darwin/arm64 \
+	linux/amd64 linux/arm64 linux/386 linux/arm linux/riscv64 \
+	windows/amd64 windows/arm64 windows/386 \
+	freebsd/amd64 freebsd/arm64 \
+	openbsd/amd64 netbsd/amd64
 
-	env GOOS=linux GOARCH=amd64 $(GOBUILD) -C cmd/$(BINARY_NAME) -o ../../$(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64 -v
-	sha512sum $(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64 > $(BDIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64.sha512
+release: deps ## Build release binaries for every platform
+	@set -e; for p in $(PLATFORMS); do \
+		os=$${p%/*}; arch=$${p#*/}; \
+		ext=""; [ "$$os" = "windows" ] && ext=".exe"; \
+		out="$(BDIR)/$(BINARY_NAME)-$(VERSION)-$$os-$$arch$$ext"; \
+		echo "  $$os/$$arch"; \
+		CGO_ENABLED=0 GOOS=$$os GOARCH=$$arch \
+			$(GOBUILD) $(BUILDFLAGS) -o "$$out" ./cmd/$(BINARY_NAME); \
+		sha512sum "$$out" > "$$out.sha512"; \
+	done
+	@echo "\n$(BDIR):"; ls -1 $(BDIR) | grep -v sha512
 
-	env GOOS=windows GOARCH=amd64 $(GOBUILD) -C cmd/$(BINARY_NAME) -o ../../$(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe -v
-	sha512sum $(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe > $(BDIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe.sha512
-
-build: deps ## Build the binary
+build: deps ## Build both binaries
 	$(GOBUILD) -C cmd/$(BINARY_NAME) -o ../../$(BDIR)/$(BINARY_NAME)
+	$(GOBUILD) -o $(BDIR)/datasets ./cmd/datasets
 
 install: build ## Install the binaries in Linux
 	@chmod +x $(BDIR)/$(BINARY_NAME)
 	@sudo mv $(BDIR)/$(BINARY_NAME) /usr/local/bin/
 
-deps: ## Install dependencies
-	$(GOGET) ./...
+deps: ## Download module dependencies
+	# go mod download, not `go get ./...`: in module mode go get mutates go.mod,
+	# so a build target that ran it could silently change the dependency graph.
+	$(GOCMD) mod download
 
-test: deps ## Run unit test
-	go test -v ./internal/... ./cmd/... ./pkg/...
+test: deps ## Run unit tests
+	$(GOTEST) $(PKGS)
 
-clean: ## Remove files build files
+race: deps ## Run tests under the race detector
+	# The scheduler runs operators concurrently and merges their deltas through
+	# one applier, so a data race here is a wrong graph rather than a crash.
+	# This is the run that would catch it.
+	$(GOTEST) -race $(PKGS)
+
+vet: ## Report suspicious constructs
+	$(GOCMD) vet $(PKGS)
+
+fmt: ## Report unformatted files, without rewriting them
+	@out=$$(gofmt -l cmd internal pkg datasets); \
+	if [ -n "$$out" ]; then echo "unformatted:"; echo "$$out"; exit 1; fi
+
+check: fmt vet race ## Everything CI should run
+
+dataset: ## Rebuild the embedded reference database from datasets/
+	# The output is internal/config/dataset.db, which //go:embed picks up, so
+	# this must run before build for a data change to reach the binary.
+	$(GOCMD) run ./cmd/datasets build datasets
+
+clean: ## Remove build output
 	$(GOCLEAN)
-	rm -rf build
+	rm -rf $(BDIR)
 	
 doc: ## Go documentation
 	$(GODOC) -http=:6060

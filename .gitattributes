@@ -1,0 +1,24 @@
+# Binary files, marked so nothing may treat them as text.
+#
+# internal/config/maxmind.db.gz was corrupted by exactly that: every byte >= 0x80
+# was replaced with EF BF BD, the UTF-8 replacement character, including the 8b
+# of its 1f 8b gzip magic. 11.7 MB of a 49.7 MB file, destroyed by a round trip
+# through a text decoder. -text stops git from ever guessing.
+*.gz    -text -diff
+*.db    -text -diff
+*.mmdb  -text -diff
+*.pb    -text -diff
+*.deb   -text -diff
+*.pdf   -text -diff
+
+# Line endings: keep source LF everywhere, so a Windows checkout cannot rewrite
+# a file and make every line look changed.
+*.go    text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+*.sh    text eol=lf
+
+# The curated datasets are UTF-8 text, and their content is deliberate — the
+# misspelling and homoglyph lists contain sequences that look like errors.
+*.lst        text eol=lf
+*.ipldsch    text eol=lf
