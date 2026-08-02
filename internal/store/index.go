@@ -5,6 +5,7 @@ package store
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
@@ -67,18 +68,84 @@ func OpenIndex(dir string) (*Index, error) {
 // Re-adding the same root replaces its entry rather than appending: the CID is
 // the scan's identity, so two entries for one root would be two names for one
 // thing, and "most recent" would depend on which was read first.
+//
+// The whole read-modify-write happens under a lock, and the index is re-read
+// inside it. Without that, two scans saving at once each write the index they
+// read at open time and the second erases the first: the losing scan's blocks
+// are still in the store but nothing names them, so `report <target>` can never
+// find it again. Two terminals is all it takes.
 func (ix *Index) Add(e Entry) error {
-	out := ix.Entries[:0]
-	for _, x := range ix.Entries {
+	unlock, err := lock(filepath.Dir(ix.path))
+	if err != nil {
+		return err
+	}
+	defer unlock()
+
+	// Re-read under the lock: another process may have written since OpenIndex.
+	fresh, err := OpenIndex(filepath.Dir(ix.path))
+	if err != nil {
+		return err
+	}
+
+	out := fresh.Entries[:0]
+	for _, x := range fresh.Entries {
 		if x.Root != e.Root {
 			out = append(out, x)
 		}
 	}
-	ix.Entries = append(out, e)
-	sort.SliceStable(ix.Entries, func(i, j int) bool {
-		return ix.Entries[i].At.After(ix.Entries[j].At)
+	fresh.Entries = append(out, e)
+	sort.SliceStable(fresh.Entries, func(i, j int) bool {
+		return fresh.Entries[i].At.After(fresh.Entries[j].At)
 	})
-	return ix.save()
+	if err := fresh.save(); err != nil {
+		return err
+	}
+	ix.Entries = fresh.Entries
+	return nil
+}
+
+// lockName is the exclusive-create lockfile guarding the index.
+const lockName = ".scans.lock"
+
+// lock takes an exclusive lock on the index in dir.
+//
+// O_CREATE|O_EXCL rather than flock: this ships to fourteen platforms including
+// Windows, and exclusive create is the one mechanism every one of them has.
+//
+// A lock older than lockStale is broken rather than waited on. A process killed
+// between creating the lockfile and removing it would otherwise make the index
+// permanently unwritable, which is a worse failure than the race the lock
+// exists to prevent.
+func lock(dir string) (func(), error) {
+	const (
+		lockStale = 30 * time.Second
+		poll      = 10 * time.Millisecond
+		timeout   = 10 * time.Second
+	)
+	path := filepath.Join(dir, lockName)
+	if err := os.MkdirAll(dir, 0o750); err != nil {
+		return nil, err
+	}
+
+	deadline := time.Now().Add(timeout)
+	for {
+		f, err := os.OpenFile(path, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0o640)
+		if err == nil {
+			f.Close()
+			return func() { os.Remove(path) }, nil
+		}
+		if !os.IsExist(err) {
+			return nil, err
+		}
+		if fi, serr := os.Stat(path); serr == nil && time.Since(fi.ModTime()) > lockStale {
+			os.Remove(path)
+			continue
+		}
+		if time.Now().After(deadline) {
+			return nil, fmt.Errorf("store: index locked by another process (%s)", path)
+		}
+		time.Sleep(poll)
+	}
 }
 
 func (ix *Index) save() error {
