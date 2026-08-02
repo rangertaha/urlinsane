@@ -25,6 +25,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal/graph"
 	"github.com/rangertaha/urlinsane/internal/operators/decompose"
 	"github.com/rangertaha/urlinsane/internal/operators/observe"
+	"github.com/rangertaha/urlinsane/internal/operators/variant"
 	"github.com/rangertaha/urlinsane/internal/report"
 )
 
@@ -414,3 +415,33 @@ func (deadProber) Exists(context.Context, string) (bool, error) { return false, 
 type emptySources struct{}
 
 func (emptySources) Sources(string) ([]observe.Source, error) { return nil, nil }
+
+func TestLanguageAndKeyboardPluginsAreRegistered(t *testing.T) {
+	// These register via init() in plugins/languages/all. Without that import
+	// the registry is empty and every language- or keyboard-driven algorithm
+	// iterates an empty list, generating nothing — while still appearing in
+	// --list algorithms and still running. The failure is completely silent,
+	// which is why it needs a test rather than a comment.
+	if n := len(variant.RegisteredLanguages()); n == 0 {
+		t.Error("no language plugins registered; language-driven algorithms are no-ops")
+	}
+	if n := len(variant.RegisteredKeyboards()); n == 0 {
+		t.Error("no keyboard plugins registered; keyboard-driven algorithms are no-ops")
+	}
+}
+
+func TestLanguageDrivenAlgorithmsActuallyGenerate(t *testing.T) {
+	// The registry being populated is necessary but not sufficient — the specs
+	// snapshot it at construction, so an operator built before registration
+	// would still be empty.
+	res, err := Run(context.Background(), Options{
+		Target: "example.com", Algorithms: []string{"vs"}, // vowel swapping, language-driven
+		Limits: graph.Limits{MaxDepth: 1}, Observe: offline(),
+	}, report.Options{})
+	if err != nil {
+		t.Fatalf("run: %v", err)
+	}
+	if countVariants(res.Graph) == 0 {
+		t.Fatal("vowel swapping produced no variants; its language list is empty")
+	}
+}

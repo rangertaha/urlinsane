@@ -36,6 +36,16 @@ import (
 	"github.com/rangertaha/urlinsane/internal/operators/observe"
 	"github.com/rangertaha/urlinsane/internal/operators/variant"
 	"github.com/rangertaha/urlinsane/internal/report"
+
+	// Language and keyboard plugins register themselves in init(). Without this
+	// import the registry is empty, and the algorithms built over it — vowel
+	// swapping, homoglyphs, keyboard adjacency, misspellings — iterate an empty
+	// list and silently generate nothing. They still appear in --list
+	// algorithms and still run, producing no variants, so the loss is invisible.
+	//
+	// It belongs here because this is the package that composes a run. The old
+	// engine got it from internal/config; nothing in the new path imported it.
+	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
 )
 
 // Options configures one scan. The zero value is a valid domain-or-whatever
