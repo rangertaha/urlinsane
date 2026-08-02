@@ -23,12 +23,33 @@ package graph
 // the current barrier. Nothing here reaches sideways into the graph, so the
 // same run recomputes the same values in the same order.
 type BeliefModel interface {
-	// Initial is the seed's prior, the seed having no parent.
-	Initial() float64
-	// Step is the forward filtering step: the parent's belief pushed through
-	// the relation that admitted this node, then conditioned on its props.
-	Step(parent float64, rel string, v View) float64
+	// Initial is the seed's prior and starting state, the seed having no parent.
+	Initial() (float64, State)
+	// Step is the forward filtering step: the parent's state pushed through the
+	// relation that admitted this node, then conditioned on its props. It
+	// returns the child's scalar belief and the state its own children inherit.
+	//
+	// parent is whatever this model returned for the parent node, or nil if the
+	// parent has none yet; a model must treat nil as its initial state.
+	Step(parent State, rel string, v View) (float64, State)
 }
+
+// State is a model's latent state, carried between a parent and its children.
+// The graph stores and forwards it without ever inspecting it.
+//
+// It exists because §10.1 specifies a hidden Markov model, and forward
+// filtering in an HMM propagates a *distribution over latent states* — a
+// vector. An earlier version of this interface passed the parent's scalar
+// belief instead, which forced a model to reconstruct a plausible distribution
+// from one number and collapse it again on the way out. That round trip is
+// exact for a two-state model and lossy for three or more, so the interface
+// silently answered §16's open question about state cardinality as "two" — not
+// by anyone's decision, but as a consequence of a type signature. Numbers from
+// a larger model would have looked entirely reasonable and been wrong.
+//
+// The scalar is still what the engine ranks and gates on; the state is the
+// model's own business.
+type State any
 
 // uniformModel is the default. It reduces expansion to breadth-first and
 // unranked — exactly today's behaviour — so the engine ships and runs correctly
@@ -36,8 +57,8 @@ type BeliefModel interface {
 // without invalidating a single result.
 type uniformModel struct{}
 
-func (uniformModel) Initial() float64                   { return 1 }
-func (uniformModel) Step(float64, string, View) float64 { return 1 }
+func (uniformModel) Initial() (float64, State)                 { return 1, nil }
+func (uniformModel) Step(State, string, View) (float64, State) { return 1, nil }
 
 // SetBeliefModel installs the execution model.
 func (g *Graph) SetBeliefModel(m BeliefModel) {
@@ -52,7 +73,8 @@ func (g *Graph) Belief(id NodeID) float64 {
 	if b, ok := g.belief[id]; ok {
 		return b
 	}
-	return g.model.Initial()
+	b, _ := g.model.Initial()
+	return b
 }
 
 // Parent returns the node's tree parent and the relation that admitted it.
@@ -128,17 +150,16 @@ func (g *Graph) recomputeBelief() {
 	sortByDepthThenKey(g, ids)
 
 	for _, id := range ids {
-		if id == g.seed {
-			g.belief[id] = g.model.Initial()
-			continue
-		}
 		p, ok := g.parent[id]
-		if !ok {
-			g.belief[id] = g.model.Initial()
+		if id == g.seed || !ok {
+			g.belief[id], g.bstate[id] = g.model.Initial()
 			continue
 		}
+		// The parent's state, not its scalar. Depth ordering guarantees the
+		// parent was recomputed first in this same pass, so this is the state
+		// belonging to the current barrier and not a stale one.
 		v := g.fullView(id)
-		g.belief[id] = g.model.Step(g.Belief(p.node), p.rel, v)
+		g.belief[id], g.bstate[id] = g.model.Step(g.bstate[p.node], p.rel, v)
 	}
 }
 

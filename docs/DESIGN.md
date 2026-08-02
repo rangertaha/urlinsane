@@ -159,8 +159,16 @@ The cost is an evolution rule that must be enforced: **fields are append-only.**
 Reordering or deleting one changes the meaning of every content address already
 in the store — corrupting diffs rather than failing loudly. Removal is by
 tombstone; the slot stays, marked deprecated. Each type carries a schema
-version so a decoder meeting a block from a newer binary detects trailing
-fields it does not know and preserves them unread.
+version so a decoder meeting a block from a newer binary **detects** trailing
+fields it does not know.
+
+It does not preserve them. `Props` is sized from the registry schema, so there
+is nowhere to hold a slot the running binary does not declare; an earlier draft
+of this section promised round-tripping, which would silently drop the unknown
+values and change the CID on re-save — data loss disguised as a successful
+write. The implemented behaviour is to **refuse**: `graphstore` fails the
+rehydrate CID check rather than writing back a truncated node. Preserving them
+properly needs an unknown-slots escape hatch in `Props`, which is not built.
 
 ### 1.4 Conflicting assertions
 
@@ -1258,4 +1266,12 @@ What remains genuinely undecided:
   this non-blocking — a uniform model ships — but it decides when gating
   actually starts paying for itself.
 - State cardinality — how many latent statuses earn their keep over a binary
-  split, given the model only has to rank a frontier.
+  split, given the model only has to rank a frontier. Still open, but no longer
+  constrained by the plumbing: `BeliefModel.Step` carries an opaque
+  `graph.State` between parent and child, so a model of any width propagates
+  its own posterior. An earlier signature passed the parent's *scalar*, which
+  forced a model to reconstruct a distribution from one number — exact at two
+  states, and at three or more the maximum-entropy guess rather than the
+  posterior the parent had. That silently answered this question as "two" as a
+  side effect of a type signature, and a wider model would have produced
+  plausible, wrong numbers.

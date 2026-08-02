@@ -208,7 +208,7 @@ func TestUniformModelRoundTrips(t *testing.T) {
 	if c != want {
 		t.Fatalf("uniform model CID changed: %s -> %s", want, c)
 	}
-	if b := NewBelief(got, nil).Initial(); b != 1 {
+	if b, _ := NewBelief(got, nil).Initial(); b != 1 {
 		t.Fatalf("decoded uniform model belief = %v, want exactly 1", b)
 	}
 }

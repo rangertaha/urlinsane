@@ -312,8 +312,8 @@ func TestBeliefGateBlocksDispatch(t *testing.T) {
 
 type zeroModel struct{}
 
-func (zeroModel) Initial() float64                   { return 0 }
-func (zeroModel) Step(float64, string, View) float64 { return 0 }
+func (zeroModel) Initial() (float64, State)                 { return 0, nil }
+func (zeroModel) Step(State, string, View) (float64, State) { return 0, nil }
 
 func TestUniformModelLeavesEverythingEligible(t *testing.T) {
 	// The engine must work correctly before any model exists.

@@ -55,7 +55,7 @@ func (f fakeView) Ref() graph.NodeRef            { return graph.NodeRef{Type: f.
 // the engine does.
 func TestUniformBeliefIsExactlyOne(t *testing.T) {
 	b := UniformBelief()
-	if got := b.Initial(); got != 1 {
+	if got, _ := b.Initial(); got != 1 {
 		t.Fatalf("Initial() = %v, want exactly 1", got)
 	}
 	rels := []string{"", "VARIANT_OF", "RESOLVES_TO", "never-seen"}
@@ -69,7 +69,7 @@ func TestUniformBeliefIsExactlyOne(t *testing.T) {
 	for _, rel := range rels {
 		for i, v := range views {
 			for _, parent := range []float64{0, 0.25, 1, -1, 2} {
-				if got := b.Step(parent, rel, v); got != 1 {
+				if got, _ := b.Step(liftState(b, parent), rel, v); got != 1 {
 					t.Fatalf("Step(%v, %q, view %d) = %v, want exactly 1", parent, rel, i, got)
 				}
 			}
@@ -85,7 +85,7 @@ func TestUniformBeliefWithAFeaturizerIsStillOne(t *testing.T) {
 	v := fakeView{typ: "domain", key: "b.com", props: map[string]graph.Value{
 		"punycode": graph.String("xn--"), "rank": graph.Int(3),
 	}}
-	if got := b.Step(0.3, "VARIANT_OF", v); got != 1 {
+	if got, _ := b.Step(liftState(b, 0.3), "VARIANT_OF", v); got != 1 {
 		t.Fatalf("Step = %v, want exactly 1", got)
 	}
 }
@@ -105,13 +105,13 @@ func TestUniformMultiStateModelIsUnranked(t *testing.T) {
 		t.Fatalf("New: %v", err)
 	}
 	b := NewBelief(h, PropFeatures("resolves"))
-	want := b.Initial()
+	want, st := b.Initial()
 	for _, rel := range []string{"VARIANT_OF", "RESOLVES_TO", "unknown"} {
 		for _, val := range []bool{true, false} {
 			v := fakeView{typ: "domain", key: "x", props: map[string]graph.Value{
 				"resolves": graph.Bool(val),
 			}}
-			if got := b.Step(want, rel, v); math.Abs(got-want) > 1e-12 {
+			if got, _ := b.Step(st, rel, v); math.Abs(got-want) > 1e-12 {
 				t.Fatalf("uniform tables gave belief %v down %q, want the constant %v", got, rel, want)
 			}
 		}
@@ -311,10 +311,21 @@ func TestPropFeaturesIsStable(t *testing.T) {
 
 func TestNewBeliefToleratesANilModel(t *testing.T) {
 	b := NewBelief(nil, nil)
-	if b.Initial() != 1 {
+	if got, _ := b.Initial(); got != 1 {
 		t.Fatal("a nil model should fall back to uniform")
 	}
 	if b.Model() == nil {
 		t.Fatal("Model() should never be nil")
 	}
+}
+
+// liftState reconstructs a state from a scalar, for tests that want to assert
+// behaviour across a range of parent beliefs. Production code never does this —
+// the parent's real posterior travels in graph.State.
+func liftState(m graph.BeliefModel, parent float64) graph.State {
+	b, ok := m.(*Belief)
+	if !ok {
+		return nil
+	}
+	return b.dist(b.h.Lift(parent))
 }
