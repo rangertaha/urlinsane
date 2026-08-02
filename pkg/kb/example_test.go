@@ -93,6 +93,7 @@ func ExampleLayout_Translate() {
 
 	// What someone types with the wrong layout selected.
 	fmt.Println(us.Translate("hello", ru))
+	fmt.Println(us.Translate("google", ru))
 	fmt.Println(us.Translate("google.com", ru))
 
 	// AZERTY moves the punctuation, which is what makes this a squatting
@@ -100,6 +101,7 @@ func ExampleLayout_Translate() {
 	fmt.Println(us.Translate("google.com", fr))
 	// Output:
 	// руддщ
+	// пщщпду
 	// пщщпдуюсщь
 	// google:co,
 }

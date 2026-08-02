@@ -12,6 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 package kb
 
 import "strings"
@@ -90,7 +91,7 @@ func (l *Layout) Type(strokes []Stroke) string {
 // layout selected:
 //
 //	us.Translate("hello", ru)   // "руддщ"
-//	us.Translate("google", ru)  // "пщщпдw"
+//	us.Translate("google", ru)  // "пщщпду"
 //
 // Characters this layout cannot type, and keys the other layout leaves bare,
 // are passed through unchanged rather than dropped, so a domain keeps its
