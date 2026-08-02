@@ -29,7 +29,7 @@ go.work.sum
 .idea
 .vscode
 .dev
-
+.NOTES.md
 
 builds
 build

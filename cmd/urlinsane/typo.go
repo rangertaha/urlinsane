@@ -16,381 +16,373 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"io"
+	"os"
+	"os/signal"
+	"sort"
 	"strings"
-	"time"
+	"syscall"
+	"text/tabwriter"
 
-	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/jedib0t/go-pretty/v6/text"
-	"github.com/rangertaha/urlinsane/internal/config"
-	"github.com/rangertaha/urlinsane/internal/engine"
-	"github.com/rangertaha/urlinsane/internal/pkg"
-	"github.com/rangertaha/urlinsane/internal/plugins/algorithms"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/all"
-	"github.com/rangertaha/urlinsane/internal/plugins/collectors"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/collectors/all"
-	"github.com/rangertaha/urlinsane/internal/plugins/languages"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
-	"github.com/rangertaha/urlinsane/internal/plugins/outputs"
-	_ "github.com/rangertaha/urlinsane/internal/plugins/outputs/all"
-
-	log "github.com/sirupsen/logrus"
+	"github.com/rangertaha/urlinsane/internal/graph"
+	"github.com/rangertaha/urlinsane/internal/operators/variant"
+	"github.com/rangertaha/urlinsane/internal/report"
+	"github.com/rangertaha/urlinsane/internal/scan"
 	"github.com/urfave/cli/v2"
 )
 
-var SubcommandHelpTemplate = `NAME:
-   {{template "helpNameTemplate" .}}
+// Exit codes (§12.4). A CI gate has to react to results without parsing
+// stdout, which is the only thing the old command left available.
+const (
+	exitError   = 1
+	exitFinding = 2
+)
 
-USAGE:
-   {{if .UsageText}}{{wrap .UsageText 3}}{{else}}{{.HelpName}} {{if .VisibleFlags}}command [command options]{{end}}{{if .ArgsUsage}} {{.ArgsUsage}}{{else}}{{if .Args}} [arguments...]{{end}}{{end}}{{end}}{{if .Description}}
-
-DESCRIPTION:
-   {{template "descriptionTemplate" .}}{{end}}{{if .VisibleCommands}}
-
-COMMANDS:{{template "visibleCommandCategoryTemplate" .}}{{end}}{{if .VisibleFlagCategories}}
-
-OPTIONS:{{template "visibleFlagCategoryTemplate" .}}{{else if .VisibleFlags}}
-
-OPTIONS:{{template "visibleFlagTemplate" .}}{{end}}
-`
-
-var ShowIDHelpTemplate = `NAME:
-   {{template "helpNameTemplate" .}}
-
-USAGE:
-   {{if .UsageText}}{{wrap .UsageText 3}}{{else}}{{.HelpName}} {{if .VisibleFlags}}command [command options]{{end}}{{if .ArgsUsage}} {{.ArgsUsage}}{{else}}{{if .Args}} [arguments...]{{end}}{{end}}{{end}}{{if .Description}}
-
-DESCRIPTION:
-   {{template "descriptionTemplate" .}}{{end}}{{if .VisibleCommands}}
-
-COMMANDS:{{template "visibleCommandCategoryTemplate" .}}{{end}}{{if .VisibleFlagCategories}}
-
-OPTIONS:{{template "visibleFlagCategoryTemplate" .}}{{else if .VisibleFlags}}
-
-OPTIONS:{{template "visibleFlagTemplate" .}}{{end}}
-`
-
-var Flags = []cli.Flag{
-	&cli.StringFlag{
-		Name:    "languages",
-		Aliases: []string{"l"},
-		Value:   "en",
-		Usage:   "language IDs to use `[ID]`",
-	},
-	&cli.StringFlag{
-		Name:    "keyboards",
-		Aliases: []string{"k"},
-		Value:   "en1,en2,en3,en4",
-		Usage:   "keyboard layout IDs to use `[ID]`",
-	},
-	&cli.StringFlag{
-		Name:    "algorithms",
-		Aliases: []string{"a"},
-		Value:   "all",
-		Usage:   "algorithm IDs to use `[ID]`",
-	},
-	&cli.StringFlag{
-		Name:    "collectors",
-		Aliases: []string{"c"},
-		Value:   "",
-		Usage:   "collectors IDs to use `[ID]`",
-	},
-	&cli.StringFlag{
-		Name:    "analyzers",
-		Aliases: []string{"z"},
-		Value:   "",
-		Usage:   "analyzer IDs to use (e.g. 'all') `[ID]`",
-	},
-	&cli.StringFlag{
-		Name:  "type",
-		Value: "auto",
-		Usage: "entity type: auto, domain, name, user, package `[TYPE]`",
-	},
-	&cli.StringFlag{
-		Name:    "manifest",
-		Aliases: []string{"m"},
-		Value:   "",
-		Usage:   "scan dependency names from a project manifest `FILE`",
-	},
-	&cli.StringFlag{
-		Name:     "regex",
-		Aliases:  []string{"e"},
-		Value:    "",
-		Category: "CONSTRAINTS",
-		Usage:    "regular expressions to match `[PATTERN]`",
-	},
-	&cli.IntFlag{
-		Name:     "workers",
-		Aliases:  []string{"w"},
-		Value:    50,
-		Category: "PERFORMANCE",
-		Usage:    "number of concurrent workers `NUM`",
-	},
-	&cli.DurationFlag{
-		Name:     "random",
-		Value:    0,
-		Category: "PERFORMANCE",
-		Usage:    "extra random delay added per network call, up to this `DURATION`",
-	},
-	&cli.DurationFlag{
-		Name:     "delay",
-		Value:    0,
-		Category: "PERFORMANCE",
-		Usage:    "delay between network calls `DURATION`",
-	},
-	&cli.DurationFlag{
-		Name:     "timeout",
-		Aliases:  []string{"t"},
-		Value:    20 * time.Second,
-		Category: "PERFORMANCE",
-		Hidden:   true,
-		Usage:    "maximum duration tasks need to complete `DURATION`",
-	},
-	&cli.DurationFlag{
-		Name:     "ttl",
-		Value:    1 * time.Hour,
-		Category: "PERFORMANCE",
-		Usage:    "duration to cache results, 0 clears the cache `DURATION`",
-	},
-	&cli.IntFlag{
-		Name:     "distance",
-		Aliases:  []string{"d"},
-		Value:    5,
-		Category: "CONSTRAINTS",
-		Usage:    "maximum Levenshtein distance `NUM`",
-	},
-	&cli.BoolFlag{
-		Name:     "progress",
-		Aliases:  []string{"p"},
-		Value:    false,
-		Category: "OUTPUT",
-		Hidden:   true,
-		Usage:    "show progress bar",
-	},
-	&cli.BoolFlag{
-		Name:     "verbose",
-		Aliases:  []string{"v"},
-		Value:    false,
-		Category: "OUTPUT",
-		Usage:    "more details in the output",
-	},
-	&cli.StringFlag{
-		Name:     "file",
-		Aliases:  []string{"o"},
-		Value:    "",
-		Category: "OUTPUT",
-		Usage:    "filename to save scan output `FILE`",
-	},
-	&cli.StringFlag{
-		Name:     "format",
-		Aliases:  []string{"f"},
-		Value:    "list",
-		Category: "OUTPUT",
-		Usage:    "output format: (list,json) `FORMAT`",
-	},
-	&cli.StringFlag{
-		Name:     "nameservers",
-		Aliases:  []string{"n"},
-		Value:    "",
-		Category: "PERFORMANCE",
-		Usage:    "custom DNS server(s) to query, host[:port], comma-separated `[NS..]`",
-	},
-	&cli.BoolFlag{
-		Name:     "registered",
-		Aliases:  []string{"r"},
-		Value:    false,
-		Category: "OUTPUT",
-		Usage:    "show only registered domain names",
-	},
-	&cli.BoolFlag{
-		Name:     "unregistered",
-		Aliases:  []string{"u"},
-		Value:    false,
-		Category: "OUTPUT",
-		Usage:    "show only unregistered domain names",
-	},
-	&cli.BoolFlag{
-		Name:     "summary",
-		Aliases:  []string{"s"},
-		Value:    true,
-		Hidden:   true,
-		Category: "OUTPUT",
-		Usage:    "show summary of scan results",
-	},
-	&cli.BoolFlag{
-		Name:    "options",
-		Aliases: []string{"ids", "opts"},
-		Value:   false,
-		Hidden:  false,
-		Usage:   "show IDs of keyboards, languages, algorithms, collectors",
-		Action: func(ctx *cli.Context, v bool) error {
-			ShowIDHelp()
-			return nil
-		},
-	},
-	&cli.PathFlag{
-		Name:     "dir",
-		Value:    "domains",
-		Category: "OUTPUT",
-		Usage:    "directory name to save files `DIR`",
-		Action: func(ctx *cli.Context, v string) error {
-			return nil
-		},
-	},
-	&cli.BoolFlag{
-		Name:     "rua",
-		Value:    false,
-		Hidden:   true,
-		Category: "PERFORMANCE",
-		Usage:    "randomize user agent for HTTP requests",
-	},
-}
-
+// TypoCmd is the scanning verb.
+//
+// The scope positional is optional and narrowing (§12): absent, every Nameable
+// node in the seed closure is varied — including the composite seed itself, so
+// a bare email target also yields whole-address variants. Supplied, it filters
+// that set. The target parses identically either way; scope never changes how
+// the string is read, only what gets varied.
 var TypoCmd = cli.Command{
 	Name:                   "typo",
 	Aliases:                []string{"t"},
-	Usage:                  "Generate domain variations and collect information on them",
-	Description:            "URLInsane is designed to detect domain typosquatting by using advanced algorithms, information-gathering techniques, and data analysis to identify potentially harmful variations of targeted domains that cybercriminals might exploit. This tool is essential for defending against threats like typosquatting, brandjacking, URL hijacking, fraud, phishing, and corporate espionage. By detecting malicious domain variations, it provides an added layer of protection to brand integrity and user trust. Additionally, URLInsane enhances threat intelligence capabilities, strengthening proactive cybersecurity measures.",
-	UsageText:              "urlinsane [g opts..] typo [opts..] [domain]",
+	Usage:                  "Scan a target for typosquatting and confusable names",
+	ArgsUsage:              "[<scope>] <target>",
 	UseShortOptionHandling: true,
-	Flags:                  Flags,
-	Action: func(cCtx *cli.Context) error {
-		if cCtx.Bool("options") {
-			cCtx.App.CustomAppHelpTemplate = ShowIDHelp()
-			cli.ShowAppHelpAndExit(cCtx, 0)
-			return nil
-		}
+	Description: `Expands a target into a graph of the entities it is made of, generates
+variants of each, and observes what exists.
 
-		if cCtx.String("manifest") == "" && cCtx.NArg() == 0 {
-			fmt.Println(text.FgRed.Sprint("\n  a name or --manifest FILE is needed!\n"))
-			cli.ShowSubcommandHelpAndExit(cCtx, 1)
+The target's kind is detected from the string alone:
 
-		}
-		if cCtx.NArg() > 1 {
-			fmt.Println(text.FgRed.Sprint("\n  only one name at a time (use --manifest for many)!\n"))
-			cli.ShowSubcommandHelpAndExit(cCtx, 1)
-		}
+    urlinsane typo example.com                 a domain
+    urlinsane typo bob@example.com             an email: varies bob, example.com and the address
+    urlinsane typo npm:lodash                  a package on a named registry
+    urlinsane typo github.com/acme/tool        a repository
 
-		cfg, err := config.New(config.CliOptions(cCtx))
+The optional scope positional narrows what gets varied, and never changes how
+the target is read:
+
+    urlinsane typo username bob@example.com    vary only bob
+    urlinsane typo domain bob@example.com      vary only example.com
+    urlinsane typo username,domain bob@example.com`,
+	Flags:  typoFlags(),
+	Action: runTypo,
+}
+
+func typoFlags() []cli.Flag {
+	return []cli.Flag{
+		&cli.IntFlag{Name: "depth", Aliases: []string{"d"}, Value: 3,
+			Usage: "observation hops from the seed"},
+		&cli.StringSliceFlag{Name: "filter", Aliases: []string{"f"},
+			Usage: "`live`, absent, unknown, risk>SEV, type=NAME, depth<=N"},
+		&cli.StringFlag{Name: "output", Aliases: []string{"o"}, Value: "table",
+			Usage: "`table` | json | ndjson | csv | dot"},
+		&cli.StringFlag{Name: "save",
+			Usage: "write the report to `PATH`; format from the extension"},
+		&cli.StringFlag{Name: "fail-on",
+			Usage: "exit 2 if any finding reaches `SEV` (info|low|medium|high|critical)"},
+		&cli.BoolFlag{Name: "explain",
+			Usage: "print the compiled plan and exit"},
+		&cli.StringFlag{Name: "list",
+			Usage: "print a `TOPIC` and exit: operators, types, relations, algorithms, languages, keyboards, formats, filters"},
+		&cli.StringSliceFlag{Name: "algorithm", Aliases: []string{"a"},
+			Usage: "restrict variant generation to these algorithm `ID`s"},
+		&cli.BoolFlag{Name: "verbose", Aliases: []string{"v"},
+			Usage: "include provenance and engine belief"},
+
+		// §12.1's second tier. Registered always, hidden from the common help:
+		// most runs never touch these, and a help screen that is a union of
+		// every knob is one nobody reads.
+		&cli.IntFlag{Name: "rounds", Hidden: true,
+			Usage: "backstop for a type flow that never converges"},
+		&cli.IntFlag{Name: "workers", Hidden: true,
+			Usage: "concurrent operator calls"},
+		&cli.IntFlag{Name: "budget", Hidden: true,
+			Usage: "global admitted-node cap; 0 means unbounded"},
+		&cli.IntFlag{Name: "frontier", Hidden: true,
+			Usage: "cap on candidates admitted per round"},
+		&cli.IntFlag{Name: "attempts", Hidden: true,
+			Usage: "per-pair attempts within a round"},
+		&cli.DurationFlag{Name: "timeout", Hidden: true,
+			Usage: "bound on a single operator call"},
+		&cli.BoolFlag{Name: "no-color", Hidden: true,
+			Usage: "disable ANSI styling"},
+	}
+}
+
+func runTypo(c *cli.Context) error {
+	if topic := c.String("list"); topic != "" {
+		return listTopic(c.App.Writer, topic)
+	}
+
+	scope, target, err := parseArgs(c.Args().Slice())
+	if err != nil {
+		return exit(err, exitError)
+	}
+
+	opts := scan.Options{
+		Target:     target,
+		Scope:      scope,
+		Algorithms: c.StringSlice("algorithm"),
+		Limits: graph.Limits{
+			MaxDepth:   c.Int("depth"),
+			MaxRounds:  c.Int("rounds"),
+			Workers:    c.Int("workers"),
+			NodeBudget: c.Int("budget"),
+			Frontier:   c.Int("frontier"),
+			Attempts:   c.Int("attempts"),
+			OpTimeout:  c.Duration("timeout"),
+		},
+	}
+	opts.Observe.Timeout = c.Duration("timeout")
+
+	if c.Bool("explain") {
+		_, _, p, err := scan.Plan(opts)
 		if err != nil {
-			log.Error(err)
-			fmt.Println(text.FgRed.Sprint(err))
-			cli.ShowSubcommandHelpAndExit(cCtx, 1)
+			return exit(err, exitError)
 		}
-		return engine.New(cfg).Execute(cCtx.Context)
-	},
-	CustomHelpTemplate: fmt.Sprintf(`%sEXAMPLE:
-
-    urlinsane typo example.com
-
-    urlinsane typo -a co        example.com
-    urlinsane typo -a co,oi,oy  example.com
-
-    urlinsane typo -c ip -a co        example.com
-    urlinsane typo -c ip,mx,ns -co   example.com
-
-    urlinsane typo -l en        example.com
-    urlinsane typo -l en,fr,ru  example.com
-
-    urlinsane typo -k en       example.com
-    urlinsane typo -k en1,en2  example.com
-
-    urlinsane typo --options
-
-
-AUTHOR:
-   Rangertaha (rangertaha@gmail.com)
-     
-     `, cli.SubcommandHelpTemplate),
-}
-
-func init() {
-
-}
-
-func ShowIDHelp() string {
-	collectors := CollectorTable()
-	algorithms := AlgorithmTable()
-	languages := LanguageTable()
-	keyboards := KeyboardTable()
-	outputs := OutputTable()
-
-	return fmt.Sprintf(`KEYBOARDS:
-%s
-
-LANGUAGES:
-%s
-
-ALGORITHMS:
-%s
-
-COLLECTORS:
-%s
-
-OUTPUTS:
-%s
-
-`, keyboards, languages, algorithms, collectors, outputs)
-}
-
-func CollectorTable() string {
-	t := table.NewWriter()
-	t.SetStyle(pkg.StyleClear)
-	t.AppendHeader(table.Row{"  ", "ID", "Description"})
-	for _, p := range collectors.List() {
-		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
+		return p.Explain(c.App.Writer)
 	}
-	return t.Render()
-}
 
-func AlgorithmTable() string {
-	t := table.NewWriter()
-	t.SetStyle(pkg.StyleClear)
-	t.AppendHeader(table.Row{"  ", "ID", "Name"})
-	for _, p := range algorithms.List() {
-		t.AppendRow([]interface{}{"  ", p.Id(), p.Name()})
+	filters, err := report.ParseFilters(c.StringSlice("filter"))
+	if err != nil {
+		return exit(err, exitError)
 	}
-	return t.Render()
-}
-
-func LanguageTable() string {
-	t := table.NewWriter()
-	t.SetStyle(pkg.StyleClear)
-	t.AppendHeader(table.Row{"  ", "ID", "Name", "Glyphs", "Homophones",
-		"Antonyms", "Typos", "Cardinal", "Ordinal", "Stems"})
-	for _, p := range languages.Languages() {
-		t.AppendRow([]interface{}{"  ", p.Id(), p.Name(), len(p.Homoglyphs()),
-			len(p.Homophones()), len(p.Antonyms()), len(p.Misspellings()),
-			len(p.Cardinal()), len(p.Ordinal()), 0})
+	format := c.String("output")
+	if !validFormat(format) {
+		return exit(fmt.Errorf("unknown output format %q; want one of %s",
+			format, strings.Join(report.Formats(), ", ")), exitError)
 	}
-	return t.Render()
-}
 
-func KeyboardTable() string {
-	t := table.NewWriter()
-	t.SetStyle(pkg.StyleClear)
-	rows := []table.Row{}
-	for _, lang := range languages.Languages() {
-		row := table.Row{" "}
-		row = append(row, strings.ToUpper(lang.Name()))
-		for _, board := range lang.Keyboards() {
-			row = append(row, fmt.Sprintf("%s: %s", board.Id(), board.Name()))
+	var failOn graph.Severity
+	if s := c.String("fail-on"); s != "" {
+		v, ok := graph.ParseSeverity(s)
+		if !ok {
+			return exit(fmt.Errorf(
+				"unknown severity %q; want info, low, medium, high or critical", s), exitError)
 		}
-		rows = append(rows, row)
+		failOn = v
 	}
-	t.AppendHeader(table.Row{" ", "LANGUAGE", "ID:NAME..."})
-	for _, row := range rows {
-		t.AppendRow(row)
+
+	// Ctrl-C cancels the context, which stops expansion at the end of the
+	// current round: the barrier still runs, so parents, belief and the
+	// truncation ledger are finalized rather than left half-computed, and the
+	// report comes out marked partial. A second Ctrl-C falls through to the
+	// default handler and aborts immediately — for when a round is stuck behind
+	// a slow resource and waiting for the boundary is not worth it (§12.4).
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	res, err := scan.Run(ctx, opts, report.Options{
+		Filters: filters,
+		Verbose: c.Bool("verbose"),
+		Color:   useColor(c),
+	})
+	if err != nil {
+		return exit(err, exitError)
 	}
-	return t.Render()
+
+	if err := write(c.App.Writer, res.Report, format, c); err != nil {
+		return exit(err, exitError)
+	}
+	if path := c.String("save"); path != "" {
+		if err := save(path, res.Report, c); err != nil {
+			return exit(err, exitError)
+		}
+	}
+
+	if failOn != 0 && res.Report.Max() >= failOn {
+		return cli.Exit(fmt.Sprintf("findings at or above %s", failOn), exitFinding)
+	}
+	return nil
 }
 
-func OutputTable() string {
-	t := table.NewWriter()
-	t.SetStyle(pkg.StyleClear)
-	t.AppendHeader(table.Row{"  ", "ID", "Name"})
-	for _, p := range outputs.List() {
-		t.AppendRow([]interface{}{"  ", p.Id(), p.Description()})
+// parseArgs implements §12's positional rule: with two positionals the first is
+// the scope, with one it is the target. There is no --scope flag; the
+// positional is the only spelling.
+//
+// Scope names are validated here rather than passed through, because the
+// two-positional form is otherwise indistinguishable from a mistyped single
+// one: `urlinsane typo exmaple.com example.com` would silently scan the second
+// while treating the first as a scope that matches nothing.
+func parseArgs(args []string) (scope []string, target string, err error) {
+	switch len(args) {
+	case 0:
+		return nil, "", fmt.Errorf("no target given\n\nusage: urlinsane typo [<scope>] <target>")
+	case 1:
+		return nil, args[0], nil
+	case 2:
+		scope = splitScope(args[0])
+		if err := knownScope(scope); err != nil {
+			return nil, "", err
+		}
+		return scope, args[1], nil
+	default:
+		return nil, "", fmt.Errorf(
+			"expected at most a scope and a target, got %d arguments: %s",
+			len(args), strings.Join(args, " "))
 	}
-	return t.Render()
+}
+
+func splitScope(s string) []string {
+	var out []string
+	for _, p := range strings.Split(s, ",") {
+		if p = strings.TrimSpace(p); p != "" {
+			out = append(out, p)
+		}
+	}
+	return out
+}
+
+func knownScope(scope []string) error {
+	reg, err := scan.Registry()
+	if err != nil {
+		return err
+	}
+	for _, s := range scope {
+		t, ok := reg.Type(s)
+		if !ok {
+			return fmt.Errorf("%q is not a node type; see --list types", s)
+		}
+		if t.Cap() != graph.Nameable {
+			return fmt.Errorf(
+				"%q is an observed type and cannot be varied; scope must name a nameable type", s)
+		}
+	}
+	return nil
+}
+
+func write(w io.Writer, r report.Report, format string, c *cli.Context) error {
+	return report.Write(w, r, report.Options{
+		Format:  format,
+		Verbose: c.Bool("verbose"),
+		Color:   useColor(c),
+	})
+}
+
+// save writes to a second sink. The format follows the extension, not -o, so
+// `--save out.json` writes a report whatever stdout is doing (§11).
+func save(path string, r report.Report, c *cli.Context) error {
+	format, ok := report.FormatFor(path)
+	if !ok {
+		return fmt.Errorf(
+			"cannot tell what format %q should be; use an extension: %s",
+			path, strings.Join(report.Formats(), ", "))
+	}
+	f, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	// Never colored: a file is not a terminal.
+	return report.Write(f, r, report.Options{Format: format, Verbose: c.Bool("verbose")})
+}
+
+// useColor honours --no-color, NO_COLOR and a non-TTY stdout, so `-o json` stays
+// pipeable.
+func useColor(c *cli.Context) bool {
+	if c.Bool("no-color") {
+		return false
+	}
+	if _, set := os.LookupEnv("NO_COLOR"); set {
+		return false
+	}
+	fi, err := os.Stdout.Stat()
+	if err != nil {
+		return false
+	}
+	return fi.Mode()&os.ModeCharDevice != 0
+}
+
+func validFormat(f string) bool {
+	for _, v := range report.Formats() {
+		if v == f {
+			return true
+		}
+	}
+	return false
+}
+
+// exit wraps an error with a code, so a shell can tell an execution failure
+// from a finding.
+func exit(err error, code int) error { return cli.Exit(err.Error(), code) }
+
+// listTopic replaces --options/--ids/--opts, which were three aliases for one
+// hidden flag.
+func listTopic(w io.Writer, topic string) error {
+	reg, err := scan.Registry()
+	if err != nil {
+		return err
+	}
+	t := tabwriter.NewWriter(w, 0, 4, 2, ' ', 0)
+	defer t.Flush()
+
+	switch strings.ToLower(topic) {
+	case "types":
+		fmt.Fprintln(t, "NAME\tCAPABILITY\tVERSION")
+		for _, d := range reg.Types() {
+			fmt.Fprintf(t, "%s\t%s\t%d\n", d.Name(), d.Cap(), d.Version())
+		}
+	case "relations", "rels":
+		fmt.Fprintln(t, "NAME\tCLASS\tDEPTH COST")
+		for _, d := range reg.Rels() {
+			fmt.Fprintf(t, "%s\t%s\t%d\n", d.Name(), d.Class(), d.Class().DepthCost())
+		}
+	case "operators", "ops":
+		ops, err := scan.Operators(scan.Options{})
+		if err != nil {
+			return err
+		}
+		sort.Slice(ops, func(i, j int) bool { return ops[i].Id() < ops[j].Id() })
+		fmt.Fprintln(t, "ID\tVERSION\tRESOURCE\tBINDS ON\tEMITS")
+		for _, o := range ops {
+			fmt.Fprintf(t, "%s\t%d\t%s\t%s\t%s\n",
+				o.Id(), o.Version(), o.Resource(),
+				strings.Join(o.Trigger().On.Types, ","),
+				strings.Join(o.Emits().Rels, ","))
+		}
+	case "algorithms", "algos":
+		fmt.Fprintln(t, "ID\tTITLE\tAPPLIES TO")
+		for _, s := range variant.Specs(variant.Options{}) {
+			fmt.Fprintf(t, "%s\t%s\t%s\n", s.ID, s.Title, strings.Join(s.Types, ","))
+		}
+	case "languages", "langs":
+		fmt.Fprintln(t, "ID\tNAME")
+		for _, l := range variant.RegisteredLanguages() {
+			fmt.Fprintf(t, "%s\t%s\n", l.Id(), l.Name())
+		}
+	case "keyboards":
+		fmt.Fprintln(t, "ID\tNAME")
+		for _, k := range variant.RegisteredKeyboards() {
+			fmt.Fprintf(t, "%s\t%s\n", k.Id(), k.Name())
+		}
+	case "formats":
+		for _, f := range report.Formats() {
+			fmt.Fprintln(t, f)
+		}
+	case "filters":
+		// Documented here because the vocabulary is small and the old
+		// --registered/--unregistered pair could not express the third case.
+		fmt.Fprintln(t, "FILTER\tSELECTS")
+		for _, row := range [][2]string{
+			{"live", "an observation operator returned ok"},
+			{"absent", "none did, and at least one determined absence"},
+			{"unknown", "every attempt failed, timed out or was skipped"},
+			{"untried", "no operator ran on it"},
+			{"risk>SEV", "nodes with findings above a severity"},
+			{"type=NAME", "a node type"},
+			{"depth<=N", "observation hops from the seed"},
+		} {
+			fmt.Fprintf(t, "%s\t%s\n", row[0], row[1])
+		}
+	default:
+		return fmt.Errorf(
+			"unknown topic %q; want operators, types, relations, algorithms, languages, keyboards, formats or filters",
+			topic)
+	}
+	return nil
 }

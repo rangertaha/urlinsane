@@ -275,20 +275,40 @@ func SingularPluralise(token string) (tokens []string) {
 // "youtub", and "abseil" could become "absail", where common mistakes in
 // spelling lead to slightly altered but recognizable versions of the original.
 func CommonMisspellings(token string, dataset ...[]string) (words []string) {
+	return swapWordSets(token, dataset)
+}
+
+// swapWordSets substitutes each member of a word set for every other member it
+// finds in the token. Sets often contain members that are substrings of each
+// other ("hola"/"ola", "adz"/"adze"); substituting the shorter one inside a
+// match of the longer one yields nonsense ("hola" -> "hhola"), so a member is
+// skipped when a longer member of the same set also matches the token.
+func swapWordSets(token string, dataset [][]string) (words []string) {
 	words = []string{}
 	for _, wordset := range dataset {
 		for _, word := range wordset {
-			if strings.Contains(token, word) {
-				for _, w := range wordset {
-					if w != word {
-						words = append(words, strings.Replace(token, word, w, -1))
-					}
+			if !strings.Contains(token, word) || shadowed(token, word, wordset) {
+				continue
+			}
+			for _, w := range wordset {
+				if w != word {
+					words = append(words, strings.Replace(token, word, w, -1))
 				}
-
 			}
 		}
 	}
 	return
+}
+
+// shadowed reports whether word is a proper substring of a longer member of
+// wordset that also occurs in token.
+func shadowed(token, word string, wordset []string) bool {
+	for _, other := range wordset {
+		if len(other) > len(word) && strings.Contains(other, word) && strings.Contains(token, other) {
+			return true
+		}
+	}
+	return false
 }
 
 // VowelSwapping occurs when the vowels in the target token are swapped with
@@ -321,20 +341,7 @@ func VowelSwapping(token string, vowels ...string) (words []string) {
 // swapped with "bass", where "base" and "bass" are homophones, making the
 // altered word sound the same when spoken, yet look different in writing.
 func HomophoneSwapping(token string, homophones ...[]string) (words []string) {
-	words = []string{}
-	for _, wordset := range homophones {
-		for _, word := range wordset {
-			if strings.Contains(token, word) {
-				for _, w := range wordset {
-					if w != word {
-						words = append(words, strings.Replace(token, word, w, -1))
-					}
-				}
-
-			}
-		}
-	}
-	return
+	return swapWordSets(token, homophones)
 }
 
 // HomoglyphSwapping is a technique where visually similar characters, called

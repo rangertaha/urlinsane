@@ -81,38 +81,45 @@ func SimilarChars(data map[string][]string, key string) (chars []string) {
 
 // SimilarSpellings returns words with similar spelling
 func SimilarSpellings(data [][]string, str string) (words []string) {
+	return swapWordSets(data, str)
+}
+
+// SimilarSounds returns common homophones, words that sound alike
+func SimilarSounds(data [][]string, str string) (words []string) {
+	return swapWordSets(data, str)
+}
+
+// swapWordSets substitutes each member of a word set for every other member it
+// finds in str. Sets often contain members that are substrings of each other
+// ("hola"/"ola"); substituting the shorter one inside a match of the longer one
+// yields nonsense ("hola" -> "hhola"), so a member is skipped when a longer
+// member of the same set also matches str.
+func swapWordSets(data [][]string, str string) (words []string) {
 	words = []string{}
 	for _, wordset := range data {
 		for _, word := range wordset {
-			if strings.Contains(str, word) {
-				for _, w := range wordset {
-					if w != word {
-						words = append(words, strings.Replace(str, word, w, -1))
-					}
+			if !strings.Contains(str, word) || shadowed(str, word, wordset) {
+				continue
+			}
+			for _, w := range wordset {
+				if w != word {
+					words = append(words, strings.Replace(str, word, w, -1))
 				}
-
 			}
 		}
 	}
 	return
 }
 
-// SimilarSounds returns common homophones, words that sound alike
-func SimilarSounds(data [][]string, str string) (words []string) {
-	words = []string{}
-	for _, wordset := range data {
-		for _, word := range wordset {
-			if strings.Contains(str, word) {
-				for _, w := range wordset {
-					if w != word {
-						words = append(words, strings.Replace(str, word, w, -1))
-					}
-				}
-
-			}
+// shadowed reports whether word is a proper substring of a longer member of
+// wordset that also occurs in str.
+func shadowed(str, word string, wordset []string) bool {
+	for _, other := range wordset {
+		if len(other) > len(word) && strings.Contains(other, word) && strings.Contains(str, other) {
+			return true
 		}
 	}
-	return
+	return false
 }
 
 func NumeralMap(data map[string][]string, pos int) (words map[string]string) {

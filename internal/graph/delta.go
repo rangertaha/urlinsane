@@ -1,0 +1,582 @@
+// Copyright 2024 Rangertaha. All Rights Reserved.
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+package graph
+
+import (
+	"fmt"
+	"sort"
+)
+
+// NodeRef is how an operator names a node. It carries a *raw* key: operators
+// cannot compute a NodeID because canonicalization belongs to the registry and
+// the applier, and letting a plugin mint an identity is how convergence quietly
+// breaks.
+type NodeRef struct {
+	Type string
+	Key  string
+}
+
+// EdgeRef is how an operator names an edge.
+type EdgeRef struct {
+	From NodeRef
+	Rel  string
+	To   NodeRef
+}
+
+// PropSet is a single field assertion against a node or an edge. Exactly one of
+// Node or Edge must be set. Every prop write goes through this so the field's
+// merge policy applies uniformly.
+type PropSet struct {
+	Node  *NodeRef
+	Edge  *EdgeRef
+	Field string
+	Value Value
+}
+
+// Delta is everything one operator produced. Operators never mutate the graph;
+// they return a Delta and the applier is the single writer. Deltas are additive
+// only — nothing removes a node, edge or prop — which is what makes the graph
+// monotonic within a run and a delta safely replayable.
+type Delta struct {
+	Nodes []NodeRef
+	Edges []EdgeRef
+	Props []PropSet
+}
+
+// Result reports what an Apply admitted and what it refused.
+type Result struct {
+	Nodes    []NodeID
+	Edges    []EdgeID
+	Changed  []NodeID
+	Rejected []Rejection
+}
+
+// Graph is the applier and the single writer. It is not safe for concurrent
+// use; the scheduler serialises deltas through it.
+type Graph struct {
+	reg *Registry
+
+	nodes map[NodeID]*Node
+	edges map[EdgeID]*Edge
+
+	order []NodeID // admission order, for deterministic iteration
+	eord  []EdgeID
+
+	depth   map[NodeID]int
+	provis  map[NodeID]bool // depth is the subject's, not yet derived from an in-edge
+	closure map[NodeID]bool
+	scope   map[string]bool // nameable types that may be varied; nil means all
+	seed    NodeID
+
+	assertions map[NodeID][]Assertion
+	eassert    map[EdgeID][]Assertion
+	status     map[statusKey]Status
+
+	ledger      map[ledgerKey]LedgerRow
+	rejections  []Rejection
+	truncations []RunTruncation
+
+	model      BeliefModel
+	belief     map[NodeID]float64
+	parent     map[NodeID]parentRef
+	candidates map[NodeID][]parentRef
+
+	budgets Budgets
+	counts  map[string]int
+	total   int
+
+	findings []Finding
+	scores   map[NodeID]map[string]float64
+}
+
+// Budgets cap how many nodes may be admitted. Zero means unbounded.
+type Budgets struct {
+	Global  int
+	PerType map[string]int
+}
+
+// RunTruncation is a run-level limit that bound expansion, as opposed to a
+// per-candidate ledger row. Hitting the round cap is reported like any other
+// truncation: a truncated graph that reads as complete is a correctness bug.
+type RunTruncation struct {
+	Reason Reason
+	Round  int
+	Detail string
+}
+
+type statusKey struct {
+	node NodeID
+	op   string
+}
+
+// New returns an empty graph bound to a registry.
+func New(reg *Registry) *Graph {
+	return &Graph{
+		reg:        reg,
+		nodes:      map[NodeID]*Node{},
+		edges:      map[EdgeID]*Edge{},
+		depth:      map[NodeID]int{},
+		provis:     map[NodeID]bool{},
+		closure:    map[NodeID]bool{},
+		assertions: map[NodeID][]Assertion{},
+		eassert:    map[EdgeID][]Assertion{},
+		status:     map[statusKey]Status{},
+		ledger:     map[ledgerKey]LedgerRow{},
+		model:      uniformModel{},
+		belief:     map[NodeID]float64{},
+		parent:     map[NodeID]parentRef{},
+		candidates: map[NodeID][]parentRef{},
+		counts:     map[string]int{},
+		scores:     map[NodeID]map[string]float64{},
+	}
+}
+
+// SetBudgets caps admissions. Exceeding a budget declines the candidate to the
+// truncation ledger rather than dropping it silently.
+func (g *Graph) SetBudgets(b Budgets) { g.budgets = b }
+
+// SetScope restricts which node types may root a variant. An empty or nil list
+// means every Nameable type in the seed closure, which is the default.
+//
+// This is the CLI's scope positional (§12), and it is enforced here rather than
+// only at dispatch for the same reason the closure rule is: dispatch-side
+// gating is an optimization an operator can be written around, while an
+// applier rejection is an invariant it cannot. Scope that was merely validated
+// and printed — compiled into the plan, shown by --explain, and then ignored by
+// execution — would make `typo username bob@example.com` silently identical to
+// the unscoped run, which is the one thing the positional exists to prevent.
+func (g *Graph) SetScope(types []string) {
+	if len(types) == 0 {
+		g.scope = nil
+		return
+	}
+	g.scope = make(map[string]bool, len(types))
+	for _, t := range types {
+		g.scope[t] = true
+	}
+}
+
+// inScope reports whether a node's type may root a variant.
+func (g *Graph) inScope(id NodeID) bool {
+	if g.scope == nil {
+		return true
+	}
+	n, ok := g.nodes[id]
+	return ok && g.scope[n.Type.name]
+}
+
+// InScope reports whether a node may root a variant under the current scope.
+// The scheduler uses it to skip dispatching variant operators it knows will be
+// rejected; the rejection in the applier remains the invariant.
+func (g *Graph) InScope(id NodeID) bool { return g.inScope(id) }
+
+// NoteTruncation records a run-level limit.
+func (g *Graph) NoteTruncation(r Reason, round int, detail string) {
+	g.truncations = append(g.truncations, RunTruncation{Reason: r, Round: round, Detail: detail})
+}
+
+// Truncations returns run-level limits that bound this expansion.
+func (g *Graph) Truncations() []RunTruncation { return g.truncations }
+
+func (g *Graph) declineFrontier(r Reason, by Provenance) {
+	g.NoteTruncation(r, by.Round, "expansion stopped before the frontier was exhausted")
+}
+
+// enforceBudgets is a barrier hook. Budgets are applied at admission, so there
+// is nothing to undo here; it exists so the barrier owns every limit check.
+func (g *Graph) enforceBudgets(Provenance) {}
+
+// overBudget reports whether admitting one more node of this type would exceed
+// a budget.
+func (g *Graph) overBudget(typeName string) bool {
+	if g.budgets.Global > 0 && g.total >= g.budgets.Global {
+		return true
+	}
+	if n, ok := g.budgets.PerType[typeName]; ok && n > 0 && g.counts[typeName] >= n {
+		return true
+	}
+	return false
+}
+
+// Seed admits the target node at depth 0 and opens the seed closure. It is the
+// only admission that does not descend from an existing node.
+func (g *Graph) Seed(typeName, rawKey string) (NodeID, error) {
+	if !g.seed.IsZero() {
+		return NodeID{}, fmt.Errorf("graph: seed already set")
+	}
+	t, ok := g.reg.Type(typeName)
+	if !ok {
+		return NodeID{}, fmt.Errorf("graph: unknown node type %q", typeName)
+	}
+	key, err := t.canonical(rawKey)
+	if err != nil {
+		return NodeID{}, fmt.Errorf("graph: cannot canonicalize %q as %s: %w", rawKey, typeName, err)
+	}
+	id := newNodeID(t.name, key)
+	g.nodes[id] = &Node{ID: id, Type: t, Key: key, Props: newProps(t.sch)}
+	g.order = append(g.order, id)
+	g.depth[id] = 0
+	g.closure[id] = true
+	g.seed = id
+	// The seed counts. It is not budget-*checked* — refusing to admit the
+	// target because the budget is zero would be absurd — but leaving it out of
+	// the tally makes g.total disagree with len(g.Nodes()) forever after, so
+	// `--budget 5` admits six nodes and the off-by-one is invisible.
+	g.counts[t.name]++
+	g.total++
+	return id, nil
+}
+
+// Seed returns the target node. The seed cannot be inferred from the graph:
+// structural edges cost no depth, so a composite target puts several nodes at
+// depth 0 inside the closure and "the one at depth 0" names no single node.
+func (g *Graph) SeedID() NodeID { return g.seed }
+
+// Decline records a candidate the engine refused to admit, and denies it
+// thereafter. Truncation of every kind lands here, which is what makes
+// "pruning is irreversible" true even when a second operator finds the same
+// candidate later.
+func (g *Graph) Decline(typeName, rawKey string, depth int, belief float64, r Reason, by Provenance) error {
+	t, ok := g.reg.Type(typeName)
+	if !ok {
+		return fmt.Errorf("graph: unknown node type %q", typeName)
+	}
+	key, err := t.canonical(rawKey)
+	if err != nil {
+		return fmt.Errorf("graph: cannot canonicalize %q as %s: %w", rawKey, typeName, err)
+	}
+	k := ledgerKey{typ: t.name, key: key}
+	if _, exists := g.ledger[k]; exists {
+		return nil // first decline wins; the row is kept
+	}
+	g.ledger[k] = LedgerRow{Type: t.name, Key: key, Depth: depth, Belief: belief, Reason: r, By: by}
+	return nil
+}
+
+// Apply applies one operator's delta. subject is the node the operator ran on;
+// nodes it emits inherit that depth, and edges adjust it by their class.
+func (g *Graph) Apply(by Provenance, subject NodeID, d Delta) Result {
+	var res Result
+	if _, ok := g.nodes[subject]; !ok && !subject.IsZero() {
+		res.Rejected = append(res.Rejected, Rejection{
+			Kind: RejectMissingNode, Detail: "subject not in graph", By: by,
+		})
+		return res
+	}
+	base := g.depth[subject]
+
+	// Resolved refs for this delta, so an edge or prop can name a node the
+	// same delta introduced.
+	resolved := map[NodeRef]NodeID{}
+
+	admit := func(ref NodeRef) (NodeID, bool) {
+		if id, done := resolved[ref]; done {
+			return id, !id.IsZero()
+		}
+		id, rej, ok := g.admitNode(ref, base, by)
+		if !ok {
+			resolved[ref] = NodeID{}
+			res.Rejected = append(res.Rejected, rej)
+			return NodeID{}, false
+		}
+		resolved[ref] = id
+		if _, seen := g.nodes[id]; seen {
+			res.Nodes = append(res.Nodes, id)
+		}
+		return id, true
+	}
+
+	for _, ref := range d.Nodes {
+		admit(ref)
+	}
+
+	for _, eref := range d.Edges {
+		id, ok := g.admitEdge(eref, admit, by, &res)
+		if ok {
+			res.Edges = append(res.Edges, id)
+		}
+	}
+
+	for _, ps := range d.Props {
+		g.applyProp(ps, admit, by, &res)
+	}
+	return res
+}
+
+// admitNode canonicalizes, checks the denylist and admits. Canonicalization
+// runs before the admission decision — not alongside it — so the ledger's
+// denylist compares canonical keys and "Example.com" cannot slip past a row
+// recorded for "example.com".
+func (g *Graph) admitNode(ref NodeRef, base int, by Provenance) (NodeID, Rejection, bool) {
+	t, ok := g.reg.Type(ref.Type)
+	if !ok {
+		return NodeID{}, Rejection{Kind: RejectUnknownType, Type: ref.Type, Key: ref.Key, By: by}, false
+	}
+	key, err := t.canonical(ref.Key)
+	if err != nil {
+		return NodeID{}, Rejection{
+			Kind: RejectCanonical, Type: t.name, Key: ref.Key, Detail: err.Error(), By: by,
+		}, false
+	}
+	if _, denied := g.ledger[ledgerKey{typ: t.name, key: key}]; denied {
+		return NodeID{}, Rejection{Kind: RejectDenied, Type: t.name, Key: key, By: by}, false
+	}
+	id := newNodeID(t.name, key)
+	if _, exists := g.nodes[id]; exists {
+		return id, Rejection{}, true
+	}
+	if g.overBudget(t.name) {
+		_ = g.Decline(t.name, key, base, g.Belief(id), ReasonBudget, by)
+		return NodeID{}, Rejection{Kind: RejectDenied, Type: t.name, Key: key, Detail: "budget", By: by}, false
+	}
+	g.nodes[id] = &Node{ID: id, Type: t, Key: key, Props: newProps(t.sch)}
+	g.order = append(g.order, id)
+	g.depth[id] = base
+	g.provis[id] = true
+	g.counts[t.name]++
+	g.total++
+	return id, Rejection{}, true
+}
+
+func (g *Graph) admitEdge(ref EdgeRef, admit func(NodeRef) (NodeID, bool), by Provenance, res *Result) (EdgeID, bool) {
+	rel, ok := g.reg.Rel(ref.Rel)
+	if !ok {
+		res.Rejected = append(res.Rejected, Rejection{Kind: RejectUnknownRel, Rel: ref.Rel, By: by})
+		return EdgeID{}, false
+	}
+	from, ok := admit(ref.From)
+	if !ok {
+		return EdgeID{}, false
+	}
+
+	// The seed-closure invariant. Dispatch-side gating is the optimization;
+	// this rejection is the invariant, so an operator that emits a variant edge
+	// from outside the closure cannot smuggle it in.
+	//
+	// This runs before the endpoint is admitted, not after. Rejecting the edge
+	// while admitting its target would leave the variant in the graph, unrooted
+	// and unreachable — the invariant exists to bound combinatorial expansion,
+	// and a check that stops the edge but not the node does not bound anything.
+	if rel.class == Variant && !g.closure[from] {
+		res.Rejected = append(res.Rejected, Rejection{
+			Kind: RejectClosure, Rel: rel.name, Type: g.nodes[from].Type.name, Key: g.nodes[from].Key, By: by,
+		})
+		return EdgeID{}, false
+	}
+
+	// The scope restriction, checked in the same place and for the same reason.
+	if rel.class == Variant && !g.inScope(from) {
+		res.Rejected = append(res.Rejected, Rejection{
+			Kind: RejectScope, Rel: rel.name, Type: g.nodes[from].Type.name, Key: g.nodes[from].Key, By: by,
+		})
+		return EdgeID{}, false
+	}
+
+	to, ok := admit(ref.To)
+	if !ok {
+		return EdgeID{}, false
+	}
+
+	id := newEdgeID(from, rel.name, to)
+	if _, exists := g.edges[id]; !exists {
+		g.edges[id] = &Edge{ID: id, From: from, To: to, Rel: rel, Props: newProps(rel.sch)}
+		g.eord = append(g.eord, id)
+	}
+
+	// Depth is the shortest observation distance from the seed; structural and
+	// variant edges are free. A node admitted bare inherits the subject's depth
+	// provisionally — the first in-edge overrides it outright, and later
+	// in-edges lower it. Without the override a node listed in the same delta
+	// as its edge would keep the subject's depth and never count the hop.
+	if d := g.depth[from] + rel.class.DepthCost(); to != g.seed {
+		cur, seen := g.depth[to]
+		switch {
+		case !seen || g.provis[to]:
+			g.depth[to] = d
+			delete(g.provis, to)
+		case d < cur:
+			g.depth[to] = d
+		}
+	}
+	if rel.class == Structural && g.closure[from] {
+		g.closure[to] = true
+	}
+	g.considerParent(to, from, rel.name)
+	return id, true
+}
+
+func (g *Graph) applyProp(ps PropSet, admit func(NodeRef) (NodeID, bool), by Provenance, res *Result) {
+	switch {
+	case ps.Node != nil:
+		id, ok := admit(*ps.Node)
+		if !ok {
+			return
+		}
+		n := g.nodes[id]
+		f, ok := n.Type.sch.Field(ps.Field)
+		if !ok {
+			res.Rejected = append(res.Rejected, Rejection{
+				Kind: RejectUnknownField, Type: n.Type.name, Key: n.Key, Field: ps.Field, By: by,
+			})
+			return
+		}
+		changed, err := n.Props.assert(f, ps.Value, by.Operator)
+		if err != nil {
+			res.Rejected = append(res.Rejected, Rejection{
+				Kind: RejectKindMismatch, Type: n.Type.name, Key: n.Key, Field: ps.Field,
+				Detail: err.Error(), By: by,
+			})
+			return
+		}
+		won, _ := n.Props.Setter(f)
+		g.assertions[id] = append(g.assertions[id], Assertion{
+			Field: ps.Field, Value: ps.Value, By: by, Won: won == by.Operator,
+		})
+		if changed {
+			res.Changed = append(res.Changed, id)
+		}
+	case ps.Edge != nil:
+		eid, ok := g.admitEdge(*ps.Edge, admit, by, res)
+		if !ok {
+			return
+		}
+		e := g.edges[eid]
+		f, ok := e.Rel.sch.Field(ps.Field)
+		if !ok {
+			res.Rejected = append(res.Rejected, Rejection{
+				Kind: RejectUnknownField, Rel: e.Rel.name, Field: ps.Field, By: by,
+			})
+			return
+		}
+		if _, err := e.Props.assert(f, ps.Value, by.Operator); err != nil {
+			res.Rejected = append(res.Rejected, Rejection{
+				Kind: RejectKindMismatch, Rel: e.Rel.name, Field: ps.Field, Detail: err.Error(), By: by,
+			})
+			return
+		}
+		won, _ := e.Props.Setter(f)
+		g.eassert[eid] = append(g.eassert[eid], Assertion{
+			Field: ps.Field, Value: ps.Value, By: by, Won: won == by.Operator,
+		})
+	default:
+		res.Rejected = append(res.Rejected, Rejection{
+			Kind: RejectMissingNode, Field: ps.Field, Detail: "PropSet names neither node nor edge", By: by,
+		})
+	}
+}
+
+// SetStatus records the terminal outcome of a (node, operator) pair. Skipped is
+// not terminal and does not close the pair.
+func (g *Graph) SetStatus(id NodeID, op string, s Status) {
+	k := statusKey{node: id, op: op}
+	if !s.Terminal() {
+		delete(g.status, k)
+		return
+	}
+	g.status[k] = s
+}
+
+// Status returns the recorded status of a pair.
+func (g *Graph) Status(id NodeID, op string) (Status, bool) {
+	s, ok := g.status[statusKey{node: id, op: op}]
+	return s, ok
+}
+
+// Live reports whether any observation operator returned ok for a node.
+func (g *Graph) Live(id NodeID) bool {
+	for k, s := range g.status {
+		if k.node == id && s == StatusOK {
+			return true
+		}
+	}
+	return false
+}
+
+// Node returns an admitted node.
+func (g *Graph) Node(id NodeID) (*Node, bool) { n, ok := g.nodes[id]; return n, ok }
+
+// Edge returns an admitted edge.
+func (g *Graph) Edge(id EdgeID) (*Edge, bool) { e, ok := g.edges[id]; return e, ok }
+
+// Depth returns a node's shortest observation distance from the seed.
+func (g *Graph) Depth(id NodeID) int { return g.depth[id] }
+
+// InClosure reports seed-closure membership: the seed plus everything reachable
+// from it by structural edges. Only members may root variant generation.
+func (g *Graph) InClosure(id NodeID) bool { return g.closure[id] }
+
+// Assertions returns every claim made about a node's fields, winning or not.
+func (g *Graph) Assertions(id NodeID) []Assertion { return g.assertions[id] }
+
+// Rejections returns every invariant violation refused so far.
+func (g *Graph) Rejections() []Rejection { return g.rejections }
+
+// Ledger returns the truncation ledger in report order.
+func (g *Graph) Ledger() []LedgerRow {
+	rows := make([]LedgerRow, 0, len(g.ledger))
+	for _, r := range g.ledger {
+		rows = append(rows, r)
+	}
+	sortLedger(rows)
+	return rows
+}
+
+// Nodes returns every admitted node sorted by (type, key) — the canonical
+// report order, and what makes two runs byte-comparable.
+func (g *Graph) Nodes() []*Node {
+	out := make([]*Node, 0, len(g.nodes))
+	for _, id := range g.order {
+		out = append(out, g.nodes[id])
+	}
+	sort.Slice(out, func(i, j int) bool {
+		if out[i].Type.name != out[j].Type.name {
+			return out[i].Type.name < out[j].Type.name
+		}
+		return out[i].Key < out[j].Key
+	})
+	return out
+}
+
+// Edges returns every admitted edge sorted by (from, relation, to).
+func (g *Graph) Edges() []*Edge {
+	out := make([]*Edge, 0, len(g.edges))
+	for _, id := range g.eord {
+		out = append(out, g.edges[id])
+	}
+	sort.Slice(out, func(i, j int) bool {
+		a, b := out[i], out[j]
+		if c := compareID(a.From[:], b.From[:]); c != 0 {
+			return c < 0
+		}
+		if a.Rel.name != b.Rel.name {
+			return a.Rel.name < b.Rel.name
+		}
+		return compareID(a.To[:], b.To[:]) < 0
+	})
+	return out
+}
+
+func compareID(a, b []byte) int {
+	for i := range a {
+		switch {
+		case a[i] < b[i]:
+			return -1
+		case a[i] > b[i]:
+			return 1
+		}
+	}
+	return 0
+}
