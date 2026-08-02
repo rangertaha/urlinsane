@@ -202,7 +202,12 @@ func catalogue() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	return parseKLIDs(doc)
+}
 
+// parseKLIDs pulls the KLIDs out of the front page. It is separate from the
+// fetching so that it can be exercised without the site.
+func parseKLIDs(doc *html.Node) ([]string, error) {
 	var (
 		klids []string
 		seen  = map[string]bool{}
@@ -253,6 +258,12 @@ func resolve(klid string) (driver string, m meta, err error) {
 	}
 	driver = strings.ToLower(driver)
 
+	return driver, parseMeta(doc, klid), nil
+}
+
+// parseMeta reads the metadata tables off a layout page. klid is the one that
+// led here, used only if the page carries no table at all.
+func parseMeta(doc *html.Node, klid string) (m meta) {
 	// Each metadata table describes one KLID: a column of headings on the
 	// left and values on the right.
 	walk(doc, func(n *html.Node) {
@@ -300,7 +311,7 @@ func resolve(klid string) (driver string, m meta, err error) {
 		m.Locales = []kb.Locale{{KLID: klid}}
 	}
 
-	return driver, m, nil
+	return m
 }
 
 // The shape of a layout's XML export. Only the parts that bear on typed text
@@ -333,7 +344,12 @@ func build(driver string, m meta) (*kb.Layout, error) {
 	if err != nil {
 		return nil, err
 	}
+	return buildFrom(driver, m, raw)
+}
 
+// buildFrom turns a driver's key table into a layout. It takes the XML rather
+// than fetching it, so that the conversion can be tested on its own.
+func buildFrom(driver string, m meta, raw []byte) (*kb.Layout, error) {
 	var doc keyTable
 	if err := xml.Unmarshal(raw, &doc); err != nil {
 		return nil, fmt.Errorf("parsing key table: %w", err)
