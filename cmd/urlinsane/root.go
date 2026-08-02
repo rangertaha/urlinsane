@@ -66,7 +66,7 @@ AUTHOR:
 	// (§12.4), and log.Fatal collapses every one of them to 1 — so --fail-on
 	// could never report 2 and the tool could not be a CI gate. It also stamps
 	// a timestamp on messages meant for a human.
-	if err := app.Run(os.Args); err != nil {
+	if err := app.Run(reorder(app.Commands, os.Args)); err != nil {
 		if _, ok := err.(cli.ExitCoder); ok {
 			cli.HandleExitCoder(err)
 			return
