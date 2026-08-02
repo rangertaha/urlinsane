@@ -157,7 +157,6 @@ var (
 		{"obscuro", "oscuro"},
 		{"preveer", "prever"},
 		{"quizas", "quizás"},
-		{"recabar", "recavar"},
 		{"resfrío", "resfriado"},
 		{"satisfació", "satisfizo"},
 		{"soviético", "sovietico"},

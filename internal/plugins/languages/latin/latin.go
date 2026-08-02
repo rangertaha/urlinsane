@@ -71,7 +71,6 @@ func (l *Latin) Keyboards() (boards []internal.Keyboard) {
 
 var (
 	laMisspellings = [][]string{
-		// Common classical/medieval orthography variants
 		{"v", "u"},
 		{"i", "j"},
 		{"ae", "e"},

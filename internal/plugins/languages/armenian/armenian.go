@@ -104,9 +104,8 @@ func (l *Armenian) Keyboards() (boards []internal.Keyboard) {
 var (
 	// hyMisspellings are common misspellings
 	hyMisspellings = [][]string{
-		// Domain-friendly Armenian orthography variants
-		{"եւ", "և"}, // different Unicode forms seen in the wild
-		{"օ", "ո"},  // common confusion in some contexts
+		{"եւ", "և"},
+		{"օ", "ո"},
 		{"տասնիննը", "տասնինը"},
 	}
 

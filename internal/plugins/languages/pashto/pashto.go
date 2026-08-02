@@ -101,11 +101,12 @@ func (l *Pashto) Keyboards() (boards []internal.Keyboard) {
 
 var (
 	psMisspellings = [][]string{
-		// Common Arabic/Persian character variants that show up in Pashto text / IDNs
-		{"کې", "كي"}, // Pashto "kē" with Arabic yeh
+		{"کې", "كي"},
 		{"یې", "يې"},
 		{"ګ", "گ"},
 		{"ک", "ك"},
+		{"انشاالله", "انشاءالله"},
+		{"مسئول", "مسؤول"},
 	}
 
 	psHomophones = [][]string{
