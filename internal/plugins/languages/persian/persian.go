@@ -102,15 +102,20 @@ func (l *Persian) Keyboards() (boards []internal.Keyboard) {
 var (
 	// faMisspellings are common misspellings
 	faMisspellings = [][]string{
-		// Common Arabic/Persian character variant spellings (word-level)
-		{"مي", "می"}, // Arabic yeh -> Persian yeh (common in older content)
-
-		// Common Persian orthographic misspellings
+		{"مي", "می"},
 		{"مسول", "مسئول"},
 		{"مساله", "مسئله"},
 		{"لطفا", "لطفاً"},
 		{"اصلا", "اصلاً"},
 		{"اتفاقا", "اتفاقاً"},
+
+		{"خواهش", "خاهش"},
+		{"خواستن", "خاستن"},
+		{"سپاسگزار", "سپاسگذار"},
+		{"شکرگزار", "شکرگذار"},
+		{"طوفان", "توفان"},
+		{"غلط", "غلت"},
+		{"قائل", "قایل"},
 	}
 
 	// faHomophones are words that sound alike
@@ -120,9 +125,33 @@ var (
 		{"خطتیره", "-"},
 		{"اسلش", "/"},
 
-		// Commonly confused in speech/writing (near-homophones)
-		{"گذارش", "گزارش"},
-		{"ذره", "زره"},
+		{"خویش", "خیش"},
+		{"حیات", "حیاط"},
+		{"ارز", "ارض", "عرض"},
+		{"خار", "خوار"},
+		{"خوان", "خان"},
+		{"خواست", "خاست"},
+		{"خورد", "خرد"},
+		{"ثواب", "صواب"},
+		{"قضا", "غذا"},
+		{"حور", "هور"},
+		{"اساس", "اثاث"},
+		{"امل", "عمل"},
+		{"بحر", "بهر"},
+		{"تهدید", "تحدید"},
+		{"جزا", "جضا"},
+		{"راضی", "رازی"},
+		{"سفر", "صفر"},
+		{"عالم", "آلم"},
+		{"غریب", "قریب"},
+		{"فترت", "فطرت"},
+		{"قدر", "غدر"},
+		{"محرم", "مهرم"},
+		{"نظر", "نزر"},
+		{"یار", "عیار"},
+		{"اثر", "عصر"},
+		{"بها", "بهاء"},
+		{"تقریر", "تحریر"},
 	}
 
 	// faAntonyms are words opposite in meaning to another (e.g. bad and good ).

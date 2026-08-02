@@ -102,7 +102,6 @@ func (l *Finnish) Keyboards() (boards []internal.Keyboard) {
 var (
 	// fiMisspellings are common misspellings
 	fiMisspellings = [][]string{
-		// Accent/diacritic omission (domain-friendly)
 		{"tama", "tämä"},
 		{"mita", "mitä"},
 		{"sina", "sinä"},
@@ -112,6 +111,15 @@ var (
 		{"syoda", "syödä"},
 		{"syo", "syö"},
 		{"yo", "yö"},
+
+		{"ensimmäinen", "ensimäinen"},
+		{"mahdollisimman", "mahdollisiman"},
+		{"onnittelut", "onnitelut"},
+		{"seuraava", "seurava"},
+		{"yhteensä", "yhtensä"},
+		{"kannattaa", "kannatta"},
+		{"kysymys", "kysmys"},
+		{"suomalainen", "suomlainen"},
 	}
 
 	// fiHomophones are words that sound alike
@@ -119,6 +127,20 @@ var (
 		{"piste", "."},
 		{"atmerkki", "@", "ätmerkki"},
 		{"tavuviiva", "-"},
+
+		{"taksi", "taxi"},
+		{"pitsa", "pizza"},
+		{"jatsi", "jazz"},
+		{"sekki", "shekki"},
+		{"faksi", "fax"},
+		{"boksi", "box"},
+		{"keksi", "kex"},
+		{"maksimi", "maximi"},
+		{"teksti", "texti"},
+		{"kompleksi", "komplexi"},
+		{"indeksi", "index"},
+		{"sitruuna", "citruuna"},
+		{"kioski", "kiosk"},
 	}
 
 	// fiAntonyms are words opposite in meaning to another (e.g. bad and good ).

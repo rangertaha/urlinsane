@@ -51,12 +51,41 @@ func (l *Danish) Keyboards() (boards []internal.Keyboard) {
 }
 
 var (
-	daMisspellings = [][]string{}
-	daHomophones   = [][]string{
+	daMisspellings = [][]string{
+		{"addresse", "adresse"},
+		{"aggresiv", "aggressiv"},
+		{"diskution", "diskussion"},
+		{"kollision", "kollission"},
+		{"konferance", "konference"},
+		{"resturant", "restaurant"},
+		{"succes", "sukces"},
+		{"umidelbart", "umiddelbart"},
+		{"paralell", "parallel"},
+		{"komitte", "komité"},
+		{"akkomodation", "akkommodation"},
+		{"alligevel", "ligevel"},
+		{"egentlig", "egenlig"},
+		{"især", "isaer"},
+		{"kommentar", "komentar"},
+	}
+	daHomophones = [][]string{
 		{"punktum", "."},
 		{"snabela", "@"},
 		{"bindestreg", "-"},
 		{"skraastreg", "/", "skråstreg"},
+
+		{"blot", "blåt"},
+		{"fikse", "fixe"},
+		{"leger", "lejer"},
+		{"måske", "moske"},
+		{"risret", "rigsret"},
+		{"save", "serve"},
+		{"scene", "sene"},
+		{"verden", "værten"},
+		{"værd", "vejr", "hver", "vær"},
+		{"lege", "leje"},
+		{"maler", "måler"},
+		{"hval", "val"},
 	}
 	daAntonyms = map[string][]string{
 		"god":     {"dårlig"},

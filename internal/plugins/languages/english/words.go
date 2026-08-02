@@ -4358,7 +4358,6 @@ var (
 		{"buy", "by", "bye"},
 		{"cache", "cash"},
 		{"callous", "callus"},
-		{"cant", "cant"},
 		{"cannon", "canon"},
 		{"canter", "cantor"},
 		{"carat, caret", "carrot"},

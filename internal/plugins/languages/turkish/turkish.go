@@ -61,15 +61,45 @@ var (
 	}()
 
 	trMisspellings = [][]string{
-		{"istanbul", "İstanbul"},
-		{"turkiye", "türkiye", "Türkiye"},
+		{"istanbul", "i̇stanbul"},
+		{"turkiye", "türkiye"},
 		{"sirket", "şirket"},
+		{"yalnış", "yanlış"},
+		{"herkez", "herkes"},
+		{"yanlız", "yalnız"},
+		{"birsey", "birşey"},
+		{"şarz", "şarj"},
+		{"orjinal", "orijinal"},
+		{"eşortman", "eşofman"},
+		{"makina", "makine"},
+		{"süpriz", "sürpriz"},
+		{"döküman", "doküman"},
+		{"adele", "adale"},
+		{"poğaça", "poaça"},
+		{"mütevazi", "mütevazı"},
+		{"tabi", "tabii"},
+		{"direk", "direkt"},
+		{"antreman", "antrenman"},
+		{"egzoz", "eksoz"},
+		{"inkilap", "inkılap"},
 	}
 	trHomophones = [][]string{
 		{"nokta", "."},
 		{"et", "@"},
 		{"tire", "-"},
 		{"slash", "/"},
+
+		{"kar", "kâr"},
+		{"hala", "hâlâ"},
+		{"adet", "âdet"},
+		{"alem", "âlem"},
+		{"aşık", "âşık"},
+		{"şura", "şûra"},
+		{"yar", "yâr"},
+		{"dahi", "dâhi"},
+		{"hakim", "hâkim"},
+		{"katil", "kâtil"},
+		{"varis", "vâris"},
 	}
 	trAntonyms = map[string][]string{
 		"iyi":         {"kötü"},

@@ -51,10 +51,22 @@ func (l *Georgian) Keyboards() (boards []internal.Keyboard) {
 }
 
 var (
+	kaMisspellings = [][]string{
+		{"ხოლმე", "ჰოლმე"},
+		{"ხგავს", "ჰგავს"},
+		{"ხყავს", "ჰყავს"},
+		{"ხავა", "ჰავა"},
+		{"თბილისი", "ტფილისი"},
+		{"საქართველო", "საქარტველო"},
+	}
+
 	kaHomophones = [][]string{
 		{"წერტილი", "."},
 		{"ეტ", "@"},
 		{"ტირე", "-"},
+
+		{"ჰაერი", "ხაერი"},
+		{"ჰქონდა", "ხქონდა"},
 	}
 	kaAntonyms = map[string][]string{
 		"კარგი":      {"ცუდი"},
@@ -151,7 +163,7 @@ var (
 			"ჟ", "რ", "ს", "ტ", "უ", "ფ", "ქ", "ღ", "ყ", "შ", "ჩ", "ც", "ძ", "წ", "ჭ", "ხ", "ჯ", "ჰ",
 		},
 		vowels:       []string{"ა", "ე", "ი", "ო", "უ"},
-		misspellings: [][]string{},
+		misspellings: kaMisspellings,
 		homophones:   kaHomophones,
 		antonyms:     kaAntonyms,
 		homoglyphs:   languages.DefaultLatinHomoglyphs(),

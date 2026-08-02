@@ -52,13 +52,39 @@ func (l *Norwegian) Keyboards() (boards []internal.Keyboard) {
 
 var (
 	noMisspellings = [][]string{
-		{"norge", "Norge"},
+		{"addresse", "adresse"},
+		{"aggresiv", "aggressiv"},
+		{"diskusjon", "diskusjson"},
+		{"konferanse", "konferance"},
+		{"restaurant", "resturant"},
+		{"suksess", "sukcess"},
+		{"umiddelbart", "umidelbart"},
+		{"parallell", "paralell"},
+		{"komité", "komitte"},
+		{"akkommodasjon", "akkomodasjon"},
+		{"egentlig", "egenlig"},
+		{"interessant", "interesant"},
+		{"kommentar", "komentar"},
 	}
 	noHomophones = [][]string{
 		{"punktum", "."},
 		{"krøllalfa", "@"},
 		{"bindestrek", "-"},
 		{"skråstrek", "/"},
+
+		{"hjerne", "gjerne"},
+		{"jul", "hjul"},
+		{"hvis", "vis"},
+		{"hvit", "vit"},
+		{"hval", "val"},
+		{"bli", "blid"},
+		{"skylle", "skylde"},
+		{"kjekk", "sjekk"},
+		{"kjole", "sjole"},
+		{"verd", "verdt", "vert"},
+		{"hver", "vær"},
+		{"lære", "lærer"},
+		{"vitne", "hvitne"},
 	}
 	noAntonyms = map[string][]string{
 		"bra":       {"dårlig"},
