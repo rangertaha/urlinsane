@@ -110,10 +110,3 @@ func (c *Cache) Put(k CacheKey, d Delta, o Outcome) {
 	defer c.mu.Unlock()
 	c.entries[k] = cacheEntry{delta: d, outcome: o}
 }
-
-// Len reports how many results are cached.
-func (c *Cache) Len() int {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	return len(c.entries)
-}

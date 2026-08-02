@@ -26,7 +26,6 @@ import (
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/ons"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/rar"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/sep"
-	// _ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/si"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/sp"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/tld"
 	_ "github.com/rangertaha/urlinsane/internal/plugins/algorithms/vs"
