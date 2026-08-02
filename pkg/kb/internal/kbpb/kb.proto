@@ -1,0 +1,168 @@
+// Copyright 2024 Rangertaha. All Rights Reserved.
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+// The storage format of the pkg/kb dataset. It is an implementation detail of
+// that package: callers work with kb.Layout, which these messages are decoded
+// into. Regenerate the Go bindings with `go generate ./pkg/kb`.
+syntax = "proto3";
+
+package urlinsane.kb.v1;
+
+option go_package = "github.com/rangertaha/urlinsane/pkg/kb/internal/kbpb";
+
+// Form is the physical shape of the alphanumeric block, which decides where
+// the keys around its edges sit.
+enum Form {
+  FORM_UNSPECIFIED = 0;
+  FORM_ANSI = 1;
+  FORM_ISO = 2;
+  FORM_JIS = 3;
+}
+
+// Catalogue is the index of available layouts, kept apart from the layouts
+// themselves so that listing them does not mean decoding all of them.
+message Catalogue {
+  repeated Entry entries = 1;
+}
+
+// Entry summarises a layout: enough to choose one, not enough to type on.
+message Entry {
+  string id = 1;
+  string name = 2;
+  Form form = 3;
+  repeated Locale locales = 4;
+}
+
+// Locale is one of the language identities a layout is installed under.
+// Windows ships a single driver for several of them.
+message Locale {
+  // The Windows keyboard layout identifier. A number, though it is always
+  // shown as eight lowercase hex digits — "00000409".
+  uint32 klid = 1;
+  // The BCP-47 language tag, such as "en-US".
+  string tag = 2;
+  // How Windows names the layout for this locale.
+  string name = 3;
+}
+
+// Layout is a keyboard layout and everything its keys type.
+message Layout {
+  string id = 1;
+  string name = 2;
+  // The Windows driver the layout comes from, such as "KBDUS.DLL".
+  string file = 3;
+  Form form = 4;
+  repeated Locale locales = 5;
+  repeated Key keys = 6;
+}
+
+// VirtualKey is the Windows virtual key a switch maps to. The numbers are the
+// codes Windows itself uses, so the enum is the real thing rather than an
+// index into a list, and protoc's generated name tables convert to and from
+// the "VK_Q" spelling for free.
+//
+// Only the keys of the alphanumeric block appear here, which is all the
+// dataset stores. A layout naming any other virtual key is rejected when the
+// dataset is built rather than silently recorded as unspecified.
+enum VirtualKey {
+  VK_UNSPECIFIED = 0;
+
+  VK_TAB = 0x09;
+  VK_CAPITAL = 0x14;
+  VK_SPACE = 0x20;
+  VK_LSHIFT = 0xA0;
+
+  VK_0 = 0x30;
+  VK_1 = 0x31;
+  VK_2 = 0x32;
+  VK_3 = 0x33;
+  VK_4 = 0x34;
+  VK_5 = 0x35;
+  VK_6 = 0x36;
+  VK_7 = 0x37;
+  VK_8 = 0x38;
+  VK_9 = 0x39;
+
+  VK_A = 0x41;
+  VK_B = 0x42;
+  VK_C = 0x43;
+  VK_D = 0x44;
+  VK_E = 0x45;
+  VK_F = 0x46;
+  VK_G = 0x47;
+  VK_H = 0x48;
+  VK_I = 0x49;
+  VK_J = 0x4A;
+  VK_K = 0x4B;
+  VK_L = 0x4C;
+  VK_M = 0x4D;
+  VK_N = 0x4E;
+  VK_O = 0x4F;
+  VK_P = 0x50;
+  VK_Q = 0x51;
+  VK_R = 0x52;
+  VK_S = 0x53;
+  VK_T = 0x54;
+  VK_U = 0x55;
+  VK_V = 0x56;
+  VK_W = 0x57;
+  VK_X = 0x58;
+  VK_Y = 0x59;
+  VK_Z = 0x5A;
+
+  // The OEM keys, whose meaning is the layout's to decide. On a US keyboard
+  // VK_OEM_1 is the semicolon; elsewhere it is whatever that switch types.
+  VK_OEM_1 = 0xBA;
+  VK_OEM_PLUS = 0xBB;
+  VK_OEM_COMMA = 0xBC;
+  VK_OEM_MINUS = 0xBD;
+  VK_OEM_PERIOD = 0xBE;
+  VK_OEM_2 = 0xBF;
+  VK_OEM_3 = 0xC0;
+  VK_OEM_4 = 0xDB;
+  VK_OEM_5 = 0xDC;
+  VK_OEM_6 = 0xDD;
+  VK_OEM_7 = 0xDE;
+  VK_OEM_8 = 0xDF;
+  // The extra key an ISO board has and an ANSI board does not.
+  VK_OEM_102 = 0xE2;
+}
+
+// Key is one physical switch. Its position is not stored: it is recomputed
+// from the scan code and the layout's form when the layout is loaded, so that
+// the geometry lives in one place rather than being copied into every file.
+message Key {
+  // The set 1 scan code. A number rather than the hex spelling the source
+  // data uses: there are 10,446 keys in the dataset and the difference is
+  // most of a hundred kilobytes.
+  uint32 sc = 1;
+  VirtualKey vk = 2;
+  // The label printed on the key, when the layout gives one. Localised, so
+  // it stays a string.
+  string name = 3;
+  repeated Output outputs = 4;
+}
+
+// Output is what a key produces in one modifier state.
+message Output {
+  // The held modifiers, as the bitmask kb.Mod uses.
+  uint32 mod = 1;
+  // The character typed. Occasionally more than one rune: a few layouts have
+  // ligature keys, and a dead key gives the spacing form of its accent.
+  string text = 2;
+  // Set when the key arms an accent for the next keystroke rather than
+  // typing text of its own.
+  bool dead = 3;
+}
