@@ -1,17 +1,5 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 package main
 
@@ -25,11 +13,18 @@ import (
 	"strings"
 	"syscall"
 	"text/tabwriter"
+	"time"
 
+	"github.com/rangertaha/urlinsane/internal/config"
 	"github.com/rangertaha/urlinsane/internal/graph"
-	"github.com/rangertaha/urlinsane/internal/operators/variant"
-	"github.com/rangertaha/urlinsane/internal/report"
+	_ "github.com/rangertaha/urlinsane/internal/plugins/all"
+	"github.com/rangertaha/urlinsane/internal/plugins/observe"
+	"github.com/rangertaha/urlinsane/internal/plugins/report"
+	reportall "github.com/rangertaha/urlinsane/internal/plugins/report/all"
+	"github.com/rangertaha/urlinsane/internal/plugins/variant"
+	variantall "github.com/rangertaha/urlinsane/internal/plugins/variant/all"
 	"github.com/rangertaha/urlinsane/internal/scan"
+	"github.com/rangertaha/urlinsane/internal/store"
 	"github.com/urfave/cli/v2"
 )
 
@@ -85,6 +80,8 @@ func typoFlags() []cli.Flag {
 			Usage: "write the report to `PATH`; format from the extension"},
 		&cli.StringFlag{Name: "fail-on",
 			Usage: "exit 2 if any finding reaches `SEV` (info|low|medium|high|critical)"},
+		&cli.BoolFlag{Name: "save-graph",
+			Usage: "persist the graph to the store; prints its root CID"},
 		&cli.BoolFlag{Name: "explain",
 			Usage: "print the compiled plan and exit"},
 		&cli.StringFlag{Name: "list",
@@ -115,6 +112,15 @@ func typoFlags() []cli.Flag {
 }
 
 func runTypo(c *cli.Context) error {
+	// Setup runs before --list as well as before a scan: languages come from
+	// the dataset database, so `--list languages` on a fresh install must
+	// extract and open it rather than report an empty set (§9.1).
+	setup, err := config.Init()
+	if err != nil {
+		return exit(err, exitError)
+	}
+	reportSetup(c.App.ErrWriter, setup)
+
 	if topic := c.String("list"); topic != "" {
 		return listTopic(c.App.Writer, topic)
 	}
@@ -139,6 +145,23 @@ func runTypo(c *cli.Context) error {
 		},
 	}
 	opts.Observe.Timeout = c.Duration("timeout")
+
+	// A missing geolocation database costs the geo operator, not the scan: with
+	// a nil locator it is left out of the plan rather than planned and failed
+	// (§4). Same for settings — an unreadable config file must not decide
+	// whether a scan happens.
+	if setup.GeoIP.Err == nil {
+		if db, err := observe.OpenGeoIP(setup.Dir); err == nil {
+			opts.Observe.Geo = db
+		} else {
+			fmt.Fprintf(c.App.ErrWriter, "  geolocation unavailable: %v\n", err)
+		}
+	}
+	if f, err := config.Load(setup.Dir); err == nil {
+		opts.Settings = f
+	} else {
+		fmt.Fprintf(c.App.ErrWriter, "  plugin settings unavailable: %v\n", err)
+	}
 
 	if c.Bool("explain") {
 		_, _, p, err := scan.Plan(opts)
@@ -193,6 +216,16 @@ func runTypo(c *cli.Context) error {
 	})
 	if err != nil {
 		return exit(err, exitError)
+	}
+
+	// Saving before rendering: a graph worth keeping should survive a renderer
+	// that errors on a broken pipe.
+	if c.Bool("save-graph") {
+		root, err := saveGraph(setup.Dir, res)
+		if err != nil {
+			return exit(err, exitError)
+		}
+		fmt.Fprintf(c.App.ErrWriter, "  saved %s\n\n", root)
 	}
 
 	if err := write(c.App.Writer, res.Report, format, c); err != nil {
@@ -266,7 +299,7 @@ func knownScope(scope []string) error {
 }
 
 func write(w io.Writer, r report.Report, format string, c *cli.Context) error {
-	return report.Write(w, r, report.Options{
+	return reportall.Write(w, r, report.Options{
 		Format:  format,
 		Verbose: c.Bool("verbose"),
 		Color:   useColor(c),
@@ -288,7 +321,7 @@ func save(path string, r report.Report, c *cli.Context) error {
 	}
 	defer f.Close()
 	// Never colored: a file is not a terminal.
-	return report.Write(f, r, report.Options{Format: format, Verbose: c.Bool("verbose")})
+	return reportall.Write(f, r, report.Options{Format: format, Verbose: c.Bool("verbose")})
 }
 
 // useColor honours --no-color, NO_COLOR and a non-TTY stdout, so `-o json` stays
@@ -356,18 +389,18 @@ func listTopic(w io.Writer, topic string) error {
 		}
 	case "algorithms", "algos":
 		fmt.Fprintln(t, "ID\tTITLE\tAPPLIES TO")
-		for _, s := range variant.Specs(variant.Options{}) {
+		for _, s := range variantall.Specs(variant.Options{}) {
 			fmt.Fprintf(t, "%s\t%s\t%s\n", s.ID, s.Title, strings.Join(s.Types, ","))
 		}
 	case "languages", "langs":
 		fmt.Fprintln(t, "ID\tNAME")
 		for _, l := range variant.RegisteredLanguages() {
-			fmt.Fprintf(t, "%s\t%s\n", l.Id(), l.Name())
+			fmt.Fprintf(t, "%s\t%s\n", l.Code(), l.Name())
 		}
 	case "keyboards":
 		fmt.Fprintln(t, "ID\tNAME")
 		for _, k := range variant.RegisteredKeyboards() {
-			fmt.Fprintf(t, "%s\t%s\n", k.Id(), k.Name())
+			fmt.Fprintf(t, "%s\t%s\n", k.ID, k.Name)
 		}
 	case "formats":
 		for _, f := range report.Formats() {
@@ -394,4 +427,60 @@ func listTopic(w io.Writer, topic string) error {
 			topic)
 	}
 	return nil
+}
+
+// reportSetup says what first-run setup did. Silence would be worse than noise:
+// an extraction that failed leaves operators out of the plan, and a scan with
+// no geolocation must not look like a target with no geolocation (§12.6).
+func reportSetup(w io.Writer, s config.Setup) {
+	if !s.FirstRun() {
+		return
+	}
+	if s.Created {
+		fmt.Fprintf(w, "  created %s\n", s.Dir)
+	}
+	for _, f := range []struct {
+		what string
+		file config.File
+	}{
+		{"reference data", s.Dataset},
+		{"geolocation database", s.GeoIP},
+	} {
+		switch {
+		case f.file.Err != nil:
+			fmt.Fprintf(w, "  %s unavailable: %v\n", f.what, f.file.Err)
+		case f.file.Written:
+			fmt.Fprintf(w, "  extracted %s\n", f.file.Path)
+		}
+	}
+	fmt.Fprintln(w)
+}
+
+// saveGraph writes the scan to the content-addressed store and records it in
+// the index, returning the root CID.
+//
+// Two writes rather than one because they answer different questions. The store
+// answers "what was this scan", keyed by content so two identical scans are one
+// object. The index answers "which scans of acme.com are there, and when" —
+// facts a content address cannot carry without ceasing to be one.
+func saveGraph(dir string, res *scan.Result) (string, error) {
+	st, err := store.Open(dir)
+	if err != nil {
+		return "", err
+	}
+	root, err := st.Save(res.Graph, store.SaveOptions{Seed: res.Seed})
+	if err != nil {
+		return "", err
+	}
+	ix, err := store.OpenIndex(dir)
+	if err != nil {
+		return "", err
+	}
+	return root.String(), ix.Add(store.Entry{
+		Type:    res.SeedType,
+		Key:     res.SeedKey,
+		Root:    root.String(),
+		At:      time.Now(),
+		Partial: res.Interrupt,
+	})
 }

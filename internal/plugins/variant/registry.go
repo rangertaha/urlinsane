@@ -1,30 +1,34 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 package variant
 
 import (
-	"fmt"
 	"sort"
 	"strings"
 
 	"github.com/rangertaha/urlinsane/datasets"
-	"github.com/rangertaha/urlinsane/internal"
-	"github.com/rangertaha/urlinsane/internal/graph"
-	"github.com/rangertaha/urlinsane/internal/plugins/languages"
+	"github.com/rangertaha/urlinsane/internal/dataset"
+	"github.com/rangertaha/urlinsane/pkg/kb"
 )
+
+// Language is the data the language-driven algorithms read.
+//
+// Declared here, by the consumer, rather than imported from wherever the data
+// comes from. internal/lang satisfies it by querying the dataset, and a test
+// satisfies it with a literal — which is the point: an operator is a pure
+// function of its inputs (§4.3), and it cannot be tested as one if constructing
+// its input needs a database.
+type Language interface {
+	Code() string
+	Name() string
+	Vowels() []string
+	Graphemes() []string
+	Numerals() map[string][]string
+	Homoglyphs() map[string][]string
+	Homophones() [][]string
+	Misspellings() [][]string
+}
 
 // Options selects the data the algorithms run over. Every field is optional;
 // the zero Options gives the full shipped set.
@@ -37,20 +41,39 @@ type Options struct {
 	// Split decomposes a key by node type. Nil means DefaultSplit.
 	Split Splitter
 	// Languages restricts the language-driven algorithms. Nil means every
-	// registered language plugin, in id order.
-	Languages []internal.Language
+	// registered language, in id order.
+	Languages []Language
 	// Keyboards restricts the keyboard-driven algorithms. Nil means every
-	// registered keyboard plugin, in id order.
-	Keyboards []internal.Keyboard
+	// layout pkg/kb ships, deduplicated by Adjacency behaviour: 203 layouts
+	// collapse to about 30 distinct neighbour sets, because most Latin boards
+	// share QWERTY geometry. Running all 203 would do seven times the work for
+	// the same candidates.
+	Keyboards []*kb.Layout
 	// Subdomains feeds the subdomain-insertion algorithm. Nil means the
 	// compiled-in list.
 	Subdomains []string
 	// Suffixes feeds the TLD-swap algorithm. Nil means the compiled-in public
 	// suffix list, wildcard and exception markers stripped.
 	Suffixes []string
+	// Extra are algorithms contributed from outside this package, which is how
+	// a plugin adds one (internal/plugins). Passed in rather than read from a
+	// registry here, because the registry imports this package to declare a
+	// Spec and importing it back would be a cycle.
+	Extra []Spec
+	// Combos feeds the combosquatting algorithm. Nil means the default
+	// language's vocabulary; an empty non-nil slice means no keywords, which
+	// silences the algorithm rather than defaulting it back on.
+	//
+	// It is deliberately not derived from Languages. Combo vocabulary is a
+	// property of the target's audience rather than of the name, so widening
+	// the language set to catch more homoglyphs must not also bolt another
+	// language's keywords onto the name. Pass ComboKeywords(langs) to opt into
+	// the multi-language vocabulary; see DefaultComboLanguage for why that is
+	// not the default.
+	Combos []string
 }
 
-func (o Options) withDefaults() Options {
+func (o Options) WithDefaults() Options {
 	if o.Split == nil {
 		o.Split = DefaultSplit
 	}
@@ -66,81 +89,64 @@ func (o Options) withDefaults() Options {
 	if o.Suffixes == nil {
 		o.Suffixes = PublicSuffixes()
 	}
+	if o.Combos == nil {
+		o.Combos = DefaultComboKeywords()
+	}
 	return o
 }
 
-// Specs returns every algorithm declaration, in id order.
-func Specs(o Options) []Spec {
-	o = o.withDefaults()
-	specs := PureSpecs()
-	specs = append(specs, DomainSpecs(o.Subdomains, o.Suffixes)...)
-	specs = append(specs, KeyboardSpecs(o.Keyboards)...)
-	specs = append(specs, LanguageSpecs(o.Languages)...)
-	sort.Slice(specs, func(i, j int) bool { return specs[i].ID < specs[j].ID })
-	return specs
+// RegisteredLanguages returns every registered language, in id order.
+//
+// Sorted because an operator built from this set is cached against a digest of
+// what it read: registration order is package-initialisation order, and letting
+// it through would invalidate the cache on every run.
+func RegisteredLanguages() []Language {
+	all := dataset.Languages()
+	out := make([]Language, 0, len(all))
+	for _, l := range all {
+		out = append(out, l)
+	}
+	return out
 }
 
-// All returns every algorithm as an operator, in id order. Two ids that collide
-// are a programming error rather than a runtime condition — the scheduler keys
-// its seen-set and cache on the id — so this panics rather than silently
-// dropping one.
-func All(o Options) []graph.Operator {
-	o = o.withDefaults()
-	specs := Specs(o)
-	seen := make(map[string]bool, len(specs))
-	ops := make([]graph.Operator, 0, len(specs))
-	for _, s := range specs {
-		if seen[s.ID] {
-			panic(fmt.Sprintf("variant: duplicate operator id %q", s.ID))
+// RegisteredKeyboards returns the layouts the keyboard-driven algorithms run
+// over: every layout pkg/kb ships, one per distinct Adjacency behaviour.
+//
+// Deduplicated rather than enumerated. The 203 shipped layouts produce about 30
+// distinct neighbour sets, because most Latin boards share QWERTY geometry —
+// so running all of them multiplies the work sevenfold and the candidates not
+// at all. The first layout of each behaviour wins, in id order, so the choice
+// is stable across runs.
+func RegisteredKeyboards() []*kb.Layout {
+	seen := map[string]bool{}
+	var out []*kb.Layout
+	for _, id := range kb.IDs() {
+		l, err := kb.Get(id)
+		if err != nil {
+			continue
 		}
-		seen[s.ID] = true
-		ops = append(ops, New(s, o.Split))
-	}
-	return ops
-}
-
-// Select returns the named algorithms as operators, in id order. An unknown id
-// is an error rather than a silent omission: a run that quietly dropped half
-// the algorithms the user asked for would report an incomplete graph as
-// complete.
-func Select(o Options, ids ...string) ([]graph.Operator, error) {
-	want := make(map[string]bool, len(ids))
-	for _, id := range ids {
-		want[id] = true
-	}
-	var ops []graph.Operator
-	for _, op := range All(o) {
-		if want[op.Id()] {
-			delete(want, op.Id())
-			ops = append(ops, op)
+		if sig := adjacencySignature(l); !seen[sig] {
+			seen[sig] = true
+			out = append(out, l)
 		}
 	}
-	if len(want) > 0 {
-		missing := make([]string, 0, len(want))
-		for id := range want {
-			missing = append(missing, id)
-		}
-		sort.Strings(missing)
-		return nil, fmt.Errorf("variant: unknown algorithm(s): %s", strings.Join(missing, ", "))
+	return out
+}
+
+// adjacencySignature identifies a layout by how it types, not by what it is
+// called. Two layouts that differ only in their non-alphanumeric keys produce
+// the same variants, so they are the same layout for this purpose.
+func adjacencySignature(l *kb.Layout) string {
+	var b strings.Builder
+	for _, c := range "abcdefghijklmnopqrstuvwxyz0123456789" {
+		adj := l.Adjacent(string(c))
+		sort.Strings(adj)
+		b.WriteString(string(c))
+		b.WriteByte(':')
+		b.WriteString(strings.Join(adj, ""))
+		b.WriteByte('|')
 	}
-	return ops, nil
-}
-
-// RegisteredLanguages returns every language plugin currently registered, in id
-// order. The plugin registry is a map, so iterating it directly would order the
-// algorithms' inputs differently on every run.
-func RegisteredLanguages() []internal.Language {
-	langs := languages.Languages()
-	sort.Slice(langs, func(i, j int) bool { return langs[i].Id() < langs[j].Id() })
-	return langs
-}
-
-// RegisteredKeyboards returns every keyboard plugin currently registered, in id
-// order, for the same reason.
-func RegisteredKeyboards() []internal.Keyboard {
-	boards := languages.Keyboards()
-	sort.Slice(boards, func(i, j int) bool { return boards[i].Id() < boards[j].Id() })
-	return boards
+	return b.String()
 }
 
 // PublicSuffixes returns the public suffix list as plain suffixes, sorted, with

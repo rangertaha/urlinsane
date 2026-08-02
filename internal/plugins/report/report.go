@@ -1,17 +1,5 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 // Package report renders a finished scan.
 //
@@ -28,7 +16,6 @@ package report
 
 import (
 	"fmt"
-	"io"
 	"sort"
 	"strconv"
 	"strings"
@@ -103,6 +90,14 @@ type Totals struct {
 	ByType    map[string]int `json:"by_type"`
 	typeOrder []string
 }
+
+// TypeOrder is the order node types were first seen, for a renderer that wants
+// counts in a stable order rather than map order.
+//
+// A method rather than an exported field so it stays out of the JSON: the
+// ordering is a presentation concern, and adding it to the document would
+// change the serialized form for every consumer to serve the table.
+func (t Totals) TypeOrder() []string { return t.typeOrder }
 
 // NodeRow is one admitted node.
 type NodeRow struct {
@@ -433,30 +428,4 @@ func FormatFor(path string) (string, bool) {
 		return "dot", true
 	}
 	return "", false
-}
-
-// Render writes a report in the requested format.
-func Render(w io.Writer, g *graph.Graph, o Options) error {
-	return Write(w, Build(g, o), o)
-}
-
-// Write renders an already-built report. Splitting this from Render lets a
-// caller render one scan to several sinks — `-o table` on stdout and
-// `--save out.json` — without rebuilding, and guarantees the two sinks describe
-// the same scan.
-func Write(w io.Writer, r Report, o Options) error {
-	switch o.Format {
-	case "", "table":
-		return renderTable(w, r, o)
-	case "json":
-		return renderJSON(w, r)
-	case "ndjson":
-		return renderNDJSON(w, r)
-	case "csv":
-		return renderCSV(w, r)
-	case "dot":
-		return renderDOT(w, r)
-	}
-	return fmt.Errorf("report: unknown format %q (want one of %s)",
-		o.Format, strings.Join(Formats(), ", "))
 }

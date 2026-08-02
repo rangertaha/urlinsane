@@ -1,17 +1,5 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 package scan
 
@@ -23,10 +11,10 @@ import (
 	"time"
 
 	"github.com/rangertaha/urlinsane/internal/graph"
-	"github.com/rangertaha/urlinsane/internal/operators/decompose"
-	"github.com/rangertaha/urlinsane/internal/operators/observe"
-	"github.com/rangertaha/urlinsane/internal/operators/variant"
-	"github.com/rangertaha/urlinsane/internal/report"
+	"github.com/rangertaha/urlinsane/internal/plugins/decompose"
+	"github.com/rangertaha/urlinsane/internal/plugins/observe"
+	"github.com/rangertaha/urlinsane/internal/plugins/report"
+	"github.com/rangertaha/urlinsane/internal/plugins/variant"
 )
 
 // --- the schema contract -----------------------------------------------------
@@ -416,24 +404,40 @@ type emptySources struct{}
 
 func (emptySources) Sources(string) ([]observe.Source, error) { return nil, nil }
 
-func TestLanguageAndKeyboardPluginsAreRegistered(t *testing.T) {
-	// These register via init() in plugins/languages/all. Without that import
-	// the registry is empty and every language- or keyboard-driven algorithm
-	// iterates an empty list, generating nothing — while still appearing in
-	// --list algorithms and still running. The failure is completely silent,
-	// which is why it needs a test rather than a comment.
-	if n := len(variant.RegisteredLanguages()); n == 0 {
-		t.Error("no language plugins registered; language-driven algorithms are no-ops")
-	}
+// Keyboard layouts ship with the binary (pkg/kb), so they are available with
+// no dataset and no registration. A keyboard-driven algorithm that generated
+// nothing would be a silent no-op — it still appears in --list algorithms and
+// still runs — which is why this is a test and not a comment.
+func TestKeyboardLayoutsAreAvailable(t *testing.T) {
 	if n := len(variant.RegisteredKeyboards()); n == 0 {
-		t.Error("no keyboard plugins registered; keyboard-driven algorithms are no-ops")
+		t.Fatal("no keyboard layouts; keyboard-driven algorithms are no-ops")
+	}
+
+	res, err := Run(context.Background(), Options{
+		Target: "google.com", Algorithms: []string{"acs"}, // adjacent character substitution
+		Limits: graph.Limits{MaxDepth: 1}, Observe: offline(),
+	}, report.Options{})
+	if err != nil {
+		t.Fatalf("run: %v", err)
+	}
+	if countVariants(res.Graph) == 0 {
+		t.Fatal("adjacent character substitution produced no variants")
 	}
 }
 
-func TestLanguageDrivenAlgorithmsActuallyGenerate(t *testing.T) {
-	// The registry being populated is necessary but not sufficient — the specs
-	// snapshot it at construction, so an operator built before registration
-	// would still be empty.
+// Languages come from the dataset, not from registered plugins, so an empty
+// language list is the *expected* state of a run with no dataset — an offline
+// unit test, or a fresh install before `datasets import`.
+//
+// That makes it exactly the failure §12.6 exists to surface: the algorithms
+// still appear in the plan and still run, and produce nothing. The engine must
+// not pretend otherwise, so this pins the two halves — no languages means no
+// language-driven variants, and it is observable rather than silent.
+func TestLanguageDrivenAlgorithmsAreEmptyWithoutADataset(t *testing.T) {
+	if n := len(variant.RegisteredLanguages()); n != 0 {
+		t.Skipf("a dataset is loaded (%d languages); this test covers the empty case", n)
+	}
+
 	res, err := Run(context.Background(), Options{
 		Target: "example.com", Algorithms: []string{"vs"}, // vowel swapping, language-driven
 		Limits: graph.Limits{MaxDepth: 1}, Observe: offline(),
@@ -441,7 +445,35 @@ func TestLanguageDrivenAlgorithmsActuallyGenerate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("run: %v", err)
 	}
-	if countVariants(res.Graph) == 0 {
-		t.Fatal("vowel swapping produced no variants; its language list is empty")
+	if n := countVariants(res.Graph); n != 0 {
+		t.Fatalf("vowel swapping produced %d variants with no language data", n)
 	}
 }
+
+// Given a language, the same algorithm generates. This is the other half of the
+// pair above: the emptiness is the dataset's absence, not a broken operator.
+func TestLanguageDrivenAlgorithmsGenerateWithALanguage(t *testing.T) {
+	res, err := Run(context.Background(), Options{
+		Target: "example.com", Algorithms: []string{"vs"},
+		Variant: variant.Options{Languages: []variant.Language{testLanguage{}}},
+		Limits:  graph.Limits{MaxDepth: 1}, Observe: offline(),
+	}, report.Options{})
+	if err != nil {
+		t.Fatalf("run: %v", err)
+	}
+	if countVariants(res.Graph) == 0 {
+		t.Fatal("vowel swapping produced no variants from a language that has vowels")
+	}
+}
+
+// testLanguage is the minimum a language-driven algorithm needs.
+type testLanguage struct{}
+
+func (testLanguage) Code() string                    { return "xx" }
+func (testLanguage) Name() string                    { return "Test" }
+func (testLanguage) Vowels() []string                { return []string{"a", "e", "i", "o", "u"} }
+func (testLanguage) Graphemes() []string             { return nil }
+func (testLanguage) Numerals() map[string][]string   { return nil }
+func (testLanguage) Homoglyphs() map[string][]string { return nil }
+func (testLanguage) Homophones() [][]string          { return nil }
+func (testLanguage) Misspellings() [][]string        { return nil }

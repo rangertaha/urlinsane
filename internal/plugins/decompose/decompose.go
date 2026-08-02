@@ -1,17 +1,5 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 // Package decompose splits a composite target into the entities it is made of:
 // an email into a local part and a domain, a domain into its TLD, a repository
@@ -38,8 +26,13 @@ import (
 )
 
 // Operators returns every decomposer, ready to hand to a scheduler.
-func Operators() []graph.Operator {
-	return []graph.Operator{Email(), Domain(), Repo(), Package()}
+
+// New builds a decomposer. It is the constructor the per-type packages under
+// this one call, and the reason the struct itself stays unexported: the four
+// fields are a closed contract, and a literal in another package could grow a
+// fifth without this package noticing.
+func New(id string, version int, on string, emits graph.Effects, split func(string) graph.Delta) graph.Operator {
+	return &decomposer{id: id, version: version, on: on, emits: emits, split: split}
 }
 
 // decomposer is the shared shape of all four. A decomposition is a pure

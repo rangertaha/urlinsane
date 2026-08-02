@@ -5,47 +5,80 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+The engine was rewritten from a linear plugin pipeline to a graph engine. Some
+entries below describe the pipeline as it was being generalized; where the
+rewrite superseded that work, the newer entry says so.
+
 ### Added
-- Dependency-aware DAG collector engine: collectors run in dependency order
-  (derived from each collector's declared dependencies), parallel across
-  variants and sequential within a variant; `context` is propagated end to end
-  with real per-collector timeouts.
-- Generalized typosquatting to any named **entity** via `--type`
-  (`domain`, `name`, `user`, `package`), including automatic classification of
-  the target; all processing plugins (algorithms, collectors, analyzers)
-  declare, and are filtered by, the entity types they support.
-- IPLD content-addressed result store (`internal/store`): a dag-cbor filesystem
-  blockstore with an IPLD schema (keyed union over entity types), a SQLite
-  secondary index for name lookups, and cross-scan diffing.
+- **Graph engine.** Operators declare what data pattern they bind to and what
+  they emit; the scheduler decides what runs when. The pipeline's `DependsOn`
+  list made plugin order load-bearing and its cache unsound — binding by data
+  means a new operator needs no rewiring, and `ptr` runs on any address
+  whichever operator produced it. This replaces the dependency-ordered
+  collector engine that preceded it.
+- **Three-state existence**: live / absent / unknown. "We asked, it is not
+  there" and "we could not tell" are opposite conclusions, and collapsing them
+  turned a broken network into a clean bill of health.
+- Generalized typosquatting to any named entity — domain, email, package, repo,
+  username. The kind is detected from the target string; the `--type` flag it
+  replaced is gone, and an optional scope positional narrows what gets varied.
+- IPLD content-addressed graph store (`internal/store`): a dag-cbor filesystem
+  blockstore, replay that rebuilds a graph through the applier and CID-checks it
+  against what was stored, and cross-scan diffing. The root carries no timestamp
+  or run id, so two identical scans address identically.
 - Supply-chain detection for package/username/repo squatting:
-  - `pkg` (13 package registries), `usr` (66 username platforms) and `repo`
-    (9 git forges) collectors that check each variant against a source's
-    existence API; reference lists live in `datasets/sources/`.
-  - `--manifest FILE` parses a project's declared dependencies
-    (requirements.txt, package.json, go.mod, Cargo.toml, pyproject.toml,
-    Gemfile, composer.json) and typosquat-checks each one.
-  - Package-registry squat algorithms: separator substitution (`sep`),
-    namespace/scope confusion (`nsc`) and affix combosquatting (`afx`).
-  - `dc` dependency-confusion analyzer: flags names that exist on some
-    registries but remain available (squattable) on others.
+  - `pkg`, `usr` and `repo` operators check a name against each source's
+    existence API; the lists live in `datasets/sources/`.
+  - Registry squat algorithms: separator substitution (`sep`), namespace
+    confusion (`nsc`) and affix squatting (`afx`).
+  - A dependency-confusion analyzer, which is only expressible because absence
+    is recorded as absence rather than as failure.
+- `datasets build` — rebuilds the embedded reference database from `datasets/`
+  (`internal/dataset/gen`). Building deletes first rather than migrating: the
+  shipped database carried columns from three schema generations, with the
+  current ones empty because AutoMigrate can add a column but cannot fill it.
+- Languages are seeded from the keyboard catalogue (`pkg/kb`), so a language the
+  tool can reason about is listed whether or not its corpus is curated yet.
+- Cross-platform release builds for 14 GOOS/GOARCH pairs, `-trimpath` and
+  reproducible flags.
+- `make check` — gofmt, vet and the race detector; plus `make dataset`, `make race`.
 
 ### Changed
-- IPLD is now the source of truth for scan results, superseding the GORM/SQLite
-  results database (the `dataset.db` reference data stays on SQLite).
-- The Analyzers stage now runs with origin→variant pairing.
-- Cleaner JSON output (dropped persistence/ID noise from records).
+- **SQLite driver is now pure Go** (`glebarez/sqlite` over `modernc.org/sqlite`).
+  The cgo driver made cross-compilation need a C toolchain per target, and
+  `CGO_ENABLED=0` produced a binary that ran but could not open the database —
+  the failure was swallowed into an empty in-memory fallback, so every
+  language-driven algorithm silently generated nothing.
+- Go 1.26.5. CI pinned Go 1.22 while `go.mod` required 1.25, so it could not
+  have built the tree; it now reads the version from `go.mod`.
+- IPLD is the source of truth for scan results, superseding the GORM/SQLite
+  results database. `dataset.db` remains SQLite, for reference data only.
+- `internal/plugins` holds everything that acts on the graph, one directory per
+  plugin, grouped by kind rather than by target. Each family is a library plus
+  its plugins, with composition in `<family>/all`.
+- Languages and keyboards stopped being plugins. A language is a dataset
+  directory and a keyboard is a layout in `pkg/kb`; neither needs Go code.
+- `--registered`/`--unregistered` became `--filter live|absent|unknown`, which
+  also expresses the third case the two booleans could not.
+- `--format`, `--file` and `--dir` collapsed into `-o` plus `--save`.
+- Per-file licence headers reduced to a two-line SPDX identifier (182 files).
 
 ### Fixed
+- `.gitattributes` marks binaries `-text`. `internal/config/maxmind.db.gz` had
+  been corrupted by a text round trip — every byte >= 0x80 replaced with the
+  UTF-8 replacement character, including the `8b` of its gzip magic, destroying
+  11.7 MB of 49.7 MB. It has been unusable since commit 911a35c and still needs
+  re-downloading; `scripts/mmdb.sh` now fetches and verifies it.
+- `urlinsane typo` never called `config.Init()`, so no scan opened the dataset
+  database: `--list languages` was empty and geo and the source operators were
+  omitted from every plan.
+- `make deps` ran `go get ./...`, which mutates `go.mod` in module mode.
+- `make test` skipped `./datasets/...`.
 - Self-heal a corrupt or unreadable `dataset.db` instead of panicking on startup.
-- Stop duplicating collected DNS/IP records across collectors and on re-scans.
-- `--format <invalid>` no longer panics; it fails fast with a clear error.
-- `--file`/`-o` now actually writes output (valid JSONL for the `json` format).
-- `--verbose` now enables logging, and `--debug`/`--verbose` logs go to stderr
-  instead of corrupting the results on stdout.
-- Removed the mandatory 5-second-per-collector delay and the per-variant double
-  plugin initialization.
-- Corrected the `--distance` description (it is the *maximum* Levenshtein
-  distance, not the minimum).
+- `--verbose` and `--debug` log to stderr rather than corrupting stdout.
+- Removed the mandatory per-collector delay and the double plugin
+  initialization per variant.
 
 ## [0.9.0] - 2025-01-07
 ### SQLite database backend

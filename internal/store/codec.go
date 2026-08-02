@@ -1,19 +1,7 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
-// Package graphstore persists a graph.Graph as content-addressed dag-cbor
+// Package store persists a graph.Graph as content-addressed dag-cbor
 // blocks: one block per node, one per edge, one side-table block and one scan
 // root linking them all.
 //
@@ -36,7 +24,7 @@
 // Node and edge blocks are produced by graph.Node.Addressed and
 // graph.Edge.Addressed; this package supplies the inverse and everything
 // around it.
-package graphstore
+package store
 
 import (
 	"bytes"
@@ -56,8 +44,8 @@ import (
 // would invalidate every content address already in a store.
 const FormatVersion = 1
 
-// cidPrefix matches internal/graph and internal/store: CIDv1, dag-cbor,
-// sha2-256. All three must agree or a node's CID would depend on who hashed it.
+// cidPrefix matches internal/graph: CIDv1, dag-cbor, sha2-256. Both must agree
+// or a node's CID would depend on who hashed it.
 var cidPrefix = cid.Prefix{
 	Version:  1,
 	Codec:    cid.DagCBOR,
@@ -203,7 +191,7 @@ func (d *dec) len() int {
 		return 0
 	}
 	if d.n.Kind() != datamodel.Kind_List {
-		d.fail("graphstore: expected a list, got %s", d.n.Kind())
+		d.fail("store: expected a list, got %s", d.n.Kind())
 		return 0
 	}
 	return int(d.n.Length())
@@ -214,7 +202,7 @@ func (d *dec) len() int {
 // would be silently misaligned.
 func (d *dec) expect(what string, n int) *dec {
 	if got := d.len(); *d.errp == nil && got != n {
-		d.fail("graphstore: %s has %d elements, want %d", what, got, n)
+		d.fail("store: %s has %d elements, want %d", what, got, n)
 	}
 	return d
 }
@@ -225,12 +213,12 @@ func (d *dec) at(i int) *dec {
 		return child
 	}
 	if d.n.Kind() != datamodel.Kind_List {
-		d.fail("graphstore: expected a list, got %s", d.n.Kind())
+		d.fail("store: expected a list, got %s", d.n.Kind())
 		return child
 	}
 	c, err := d.n.LookupByIndex(int64(i))
 	if err != nil {
-		d.fail("graphstore: element %d: %w", i, err)
+		d.fail("store: element %d: %w", i, err)
 		return child
 	}
 	child.n = c
@@ -251,7 +239,7 @@ func (d *dec) str() string {
 	}
 	s, err := d.n.AsString()
 	if err != nil {
-		d.fail("graphstore: expected a string: %w", err)
+		d.fail("store: expected a string: %w", err)
 		return ""
 	}
 	return s
@@ -263,7 +251,7 @@ func (d *dec) i64() int64 {
 	}
 	i, err := d.n.AsInt()
 	if err != nil {
-		d.fail("graphstore: expected an int: %w", err)
+		d.fail("store: expected an int: %w", err)
 		return 0
 	}
 	return i
@@ -275,7 +263,7 @@ func (d *dec) f64() float64 {
 	}
 	f, err := d.n.AsFloat()
 	if err != nil {
-		d.fail("graphstore: expected a float: %w", err)
+		d.fail("store: expected a float: %w", err)
 		return 0
 	}
 	return f
@@ -287,7 +275,7 @@ func (d *dec) flag() bool {
 	}
 	b, err := d.n.AsBool()
 	if err != nil {
-		d.fail("graphstore: expected a bool: %w", err)
+		d.fail("store: expected a bool: %w", err)
 		return false
 	}
 	return b
@@ -299,7 +287,7 @@ func (d *dec) raw() []byte {
 	}
 	b, err := d.n.AsBytes()
 	if err != nil {
-		d.fail("graphstore: expected bytes: %w", err)
+		d.fail("store: expected bytes: %w", err)
 		return nil
 	}
 	return b
@@ -311,12 +299,12 @@ func (d *dec) link() cid.Cid {
 	}
 	l, err := d.n.AsLink()
 	if err != nil {
-		d.fail("graphstore: expected a link: %w", err)
+		d.fail("store: expected a link: %w", err)
 		return cid.Undef
 	}
 	cl, ok := l.(cidlink.Link)
 	if !ok {
-		d.fail("graphstore: link is not a CID link")
+		d.fail("store: link is not a CID link")
 		return cid.Undef
 	}
 	return cl.Cid
@@ -330,7 +318,7 @@ func (d *dec) id32() [32]byte {
 		return out
 	}
 	if len(b) != 32 {
-		d.fail("graphstore: identity is %d bytes, want 32", len(b))
+		d.fail("store: identity is %d bytes, want 32", len(b))
 		return out
 	}
 	copy(out[:], b)

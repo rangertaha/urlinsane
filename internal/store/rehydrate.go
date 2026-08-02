@@ -1,19 +1,7 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
-package graphstore
+package store
 
 import (
 	"fmt"
@@ -27,7 +15,7 @@ import (
 // Admitting a node or an edge records no provenance in the graph, so this id
 // only ever surfaces in a rejection message — which is exactly where a caller
 // wants to see that the replay, not an operator, was refused.
-const replayOp = "graphstore.replay"
+const replayOp = "store.replay"
 
 // Rehydrated is a graph rebuilt from a stored scan, with the seed the caller
 // needs to keep scanning.
@@ -61,13 +49,13 @@ func (s *Store) Rehydrate(root cid.Cid, reg *graph.Registry) (*Rehydrated, error
 // produces the same scan root.
 func RehydrateScan(scan *Scan, reg *graph.Registry) (*Rehydrated, error) {
 	if scan.Side == nil {
-		return nil, fmt.Errorf("graphstore: scan %s has no side tables", scan.CID)
+		return nil, fmt.Errorf("store: scan %s has no side tables", scan.CID)
 	}
 	g := graph.New(reg)
 
 	seed, err := g.Seed(scan.Root.SeedType, scan.Root.SeedKey)
 	if err != nil {
-		return nil, fmt.Errorf("graphstore: reseeding: %w", err)
+		return nil, fmt.Errorf("store: reseeding: %w", err)
 	}
 
 	byID, err := replayNodes(g, scan, seed)
@@ -111,7 +99,7 @@ func replayNodes(g *graph.Graph, scan *Scan, seed graph.NodeID) (map[graph.NodeI
 		ref := graph.NodeRef{Type: nb.Type, Key: nb.Key}
 		res := g.Apply(graph.Provenance{Operator: replayOp}, seed, graph.Delta{Nodes: []graph.NodeRef{ref}})
 		if len(res.Nodes) != 1 {
-			return nil, fmt.Errorf("graphstore: replaying node %s/%s: %v", nb.Type, nb.Key, res.Rejected)
+			return nil, fmt.Errorf("store: replaying node %s/%s: %v", nb.Type, nb.Key, res.Rejected)
 		}
 		byID[res.Nodes[0]] = ref
 	}
@@ -146,15 +134,15 @@ func replayEdges(g *graph.Graph, reg *graph.Registry, scan *Scan, byID map[graph
 	for _, eb := range scan.Edges {
 		from, ok := byID[eb.From]
 		if !ok {
-			return fmt.Errorf("graphstore: edge %s references unknown source %s", eb.Rel, eb.From)
+			return fmt.Errorf("store: edge %s references unknown source %s", eb.Rel, eb.From)
 		}
 		to, ok := byID[eb.To]
 		if !ok {
-			return fmt.Errorf("graphstore: edge %s references unknown target %s", eb.Rel, eb.To)
+			return fmt.Errorf("store: edge %s references unknown target %s", eb.Rel, eb.To)
 		}
 		rel, ok := reg.Rel(eb.Rel)
 		if !ok {
-			return fmt.Errorf("graphstore: relation %q is not registered", eb.Rel)
+			return fmt.Errorf("store: relation %q is not registered", eb.Rel)
 		}
 		plans = append(plans, edgePlan{
 			ref:   graph.EdgeRef{From: from, Rel: eb.Rel, To: to},
@@ -183,7 +171,7 @@ func replayEdges(g *graph.Graph, reg *graph.Registry, scan *Scan, byID map[graph
 			return nil
 		}
 	}
-	return fmt.Errorf("graphstore: edge replay did not settle after %d passes: %w", maxPasses, last)
+	return fmt.Errorf("store: edge replay did not settle after %d passes: %w", maxPasses, last)
 }
 
 // settled reports whether the replayed graph matches the stored edge set and
@@ -224,7 +212,7 @@ func replayProps(g *graph.Graph, scan *Scan, byID map[graph.NodeID]graph.NodeRef
 		id := graph.NodeID(r.Subject)
 		ref, ok := byID[id]
 		if !ok {
-			return fmt.Errorf("graphstore: prop %q references unknown node %s", r.Field, id)
+			return fmt.Errorf("store: prop %q references unknown node %s", r.Field, id)
 		}
 		res := g.Apply(
 			graph.Provenance{Operator: r.Operator, Round: r.Round},
@@ -232,18 +220,18 @@ func replayProps(g *graph.Graph, scan *Scan, byID map[graph.NodeID]graph.NodeRef
 			graph.Delta{Props: []graph.PropSet{{Node: &ref, Field: r.Field, Value: r.Value}}},
 		)
 		if len(res.Rejected) > 0 {
-			return fmt.Errorf("graphstore: replaying %s.%s: %v", ref.Key, r.Field, res.Rejected)
+			return fmt.Errorf("store: replaying %s.%s: %v", ref.Key, r.Field, res.Rejected)
 		}
 	}
 
 	for _, r := range scan.Side.EdgeProps {
 		from, ok := byID[r.From]
 		if !ok {
-			return fmt.Errorf("graphstore: edge prop %q references unknown source %s", r.Field, r.From)
+			return fmt.Errorf("store: edge prop %q references unknown source %s", r.Field, r.From)
 		}
 		to, ok := byID[r.To]
 		if !ok {
-			return fmt.Errorf("graphstore: edge prop %q references unknown target %s", r.Field, r.To)
+			return fmt.Errorf("store: edge prop %q references unknown target %s", r.Field, r.To)
 		}
 		eref := graph.EdgeRef{From: from, Rel: r.Rel, To: to}
 		res := g.Apply(
@@ -252,7 +240,7 @@ func replayProps(g *graph.Graph, scan *Scan, byID map[graph.NodeID]graph.NodeRef
 			graph.Delta{Props: []graph.PropSet{{Edge: &eref, Field: r.Field, Value: r.Value}}},
 		)
 		if len(res.Rejected) > 0 {
-			return fmt.Errorf("graphstore: replaying %s.%s: %v", r.Rel, r.Field, res.Rejected)
+			return fmt.Errorf("store: replaying %s.%s: %v", r.Rel, r.Field, res.Rejected)
 		}
 	}
 	return nil
@@ -268,13 +256,13 @@ func replayProps(g *graph.Graph, scan *Scan, byID map[graph.NodeID]graph.NodeRef
 func replaySideState(g *graph.Graph, scan *Scan, byID map[graph.NodeID]graph.NodeRef) error {
 	for _, r := range scan.Side.Status {
 		if _, ok := byID[r.Node]; !ok {
-			return fmt.Errorf("graphstore: status references unknown node %s", r.Node)
+			return fmt.Errorf("store: status references unknown node %s", r.Node)
 		}
 		g.SetStatus(r.Node, r.Operator, r.Status)
 	}
 	for _, r := range scan.Side.Scores {
 		if _, ok := byID[r.Node]; !ok {
-			return fmt.Errorf("graphstore: score references unknown node %s", r.Node)
+			return fmt.Errorf("store: score references unknown node %s", r.Node)
 		}
 		g.SetScore(r.Node, r.Key, r.Score)
 	}
@@ -286,7 +274,7 @@ func replaySideState(g *graph.Graph, scan *Scan, byID map[graph.NodeID]graph.Nod
 	}
 	for _, r := range scan.Side.Ledger {
 		if err := g.Decline(r.Type, r.Key, r.Depth, r.Belief, r.Reason, r.By); err != nil {
-			return fmt.Errorf("graphstore: restoring ledger row %s/%s: %w", r.Type, r.Key, err)
+			return fmt.Errorf("store: restoring ledger row %s/%s: %w", r.Type, r.Key, err)
 		}
 	}
 	return nil
@@ -298,7 +286,7 @@ func replaySideState(g *graph.Graph, scan *Scan, byID map[graph.NodeID]graph.Nod
 func verify(g *graph.Graph, scan *Scan) error {
 	nodes := g.Nodes()
 	if len(nodes) != len(scan.Nodes) {
-		return fmt.Errorf("graphstore: rebuilt %d nodes, stored %d", len(nodes), len(scan.Nodes))
+		return fmt.Errorf("store: rebuilt %d nodes, stored %d", len(nodes), len(scan.Nodes))
 	}
 	for i, n := range nodes {
 		_, c, err := EncodeNode(n)
@@ -306,14 +294,14 @@ func verify(g *graph.Graph, scan *Scan) error {
 			return err
 		}
 		if c != scan.Nodes[i].CID {
-			return fmt.Errorf("graphstore: node %s/%s re-encodes to %s, stored %s",
+			return fmt.Errorf("store: node %s/%s re-encodes to %s, stored %s",
 				n.Type.Name(), n.Key, c, scan.Nodes[i].CID)
 		}
 	}
 
 	edges := g.Edges()
 	if len(edges) != len(scan.Edges) {
-		return fmt.Errorf("graphstore: rebuilt %d edges, stored %d", len(edges), len(scan.Edges))
+		return fmt.Errorf("store: rebuilt %d edges, stored %d", len(edges), len(scan.Edges))
 	}
 	for i, e := range edges {
 		_, c, err := EncodeEdge(e)
@@ -321,7 +309,7 @@ func verify(g *graph.Graph, scan *Scan) error {
 			return err
 		}
 		if c != scan.Edges[i].CID {
-			return fmt.Errorf("graphstore: edge %s re-encodes to %s, stored %s", e.Rel.Name(), c, scan.Edges[i].CID)
+			return fmt.Errorf("store: edge %s re-encodes to %s, stored %s", e.Rel.Name(), c, scan.Edges[i].CID)
 		}
 	}
 	return nil

@@ -1,19 +1,7 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
-package graphstore
+package store
 
 import (
 	"fmt"
@@ -97,7 +85,7 @@ func decodeRoot(block []byte) (*Root, error) {
 		SeedKey:  d.at(2).str(),
 	}
 	if d.err() == nil && r.Version != FormatVersion {
-		return nil, fmt.Errorf("graphstore: scan root format version %d, this build writes %d", r.Version, FormatVersion)
+		return nil, fmt.Errorf("store: scan root format version %d, this build writes %d", r.Version, FormatVersion)
 	}
 	d.at(3).each(func(v *dec) { r.Nodes = append(r.Nodes, v.link()) })
 	d.at(4).each(func(v *dec) { r.Edges = append(r.Edges, v.link()) })

@@ -1,17 +1,5 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 package observe
 
@@ -27,12 +15,12 @@ import (
 	"github.com/rangertaha/urlinsane/internal/graph"
 )
 
-// Source is one registry or platform a name may exist on. Template is the page
+// Source is one registry or platform a name may exist on. URL is the page
 // a human should be shown; CheckURL is the endpoint that answers existence
 // cleanly, which is often an API rather than the page.
 type Source struct {
 	Code     string
-	Template string
+	URL      string
 	CheckURL string
 }
 
@@ -50,10 +38,10 @@ type Prober interface {
 	Exists(ctx context.Context, rawURL string) (bool, error)
 }
 
-// datasetSources reads the source lists out of the dataset, or returns nil when
+// DatasetSources reads the source lists out of the dataset, or returns nil when
 // there is no dataset — in which case New omits the source operators rather
 // than planning operators that cannot answer.
-func datasetSources() SourceLister {
+func DatasetSources() SourceLister {
 	if dataset.DB == nil {
 		return nil
 	}
@@ -72,7 +60,10 @@ func (datasetLister) Sources(kind string) ([]Source, error) {
 	}
 	out := make([]Source, 0, len(rows))
 	for _, r := range rows {
-		out = append(out, Source{Code: r.Code, Template: r.Template, CheckURL: r.CheckURL})
+		// CheckURL is left empty: the dataset no longer carries a separate
+		// existence endpoint, and the probe falls back to URL when it is unset.
+		// Success/Failed regexes are not read yet.
+		out = append(out, Source{Code: r.Code, URL: r.URL})
 	}
 	return out, nil
 }
@@ -80,9 +71,9 @@ func (datasetLister) Sources(kind string) ([]Source, error) {
 // httpProber answers existence with a GET, treating any 2xx as present.
 type httpProber struct{ client *http.Client }
 
-func defaultProber(timeout time.Duration) Prober {
+func DefaultProber(timeout time.Duration) Prober {
 	if timeout <= 0 {
-		timeout = defaultTimeout
+		timeout = DefaultTimeout
 	}
 	return httpProber{client: &http.Client{Timeout: timeout}}
 }
@@ -119,7 +110,7 @@ func (p httpProber) Exists(ctx context.Context, rawURL string) (bool, error) {
 // dependency-confusion case, and it is only detectable because absence is
 // recorded as such rather than as a failure.
 type sourceOp struct {
-	base
+	Base
 	id       string
 	on       string
 	kind     string
@@ -128,26 +119,25 @@ type sourceOp struct {
 	prober   Prober
 }
 
-// newSourceOps builds the three source-checking operators. They are one
-// implementation bound to three types: the work is identical, only the pattern
-// and the source list differ.
-func newSourceOps(o Options, list SourceLister, prober Prober) []graph.Operator {
+// NewSourceOp builds one source-checking operator: does this name exist on any
+// of the platforms of one kind.
+//
+// One implementation serves package, username and repository because the work
+// is identical — only the node type it binds to and the source list differ.
+// The three packages beside this one supply those two things and nothing else,
+// which is the whole reason this constructor is exported rather than each of
+// them reimplementing the probe loop.
+func NewSourceOp(o Options, id, on, kind string, list SourceLister, prober Prober) graph.Operator {
 	resource := o.SourceResource
 	if resource == "" {
 		resource = ResourceHTTP
 	}
-	mk := func(id, on, kind string) graph.Operator {
-		return sourceOp{
-			base: o.base(), id: id, on: on, kind: kind,
-			resource: resource, sources: list, prober: prober,
-		}
+	if prober == nil {
+		prober = DefaultProber(o.Timeout)
 	}
-	return []graph.Operator{
-		mk("pkg", TypePackage, "package"),
-		mk("usr", TypeUsername, "username"),
-		// The old repo collector bound to package and name entities; a repo is
-		// its own type now, so it binds where it belongs.
-		mk("repo", TypeRepo, "repository"),
+	return sourceOp{
+		Base: o.Base(), id: id, on: on, kind: kind,
+		resource: resource, sources: list, prober: prober,
 	}
 }
 
@@ -178,7 +168,7 @@ func (o sourceOp) Exec(ctx context.Context, v graph.View) (graph.Delta, graph.Ou
 		return graph.Delta{}, graph.Failed(errors.New("observe: no " + o.kind + " sources configured"))
 	}
 
-	ctx, cancel := o.call(ctx)
+	ctx, cancel := o.Call(ctx)
 	defer cancel()
 
 	var d graph.Delta
@@ -192,9 +182,9 @@ func (o sourceOp) Exec(ctx context.Context, v graph.View) (graph.Delta, graph.Ou
 		}
 		check := s.CheckURL
 		if check == "" {
-			check = s.Template
+			check = s.URL
 		}
-		found, perr := o.prober.Exists(ctx, expand(check, v.Key()))
+		found, perr := o.prober.Exists(ctx, Expand(check, v.Key()))
 		if perr != nil {
 			undetermined = perr
 			continue
@@ -203,8 +193,8 @@ func (o sourceOp) Exec(ctx context.Context, v graph.View) (graph.Delta, graph.Ou
 			continue
 		}
 
-		display := expand(s.Template, v.Key())
-		ref := graph.NodeRef{Type: TypePlatform, Key: platformKey(s)}
+		display := Expand(s.URL, v.Key())
+		ref := graph.NodeRef{Type: TypePlatform, Key: PlatformKey(s)}
 		edge := graph.EdgeRef{From: self, Rel: RelExistsOn, To: ref}
 		d.Nodes = append(d.Nodes, ref)
 		d.Edges = append(d.Edges, edge)
@@ -228,7 +218,7 @@ func (o sourceOp) Exec(ctx context.Context, v graph.View) (graph.Delta, graph.Ou
 }
 
 // expand substitutes the name into a source's URL template.
-func expand(template, name string) string {
+func Expand(template, name string) string {
 	return strings.ReplaceAll(template, "%s", url.PathEscape(name))
 }
 
@@ -239,8 +229,8 @@ func expand(template, name string) string {
 // The placeholder is dropped before parsing because "%s" is an invalid percent
 // escape and url.Parse rejects the whole template over it — which silently sent
 // every platform key to the fallback.
-func platformKey(s Source) string {
-	template := strings.ReplaceAll(s.Template, "%s", "")
+func PlatformKey(s Source) string {
+	template := strings.ReplaceAll(s.URL, "%s", "")
 	if u, err := url.Parse(template); err == nil && u.Host != "" {
 		return u.Host
 	}

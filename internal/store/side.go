@@ -1,19 +1,7 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
-package graphstore
+package store
 
 import (
 	"fmt"
@@ -235,7 +223,7 @@ func encodeValue(e *enc, k graph.Kind, v graph.Value) {
 	case graph.KindBytes:
 		e.raw(v.Raw())
 	default:
-		e.fail(fmt.Errorf("graphstore: cannot encode a value of kind %s", k))
+		e.fail(fmt.Errorf("store: cannot encode a value of kind %s", k))
 	}
 }
 
@@ -254,7 +242,7 @@ func decodeTypedValue(d *dec, k graph.Kind) graph.Value {
 	case graph.KindBytes:
 		return graph.Bytes(d.raw())
 	}
-	d.fail("graphstore: cannot decode a value of kind %d", k)
+	d.fail("store: cannot decode a value of kind %d", k)
 	return graph.Value{}
 }
 
@@ -296,7 +284,7 @@ func decodeSide(block []byte) (*Side, error) {
 	d := newDec(n).expect("side block", 9)
 	s := &Side{Version: int(d.at(0).i64())}
 	if v := s.Version; v != FormatVersion && d.err() == nil {
-		return nil, fmt.Errorf("graphstore: side block format version %d, this build writes %d", v, FormatVersion)
+		return nil, fmt.Errorf("store: side block format version %d, this build writes %d", v, FormatVersion)
 	}
 
 	d.at(1).each(func(r *dec) { s.NodeProps = append(s.NodeProps, decodePropRow(r)) })

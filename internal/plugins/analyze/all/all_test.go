@@ -1,19 +1,7 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
-package analyze
+package all
 
 import (
 	"context"
@@ -22,6 +10,9 @@ import (
 	"testing"
 
 	"github.com/rangertaha/urlinsane/internal/graph"
+	"github.com/rangertaha/urlinsane/internal/plugins/analyze/campaign"
+	"github.com/rangertaha/urlinsane/internal/plugins/analyze/depconfusion"
+	"github.com/rangertaha/urlinsane/internal/plugins/analyze/scoring"
 )
 
 func registry(t *testing.T) *graph.Registry {
@@ -99,7 +90,7 @@ func mustNode(t *testing.T, g *graph.Graph, typ, key string) graph.NodeID {
 
 func TestCampaignClustersSharedInfrastructure(t *testing.T) {
 	g, _ := variantsOnOneIP(t, "examp1e.com", "exarnple.com", "exampie.com")
-	if err := g.RunAnalyzers(context.Background(), []graph.Analyzer{Campaign{}}); err != nil {
+	if err := g.RunAnalyzers(context.Background(), []graph.Analyzer{campaign.Campaign{}}); err != nil {
 		t.Fatalf("analyze: %v", err)
 	}
 	var found *graph.Finding
@@ -119,7 +110,7 @@ func TestCampaignClustersSharedInfrastructure(t *testing.T) {
 
 func TestCampaignIgnoresSingletons(t *testing.T) {
 	g, _ := variantsOnOneIP(t, "examp1e.com")
-	_ = g.RunAnalyzers(context.Background(), []graph.Analyzer{Campaign{}})
+	_ = g.RunAnalyzers(context.Background(), []graph.Analyzer{campaign.Campaign{}})
 	for _, f := range g.Findings() {
 		if f.Kind == "campaign" {
 			t.Fatal("one variant on an address is not a campaign")
@@ -135,7 +126,7 @@ func TestScoringRatesLiveVariants(t *testing.T) {
 		From: v, Rel: "MX", To: graph.NodeRef{Type: "domain", Key: "mail.examp1e.com"},
 	}}})
 
-	if err := g.RunAnalyzers(context.Background(), []graph.Analyzer{Scoring{}}); err != nil {
+	if err := g.RunAnalyzers(context.Background(), []graph.Analyzer{scoring.Scoring{}}); err != nil {
 		t.Fatalf("analyze: %v", err)
 	}
 	if got := g.Risk(id); got < graph.SeverityHigh {
@@ -152,7 +143,7 @@ func TestScoringSkipsNonLive(t *testing.T) {
 	id := mustNode(t, g, "domain", "gone.com")
 	g.SetStatus(id, "dns", graph.StatusEmpty)
 
-	_ = g.RunAnalyzers(context.Background(), []graph.Analyzer{Scoring{}})
+	_ = g.RunAnalyzers(context.Background(), []graph.Analyzer{scoring.Scoring{}})
 	if len(g.Findings()) != 0 {
 		t.Fatalf("findings = %+v, want none for a confirmed-absent variant", g.Findings())
 	}
@@ -171,7 +162,7 @@ func TestDepConfusionDistinguishesAbsentFromUnknown(t *testing.T) {
 	uid := mustNode(t, g, "package", "npm:maybe-lib")
 	g.SetStatus(uid, "npm", graph.StatusTimeout)
 
-	if err := g.RunAnalyzers(context.Background(), []graph.Analyzer{DepConfusion{}}); err != nil {
+	if err := g.RunAnalyzers(context.Background(), []graph.Analyzer{depconfusion.DepConfusion{}}); err != nil {
 		t.Fatalf("analyze: %v", err)
 	}
 	var critical, info int
@@ -201,7 +192,7 @@ func TestDepConfusionSkipsPublishedPackages(t *testing.T) {
 	}}})
 	g.SetStatus(seed, "npm", graph.StatusOK)
 
-	_ = g.RunAnalyzers(context.Background(), []graph.Analyzer{DepConfusion{}})
+	_ = g.RunAnalyzers(context.Background(), []graph.Analyzer{depconfusion.DepConfusion{}})
 	for _, f := range g.Findings() {
 		if strings.HasPrefix(f.Kind, "dep-confusion") && len(f.Nodes) > 0 && f.Nodes[0] == seed {
 			t.Fatal("a published package was reported as a confusion gap")

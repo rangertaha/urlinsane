@@ -37,241 +37,246 @@ Generate variations of a target and gather information on them with the `typo` c
 urlinsane typo example.com
 ```
 
-Typosquatting is not limited to domains. Use `--type` to target other named
-entities; the engine runs only the algorithms and collectors that apply to the
-selected entity type:
+**Typosquatting is not limited to domains, and the target's kind is detected
+from the string alone** — there is no `--type` flag:
 
 ```bash
-urlinsane typo example.com                 # a domain (default)
-urlinsane typo --type package requests     # a package name (PyPI, npm, ...)
-urlinsane typo --type user rangertaha      # a username / handle
-urlinsane typo --type name "John Smith"    # a person or brand name
+urlinsane typo acme.com                 # domain
+urlinsane typo bob@acme.com             # email: varies bob, acme.com, and the address
+urlinsane typo npm:lodash               # package on a named registry
+urlinsane typo github.com/acme/tool     # repo
+urlinsane typo bobsmith                 # username
 ```
 
-List the IDs of registered languages, keyboards, algorithms and collectors:
+An optional first positional narrows what gets varied, without changing how the
+target is read:
 
 ```bash
-urlinsane typo --options
+urlinsane typo username acme.com/bob    # vary only bob
+urlinsane typo domain bob@acme.com      # vary only acme.com
 ```
 
 ### `typo` options
 
-Usage: `urlinsane typo [options] <target>`
+`urlinsane typo [<scope>] <target> [flags]`
 
 | Flag | Alias | Default | Description |
 |------|-------|---------|-------------|
-| `--type` | | `domain` | Entity type of the target: `domain`, `name`, `user`, `package` |
-| `--languages` | `-l` | `en` | Language IDs to use |
-| `--keyboards` | `-k` | `en1,en2,en3,en4` | Keyboard layout IDs to use |
-| `--algorithms` | `-a` | `all` | Algorithm IDs to use |
-| `--collectors` | `-c` | | Collector IDs to use |
-| `--analyzers` | `-z` | | Analyzer IDs to use (e.g. `all`) |
-| `--options` | `--ids`, `--opts` | `false` | Show registered keyboard, language, algorithm and collector IDs |
+| `--depth` | `-d` | `3` | Observation hops from the seed |
+| `--algorithm` | `-a` | all | Restrict variant generation to these algorithm IDs; `^id` excludes |
+| `--filter` | `-f` | | Select report rows: `live`, `absent`, `unknown`, `untried`, `risk>SEV`, `type=NAME`, `depth<=N` |
+| `--output` | `-o` | `table` | `table`, `json`, `ndjson`, `csv`, `dot` |
+| `--save` | | | Write the report to a path; format from the extension |
+| `--fail-on` | | | Exit `2` if any finding reaches a severity — the CI gate |
+| `--verbose` | `-v` | | Include provenance and engine belief |
+| `--explain` | | | Compile and print the plan without running it |
+| `--list` | | | `types`, `relations`, `operators`, `algorithms`, `languages`, `keyboards`, `formats`, `filters` |
 
-**Constraints**
+`--filter` selects rows **in the report**, never work in the scan — narrowing
+the scan is what `--depth`, `--algorithm` and the scope positional do.
 
-| Flag | Alias | Default | Description |
-|------|-------|---------|-------------|
-| `--regex` | `-e` | | Regular expression a variant must match |
-| `--distance` | `-d` | `5` | Maximum Levenshtein distance |
+Exit codes: `0` clean, `1` execution error, `2` a finding at or above
+`--fail-on`.
 
-**Performance**
+**[docs/CLI.md](docs/CLI.md) is the full reference**, including the flags that
+are specified but not yet built. [docs/DESIGN.md](docs/DESIGN.md) §12 is the
+reasoning behind the interface.
 
-| Flag | Alias | Default | Description |
-|------|-------|---------|-------------|
-| `--workers` | `-w` | `50` | Number of concurrent workers |
-| `--timeout` | `-t` | `20s` | Maximum duration per task |
-| `--delay` | | `0` | Delay between network calls (e.g. `200ms`) |
-| `--random` | | `0` | Extra random delay added per call, up to this duration |
-| `--ttl` | | `1h` | Duration to cache results (`0` clears the cache) |
-| `--nameservers` | `-n` | | DNS or DoH servers to query (comma-separated) |
-| `--rua` | | `false` | Randomize the user agent for HTTP requests |
+List what a build has registered:
 
-**Output**
+```bash
+urlinsane typo --list algorithms
+urlinsane typo --list keyboards
+```
 
-| Flag | Alias | Default | Description |
-|------|-------|---------|-------------|
-| `--format` | `-f` | `list` | Output format: `list`, `json` |
-| `--file` | `-o` | | Filename to save scan output |
-| `--dir` | | `domains` | Directory to save files |
-| `--summary` | `-s` | `true` | Show a summary of scan results |
-| `--progress` | `-p` | `false` | Show a progress bar |
-| `--verbose` | `-v` | `false` | More detail in the output |
-| `--registered` | `-r` | `false` | Show only registered domain names |
-| `--unregistered` | `-u` | `false` | Show only unregistered domain names |
+## What a build registers
 
+| Kind | Count | |
+|---|---|---|
+| Node types | 10 | domain, email, package, repo, username, ip, nameserver, … |
+| Algorithms | 27 | generate variants of a name |
+| Operators | 39 | expand and observe the graph |
+| Keyboards | 133 | distinct key-adjacency sets, from 203 shipped layouts |
+| Languages | 30 | curated dataset directories |
+| Formats | 5 | table, json, ndjson, csv, dot |
 
-
-
-## Plugins
-
-Plugins play a crucial role in extending the functionality, flexibility, and customization of Urlinsane and allow it to evolve alongside changing needs and technological advancements. Here's a list of the plugin:
-
-|    Type       | Number | Description                                                             |
-|---------------|--------|-------------------------------------------------------------------------|
-| Languages     |    30  | Language plugins that support linguistic capabilities.                  |
-| Keyboards     |    40  | Keyboard plugins offering layouts for various international keyboards.  |
-| Algorithms    |    24  | Generate typo variants for each target domain.                          |
-| Information   |    13  | Gather information on target domains.                                   |
-| Outputs       |    6   | Format and save results in various output formats.                      |
-
-
+Languages and keyboards are **data**, not plugins: a language is a directory
+under `datasets/languages/`, a keyboard a layout in `pkg/kb`, and neither needs
+Go code. Output formats are a closed set the report projects into. What remains
+extensible is `internal/plugins` — operators, analyzers and algorithms — one
+directory per plugin, grouped by kind (`decompose`, `variant`, `observe`,
+`analyze`, `report`).
 
 ### Language IDs
 
-To see all registered language IDs in your build:
-
 ```bash
-urlinsane typo --options
+urlinsane typo --list languages
 ```
 
-Pashto is available as language ID `ps`. Latin is available as language ID `la`.
+Languages are two-letter directory names under `datasets/languages/`; Pashto is
+`ps` and Latin is `la`. Note that this lists what the *dataset database* holds,
+which is not yet what the repo ships — see `docs/CLI.md` §9.1.
 
 ### Language Datasets (`datasets/languages/`)
 
 The repo ships with a `datasets/languages/<lang>/` structure (e.g. `numeral.lst`, `homoglyph.lst`, `homophone.lst`, `positive.lst`, `negative.lst`, etc).
 
-You can generate/refresh these files from the currently registered language plugins using:
+These files are the authored source, hand-curated per language, and nothing
+generates them. Load them into the dataset database with:
 
 ```bash
-go run ./cmd/datasets sync-languages --dir datasets/languages
+go run ./cmd/datasets import datasets
 ```
 
-By default this **will not overwrite** any existing dataset files (so large curated datasets like `datasets/languages/en/*` are preserved). To overwrite files:
-
-```bash
-go run ./cmd/datasets sync-languages --dir datasets/languages --overwrite
-```
+A `sync-languages` command used to generate this tree *from* the language
+plugins. That pointed the wrong way — the curated lists were the artefact and
+the plugins were built from them — and it was removed along with the language
+plugins themselves. Languages are data now, not code: adding one means adding a
+directory here and re-importing.
 
 ### Keyboard Layouts
 
-Keyboard layouts are separate plugins. This repo now includes at least one keyboard layout per language plugin. To list available keyboard layout IDs:
+Keyboard layouts are data, compiled in from `pkg/kb`: 203 shipped layouts,
+which collapse to the 133 distinct key-adjacency sets the algorithms actually
+run over. To list them:
 
 ```bash
-urlinsane typo --options
+urlinsane typo --list keyboards
 ```
 
 
 ## Algorithms
 
-Algorithms systematically generate plausible misspelled domain variations by analyzing common typing errors and linguistic patterns. 
+Algorithms generate plausible variants of a name. `--list algorithms` prints
+this table for the build you have.
 
-| ID   | Name                          | Description                                                                                      |
-|------|-------------------------------|--------------------------------------------------------------------------------------------------|
-| di   | Dot Insertion                 | Inserting periods into the target domain name.                                                    |
-| do   | Dot Omission                  | Omitting periods from the target domain name.                                                    |
-| dh   | Dot/Hyphen Substitution        | Swapping dots and hyphens in the domain name.                                                    |
-| hi   | Hyphen Insertion              | Inserting hyphens into the target domain name.                                                   |
-| ho   | Hyphen Omission               | Removing hyphens from the target domain name.                                                    |
-| co   | Character Omission            | Omitting a character from the domain name.                                                       |
-| cs   | [Character Swapping](https://github.com/rangertaha/urlinsane/tree/master/pkg/typo#cs-character-swapping)        | Swapping two consecutive characters in the domain name.                                          |
-| acs  | [Adjacent Char Substitution](https://github.com/rangertaha/urlinsane/blob/master/pkg/typo/README.md#acs-adjacent-character-substitution)    | Replacing adjacent characters from the keyboard in the domain name.                              |
-| aci  | Adjacent Char Insertion       | Inserting adjacent characters from the keyboard into the domain name.                            |
-| gi   | Grapheme Insertion            | Inserting language-specific characters into the target domain name.                              |
-| gr   | Grapheme Replacement          | Replacing characters with similar-looking characters in the domain name.                         |
-| hr   | Homoglyphs Replacement        | Replacing characters with visually similar homoglyphs in the domain name.                        |
-| sps  | Singular Pluralisation        | Swapping singular forms of words with plural forms in the domain name.                           |
-| cr   | Character Repeat              | Repeating a character from the domain name twice.                                                |
-| dcr  | Double Char Replacement       | Replacing identical, consecutive letters in the domain name with other characters.               |
-| dcar | Double Char Adjacent Repl     | Replacing consecutive identical letters with adjacent keys on the keyboard in the domain name.    |
-| cm   | Common Misspellings           | Generated from a dictionary of commonly misspelled words in various languages.                    |
-| hs   | Homophones Substitution       | Substituting words that sound the same but have different spellings in the domain name.           |
-| vs   | Vowel Substitution            | Replacing vowels in the domain name with other vowels to create variations.                      |
-| bf   | Bitsquatting                  | Leveraging random bit-errors to redirect connections.                                            |
-| tld  | Wrong TLD                     | Using the wrong top-level domain (TLD) for the domain name.                                      |
-| tld2 | Wrong SLD                     | Using the wrong second-level domain (TLD2) for the domain name.                                  |
-| tld3 | Wrong TLD3                    | Using the wrong third-level domain (TLD3) for the domain name.                                   |
-| ons  | Ordinal Number Substitution   | Substituting ordinal numbers (1st, 2nd) with digital numbers in the domain name.                 |
-| cns  | Cardinal Number Substitution  | Substituting cardinal numbers (1, 2, 3) with digital numbers in the domain name.                 |
-| si   | Subdomain Insertion           | Inserting common subdomains at the beginning of the domain name.                                 |
-| com  | Combosquatting                 | **TODO**: Combining keywords extracted via NLP and HTML meta tags into domain variants.           |
-| st   | [Stem](https://en.wikipedia.org/wiki/Stemming) Substitution | **TODO**: Replacing words with their root form (stemming) in the domain name.                    |
-| ks   | Keyboard Substitution         | **TODO**: Changing international keyboard layouts, assuming the user is typing in their native layout. |
+**Applies to** is blank where an algorithm binds by capability rather than by
+type — those run on any nameable node, domain or package or handle alike.
 
+| ID | Name | Applies to | Description |
+|---|---|---|---|
+| `aci` | Adjacent Character Insertion | any | Insert a character adjacent on the keyboard. |
+| `acs` | Adjacent Character Substitution | any | Replace a character with a keyboard neighbour. |
+| `afx` | Affix Squatting | package, repo, username | Add a plausible prefix or suffix. |
+| `bf` | Bit Flipping | any | Flip one bit of a character — bitsquatting. |
+| `cb` | Combo Squatting | any | Append or prepend a common keyword. |
+| `cm` | Common Misspellings | any | Apply a curated misspelling for the language. |
+| `cns` | Cardinal Substitution | any | Swap a number for its cardinal word, and back. |
+| `co` | Character Omission | any | Drop a character. |
+| `cr` | Character Repetition | any | Double a character. |
+| `cs` | Character Swapping | any | Transpose two adjacent characters. |
+| `dhs` | Dot Hyphen Substitution | any | Swap dots and hyphens. |
+| `di` | Dot Insertion | any | Insert a period. |
+| `do` | Dot Omission | any | Remove a period. |
+| `gi` | Grapheme Insertion | any | Insert a grapheme from the language's set. |
+| `gr` | Grapheme Replacement | any | Replace a grapheme with another. |
+| `hi` | Hyphen Insertion | any | Insert a hyphen. |
+| `ho` | Hyphen Omission | any | Remove a hyphen. |
+| `hr` | Homoglyph Replacement | any | Replace a character with one that looks the same. |
+| `hs` | Homophone Substitution | any | Replace a word with one that sounds the same. |
+| `nsc` | Namespace Confusion | package, repo | Move a name between namespaces or scopes. |
+| `ons` | Ordinal Substitution | any | Swap a number for its ordinal word, and back. |
+| `rar` | Repetition Adjacent Replacement | any | Double a character, then replace the double with a neighbour. |
+| `sep` | Separator Substitution | package, repo, username | Swap the separator a registry allows. |
+| `si` | Subdomain Insertion | domain | Insert a subdomain label. |
+| `sp` | Singular Pluralise | any | Make a word singular or plural. |
+| `tld` | Wrong TLD | domain | Substitute a different public suffix. |
+| `vs` | Vowel Swapping | any | Swap one vowel for another. |
 
-## Collectors
+## Operators
 
-Collector plugins gathering information on domains enables a detailed comparison of similar-looking domains to determine if they are being typosquatted by cybercriminals. By collecting data on domain ownership, registration dates, hosting locations, and site content, algorithms can analyze whether these variations are likely to be malicious. This approach helps identify suspicious patterns and potential connections to phishing, fraud, or brand impersonation attempts. With thorough data collection, organizations can better detect and respond to typosquatting threats in real time.
+An operator is what expands or observes the graph. Where the old collectors ran
+in a fixed order over a list of domains, an operator declares what data pattern
+it **binds to** and what it **emits**, and the scheduler decides what runs when.
+`--list operators` prints the plan-eligible set:
 
+| ID | Binds on | Emits |
+|---|---|---|
+| `decompose.domain` | domain | `TLD_OF` |
+| `decompose.email` | email | `LOCAL_PART`, `DOMAIN_OF` |
+| `decompose.package` | package | `OWNER` |
+| `decompose.repo` | repo | `HOSTED_ON`, `OWNER` |
+| `dns-a` | domain | `RESOLVES_TO` |
+| `dns-mx` | domain | `MX` |
+| `dns-ns` | domain | `NS` |
+| `dns-cname` `dns-txt` | domain | props only |
+| `ptr` | ip | `PTR_TO` |
+| `whois` | domain | `REGISTERED_BY` |
+| `idn` | domain | props only |
+| `geo` | ip | props only — needs the geolocation database |
+| `pkg` `usr` `repo` | package, username, repo | `EXISTS_ON` — needs the source lists |
 
+Plus one operator per algorithm, all emitting `VARIANT_OF`.
 
-| ID  | Name              | Description                                                                                                    |
-|-----|-------------------|------------------------------------------------------------------------------------------------|
-|     | [Levenshtein](https://en.wikipedia.org/wiki/Levenshtein_distance) | Calculates Levenshtein distance between domains by default to limit scan scope.                   |
-| a   | DNS A             | Retrieves host IPv4 addresses.                                                                      |
-| mx  | DNS MX            | Retrieves DNS Mail Exchange (MX) records.                                                           |
-| txt | DNS TXT           | Retrieves DNS TXT records.                                                                         |
-| aa  | DNS AAAA          | Retrieves host IPv6 addresses.                                                                     |
-| cn  | DNS CName         | Maps one domain to another via CNAME records.                                                      |
-| ns  | DNS NS            | Checks NS records to identify the authoritative name server for a domain.                          |
-| geo | GeoIP Info        | Provides IP location information via MaxMind database.                                             |
-| ssd | SSDeep            | Uses fuzzy hashing with ssdeep to determine domain similarity, for pages with substantial content. |
-| 301 | Redirects         | Retrieves domain redirects.                                                                        |
-| idn | IDN               | Retrieves internationalized domain names.                                                          |
-| bn  | Banner            | Captures HTTP/SMTP banner using a basic TCP connection.                                            |
-| png | Screenshot        | Takes a domain screenshot via a headless browser and stores it locally.                            |
-| wi  | Whois             | **TODO**: Perform Whois lookup for domain information.                                             |
-| kw  | Keywords          | **TODO**: Extract keywords using the [RAKE](https://www.mathworks.com/help/textanalytics/ug/extract-keywords-from-documents-using-rake.html) algorithm. |
-| tp  | NLP Topics        | **TODO**: Extract topics using the [LDA](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation) algorithm. |
-| vc  | [VSM](https://en.wikipedia.org/wiki/Vector_space_model) | **TODO**: Compare domains' vector spaces for cosine similarity.                                    |
-| lm  | [LLM](https://en.wikipedia.org/wiki/Large_language_model) | **TODO**: Use LLMs for keyword extraction, stemming, named entity recognition, and other NLP tasks. |
-| ng  | [N-Gram](https://en.wikipedia.org/wiki/N-gram) | **TODO**: Generate domain variants using the domain's most common N-grams.                        |
-| har | [HAR](https://en.wikipedia.org/wiki/HAR_(file_format)) | **TODO**: Retrieve HAR file from browser interaction for in-depth data analysis.
-| pop | Popularity  | **TODO**: Retrieve domain popularity estimate like [Urlcrazy](https://github.com/urbanadventurer/urlcrazy)
+**Binding is by data, not by producer.** `ptr` binds to any `ip`, so it runs on
+addresses whether `dns-a` found them or something else did — which is what lets
+a new operator slot in without anyone rewiring an order.
 
+**Three-state existence.** An operator that cannot reach a registry reports
+*unknown*, never *absent*. "We asked, it is not there" and "we could not tell"
+are opposite conclusions, and collapsing them turns a broken network into a
+clean bill of health.
 
+`geo`, `pkg`, `usr` and `repo` are omitted from the plan when the data they
+need is missing, rather than failing at runtime — which is why they do not
+appear in `--list operators` today (see `docs/CLI.md` §9.1).
 
+## Output formats
 
-## Outputs
+| Format | Description |
+|---|---|
+| `table` | Pretty table with colour styling; the default |
+| `json` | One document, written when the scan ends |
+| `ndjson` | One object per node |
+| `csv` | Comma-separated values |
+| `dot` | Graphviz — the graph, not a flattened list |
 
-With structured outputs, users can seamlessly incorporate findings into their existing defenses, strengthening their protection against typosquatting threats.
+```bash
+urlinsane typo acme.com -o json | jq '.nodes[] | select(.exists=="live")'
+urlinsane typo acme.com --save report.csv      # format from the extension
+```
 
+`--save` also accepts `.txt`/`.text` for `table` and `.gv` for `dot`. Anything
+else is an error rather than a guess, and a saved file is never coloured.
 
-| Name  | Description                               |
-|-------|-------------------------------------------|
-| TABLE | Pretty table format with color styling    |
-| HTML  | HTML-formatted output                     |
-| JSON  | **TODO**: JSON output format              |
-| TXT   | Plain text output, one record per line    |
-| CSV   | Comma-separated values format             |
-| TSV   | Tab-separated values format               |
-| MD    | Markdown-formatted output                 |
+**`--filter` selects rows, not columns**, and it applies to the report rather
+than the scan — so re-filtering never costs another lookup.
 
-A major limitation of the output format is its restricted display in the terminal, where data is primarily shown in columns and rows. Although the `--filter` flag lets you choose specific columns, and the `--output/-o txt` type enables streaming output directly to the terminal without table formatting, only a fraction of the collected information is shown. The new JSON output option overcomes this by allowing the complete, highly nested JSON document to be dumped, which can then be filtered using tools like [jq](https://jqlang.github.io/jq/) for more detailed analysis.
+## Status
 
+The engine is mid-rewrite, from a linear plugin pipeline to a graph engine.
+`docs/DESIGN.md` is the design; `docs/CLI.md` §9 tracks what is specified but
+not yet wired up.
 
-## In Progress
+**Done, and worth saying how it differs from the plan:**
 
-- I am currently developing a sqlite database backend to store results, datasets, languages, and word embeddings. This approach aims to reduce the overall binary size, enable more advanced analysis, and allow the program to download updates in the future. Words often have interrelationships that are best represented in a database, ensuring better storage and improved efficiency.
+- **The DAG replaced the pipeline.** The original idea was Terraform-style
+  declared dependencies between plugins. That is not what shipped: an operator
+  declares what data pattern it *binds to*, and the scheduler matches. Declared
+  dependencies made plugin order load-bearing and the cache unsound; binding by
+  data means a new operator needs no rewiring.
+- **Reference data moved into SQLite** (`dataset.db`): vocabulary and weighted
+  transitions, replacing a large body of generated Go. Results did **not** —
+  they are an IPLD content-addressed graph, so two identical scans address
+  identically and "what changed since last week" is a CID comparison.
+- **Languages and keyboards stopped being plugins.** 30 curated dataset
+  directories and 203 keyboard layouts built from
+  [kbdlayout.info](http://kbdlayout.info/), neither needing Go code.
+- **Cross-scan diffing** exists in `internal/store`.
 
-- Exploring the possibility of replacing the chained task pipeline with a DAG-based pipeline.
+**Open:**
 
+- Wire the pieces that build but have no caller — `report`, `--save-graph`,
+  `config.yaml` settings, and `config.Init()` from `typo` (`docs/CLI.md` §9.1).
+- An advanced keyboard model with layer-shifting.
+- DNS queries against several resolvers.
+- Dataset updates downloadable rather than embedded, to cut binary size.
+- **[LLM](https://en.wikipedia.org/wiki/Large_language_model)** assistance for
+  generating language datasets, and as a judgement operator over variants.
+- Reporting confirmed squats back to a shared corpus, so the transition weights
+  can be learned from observed cases instead of being uniform placeholders.
 
-## TODO
-
-- **[LLM](https://en.wikipedia.org/wiki/Large_language_model)**: I’m interested in utilizing Large Language Models (LLMs) to replace our existing natural language processing (NLP) algorithms and to automatically generate language datasets.
-
-- I want to explore options for reducing the program’s size, currently at 11MB. By reusing existing operating system datasets, such as MaxMind GeoIP, TLD suffix lists, LLMs, and vector databases, we can minimize storage usage.
-
-- I’m considering restructuring the information-gathering functions to follow a Directed Acyclic Graph (DAG) execution pattern with dependencies, instead of chaining plugins in a linear pipeline. This would allow more efficient and flexible handling of interdependent tasks, similar to how Terraform manages plugin execution.
-
-- I plan to add an analysis plugin that compares data between two domains and can be executed as a separate CLI command.
-
-- Develop a script to download and build keyboard layouts from [kbdlayout.info](http://kbdlayout.info/).
-
-- Work on creating an advanced keyboard model that incorporates layer-shifting functionality.
-
-
-- Implement functionality for sending DNS queries to multiple DNS servers.
-
-- Store records in an embedded database, enabling plugins to access the data efficiently.
-
-- Download dataset updates from [urlinsane.com](https://github.com/rangertaha/urlinsane) 
-
-- A CLI command to report or retrieve typosquatting domains to/from (urlinsane.com) could help build a comprehensive dataset of potential typosquatting cases. With sufficient data and domain reports, an AI classifier could be developed to automatically identify typosquatting domains. The larger the dataset grows, the more accurately the AI would be able to detect and classify these domains.
-
-
-###  Other Tools
+## Other Tools
 
 | Name  | Language | Description                    |
 |-------|-----------|--------------------------------|

@@ -1,17 +1,5 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 package dns
 
 import (
@@ -38,14 +26,7 @@ type Domain struct {
 
 // New builds a Parser, loading the public-suffix list from the dataset.
 func New() (parser Parser) {
-	var tlds []dataset.Suffix
-	if dataset.DB != nil {
-		dataset.DB.Find(&tlds)
-	}
-
-	for _, tld := range tlds {
-		parser.suffixes = append(parser.suffixes, tld.Name)
-	}
+	parser.suffixes = dataset.Tokens("domains/suffix")
 
 	data := []byte("\x00" + strings.Join(parser.suffixes, "\x00") + "\x00")
 	parser.sa = suffixarray.New(data)
