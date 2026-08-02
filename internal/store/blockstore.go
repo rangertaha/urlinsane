@@ -13,38 +13,43 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package store
+package graphstore
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/ipfs/go-cid"
 )
 
-// Blockstore is a content-addressed store of raw IPLD blocks.
+// Blockstore is a content-addressed store of raw dag-cbor blocks. Because the
+// key is derived from the content, Put is idempotent and a Get can be verified
+// against the key it was fetched with.
 type Blockstore interface {
 	Has(c cid.Cid) (bool, error)
 	Get(c cid.Cid) ([]byte, error)
 	Put(c cid.Cid, block []byte) error
 }
 
-// fsStore is a filesystem blockstore. Blocks live under <root>/<shard>/<cid>.cbor
-// where the shard is the last two characters of the CID string, keeping any one
-// directory from accumulating tens of thousands of entries.
-type fsStore struct {
+// FSBlockstore is a filesystem blockstore. Blocks live at
+// <root>/<shard>/<cid>.cbor, sharded on the last two characters of the CID so
+// that a wide scan's 10^5 nodes do not land in one directory.
+type FSBlockstore struct {
 	root string
 }
 
-func newFSStore(dir string) (*fsStore, error) {
+// NewFSBlockstore opens (creating if needed) a blockstore under dir/blocks.
+func NewFSBlockstore(dir string) (*FSBlockstore, error) {
 	root := filepath.Join(dir, "blocks")
 	if err := os.MkdirAll(root, 0o755); err != nil {
 		return nil, err
 	}
-	return &fsStore{root: root}, nil
+	return &FSBlockstore{root: root}, nil
 }
 
-func (s *fsStore) shardDir(c cid.Cid) string {
+func (s *FSBlockstore) shardDir(c cid.Cid) string {
 	name := c.String()
 	shard := "_"
 	if len(name) >= 2 {
@@ -53,11 +58,12 @@ func (s *fsStore) shardDir(c cid.Cid) string {
 	return filepath.Join(s.root, shard)
 }
 
-func (s *fsStore) path(c cid.Cid) string {
+func (s *FSBlockstore) path(c cid.Cid) string {
 	return filepath.Join(s.shardDir(c), c.String()+".cbor")
 }
 
-func (s *fsStore) Has(c cid.Cid) (bool, error) {
+// Has reports whether the block is present.
+func (s *FSBlockstore) Has(c cid.Cid) (bool, error) {
 	_, err := os.Stat(s.path(c))
 	if err == nil {
 		return true, nil
@@ -68,13 +74,19 @@ func (s *fsStore) Has(c cid.Cid) (bool, error) {
 	return false, err
 }
 
-func (s *fsStore) Get(c cid.Cid) ([]byte, error) {
-	return os.ReadFile(s.path(c))
+// Get reads a block.
+func (s *FSBlockstore) Get(c cid.Cid) ([]byte, error) {
+	b, err := os.ReadFile(s.path(c))
+	if os.IsNotExist(err) {
+		return nil, fmt.Errorf("graphstore: block %s not found", c)
+	}
+	return b, err
 }
 
-// Put writes the block. Because the CID is derived from the content, Put is
-// idempotent: storing identical content rewrites the same path.
-func (s *fsStore) Put(c cid.Cid, block []byte) error {
+// Put writes a block, skipping the write when it is already stored. Identical
+// content always lands at the same path, so a re-scan that changes nothing
+// writes nothing.
+func (s *FSBlockstore) Put(c cid.Cid, block []byte) error {
 	if ok, _ := s.Has(c); ok {
 		return nil
 	}
@@ -82,4 +94,43 @@ func (s *fsStore) Put(c cid.Cid, block []byte) error {
 		return err
 	}
 	return os.WriteFile(s.path(c), block, 0o644)
+}
+
+// MemBlockstore is an in-memory blockstore, for tests and for a scan that is
+// diffed against an earlier one but never itself persisted.
+type MemBlockstore struct {
+	mu     sync.RWMutex
+	blocks map[string][]byte
+}
+
+// NewMemBlockstore returns an empty in-memory blockstore.
+func NewMemBlockstore() *MemBlockstore {
+	return &MemBlockstore{blocks: map[string][]byte{}}
+}
+
+// Has reports whether the block is present.
+func (m *MemBlockstore) Has(c cid.Cid) (bool, error) {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	_, ok := m.blocks[c.KeyString()]
+	return ok, nil
+}
+
+// Get reads a block.
+func (m *MemBlockstore) Get(c cid.Cid) ([]byte, error) {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	b, ok := m.blocks[c.KeyString()]
+	if !ok {
+		return nil, fmt.Errorf("graphstore: block %s not found", c)
+	}
+	return b, nil
+}
+
+// Put stores a block.
+func (m *MemBlockstore) Put(c cid.Cid, block []byte) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.blocks[c.KeyString()] = append([]byte(nil), block...)
+	return nil
 }
