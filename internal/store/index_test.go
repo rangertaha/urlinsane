@@ -4,8 +4,10 @@
 package store
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 	"time"
 )
@@ -150,5 +152,88 @@ func TestAtFindsOneRoot(t *testing.T) {
 	}
 	if _, ok := ix.At("absent"); ok {
 		t.Error("At matched a root that is not there")
+	}
+}
+
+// Two scans saving at once must both survive. Without a lock around the
+// read-modify-write each writes the index it read at open time, and the loser's
+// blocks stay in the store with nothing naming them — `report <target>` can
+// never find that scan again.
+func TestConcurrentAddsAreNotLost(t *testing.T) {
+	dir := t.TempDir()
+	const n = 8
+
+	var wg sync.WaitGroup
+	errs := make(chan error, n)
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			ix, err := OpenIndex(dir)
+			if err != nil {
+				errs <- err
+				return
+			}
+			errs <- ix.Add(Entry{
+				Type: "domain",
+				Key:  fmt.Sprintf("t%d.com", i),
+				Root: fmt.Sprintf("root%d", i),
+				At:   at(i),
+			})
+		}(i)
+	}
+	wg.Wait()
+	close(errs)
+	for err := range errs {
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	ix, err := OpenIndex(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(ix.Entries) != n {
+		t.Fatalf("index holds %d of %d concurrent saves; updates were lost", len(ix.Entries), n)
+	}
+	for i := 0; i < n; i++ {
+		if _, ok := ix.At(fmt.Sprintf("root%d", i)); !ok {
+			t.Errorf("root%d is unreachable: its scan can never be reported", i)
+		}
+	}
+}
+
+// A lock left behind by a killed process must not make the index permanently
+// unwritable — that is a worse failure than the race the lock prevents.
+func TestStaleLockIsBroken(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, lockName)
+	if err := os.WriteFile(path, nil, 0o640); err != nil {
+		t.Fatal(err)
+	}
+	old := time.Now().Add(-time.Hour)
+	if err := os.Chtimes(path, old, old); err != nil {
+		t.Fatal(err)
+	}
+
+	ix, _ := OpenIndex(dir)
+	if err := ix.Add(Entry{Type: "domain", Key: "acme.com", Root: "a", At: at(0)}); err != nil {
+		t.Fatalf("a stale lock blocked the write: %v", err)
+	}
+}
+
+// The lock is released on success, or the next save in the same process hangs.
+func TestLockIsReleased(t *testing.T) {
+	dir := t.TempDir()
+	ix, _ := OpenIndex(dir)
+	for i := 0; i < 3; i++ {
+		if err := ix.Add(Entry{Type: "domain", Key: "acme.com",
+			Root: fmt.Sprintf("r%d", i), At: at(i)}); err != nil {
+			t.Fatalf("add %d: %v", i, err)
+		}
+	}
+	if _, err := os.Stat(filepath.Join(dir, lockName)); !os.IsNotExist(err) {
+		t.Error("the lockfile was left behind")
 	}
 }

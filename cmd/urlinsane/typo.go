@@ -4,14 +4,11 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"io"
 	"os"
-	"os/signal"
 	"sort"
 	"strings"
-	"syscall"
 	"text/tabwriter"
 	"time"
 
@@ -206,7 +203,7 @@ func runTypo(c *cli.Context) error {
 	// report comes out marked partial. A second Ctrl-C falls through to the
 	// default handler and aborts immediately — for when a round is stuck behind
 	// a slow resource and waiting for the boundary is not worth it (§12.4).
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	ctx, stop := interrupts(c.App.ErrWriter)
 	defer stop()
 
 	res, err := scan.Run(ctx, opts, report.Options{
