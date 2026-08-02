@@ -180,6 +180,19 @@ func run() error {
 	log.Printf("wrote %d layouts (%d ansi, %d iso, %d jis)",
 		len(entries), forms[kb.ANSI], forms[kb.ISO], forms[kb.JIS])
 
+	if len(dropped) > 0 {
+		combos := make([]string, 0, len(dropped))
+		for with := range dropped {
+			combos = append(combos, with)
+		}
+		sort.Strings(combos)
+
+		log.Printf("modifier levels not represented, and the characters lost with them:")
+		for _, with := range combos {
+			log.Printf("    %-32s %d results", with, dropped[with])
+		}
+	}
+
 	return nil
 }
 
@@ -326,6 +339,11 @@ func build(driver string, m meta) (*kb.Layout, error) {
 		return nil, fmt.Errorf("parsing key table: %w", err)
 	}
 
+	// Modifier levels this package cannot represent, gathered per scan code
+	// so that the ones on keys outside the alphanumeric block — the whole
+	// numeric keypad sits behind NumLock — can be discounted afterwards.
+	missed := map[string][]string{}
+
 	keys := make([]kb.Key, 0, len(doc.Keys))
 	for _, pk := range doc.Keys {
 		key := kb.NewKey(pk.SC, pk.VK, pk.Name)
@@ -333,6 +351,12 @@ func build(driver string, m meta) (*kb.Layout, error) {
 		for _, r := range pk.Results {
 			mod, ok := modifiers(r.With)
 			if !ok {
+				// Note levels that would have typed something. Whether
+				// they are really a loss depends on the key surviving the
+				// move into the layout, which is decided below.
+				if resultText(r) != "" {
+					missed[pk.SC] = append(missed[pk.SC], r.With)
+				}
 				continue
 			}
 
@@ -356,12 +380,41 @@ func build(driver string, m meta) (*kb.Layout, error) {
 	layout.File = m.File
 	layout.Locales = m.Locales
 
+	// Now that the layout has discarded the keys it does not model, the
+	// levels missed on the keys it kept are the ones actually lost.
+	for _, k := range layout.Keys {
+		for _, with := range missed[k.SC] {
+			dropped[with]++
+		}
+	}
+
 	if len(layout.Keys) == 0 {
 		return nil, fmt.Errorf("no keys in the alphanumeric block")
 	}
 
 	return layout, nil
 }
+
+// resultText is what a result would type, or "" if nothing printable. It
+// mirrors the switch in build and exists so that dropped levels can be counted
+// without duplicating the decoding.
+func resultText(r result) string {
+	switch {
+	case r.Dead != nil && r.Dead.Accent != "":
+		return r.Dead.Accent
+	case r.Text != "":
+		return r.Text
+	case r.Codepoints != "":
+		if t, ok := codepoints(r.Codepoints); ok {
+			return t
+		}
+	}
+	return ""
+}
+
+// dropped counts the modifier levels that produced text this package cannot
+// represent, keyed by the site's spelling of the modifiers.
+var dropped = map[string]int{}
 
 // form decides which physical board a layout was drawn for. Windows drivers
 // always define SC 56, the key an ISO board has and an ANSI board does not,
@@ -549,10 +602,34 @@ func fetchFinal(path string) ([]byte, *url.URL, error) {
 
 	final := resp.Request.URL
 	if err := os.MkdirAll(*cache, 0o755); err == nil {
-		_ = os.WriteFile(key, append([]byte(final.String()+"\n"), body...), 0o644)
+		_ = writeAtomic(key, append([]byte(final.String()+"\n"), body...))
 	}
 
 	return body, final, nil
+}
+
+// writeAtomic writes through a temporary file and renames it into place, so
+// that a run killed mid-write leaves either the old entry or none at all.
+// A half-written entry would be reused on the next run without complaint:
+// truncated XML at least fails to parse, but the HTML parser is forgiving and
+// would hand back a layout page missing most of its locales.
+func writeAtomic(path string, data []byte) error {
+	tmp, err := os.CreateTemp(filepath.Dir(path), filepath.Base(path)+".*")
+	if err != nil {
+		return err
+	}
+
+	if _, err := tmp.Write(data); err != nil {
+		tmp.Close()
+		os.Remove(tmp.Name())
+		return err
+	}
+	if err := tmp.Close(); err != nil {
+		os.Remove(tmp.Name())
+		return err
+	}
+
+	return os.Rename(tmp.Name(), path)
 }
 
 func fetchHTML(path string) (*html.Node, error) {

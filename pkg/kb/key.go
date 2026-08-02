@@ -21,9 +21,17 @@ import (
 	"strings"
 )
 
-// Mod is a set of held modifiers, as a bitmask. Only the modifiers that change
-// what a key types are modelled; Ctrl and Alt on their own produce control
-// codes rather than text and are dropped when the data is generated.
+// Mod is a set of held modifiers, as a bitmask. Shift, AltGr and Caps Lock are
+// modelled because between them they cover what almost every layout does.
+//
+// Two things are left out, and they are not all control codes. Ctrl and Alt on
+// their own do produce control codes rather than text, and go. But a couple of
+// layouts reach real characters through a modifier this package has no bit
+// for: the Japanese board puts its kana on a Kana lock, and the Canadian
+// Multilingual Standard board hangs a level off VK_OEM_8. Those characters are
+// absent from the dataset — kbdjpn is Latin-only here, and kbdcan is missing
+// its ¹ ² ³ ¼ level. The generator reports what it dropped, so a rebuild says
+// so rather than letting it pass unnoticed.
 type Mod uint8
 
 const (
