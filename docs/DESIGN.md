@@ -166,7 +166,7 @@ It does not preserve them. `Props` is sized from the registry schema, so there
 is nowhere to hold a slot the running binary does not declare; an earlier draft
 of this section promised round-tripping, which would silently drop the unknown
 values and change the CID on re-save — data loss disguised as a successful
-write. The implemented behaviour is to **refuse**: `graphstore` fails the
+write. The implemented behaviour is to **refuse**: `store` fails the
 rehydrate CID check rather than writing back a truncated node. Preserving them
 properly needs an unknown-slots escape hatch in `Props`, which is not built.
 
@@ -872,8 +872,11 @@ seed, date).
   a reproduced run reproduces the same traversal. Without this, `--plan`
   reproducibility fails the first time the model is retrained — the graph
   itself would differ, not merely its annotations.
-- `urlinsane train` — a second verb beside `typo`, running Baum-Welch over
-  recorded expansion traces. The RNG seed is recorded so training reproduces.
+- `datasets train` — a maintainer command, running Baum-Welch over recorded
+  expansion traces. The RNG seed is recorded so training reproduces. It sits in
+  `cmd/datasets` rather than beside `typo` because it builds reference data, as
+  `import` and `download` do, and the scanner only ever consumes what it makes
+  (§12).
 - Traces are not a by-product: `typo --trace FILE` writes the
   `(parent belief, relation, props, outcome)` tuples training needs. Recording
   is opt-in because it persists observation data a normal scan discards, and a
@@ -931,7 +934,7 @@ Three integration rules, all forced by reproducibility:
 3. **Flags follow §12.2 namespacing.** `--model` selects the engine's;
    `--<operator>.model` selects a plugin's. `--list models` groups by owner.
 
-`urlinsane train` takes a target — `train exec` for the engine model,
+`datasets train` takes a target — `train exec` for the engine model,
 `train <operator>` for a plugin's — because their corpora, state spaces and
 alphabets have nothing to do with each other.
 
@@ -977,12 +980,45 @@ of all render as a complete scan.
 ## 12. CLI
 
 ```
-urlinsane typo [<scope>] <target> [flags]
+urlinsane typo   [<scope>] <target> [flags]   scan
+urlinsane report <target> [flags]             render a saved scan of it
 ```
 
-`typo` is the scanning verb; `urlinsane train` (§10.4) is the second, and the
-engine is generic enough for more. The scope positional is a node type,
-**optional and narrowing**, comma-separated for several:
+Two verbs, and the split is between **scanning and not scanning**. An earlier
+draft of this section specified five — `typo`, `explain`, `why`, `list`,
+`train` — on the grounds that only the first scans. That grouping is true and
+useless: it puts four unlike things together because of what they are not.
+
+`explain`, `why` and `list` are flags on `typo`. Each takes the same target, the
+same scope positional and the same selection flags, because what each describes
+*is* the scan: which operators the plan compiled, what produced a result, which
+algorithms are registered for the target's type. A verb re-accepting that entire
+surface is `typo` under another name with a second parser to keep in step, and
+the drift shows up as a plan `explain` prints that `typo` would not have run.
+
+The objection that a suppressing flag gives `typo` several exit paths before it
+has parsed a target is answered by parsing first: target and scope are resolved
+for every invocation, and only then does a suppressing flag decide whether to
+run the plan or print it. That ordering is what makes `--explain` describe the
+run it suppressed.
+
+`report` is the one that genuinely differs, because it does not scan *and* does
+not describe a scan it is about to run — it renders one that already happened.
+It takes a target, but rejects everything that shapes a scan, since `--depth`
+and `--algorithm` cannot change what a finished graph contains. A flag on `typo`
+whose presence invalidated the rest of `typo`'s surface would be worse than a
+verb. It reads from the content-addressed store (§12.7): the target names the
+scan, `--at CID` names an exact one, and the replay re-encodes and CID-checks
+every node and edge, so what is rendered is byte-identical to what was saved.
+That is also why filters live there — `--filter` was always a display filter
+over built rows, so re-filtering a ten-minute scan costs nothing.
+
+`train` is not a scanner concern at all. It runs Baum-Welch over stored graphs
+(§10.4), which is maintainer work on reference data, and it belongs beside the
+other reference-data commands in `cmd/datasets`.
+
+The scope positional is a node type, **optional and narrowing**, comma-separated
+for several:
 
 ```
 urlinsane typo bob@example.com             # broad: every nameable in the seed closure
@@ -1003,7 +1039,7 @@ variant operators on out-of-scope nodes as an optimization, and the applier
 rejects any `VARIANT_OF` edge whose source type the scope excludes — the same
 two-layer arrangement the seed-closure rule uses, and for the same reason: a
 dispatch gate is something an operator can be written around. A scope that was
-only validated, hashed into the plan and printed by `--explain` would leave
+only validated, hashed into the plan and printed by `explain` would leave
 `typo username bob@example.com` silently identical to the unscoped run, which is
 the one thing the positional exists to prevent. The rejection is a distinct kind
 (`outside-scope`, not `outside-seed-closure`) and writes no ledger row: an
@@ -1025,13 +1061,18 @@ the first must be registered `Nameable` types; with one, it is the target.
 ```
   -d, --depth int        observation hops from the seed (default 3)
   -f, --filter strings   live, absent, unknown, risk>N (all defined in §9)
+  -a, --algorithm ids    restrict variant generation (§12.10)
+  -l, --language ids     languages the language-driven algorithms run over
+  -k, --keyboard ids     keyboards the keyboard-driven algorithms run over
+  -c, --collect ids      restrict observation; ^id excludes
   -o, --output string    table | json | ndjson | csv | dot (default table)
       --save PATH        write the report to PATH; format from extension
+      --save-graph       persist the graph to the store; prints its root CID
       --fail-on SEV      exit 2 if any finding reaches SEV
-      --explain          print the compiled plan and exit
+      --quiet            silence stderr; the exit code is the whole answer
+      --tui              interactive view of the same scan (§12.8)
       --plan FILE        write the plan, or pin an existing one
       --model NAME[@cid] execution model; --<op>.model for plugin models (§10.6)
-      --list TOPIC       operators | types | relations | models | languages | keyboards
   -v, --verbose
 ```
 
@@ -1040,11 +1081,19 @@ Timeouts, delays, TTL, budgets, workers and user-agent policy move behind
 `--nameservers` and `--registry` are governed by §12.2 instead: they appear in
 `--help` when their operator is in the plan.
 
-Three cleanups: `--options`/`--ids`/`--opts` — three aliases for one hidden
-flag — become `--list TOPIC`; `--registered`/`--unregistered`, two booleans
+Four cleanups: `--options`/`--ids`/`--opts` — three aliases for one hidden
+flag — collapse into the single `--list TOPIC`; `--registered`/`--unregistered`, two booleans
 settable to contradict each other, become `--filter live` and `--filter absent`
 — which also gains the `unknown` case they could not express; `--format`,
-`--file` and `--dir` collapse into `-o` plus `--save`.
+`--file` and `--dir` collapse into `-o` plus `--save`; and `--explain` becomes
+`--explain`, which suppresses the run it describes.
+
+**`--filter` selects rows in the report, never work in the scan.** It is applied
+after expansion, over built rows. Narrowing the *scan* is what `--depth`,
+`--algorithm` and the scope positional are for. Two selection languages
+competing over the same run would be worse than the confusion of one, so
+`--filter` gains no scan-side twin — instead §12.6 requires a filtered-empty
+report to say what it hid.
 
 ### 12.2 Flags are scoped to the plan
 
@@ -1108,26 +1157,52 @@ This also tightens two things elsewhere in the design:
 Help now has three tiers: common flags, plan-relevant flags (`--help`), and
 everything (`--help-all`).
 
-### 12.3 Progress
+### 12.3 Progress, and where output goes
+
+One rule decides every question about where output goes:
+
+> **stderr is for the human, stdout is for the machine.**
+
+Progress and diagnostics go to stderr and are suppressed when stdout is not a
+TTY. The report goes to stdout. So
+`urlinsane typo acme.com -o json > out.json` shows a live scan on the terminal
+and writes clean JSON to the file, and **no flag is needed to say so** — the
+common case needs no configuration at all.
 
 The current bar is `progressbar.DefaultSilent(1000)` — hardcoded total, never
-displayed. A graph engine has better things to show, on a TTY:
+displayed. The default view is a one-shot run: a bar while it works, the report
+when it finishes.
 
 ```
-  example.com · domain · round 4 · depth 2/3
+  acme.com · domain · 27 algorithms · 9 observers
 
-  ████████████████░░░░░░░░  1,284 nodes    42 live    18 pruned
-
-  variant 1,204   ip 118   registrant 22   asn 14
-
-  dns 64↻  whois 12↻  geo 8↻              dns 240/s   npm 3/s
+  ████████████████████░░░░░░░░░░  68%   1,284 nodes   round 4/64   0:08
+  dns 240/s   whois 2/s   geo 11/s
 ```
 
-Round and depth, node counts by type, the truncation ledger's running size,
-in-flight operators, and per-resource rates — the last making it obvious when
-one slow service is holding up a round, today invisible.
-Findings are not shown here; analysis is a distinct final phase, rendered as
-`analyzing…` when expansion stops.
+Round and depth answer "how much is left" in a way a spinner cannot, because
+expansion is round-based. The per-resource rates are the part worth keeping from
+a richer display: `whois 2/s` beside `dns 240/s` explains a stalled scan without
+the user having to know that whois is rate-limited. The bar is replaced by the
+report when the scan ends — it is progress, not output.
+
+`--tui` opens an interactive view of the same scan (§12.8). It is **opt-in**:
+the default path is a one-shot command, so nothing about existing scripts, CI or
+muscle memory changes, and the interactive view can land later without a
+migration. `--tui` with a non-TTY stdout is an error, not a silent downgrade,
+under §12.2's rule that an inapplicable flag is an error rather than a no-op.
+
+Findings are not shown during the scan: analysis is a distinct final phase,
+rendered as `analyzing…` when expansion stops.
+
+**`-o ndjson` emits a record as soon as that record is done** — when every
+operator bound to a node's type has returned, failed or been skipped. `-o json`
+is one document and can only be written at the end; `ndjson` is one object per
+node and there is no reason to hold them. A node is emitted once, complete: a
+record that appeared early and was later amended would force every consumer to
+keep state and de-duplicate. `ndjson` is already the one format that declines to
+promise an ordering (§11), so completion order costs nothing — and it is more
+useful than sorted order, being the order the answers actually arrive in.
 
 ### 12.4 Interruption and exit codes
 
@@ -1135,18 +1210,390 @@ Ctrl-C stops expansion at the **end of the current round**, not mid-round: the
 barrier still runs, so parents, belief and the truncation ledger are finalized
 rather than left half-computed. Analyzers then run over what exists and the
 report is marked partial. A second Ctrl-C aborts immediately without a report,
-for when a round is stuck behind a slow resource.
+for when a round is stuck behind a slow resource. The first Ctrl-C says which
+of the two just happened, because otherwise an impatient second press looks
+like the first did nothing:
+
+```
+^C
+  stopping at the end of round 4 — press ^C again to abort now
+```
 
 A ten-minute scan has produced something worth keeping, and round-by-round
 expansion guarantees it is a coherent prefix rather than an arbitrary
-cross-section.
+cross-section. `PARTIAL` appears in the header of **every** format including
+json, so a truncated scan is never mistaken downstream for a complete one.
 
 Exit `0` clean, `1` execution error, `2` a finding at or above `--fail-on`.
 That is what makes the tool a CI gate for dependency confusion; today the only
 way to react to results is to parse stdout.
 
-Progress goes to stderr so `-o json` stays pipeable; `NO_COLOR` and non-TTY
-stdout are respected.
+`--quiet` silences stderr entirely, making the exit code the whole answer:
+
+```
+urlinsane typo --quiet --fail-on high npm:acme-internal   # $? is the result
+```
+
+It does not suppress first-run setup (§12.6): a silent thirty-second first run
+is indistinguishable from a hang.
+
+`NO_COLOR` and non-TTY stdout are respected.
+
+### 12.5 Existence is three-state, and always shown
+
+`live`, `absent` and `unknown` are the most valuable distinction this tool
+draws and the easiest to lose. *Absent* is "we asked, it is not there";
+*unknown* is "we could not tell". Collapsing them turns a broken network into a
+clean bill of health.
+
+So the split is **unconditional, not a flag**: a glyph in every row, and the
+counts in the footer of every run.
+
+```
+  ● live 42   ○ absent 1,203   ? unknown 39
+```
+
+`●` green, `○` dim, `?` amber. The legend costs one line and prevents the
+single most likely misreading of the output.
+
+This is also why `--filter` must explain an empty result (§12.6) rather than
+printing nothing: `-f live` over a scan where every lookup timed out yields the
+same empty table as a scan that found nothing, and those are opposite outcomes.
+
+### 12.6 Say what was not done
+
+Three kinds of gap are currently silent, and each makes a degraded run
+indistinguishable from a complete one.
+
+**Omitted operators.** An operator whose dependency is missing is left out of
+the plan rather than included and failed (§4), which is right — but it must be
+reported, or a scan with no geolocation looks like a scan of a target with no
+geolocation.
+
+**Declined candidates.** The truncation ledger (§8) already records every
+candidate refused by a budget, a depth bound or a frontier cap. It is written
+and never surfaced.
+
+**First-run setup.** The embedded datasets are extracted on first run. Silently,
+today — and when extraction fails, the operators that needed them simply vanish.
+
+```
+  ⚠ 2 observers were not in this plan
+      geo        no maxmind database        (first run did not complete)
+      npm        no registry dataset        (datasets import not run)
+
+  ⚠ 412 candidates were declined
+      budget     380   node cap reached at round 6
+      depth      32    beyond --depth 3
+```
+
+An empty report explains its own emptiness in the same spirit:
+
+```
+  no rows matched --filter live
+
+  1,284 hidden:  1,203 absent · 39 unknown · 42 live but below --depth 2
+
+  ⚠ 39 unknown — every dns attempt timed out. the network, not the result.
+```
+
+**The last line is the point.** It separates a clean negative from a broken run,
+which is the difference between "this brand is unsquatted" and "our resolver is
+down".
+
+### 12.7 Provenance: `--why`
+
+The graph records how every node was reached — which operator produced it, under
+which relation, with which props (§1.3). An investigator's first question about
+a suspicious hit is "how did you get here", and there is no way to ask it.
+
+It is a flag rather than a verb (§12) because the answer is *about* a particular
+scan: the same target, scope and selection that produced the hit are what locate
+it in the stored graph.
+
+```
+urlinsane typo acme.com --save-graph      # earlier: scanned and kept
+urlinsane typo acme.com --why acmе.com    # now: ask about one result
+
+  acmе.com · domain · live · critical
+
+  reached by
+    acme.com ──VARIANT_OF── acmе.com
+      algorithm  hr  homoglyph replacement
+      distance   1
+      change     e → е  (U+0065 → U+0435, cyrillic small letter ie)
+
+  observed
+    dns-a      ✓  91.195.240.1                          0.31s
+    dns-ns     ✓  ns1.above.com, ns2.above.com          0.28s
+    whois      ✓  created 2026-07-30, registrar Namecheap
+    ptr        ✗  timeout after 10s
+
+  findings
+    critical   homoglyph in a registrable label
+    high       shares nameservers with 4 other variants of this seed
+```
+
+`--why` reads a **stored** graph rather than re-scanning: re-observing one name
+repeats network work and can disagree with the run being explained, which is
+the one thing an explanation must not do.
+
+That requires the scan to have been saved, and saving is **opt-in**
+(`--save-graph`) for the reason §10.4 gives about traces: a tool that
+silently accumulated a corpus of everything it had ever looked up would be
+making that choice on the user's behalf. `--why` without a saved graph is an
+error that says which flag would have produced one — not a silent re-scan.
+
+`--save-graph` takes no path. The store is content-addressed and shared, so a
+scan's root CID is its name and the store is where `report <target>`
+and `--resume` both look; writing one run to a loose `run.dag` would put it
+somewhere neither could find it. `--store DIR` selects a different store, and
+`--save-graph` prints the root CID it wrote.
+
+The store already exists (`internal/store`), carries no timestamp or run
+id in its root, and is therefore content-addressed in a way that makes two
+identical scans produce the same CID — so `--why`, cross-run diffing and `--resume`
+are all the same mechanism seen from different angles.
+
+### 12.8 The interactive view
+
+`--tui` opens the same scan as a navigable view, borrowing from two programs
+that already solved halves of this problem: **htop** for live density, **nvim**
+for modal navigation.
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  dns    [||||||||||||||||||||||    ] 240/s  1284      round    4/64          │
+│  whois  [|||                       ]   2/s    37      depth    2/3           │
+│  geo    [|||||||||                 ]  11/s   118      nodes    1,284         │
+│  ──────────────────────────────────────────      live 42  absent 1203  ? 39  │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ SEV NAME               EX ALG  D  DNS NS  MX  WHO GEO PTR  PROGRESS          │
+│ ⣿   acmе.com           ●  hr   1  ✓   ✓   ✓   ✓   ✓   ⠋   [||||||||  ] 5/6  │
+│ ⣿   acme-support.com   ●  cb   2  ✓   ✓   ⠋   ·   ·   ·   [|||       ] 2/6  │
+│ ⣶   acnne.com          ●  cr   1  ✓   ✓   ✓   ✓   ✓   ✓   [||||||||||] 6/6  │
+│     acme.net           ○  tld  1  ✓   −   −   −   −   −   [||||||||||] 1/1  │
+│     acmee.com          ?  cr   1  ✗   ⠋   ·   ·   ·   ·   [          ] 0/6  │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ NORMAL   results   sort:sev   filter:—              acme.com · domain  0:08  │
+│ :                                                                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Progress is per target, and per observer within it.** The default bar (§12.3)
+reports one number for the whole run, which averages away the only thing worth
+knowing: which target is stuck, and on what. Every node is observed by several
+operators independently, so the row is where progress belongs and the column is
+where a stalled resource shows up — `WHO` reading `⠋` down several rows while
+`DNS` is `✓` everywhere identifies the bottleneck without the user knowing which
+resources are rate-limited. The htop-style meters above say the same thing in
+aggregate.
+
+| | |
+|---|---|
+| `✓` | returned ok |
+| `✗` | failed — SERVFAIL, refused, error |
+| `⠋` | in flight |
+| `·` | not yet attempted |
+| `−` | not applicable: the node is absent, so nothing downstream runs |
+
+`−` is load-bearing. `acme.net` is absent, so ns/mx/whois/geo/ptr never run — it
+is `1/1` with a full gauge, not `1/6` and stalled. Without it most rows in a
+typical scan would look permanently unfinished, because most variants are
+absent. It also makes the three-state existence (§12.5) self-evident per row:
+`acmee.com` shows `✗` then a retry in flight, which is *why* it is `?` and not
+`○`.
+
+**Rows are selected with the standard keys, and `h`/`l` work the pane.** `l`
+opens the detail pane on the right for the selected row and moves focus into it;
+`h` closes it and returns. The direction is the meaning — `l` moves right, into
+the detail; `h` moves left, back to the list — so the pane needs no dedicated
+binding and no toggle to remember.
+
+| Key | |
+|---|---|
+| `j` `k` · `↓` `↑` | select row |
+| `gg` `G` | first, last |
+| `C-d` `C-u` | half page |
+| `C-f` `C-b` | page |
+| `l` `→` | open the detail pane, focus it |
+| `h` `←` | close the detail pane |
+| `/` `n` `N` | search, next, previous |
+| `gd` | provenance (§12.7) |
+| `C-o` `C-i` | jump back, forward |
+
+```
+┌─ results ──────────────────────────────┬─ acmе.com ───────────────────┐
+│ SEV NAME             EX ALG D PROGRESS │ domain · live · critical     │
+│ ⣿   acmе.com         ●  hr  1 [||||| ] │                              │
+│ ⣿   acme-support.com ●  cb  2 [||    ] │ dns    91.195.240.1          │
+│ ⣶   acnne.com        ●  cr  1 [||||||] │ ns     ns1.above.com  +4 ▸   │
+│     acme.net         ○  tld 1 [||||||] │ whois  2026-07-30 Namecheap  │
+│     acmee.com        ?  cr  1 [      ] │ geo    DE · Frankfurt        │
+│                                        │ ptr    ✗ timeout after 10s   │
+│                                        │                              │
+│                                        │ VARIANT_OF acme.com          │
+│                                        │   hr · d1 · e→е U+0435       │
+└────────────────────────────────────────┴──────────────────────────────┘
+```
+
+The pane is closed by default, because at eighty columns it costs half the width
+of the table it is describing. `l` is cheap enough that opening it per row is
+not a burden, and `h` gets the width back.
+
+**The pane is itself a row list, navigated and highlighted the same way.** Its
+fields are rows: `j`/`k` moves through them with the selection highlighted, and
+`l` descends again — from the `ns` row into the four other variants sharing that
+nameserver, from a registrant into everything they registered. `h` pops back.
+Panes stack, so navigation is a path through the graph rather than a toggle
+between two fixed views.
+
+That is what makes §12.7's provenance and the traversal below the same gesture
+instead of two features: descending from a row *is* following an edge.
+
+### 12.9 One component, composed
+
+The view is deliberately not a screen layout. **Everything visible is a list of
+rows**, and the differences between the results table, the detail pane, the
+ledger, the plan and the findings are the rows they carry — not the code that
+draws them.
+
+| Component | Responsibility |
+|---|---|
+| `list` | rows, columns, selection, highlight, scroll, sort, filter, fold |
+| `meters` | the per-resource gauges of the top panel |
+| `status` | mode, active sort and filter, target, elapsed |
+| `cmdline` | `:` and `/`, with completion over the same registries `list` uses |
+| `overlay` | help (`g?`), confirmations, errors |
+| `stack` | the pane stack: `l` pushes, `h` pops |
+
+Three properties follow, and they are the reason for the arrangement rather than
+consequences of it:
+
+1. **A new pane is data, not code.** The ledger, the plan and the findings are
+   `list`s over different row sets. Adding one — say, a buffer of every node
+   sharing a nameserver — is a query and a column spec.
+2. **Behaviour is written once.** Sorting, filtering, search, highlight and
+   fold live in `list`, so they work identically in the detail pane and the
+   results table. A binding that works in one works in all of them, which is
+   what makes the keymap learnable.
+3. **The engine is not consulted about presentation.** A `list` is fed rows and
+   knows nothing about `graph`, so the view can be tested without a scan and
+   the engine carries no rendering concerns. This is the §13 layering applied
+   to the interface: the same reason operators are pure functions of a view.
+
+The row source is an interface, not a type: anything that can produce rows and
+say what a row descends into can be a pane. That is the seam the TUI is built
+on, and it is why `--tui` can be added without the engine knowing it exists.
+
+**The graph is navigable.** The engine produces variants, the addresses they
+resolve to, the nameservers those share and the registrants behind those. A
+report flattens that to a list and discards the edges — which is the part an
+investigation needs: *this variant is suspicious → what else shares its
+nameserver → who registered those*. That is a traversal, and the modal idioms
+already exist for it:
+
+| Idiom | Here |
+|---|---|
+| buffers | projections of one graph: results, findings, ledger, plan |
+| splits | list ▏detail |
+| jumplist `C-o` / `C-i` | move along graph edges, and back |
+| `gd` | go to provenance — the edge that produced this node (§12.7) |
+| `:` | the flags, available mid-run: `:filter live`, `:depth 4` |
+| `/` | fuzzy find over names |
+| folds | collapse variants by algorithm, or unfold one row to named columns |
+
+htop's F-key hints remain as an affordance for discovery, but every one is also
+a `:` command, so the two idioms do not compete for the same action. `g?`
+overlays the keymap for the current buffer, so nothing has to be memorised.
+
+The observer columns collapse as the terminal narrows — named, then glyphs, then
+a bare ratio — and `zo` unfolds the selected row to the named form without
+resizing anything else:
+
+```
+  wide (>140)   DNS ✓  NS ✓  MX ✓  WHOIS ✓  GEO ✓  PTR ⠋   [||||||||  ] 5/6
+  default       ✓   ✓   ✓   ✓   ✓   ⠋                      [||||||||  ] 5/6
+  narrow (<100) ✓✓✓✓✓⠋                                     5/6
+```
+
+`:ls` lists the buffers — results, findings, ledger, plan, log — each a
+projection of the same graph rather than a separate fetch.
+
+The scan keeps running while the graph is browsed; rounds land in the background
+and the list grows under the cursor.
+
+**`:report` runs analysis without waiting for the scan.** Analysis is a distinct
+final phase (§9); `:report` runs it over whatever exists at that moment and opens
+the result as a buffer, marked `PARTIAL` under the same rule as an interrupted
+run (§12.4). A scan that has found something worth acting on at round 6 should
+not have to reach round 64 before it can be read, and the round barrier (§6.1)
+guarantees the graph it reads is a coherent prefix rather than a half-applied
+delta. `:export` then writes that report in any of the formats of §11.
+
+**`:depth 4` mid-run is the argument for the whole view.** In a one-shot command,
+discovering the bound was too low means re-running from scratch and paying for
+every lookup again. Here it widens the frontier and the existing graph stands.
+
+The truncation ledger (§8) and the omitted operators (§12.6) are buffers rather
+than warnings that scroll past, each carrying the command that lifts the limit:
+`depth 32 — beyond depth 3 — :depth 4 to admit these`.
+
+### 12.10 Selecting what runs, and what it runs over
+
+Four flags, and the distinction between them is the point:
+
+| Flag | Selects | Default |
+|---|---|---|
+| `-a, --algorithm` | which variant operators generate | all |
+| `-l, --language` | which languages those algorithms run *over* | all registered |
+| `-k, --keyboard` | which keyboard layouts they run *over* | all registered |
+| `-c, --collect` | which observation operators run | all in the plan |
+
+**`-a` picks the algorithm; `-l` and `-k` pick the data it runs over.** `-a hr`
+selects homoglyph replacement; `-l ru` decides whose homoglyphs. They compose
+rather than compete, which is why the old `--algorithms` alone could not express
+what `--languages` did, and why collapsing them into one flag would lose a
+distinction the engine already makes: `variant.Options` carries `Languages` and
+`Keyboards` as *parameters to the operators*, while `Algorithms` selects the
+operators themselves.
+
+The defaults are "everything registered", and deliberately so. A tool whose
+failure mode is missing a squatted name should not narrow its own recall by
+default; a scan that generates too many candidates is visibly expensive, while a
+scan that generates too few is silently wrong. Locale-derived defaults were
+considered and rejected for the same reason — a homoglyph attack on a `.com` is
+cross-script by definition, so inferring `ru` from a `.ru` TLD would suppress
+exactly the case the algorithm exists to catch.
+
+**Exclusion is first-class, because it is the common case.** A `^` prefix removes
+an id from the set that would otherwise run:
+
+```
+urlinsane typo acme.com -c ^whois          # everything except whois
+urlinsane typo acme.com -c dns,ptr         # only these
+urlinsane typo acme.com -a ^cb,^afx        # drop the noisy generators
+```
+
+Dropping one slow or rate-limited observer is far more common than enumerating
+the ones to keep, and `^` spells that without a second `--no-collect` flag whose
+interaction with the positive form would have to be defined. Mixing forms in one
+flag is an error rather than a precedence rule to memorise.
+
+`^` rather than a bare `-` because `-whois` is indistinguishable from a flag to
+any argument parser, and rather than `!` or `~` because both are shell
+metacharacters that would need quoting. In the interactive view the same syntax
+works on `:algo` and `:collect`, where no parser is in the way.
+
+An unknown id is an **error**, not an empty selection: `variant.Select` already
+reports unknown algorithms rather than silently matching nothing, and `-c` and
+`-l` follow it. A typo that quietly scanned with no observers would be the worst
+possible outcome — a clean report produced by doing nothing.
+
+This requires one engine change: `observe.Options` currently carries only
+dependencies (`Resolver`, `Whois`, `Geo`, `Prober`) and `observe.New` builds the
+full set, so there is nowhere to express a selection. It gains an `Ids []string`
+alongside them, applied where `variant.Select` applies its own.
 
 ## 13. Testing and observability
 
@@ -1196,13 +1643,31 @@ internal/
     codec.go      dag-cbor model blocks, CID identity, training provenance
     smooth.go     Dirichlet priors, OOV emissions
     trace.go      expansion-trace recording for `train exec` (§10.4)
-  operators/
-    decompose/    email, repo, package-ref, domain
-    variant/      (former algorithms)
-    observe/      (former collectors)
-  analyze/        whole-graph analyzers
-  report/         table, json, ndjson, csv, dot
+  store/     content-addressed scan storage, replay, diffing
+  plugins/        everything that acts on the graph, one directory per plugin
+    plugins.go    the three registries: operators, analyzers, algorithms
+    decompose/    domain, email, pkg, repo          + all
+    variant/      the 27 algorithms, one each       + all
+    observe/      dns, ptr, whois, idn, geo,        + all
+                  pkg, usr, repo                    + observetest
+    analyze/      campaign, scoring, depconfusion   + all
+    report/       table, json, ndjson, csv, dot     + all
 ```
+
+**Every plugin is one directory, and every family is a library plus its
+plugins.** The family package holds what its plugins share — `observe` owns
+Options, the per-call timeout and the schema vocabulary; `variant` owns Spec,
+the Generate signature and the keyboard and language combinators — and each
+plugin imports it. Composition lives in `<family>/all`, which imports the
+plugins; without that separation a plugin importing its family would import its
+siblings through it, and the cycle is not hypothetical.
+
+An earlier arrangement grouped by *target* instead — network, service, social,
+repo — on the reasoning that an npm plugin contributes both an operator and an
+algorithm and belongs in one place. That holds for a third-party plugin and not
+for the shipped ones: splitting dns from whois from geo meant either
+duplicating the shared vocabulary or exporting a package's internals to itself.
+Cohesion is real, and the directory tree should not fight it.
 
 ## 15. Migration
 
@@ -1220,8 +1685,15 @@ as a closed enum and `entity.Classify` as the seeding path; `--type`,
 `--delay`/`--random` throttle (replaced by per-resource buckets, §6.3).
 
 Kept: `internal/engine/dag`, moved and reworked for SCC condensation; the
-store's content-addressing approach; the language and keyboard plugin families,
-which feed variant operators and are unaffected.
+store's content-addressing approach.
+
+Demoted rather than dropped: the language and keyboard plugin families. Both
+were plugin interfaces wrapping what is only data — a language is a directory
+of curated `.lst` files, a keyboard is a layout — and neither had behaviour a
+plugin needed to supply. Languages are now rows the dataset database answers
+(`internal/dataset`), keyboards are layouts compiled in from `pkg/kb`, and a new
+language is added by adding a dataset directory rather than by writing Go. What
+they feed, the variant operators, is unchanged.
 
 ### Phases
 
@@ -1258,6 +1730,12 @@ What remains genuinely undecided:
 - Per-resource retry attempt counts, round deadlines (§6.2) and the round cap
   (§8) — the mechanisms are fixed, the numbers are not.
 - Whether `--filter` grows into an expression language or stays a keyword set.
+- In the interactive view (§12.8): whether a
+  rescan-one-node binding should exist at all, given it would put two
+  observations of the same node from different moments into one content-addressed
+  graph, which §1.2 says must not blur; whether `:q` mid-scan cancels at the
+  round barrier and still writes a partial report or discards; and which TUI
+  library, since either `bubbletea` or `tview` is a new dependency.
 - Whether a `cert` type is worth adding — it was removed from the registry
   because no operator emits one, so plan compilation would report it dead
   (§5). It returns when a TLS operator does.

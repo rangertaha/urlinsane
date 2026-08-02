@@ -1,17 +1,5 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 // Package observe holds the observation operators — the former collectors.
 // Each one looks something up against an external service and expands the graph
@@ -38,8 +26,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/rangertaha/urlinsane/internal/graph"
-	"github.com/rangertaha/urlinsane/internal/operators/decompose"
+	"github.com/rangertaha/urlinsane/internal/plugins/decompose"
 )
 
 // Node types this package reads and emits.
@@ -125,15 +112,15 @@ const (
 	ResourceGeo = "geo"
 )
 
-// defaultTimeout bounds a single external call. It is deliberately short: a
+// DefaultTimeout bounds a single external call. It is deliberately short: a
 // round waits for its slowest operator (DESIGN §6.2), so an unbounded lookup
 // stalls the whole round.
-const defaultTimeout = 10 * time.Second
+const DefaultTimeout = 10 * time.Second
 
 // Options supplies the operators' external dependencies. Every one of them is
 // an interface so tests can run the whole package without touching the network.
 type Options struct {
-	// Timeout bounds one external call. Zero uses defaultTimeout.
+	// Timeout bounds one external call. Zero uses DefaultTimeout.
 	//
 	// There is deliberately no Context field: Exec receives one, so a parent
 	// stored here would be the wrong parent — fixed when the operator was built
@@ -159,16 +146,16 @@ type Options struct {
 	SourceResource string
 }
 
-func (o Options) base() base {
+func (o Options) Base() Base {
 	t := o.Timeout
 	if t <= 0 {
-		t = defaultTimeout
+		t = DefaultTimeout
 	}
-	return base{timeout: t}
+	return Base{timeout: t}
 }
 
-// base is the per-operator lookup timeout.
-type base struct {
+// Base is the per-operator lookup timeout.
+type Base struct {
 	timeout time.Duration
 }
 
@@ -182,7 +169,7 @@ type base struct {
 //
 // The timeout here still applies: it is the per-operator bound, tighter than
 // the scheduler's OpTimeout, and whichever expires first wins.
-func (b base) call(parent context.Context) (context.Context, context.CancelFunc) {
+func (b Base) Call(parent context.Context) (context.Context, context.CancelFunc) {
 	if parent == nil {
 		parent = context.Background()
 	}
@@ -190,44 +177,4 @@ func (b base) call(parent context.Context) (context.Context, context.CancelFunc)
 		return context.WithCancel(parent)
 	}
 	return context.WithTimeout(parent, b.timeout)
-}
-
-// New builds every observation operator the supplied options can support.
-//
-// An operator whose dependency is missing is left out rather than included and
-// left to fail: plan compilation reports what may run, and listing an operator
-// that can only ever return an error would make --explain lie.
-func New(o Options) []graph.Operator {
-	res := o.Resolver
-	if res == nil {
-		res = systemResolver()
-	}
-	who := o.Whois
-	if who == nil {
-		who = defaultWhois(o.Timeout)
-	}
-	probe := o.Prober
-	if probe == nil {
-		probe = defaultProber(o.Timeout)
-	}
-
-	ops := []graph.Operator{
-		newIDN(o),
-		newAddresses(o, res),
-		newNameservers(o, res),
-		newMailHosts(o, res),
-		newText(o, res),
-		newCanonicalName(o, res),
-		newReverse(o, res),
-		newWhois(o, who),
-	}
-	if o.Geo != nil {
-		ops = append(ops, newGeo(o, o.Geo))
-	}
-	if src := o.Sources; src != nil {
-		ops = append(ops, newSourceOps(o, src, probe)...)
-	} else if src := datasetSources(); src != nil {
-		ops = append(ops, newSourceOps(o, src, probe)...)
-	}
-	return ops
 }

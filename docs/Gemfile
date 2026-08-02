@@ -1,0 +1,15 @@
+# Local preview of the GitHub Pages site.
+#
+#   cd docs && bundle install && bundle exec jekyll serve
+#
+# GitHub Pages builds this directory itself; this file only exists so the same
+# build can be reproduced locally before pushing.
+source "https://rubygems.org"
+
+gem "github-pages", group: :jekyll_plugins
+gem "jekyll-remote-theme"
+gem "jekyll-seo-tag"
+
+# Windows and JRuby do not include zoneinfo files.
+gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem "wdm", "~> 0.1", platforms: [:mingw, :mswin, :x64_mingw]

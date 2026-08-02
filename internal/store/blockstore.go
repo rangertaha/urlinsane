@@ -1,19 +1,7 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
-package graphstore
+package store
 
 import (
 	"fmt"
@@ -78,7 +66,7 @@ func (s *FSBlockstore) Has(c cid.Cid) (bool, error) {
 func (s *FSBlockstore) Get(c cid.Cid) ([]byte, error) {
 	b, err := os.ReadFile(s.path(c))
 	if os.IsNotExist(err) {
-		return nil, fmt.Errorf("graphstore: block %s not found", c)
+		return nil, fmt.Errorf("store: block %s not found", c)
 	}
 	return b, err
 }
@@ -122,7 +110,7 @@ func (m *MemBlockstore) Get(c cid.Cid) ([]byte, error) {
 	defer m.mu.RUnlock()
 	b, ok := m.blocks[c.KeyString()]
 	if !ok {
-		return nil, fmt.Errorf("graphstore: block %s not found", c)
+		return nil, fmt.Errorf("store: block %s not found", c)
 	}
 	return b, nil
 }

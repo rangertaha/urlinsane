@@ -1,17 +1,5 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 // Package scan assembles a run: schema, operators, plan, expansion, analysis.
 //
@@ -30,13 +18,16 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/rangertaha/urlinsane/internal/analyze"
 	"github.com/rangertaha/urlinsane/internal/graph"
-	"github.com/rangertaha/urlinsane/internal/operators/decompose"
-	"github.com/rangertaha/urlinsane/internal/operators/observe"
-	"github.com/rangertaha/urlinsane/internal/operators/variant"
-	"github.com/rangertaha/urlinsane/internal/report"
-
+	"github.com/rangertaha/urlinsane/internal/plugins"
+	"github.com/rangertaha/urlinsane/internal/plugins/analyze/all"
+	"github.com/rangertaha/urlinsane/internal/plugins/decompose"
+	decomposeall "github.com/rangertaha/urlinsane/internal/plugins/decompose/all"
+	"github.com/rangertaha/urlinsane/internal/plugins/observe"
+	observeall "github.com/rangertaha/urlinsane/internal/plugins/observe/all"
+	"github.com/rangertaha/urlinsane/internal/plugins/report"
+	"github.com/rangertaha/urlinsane/internal/plugins/variant"
+	variantall "github.com/rangertaha/urlinsane/internal/plugins/variant/all"
 	// Language and keyboard plugins register themselves in init(). Without this
 	// import the registry is empty, and the algorithms built over it — vowel
 	// swapping, homoglyphs, keyboard adjacency, misspellings — iterate an empty
@@ -45,7 +36,6 @@ import (
 	//
 	// It belongs here because this is the package that composes a run. The old
 	// engine got it from internal/config; nothing in the new path imported it.
-	_ "github.com/rangertaha/urlinsane/internal/plugins/languages/all"
 )
 
 // Options configures one scan. The zero value is a valid domain-or-whatever
@@ -62,10 +52,20 @@ type Options struct {
 	Variant variant.Options
 	Observe observe.Options
 
-	// Algorithms restricts variant operators by id. Empty means all of them.
+	// Algorithms restricts variant operators by id. Empty means all of them;
+	// a "^id" entry excludes instead of selecting (§12.10).
 	Algorithms []string
-	// Analyzers overrides the analyzer set. Nil means analyze.All().
+	// Collectors restricts observation operators the same way. Empty means
+	// every operator the Observe options support -- which already excludes any
+	// whose dependency is missing, so a named-but-absent operator is an error
+	// rather than a silent omission.
+	Collectors []string
+	// Analyzers overrides the analyzer set. Nil means all.All() plus any
+	// registered analyzer plugins.
 	Analyzers []graph.Analyzer
+	// Settings resolves each plugin's configuration. Nil gives every plugin
+	// its declared defaults, which is what an unconfigured run wants.
+	Settings plugins.Source
 	// Belief overrides the execution model. Nil means the engine's uniform
 	// default, under which expansion is unranked (§10.5).
 	Belief graph.BeliefModel
@@ -106,21 +106,49 @@ func Registry() (*graph.Registry, error) {
 
 // Operators returns every operator a run may use, in a deterministic order.
 func Operators(o Options) ([]graph.Operator, error) {
-	ops := decompose.Operators()
+	ops := decomposeall.Operators()
 
 	vs, err := variantOps(o)
 	if err != nil {
 		return nil, err
 	}
 	ops = append(ops, vs...)
-	return append(ops, observe.New(o.Observe)...), nil
+
+	obs, err := observeall.Select(o.Observe, o.Collectors...)
+	if err != nil {
+		return nil, fmt.Errorf("scan: %w", err)
+	}
+	ops = append(ops, obs...)
+
+	// Plugin operators come last, but the order here is not the run order:
+	// the scheduler decides that from triggers (§4.1). It is only the order
+	// the plan lists them in, and Operators sorts by id so it is stable.
+	ext, err := plugins.Operators(o.Settings, o.env())
+	if err != nil {
+		return nil, err
+	}
+	return append(ops, ext...), nil
+}
+
+// env is what registered plugins are built from: the same services and data the
+// shipped operators get. Passing them through rather than letting a plugin
+// reach for a package-level resolver is what keeps a plugin testable — and what
+// lets an offline test run the whole plan without touching the network.
+func (o Options) env() plugins.Env {
+	return plugins.Env{Observe: o.Observe, Variant: o.Variant}
 }
 
 func variantOps(o Options) ([]graph.Operator, error) {
-	if len(o.Algorithms) == 0 {
-		return variant.All(o.Variant), nil
+	// Plugin algorithms join the shipped ones before selection, so --algorithm
+	// names them the same way and an unknown id is still an error.
+	v := o.Variant
+	extra, err := plugins.Algorithms(o.Settings, o.env())
+	if err != nil {
+		return nil, err
 	}
-	ops, err := variant.Select(o.Variant, o.Algorithms...)
+	v.Extra = append(append([]variant.Spec(nil), v.Extra...), extra...)
+
+	ops, err := variantall.Select(v, o.Algorithms...)
 	if err != nil {
 		return nil, fmt.Errorf("scan: %w", err)
 	}
@@ -218,7 +246,15 @@ func Run(ctx context.Context, o Options, ropts report.Options) (*Result, error) 
 	// path would make Ctrl-C the one way to get a report with no findings in it.
 	analyzers := o.Analyzers
 	if analyzers == nil {
-		analyzers = analyze.All()
+		// The standard set, plus whatever registered. An explicit
+		// Options.Analyzers replaces both rather than adding to them: a caller
+		// naming its analyzers means those and no others.
+		analyzers = all.All()
+		ext, err := plugins.Analyzers(o.Settings, o.env())
+		if err != nil {
+			return nil, fmt.Errorf("scan: %w", err)
+		}
+		analyzers = append(analyzers, ext...)
 	}
 	if err := g.RunAnalyzers(context.WithoutCancel(ctx), analyzers); err != nil {
 		return nil, fmt.Errorf("scan: analyze: %w", err)

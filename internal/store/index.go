@@ -1,148 +1,145 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 package store
 
 import (
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"sort"
 	"time"
 
 	"github.com/ipfs/go-cid"
-	"github.com/rangertaha/urlinsane/internal/entity"
-	"gorm.io/gorm"
 )
 
-// EntityIndex maps (entity type, name) to the latest root CID. IPLD has no
-// query layer, so this index serves the name-based lookups the engine relies on.
-type EntityIndex struct {
-	EntityType string `gorm:"primaryKey"`
-	Name       string `gorm:"primaryKey"`
-	RootCID    string `gorm:"column:root_cid;index"`
-	UpdatedAt  time.Time
+// IndexFile is the scan index, beside the blockstore it indexes.
+const IndexFile = "scans.json"
+
+// Entry is one saved scan: what was scanned, where it landed, and the two facts
+// the root deliberately does not carry.
+//
+// A scan root records the seed and the content and nothing else — no timestamp,
+// no run id — which is what makes two identical scans produce the same CID and
+// "what changed since last week" a CID comparison (Root's own doc says so). The
+// cost is that a root cannot answer "which was most recent" or "was this one
+// interrupted", so those live out here, beside the store rather than inside it.
+type Entry struct {
+	Type string `json:"type"`
+	// Key is the canonical seed key, matched exactly. `report bob@acme.com`
+	// finds the email scan, not the scan of acme.com nested inside it.
+	Key  string    `json:"key"`
+	Root string    `json:"root"`
+	At   time.Time `json:"at"`
+	// Partial marks a scan that stopped early — an interrupt, a deadline, a
+	// budget. It is a fact about the scan, so every re-render reports it.
+	Partial bool `json:"partial"`
 }
 
-// ScanIndex records one row per (scan, result), giving the scan→results
-// aggregate and the history needed for cross-scan diff.
-type ScanIndex struct {
-	ID         uint   `gorm:"primaryKey"`
-	Query      string `gorm:"index"`
-	ScanCID    string `gorm:"column:scan_cid;index"`
-	ResultCID  string `gorm:"column:result_cid"`
-	EntityName string
-	CreatedAt  time.Time
-}
-
-// ResultRow is one (name, CID) pair within a scan.
-type ResultRow struct {
-	Name string
-	CID  cid.Cid
-}
-
-// Index is the SQLite-backed secondary index over the IPLD blockstore.
+// Index is the list of saved scans, newest first.
 type Index struct {
-	db *gorm.DB
+	path    string
+	Entries []Entry `json:"scans"`
 }
 
-func newIndex(gdb *gorm.DB) (*Index, error) {
-	if err := gdb.AutoMigrate(&EntityIndex{}, &ScanIndex{}); err != nil {
+// OpenIndex reads the index in dir, or returns an empty one if there is none.
+//
+// A missing index is not an error: the first save creates it. A malformed one
+// is, because silently starting over would strand every scan already in the
+// blockstore with no way left to name it.
+func OpenIndex(dir string) (*Index, error) {
+	ix := &Index{path: filepath.Join(dir, IndexFile)}
+	b, err := os.ReadFile(ix.path)
+	if os.IsNotExist(err) {
+		return ix, nil
+	}
+	if err != nil {
 		return nil, err
 	}
-	return &Index{db: gdb}, nil
+	if err := json.Unmarshal(b, ix); err != nil {
+		return nil, err
+	}
+	return ix, nil
 }
 
-// LatestCID returns the latest root CID for (type, name), if indexed. Uses
-// Find (not First) to avoid gorm logging ErrRecordNotFound on the common
-// "new entity" path.
-func (i *Index) LatestCID(t entity.Type, name string) (cid.Cid, bool, error) {
-	var rows []EntityIndex
-	if err := i.db.Limit(1).Find(&rows, "entity_type = ? AND name = ?", string(t), name).Error; err != nil {
-		return cid.Undef, false, err
+// Add records a scan and writes the index back.
+//
+// Re-adding the same root replaces its entry rather than appending: the CID is
+// the scan's identity, so two entries for one root would be two names for one
+// thing, and "most recent" would depend on which was read first.
+func (ix *Index) Add(e Entry) error {
+	out := ix.Entries[:0]
+	for _, x := range ix.Entries {
+		if x.Root != e.Root {
+			out = append(out, x)
+		}
 	}
-	if len(rows) == 0 {
-		return cid.Undef, false, nil
+	ix.Entries = append(out, e)
+	sort.SliceStable(ix.Entries, func(i, j int) bool {
+		return ix.Entries[i].At.After(ix.Entries[j].At)
+	})
+	return ix.save()
+}
+
+func (ix *Index) save() error {
+	if err := os.MkdirAll(filepath.Dir(ix.path), 0o750); err != nil {
+		return err
 	}
-	c, err := cid.Decode(rows[0].RootCID)
+	b, err := json.MarshalIndent(ix, "", "  ")
 	if err != nil {
-		return cid.Undef, false, err
+		return err
 	}
-	return c, true, nil
+	// Write and rename: a crash mid-write must not leave an index that parses
+	// as neither the old nor the new one.
+	tmp := ix.path + ".tmp"
+	if err := os.WriteFile(tmp, append(b, '\n'), 0o640); err != nil {
+		return err
+	}
+	return os.Rename(tmp, ix.path)
 }
 
-// LatestFresh returns the latest root CID for (type, name) only if it was
-// updated within ttl. A non-positive ttl disables caching (always not-fresh).
-func (i *Index) LatestFresh(t entity.Type, name string, ttl time.Duration) (cid.Cid, bool, error) {
-	if ttl <= 0 {
-		return cid.Undef, false, nil
+// Scans returns every saved scan of one target, newest first.
+func (ix *Index) Scans(typ, key string) []Entry {
+	var out []Entry
+	for _, e := range ix.Entries {
+		if e.Type == typ && e.Key == key {
+			out = append(out, e)
+		}
 	}
-	var rows []EntityIndex
-	if err := i.db.Limit(1).Find(&rows, "entity_type = ? AND name = ?", string(t), name).Error; err != nil {
-		return cid.Undef, false, err
-	}
-	if len(rows) == 0 || time.Since(rows[0].UpdatedAt) > ttl {
-		return cid.Undef, false, nil
-	}
-	c, err := cid.Decode(rows[0].RootCID)
-	if err != nil {
-		return cid.Undef, false, err
-	}
-	return c, true, nil
+	return out
 }
 
-// PutLatest upserts the latest root CID for (type, name).
-func (i *Index) PutLatest(t entity.Type, name string, c cid.Cid) error {
-	return i.db.Save(&EntityIndex{
-		EntityType: string(t),
-		Name:       name,
-		RootCID:    c.String(),
-		UpdatedAt:  time.Now(),
-	}).Error
-}
-
-// PutScan records a scan and its result rows.
-func (i *Index) PutScan(query string, scanCID cid.Cid, results []ResultRow) error {
-	rows := make([]ScanIndex, 0, len(results))
-	now := time.Now()
-	for _, r := range results {
-		rows = append(rows, ScanIndex{
-			Query:      query,
-			ScanCID:    scanCID.String(),
-			ResultCID:  r.CID.String(),
-			EntityName: r.Name,
-			CreatedAt:  now,
-		})
+// Latest returns the most recent scan of a target.
+func (ix *Index) Latest(typ, key string) (Entry, bool) {
+	if s := ix.Scans(typ, key); len(s) > 0 {
+		return s[0], true
 	}
-	if len(rows) == 0 {
-		return nil
+	return Entry{}, false
+}
+
+// At returns the entry for one root CID.
+func (ix *Index) At(root string) (Entry, bool) {
+	for _, e := range ix.Entries {
+		if e.Root == root {
+			return e, true
+		}
 	}
-	return i.db.Create(&rows).Error
+	return Entry{}, false
 }
 
-// LatestScanCIDs returns up to n distinct scan CIDs for a query, newest first.
-func (i *Index) LatestScanCIDs(query string, n int) ([]string, error) {
-	var cids []string
-	err := i.db.Model(&ScanIndex{}).
-		Where("query = ?", query).
-		Group("scan_cid").
-		Order("MAX(created_at) desc").
-		Limit(n).
-		Pluck("scan_cid", &cids).Error
-	return cids, err
+// Targets lists every distinct target in the index, for an empty `report`.
+func (ix *Index) Targets() []Entry {
+	seen := map[string]bool{}
+	var out []Entry
+	for _, e := range ix.Entries {
+		k := e.Type + "\x00" + e.Key
+		if !seen[k] {
+			seen[k] = true
+			out = append(out, e)
+		}
+	}
+	return out
 }
 
-// ScanRows returns the result rows for a given scan CID.
-func (i *Index) ScanRows(scanCID string) ([]ScanIndex, error) {
-	var rows []ScanIndex
-	err := i.db.Where("scan_cid = ?", scanCID).Find(&rows).Error
-	return rows, err
-}
+// ParseRoot is cid.Decode, named for what callers are doing with it.
+func ParseRoot(s string) (cid.Cid, error) { return cid.Decode(s) }

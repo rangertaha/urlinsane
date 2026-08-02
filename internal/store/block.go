@@ -1,19 +1,7 @@
-// Copyright 2024 Rangertaha. All Rights Reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2024 Rangertaha. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
 
-package graphstore
+package store
 
 import (
 	"fmt"
@@ -84,10 +72,10 @@ type RawValue struct {
 // failing when the wire kind cannot supply it.
 func (r RawValue) Bind(k graph.Kind) (graph.Value, error) {
 	if !r.Set {
-		return graph.Value{}, fmt.Errorf("graphstore: slot is unset")
+		return graph.Value{}, fmt.Errorf("store: slot is unset")
 	}
 	mismatch := func(want datamodel.Kind) error {
-		return fmt.Errorf("graphstore: field of kind %s wants %s on the wire, got %s", k, want, r.Kind)
+		return fmt.Errorf("store: field of kind %s wants %s on the wire, got %s", k, want, r.Kind)
 	}
 	switch k {
 	case graph.KindString:
@@ -123,7 +111,7 @@ func (r RawValue) Bind(k graph.Kind) (graph.Value, error) {
 		}
 		return graph.Bytes(r.Bytes), nil
 	}
-	return graph.Value{}, fmt.Errorf("graphstore: unknown field kind %d", k)
+	return graph.Value{}, fmt.Errorf("store: unknown field kind %d", k)
 }
 
 // equal reports slot equality, which is how the diff names the fields that
@@ -233,7 +221,7 @@ func decodeValue(d *dec) RawValue {
 	case datamodel.Kind_Bytes:
 		return RawValue{Set: true, Kind: k, Bytes: d.raw()}
 	default:
-		d.fail("graphstore: prop slot has unencodable kind %s", k)
+		d.fail("store: prop slot has unencodable kind %s", k)
 		return RawValue{}
 	}
 }
