@@ -17,9 +17,10 @@
 // library: pick a layout, read its keys, and ask what sits next to a character
 // or above it on the Shift level.
 //
-//	board, err := kb.Get("kbdus")
-//	board.Adjacent("e")  // [d w r 3 4 s]
-//	board.Shifted("4")   // [$]
+//	board := kb.MustGet("kbdus")
+//	board.Adjacent("e")     // [w r d 3 4 s]
+//	board.Shifted("4")      // [$]
+//	board.Translate("hello", kb.MustGet("kbdru"))  // "руддщ"
 //
 // A layout is identified by the Windows driver it ships in — "kbdus", "kbdfr",
 // "kbdgr" — or by any of the KLIDs installed against that driver, so
