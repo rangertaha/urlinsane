@@ -85,6 +85,16 @@ var (
 		{"hver", "vær"},
 		{"lære", "lærer"},
 		{"vitne", "hvitne"},
+		{"gjenta", "jenta"},
+		{"hjord", "jord"},
+		{"hvor", "vor"},
+		{"verd", "verdt"},
+		{"verdt", "vert"},
+		{"kjede", "sjede"},
+		{"legge", "ligge"},
+		{"selv", "sjøl"},
+		{"vite", "hvite"},
+		{"sjenanse", "genanse"},
 	}
 	noAntonyms = map[string][]string{
 		"bra":       {"dårlig"},

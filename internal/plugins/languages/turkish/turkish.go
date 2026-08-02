@@ -100,6 +100,8 @@ var (
 		{"hakim", "hâkim"},
 		{"katil", "kâtil"},
 		{"varis", "vâris"},
+		{"ala", "âlâ"},
+		{"yad", "yâd"},
 	}
 	trAntonyms = map[string][]string{
 		"iyi":         {"kötü"},

@@ -141,6 +141,9 @@ var (
 		{"indeksi", "index"},
 		{"sitruuna", "citruuna"},
 		{"kioski", "kiosk"},
+		{"ekstra", "extra"},
+		{"sitaatti", "citaatti"},
+		{"sentti", "centti"},
 	}
 
 	// fiAntonyms are words opposite in meaning to another (e.g. bad and good ).

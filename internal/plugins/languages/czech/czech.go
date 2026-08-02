@@ -90,6 +90,10 @@ var (
 		{"mít", "mýt"},
 		{"tip", "typ"},
 		{"byl", "bil"},
+		{"mýval", "míval"},
+		{"vez", "ves"},
+		{"lez", "les"},
+		{"vysel", "visel"},
 	}
 	csAntonyms = map[string][]string{
 		"dobrý":     {"špatný"},

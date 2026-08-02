@@ -104,6 +104,14 @@ var (
 		{"uolo", "volo"},
 		{"condicio", "conditio"},
 		{"nuntius", "nuncius"},
+		{"sepulchrum", "sepulcrum"},
+		{"charitas", "caritas"},
+		{"littera", "litera"},
+		{"sollemnis", "solennis"},
+		{"quum", "cum"},
+		{"paenitentia", "penitentia"},
+		{"oeconomia", "economia"},
+		{"haeres", "heres"},
 	}
 
 	laAntonyms = map[string][]string{

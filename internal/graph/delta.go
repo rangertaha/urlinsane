@@ -85,6 +85,7 @@ type Graph struct {
 	eassert    map[EdgeID][]Assertion
 	status     map[statusKey]Status
 
+	observers   map[string]bool // operator ids whose status attests existence
 	ledger      map[ledgerKey]LedgerRow
 	rejections  []Rejection
 	truncations []RunTruncation
@@ -136,6 +137,7 @@ func New(reg *Registry) *Graph {
 		eassert:    map[EdgeID][]Assertion{},
 		status:     map[statusKey]Status{},
 		ledger:     map[ledgerKey]LedgerRow{},
+		observers:  map[string]bool{},
 		model:      uniformModel{},
 		belief:     map[NodeID]float64{},
 		bstate:     map[NodeID]State{},
@@ -398,6 +400,25 @@ func (g *Graph) admitEdge(ref EdgeRef, admit func(NodeRef) (NodeID, bool), by Pr
 		return EdgeID{}, false
 	}
 
+	// A node is not a variant of itself. Operators emit raw keys and cannot see
+	// canonical form, so an algorithm can produce a string that differs from its
+	// origin and canonicalizes back onto it — bit-flipping "google.com" flips a
+	// case bit to "Google.com", which folds straight back. The operator's own
+	// dedupe compares raw strings and cannot catch that; only the applier, which
+	// owns canonicalization, can.
+	//
+	// Left in, the self-edge makes the seed a variant of itself, which is not
+	// cosmetic: analyzers treat any node with an inbound VARIANT_OF as a
+	// variant, so the target gets scored as a live typosquat of itself and
+	// joins every campaign cluster it hosts.
+	if rel.class == Variant && from == to {
+		res.Rejected = append(res.Rejected, Rejection{
+			Kind: RejectSelfVariant, Rel: rel.name,
+			Type: g.nodes[from].Type.name, Key: g.nodes[from].Key, By: by,
+		})
+		return EdgeID{}, false
+	}
+
 	id := newEdgeID(from, rel.name, to)
 	if _, exists := g.edges[id]; !exists {
 		g.edges[id] = &Edge{ID: id, From: from, To: to, Rel: rel, Props: newProps(rel.sch)}
@@ -484,6 +505,40 @@ func (g *Graph) applyProp(ps PropSet, admit func(NodeRef) (NodeID, bool), by Pro
 			Kind: RejectMissingNode, Field: ps.Field, Detail: "PropSet names neither node nor edge", By: by,
 		})
 	}
+}
+
+// SetObservers names the operators whose status attests to a node's existence
+// (§9): those that actually looked something up.
+//
+// The distinction is load-bearing and was missing. Existence rolls up "did any
+// operator return ok", and a decomposer returns ok when it successfully *parses*
+// a name — which says nothing about whether that name exists. Without this,
+// every syntactically valid variant read as live, so "-google.com" and
+// "'oogle.com" were reported as live typosquats on the strength of having been
+// parsed, with every DNS and whois lookup against them empty.
+//
+// Membership is "the operator declared a rate-limit resource", i.e. it talks to
+// something outside the process. A pure computation cannot attest to existence
+// no matter what it returns.
+func (g *Graph) SetObservers(ids []string) {
+	g.observers = make(map[string]bool, len(ids))
+	for _, id := range ids {
+		g.observers[id] = true
+	}
+}
+
+// observes reports whether an operator's status counts toward existence.
+//
+// With no observer set registered the answer is yes for everything. That is the
+// honest fallback rather than a safe-looking "no": a caller that never declared
+// which operators observe has given us nothing to discriminate on, and
+// answering "no" would make every node read as untried. The scheduler always
+// registers the set, so this only affects tests driving the applier directly.
+func (g *Graph) observes(op string) bool {
+	if len(g.observers) == 0 {
+		return true
+	}
+	return g.observers[op]
 }
 
 // SetStatus records the terminal outcome of a (node, operator) pair. Skipped is

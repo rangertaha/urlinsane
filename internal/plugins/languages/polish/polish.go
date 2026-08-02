@@ -108,6 +108,10 @@ var (
 		{"wyrzynać", "wyżynać"},
 		{"zmorzony", "zmożony"},
 		{"hart", "chart"},
+		{"buk", "bug"},
+		{"lód", "lud"},
+		{"lud", "lut"},
+		{"masz", "maż"},
 	}
 	plAntonyms = map[string][]string{
 		"dobry":       {"zły"},
