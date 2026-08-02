@@ -13,205 +13,217 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package store
+package graphstore
 
 import (
-	"path/filepath"
-	"time"
+	"fmt"
 
 	"github.com/ipfs/go-cid"
-	cidlink "github.com/ipld/go-ipld-prime/linking/cid"
-	"github.com/rangertaha/urlinsane/internal/db"
-	"github.com/rangertaha/urlinsane/internal/entity"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
+	"github.com/rangertaha/urlinsane/internal/graph"
 )
 
-// Store is the content-addressed result store: an IPLD blockstore (source of
-// truth) plus a SQLite secondary index for name-based lookups and diffing.
+// Store persists graphs as content-addressed blocks.
 type Store struct {
-	bs  Blockstore
-	idx *Index
+	bs Blockstore
 }
 
-// OpenDir creates a Store under dir: a filesystem blockstore at dir/blocks and
-// a SQLite index at dir/index.db. This is the production constructor; tests use
-// Open with an injected connection.
-func OpenDir(dir string) (*Store, error) {
-	gdb, err := gorm.Open(
-		sqlite.Open(filepath.Join(dir, "index.db")),
-		&gorm.Config{Logger: logger.Default.LogMode(logger.Silent)},
-	)
+// Open returns a Store backed by a filesystem blockstore under dir.
+func Open(dir string) (*Store, error) {
+	bs, err := NewFSBlockstore(dir)
 	if err != nil {
 		return nil, err
 	}
-	return Open(dir, gdb)
+	return &Store{bs: bs}, nil
 }
 
-// Open creates a Store with a filesystem blockstore under dir/blocks and a
-// SQLite index on the supplied gorm connection.
-func Open(dir string, idxDB *gorm.DB) (*Store, error) {
-	bs, err := newFSStore(dir)
-	if err != nil {
-		return nil, err
-	}
-	idx, err := newIndex(idxDB)
-	if err != nil {
-		return nil, err
-	}
-	return &Store{bs: bs, idx: idx}, nil
+// New returns a Store over any blockstore.
+func New(bs Blockstore) *Store { return &Store{bs: bs} }
+
+// SaveOptions supplies the one thing a graph holds but does not publish.
+//
+// The seed has no accessor and cannot be inferred: structural edges cost no
+// depth, so a composite seed puts several nodes at depth 0 inside the closure
+// and only the caller that called Seed knows which one it started from.
+type SaveOptions struct {
+	Seed graph.NodeID
 }
 
-// Put encodes a domain to an Entity block, stores it, indexes (type,name)→CID,
-// and returns the CID. Idempotent for identical content.
-func (s *Store) Put(d *db.Domain) (cid.Cid, error) {
-	block, err := encodeEntity(ToEntity(d))
-	if err != nil {
-		return cid.Undef, err
+// Save writes every node, edge and side table and returns the scan root's CID.
+//
+// The root is a pure function of the graph's content: two identical scans
+// produce the same CID, byte for byte. Nothing here reads a clock or a random
+// source, and every collection comes from an accessor with a defined order —
+// no Go map is ranged over anywhere on the path to a block.
+func (s *Store) Save(g *graph.Graph, opts SaveOptions) (cid.Cid, error) {
+	if opts.Seed.IsZero() {
+		return cid.Undef, fmt.Errorf("graphstore: SaveOptions.Seed is required")
 	}
-	c, err := cidOf(block)
-	if err != nil {
-		return cid.Undef, err
+	seed, ok := g.Node(opts.Seed)
+	if !ok {
+		return cid.Undef, fmt.Errorf("graphstore: seed %s is not in the graph", opts.Seed)
 	}
-	if err := s.bs.Put(c, block); err != nil {
-		return cid.Undef, err
-	}
-	if err := s.idx.PutLatest(d.EntityType(), d.Name, c); err != nil {
-		return cid.Undef, err
-	}
-	return c, nil
-}
 
-// Get loads the latest stored entity for (type, name).
-func (s *Store) Get(t entity.Type, name string) (*db.Domain, bool, error) {
-	c, ok, err := s.idx.LatestCID(t, name)
-	if err != nil || !ok {
-		return nil, false, err
-	}
-	d, err := s.GetCID(c)
-	if err != nil {
-		return nil, false, err
-	}
-	return d, true, nil
-}
+	root := &Root{Version: FormatVersion, SeedType: seed.Type.Name(), SeedKey: seed.Key}
 
-// GetFresh returns the cached entity for (type, name) if it was stored within
-// ttl, else (nil, false). A non-positive ttl disables caching.
-func (s *Store) GetFresh(t entity.Type, name string, ttl time.Duration) (*db.Domain, bool, error) {
-	c, ok, err := s.idx.LatestFresh(t, name, ttl)
-	if err != nil || !ok {
-		return nil, false, err
-	}
-	d, err := s.GetCID(c)
-	if err != nil {
-		return nil, false, err
-	}
-	return d, true, nil
-}
-
-// GetCID decodes the block at a specific CID into a *db.Domain.
-func (s *Store) GetCID(c cid.Cid) (*db.Domain, error) {
-	block, err := s.bs.Get(c)
-	if err != nil {
-		return nil, err
-	}
-	e, err := decodeEntity(block)
-	if err != nil {
-		return nil, err
-	}
-	return ToDomain(e), nil
-}
-
-// PutScan stores each result, then a Scan node linking their CIDs, and records
-// the scan in the index. Returns the Scan CID.
-func (s *Store) PutScan(query string, results []*db.Domain) (cid.Cid, error) {
-	scan := &Scan{Query: query, Created: time.Now().UTC().Format(time.RFC3339)}
-	rows := make([]ResultRow, 0, len(results))
-	for _, d := range results {
-		c, err := s.Put(d)
+	nodes := g.Nodes()
+	for _, n := range nodes {
+		block, c, err := EncodeNode(n)
 		if err != nil {
+			return cid.Undef, fmt.Errorf("graphstore: encoding node %s/%s: %w", n.Type.Name(), n.Key, err)
+		}
+		if err := s.bs.Put(c, block); err != nil {
 			return cid.Undef, err
 		}
-		scan.Results = append(scan.Results, cidlink.Link{Cid: c})
-		rows = append(rows, ResultRow{Name: d.Name, CID: c})
+		root.Nodes = append(root.Nodes, c)
 	}
-	block, err := encodeScan(scan)
+
+	edges := g.Edges()
+	for _, e := range edges {
+		block, c, err := EncodeEdge(e)
+		if err != nil {
+			return cid.Undef, fmt.Errorf("graphstore: encoding edge %s: %w", e.Rel.Name(), err)
+		}
+		if err := s.bs.Put(c, block); err != nil {
+			return cid.Undef, err
+		}
+		root.Edges = append(root.Edges, c)
+	}
+
+	side := collectSide(g, nodes, edges)
+	sideBlock, sideCID, err := encodeSide(side)
 	if err != nil {
+		return cid.Undef, fmt.Errorf("graphstore: encoding side tables: %w", err)
+	}
+	if err := s.bs.Put(sideCID, sideBlock); err != nil {
 		return cid.Undef, err
 	}
-	sc, err := cidOf(block)
+	root.Side = sideCID
+
+	rootBlock, rootCID, err := encodeRoot(root)
 	if err != nil {
+		return cid.Undef, fmt.Errorf("graphstore: encoding scan root: %w", err)
+	}
+	if err := s.bs.Put(rootCID, rootBlock); err != nil {
 		return cid.Undef, err
 	}
-	if err := s.bs.Put(sc, block); err != nil {
-		return cid.Undef, err
-	}
-	if err := s.idx.PutScan(query, sc, rows); err != nil {
-		return cid.Undef, err
-	}
-	return sc, nil
+	return rootCID, nil
 }
 
-// EncodeJSON returns the dag-json (nested) form of a domain, for output plugins.
-func (s *Store) EncodeJSON(d *db.Domain) ([]byte, error) {
-	return encodeEntityJSON(ToEntity(d))
-}
+// collectSide gathers everything kept out of the addressed form. Every loop
+// here walks a slice in a defined order; introducing a map range in this
+// function would silently change the scan root's CID between identical runs.
+func collectSide(g *graph.Graph, nodes []*graph.Node, edges []*graph.Edge) *Side {
+	side := &Side{Version: FormatVersion}
 
-// DiffResult reports how a query's results changed between its two most recent
-// scans, by comparing content CIDs per entity name.
-type DiffResult struct {
-	Added   []string // names only in the newer scan
-	Removed []string // names only in the older scan
-	Changed []string // names present in both with a different CID
-	Same    []string // names present in both with the same CID
-}
+	// Status and scores live in graph-internal maps. They are read through the
+	// analysis surface, which sorts them by operator and by key; ranging the
+	// maps would put Go's iteration order into a content address.
+	view := g.Analyze()
 
-// Diff compares the two most recent scans for a query.
-func (s *Store) Diff(query string) (*DiffResult, error) {
-	scans, err := s.idx.LatestScanCIDs(query, 2)
-	if err != nil {
-		return nil, err
-	}
-	out := &DiffResult{}
-	if len(scans) < 2 {
-		return out, nil
-	}
-	newer, err := s.nameToCID(scans[0])
-	if err != nil {
-		return nil, err
-	}
-	older, err := s.nameToCID(scans[1])
-	if err != nil {
-		return nil, err
-	}
-	for name, nc := range newer {
-		oc, ok := older[name]
-		switch {
-		case !ok:
-			out.Added = append(out.Added, name)
-		case oc == nc:
-			out.Same = append(out.Same, name)
-		default:
-			out.Changed = append(out.Changed, name)
+	for _, n := range nodes {
+		for _, as := range g.Assertions(n.ID) {
+			side.NodeProps = append(side.NodeProps, PropRow{
+				Subject:  n.ID,
+				Field:    as.Field,
+				Kind:     as.Value.Kind(),
+				Value:    as.Value,
+				Operator: as.By.Operator,
+				Round:    as.By.Round,
+				Won:      as.Won,
+			})
 		}
 	}
-	for name := range older {
-		if _, ok := newer[name]; !ok {
-			out.Removed = append(out.Removed, name)
+
+	// Edge props are read back from the materialized values because the edge
+	// assertion table has no accessor. The winning operator is recoverable via
+	// Props.Setter, the round is not, so it is recorded as 0.
+	for _, e := range edges {
+		e.Props.Each(func(f graph.Field, v graph.Value) {
+			op, _ := e.Props.Setter(f)
+			side.EdgeProps = append(side.EdgeProps, EdgePropRow{
+				From:     e.From,
+				Rel:      e.Rel.Name(),
+				To:       e.To,
+				Field:    f.Name(),
+				Kind:     v.Kind(),
+				Value:    v,
+				Operator: op,
+				Won:      true,
+			})
+		})
+	}
+
+	for _, n := range nodes {
+		for _, r := range view.Statuses(n.ID) {
+			side.Status = append(side.Status, StatusRow{Node: n.ID, Operator: r.Operator, Status: r.Status})
 		}
 	}
-	return out, nil
+
+	for _, n := range nodes {
+		side.Sched = append(side.Sched, SchedRow{
+			Node:      n.ID,
+			Depth:     g.Depth(n.ID),
+			InClosure: g.InClosure(n.ID),
+		})
+	}
+
+	for _, n := range nodes {
+		for _, r := range view.Scores(n.ID) {
+			side.Scores = append(side.Scores, ScoreRow{Node: n.ID, Key: r.Key, Score: r.Value})
+		}
+	}
+
+	side.Ledger = g.Ledger()           // already in (type, key, reason) order
+	side.Truncations = g.Truncations() // recorded in round order
+	side.Findings = g.Findings()       // sorted by severity, kind, summary
+	return side
 }
 
-func (s *Store) nameToCID(scanCID string) (map[string]string, error) {
-	rows, err := s.idx.ScanRows(scanCID)
+// Load reads a scan root and every block it links.
+func (s *Store) Load(root cid.Cid) (*Scan, error) {
+	block, err := s.bs.Get(root)
 	if err != nil {
 		return nil, err
 	}
-	m := make(map[string]string, len(rows))
-	for _, r := range rows {
-		m[r.EntityName] = r.ResultCID
+	r, err := decodeRoot(block)
+	if err != nil {
+		return nil, err
 	}
-	return m, nil
+	scan := &Scan{CID: root, Root: r}
+
+	for _, c := range r.Nodes {
+		b, err := s.bs.Get(c)
+		if err != nil {
+			return nil, err
+		}
+		nb, err := DecodeNode(b)
+		if err != nil {
+			return nil, fmt.Errorf("graphstore: node %s: %w", c, err)
+		}
+		nb.CID = c
+		scan.Nodes = append(scan.Nodes, nb)
+	}
+
+	for _, c := range r.Edges {
+		b, err := s.bs.Get(c)
+		if err != nil {
+			return nil, err
+		}
+		eb, err := DecodeEdge(b)
+		if err != nil {
+			return nil, fmt.Errorf("graphstore: edge %s: %w", c, err)
+		}
+		eb.CID = c
+		scan.Edges = append(scan.Edges, eb)
+	}
+
+	sb, err := s.bs.Get(r.Side)
+	if err != nil {
+		return nil, err
+	}
+	scan.Side, err = decodeSide(sb)
+	if err != nil {
+		return nil, fmt.Errorf("graphstore: side tables %s: %w", r.Side, err)
+	}
+	return scan, nil
 }
