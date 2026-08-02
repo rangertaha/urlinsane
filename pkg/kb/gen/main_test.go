@@ -15,6 +15,12 @@
 package main
 
 import (
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+
+	"golang.org/x/net/html"
 	"os"
 	"path/filepath"
 	"testing"
@@ -177,5 +183,377 @@ func TestWriteAtomic(t *testing.T) {
 	}
 	if len(entries) != 1 {
 		t.Errorf("%d files in the cache directory, want just the entry", len(entries))
+	}
+}
+
+// The parsing below runs on fixtures rather than on the site, which is what
+// splitting it away from the fetching was for.
+
+func parse(t *testing.T, s string) *html.Node {
+	t.Helper()
+	doc, err := html.Parse(strings.NewReader(s))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return doc
+}
+
+func TestParseKLIDs(t *testing.T) {
+	doc := parse(t, `<html><body>
+		<a href="/00000409/">US</a>
+		<a href="/0000040C/">French</a>
+		<a href="/00000409/">US again</a>
+		<a href="/kbdus">not a KLID</a>
+		<a href="/1234567/">too short</a>
+		<a href="/00000zzz/">not hex</a>
+		<a>no href</a>
+	</body></html>`)
+
+	got, err := parseKLIDs(doc)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := []string{"00000409", "0000040c"} // deduplicated, lowercased, sorted
+	if len(got) != len(want) {
+		t.Fatalf("parseKLIDs = %v, want %v", got, want)
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Errorf("parseKLIDs = %v, want %v", got, want)
+			break
+		}
+	}
+}
+
+func TestParseKLIDsEmptyPage(t *testing.T) {
+	// A front page with no layouts on it means something changed upstream,
+	// and the run should stop rather than write an empty dataset.
+	if _, err := parseKLIDs(parse(t, `<html><body>nothing here</body></html>`)); err == nil {
+		t.Error("a page with no KLIDs should be an error")
+	}
+}
+
+func TestParseMeta(t *testing.T) {
+	doc := parse(t, `<html><body><div class="metaGroup">
+		<table>
+			<tr><th>KLID</th><td>00000409 (en-US)</td></tr>
+			<tr><th>Layout Display Name</th><td>US</td></tr>
+			<tr><th>Layout File</th><td>KBDUS.DLL</td></tr>
+		</table>
+		<table>
+			<tr><th>KLID</th><td>00000804 (zh-Hans-CN)</td></tr>
+			<tr><th>Layout Display Name</th><td>Chinese (Simplified) - US</td></tr>
+			<tr><th>Layout File</th><td>KBDUS.DLL</td></tr>
+		</table>
+	</div></body></html>`)
+
+	m := parseMeta(doc, "00000409")
+
+	if m.File != "KBDUS.DLL" {
+		t.Errorf("File = %q, want KBDUS.DLL", m.File)
+	}
+	if len(m.Locales) != 2 {
+		t.Fatalf("got %d locales, want 2", len(m.Locales))
+	}
+	if m.Locales[0].KLID != "00000409" || m.Locales[0].Tag != "en-US" || m.Locales[0].Name != "US" {
+		t.Errorf("first locale = %+v", m.Locales[0])
+	}
+	if m.Locales[1].KLID != "00000804" || m.Locales[1].Tag != "zh-Hans-CN" {
+		t.Errorf("second locale = %+v", m.Locales[1])
+	}
+}
+
+func TestParseMetaWithoutTables(t *testing.T) {
+	// A page with no metadata still yields an entry, keyed by the KLID that
+	// led there, so the layout is not lost.
+	m := parseMeta(parse(t, `<html><body>nothing</body></html>`), "0000dead")
+
+	if len(m.Locales) != 1 || m.Locales[0].KLID != "0000dead" {
+		t.Errorf("locales = %+v, want the KLID we arrived with", m.Locales)
+	}
+}
+
+func TestParseMetaWithoutATag(t *testing.T) {
+	// The language tag is optional.
+	m := parseMeta(parse(t, `<html><table>
+		<tr><th>KLID</th><td>00000409</td></tr>
+		<tr><th>Layout Display Name</th><td>US</td></tr>
+	</table></html>`), "00000409")
+
+	if len(m.Locales) != 1 || m.Locales[0].Tag != "" || m.Locales[0].KLID != "00000409" {
+		t.Errorf("locales = %+v", m.Locales)
+	}
+}
+
+const miniLayout = `<KeyboardLayout>
+  <PhysicalKeys>
+    <PK VK="VK_Q" SC="10"><Result Text="q"/><Result Text="Q" With="VK_SHIFT"/></PK>
+    <PK VK="VK_E" SC="12">
+      <Result Text="e"/>
+      <Result Text="E" With="VK_SHIFT"/>
+      <Result Text="E" With="VK_CAPITAL"/>
+      <Result Text="e" With="VK_SHIFT VK_CAPITAL"/>
+      <Result Text="€" With="VK_CONTROL VK_MENU"/>
+      <Result TextCodepoints="0005" With="VK_CONTROL"/>
+    </PK>
+    <PK VK="VK_OEM_3" SC="29"><Result With="VK_CONTROL VK_MENU"><DeadKeyTable Accent="~"/></Result></PK>
+    <PK VK="VK_SPACE" SC="39" Name="Space"><Result Text=" "/></PK>
+    <PK VK="VK_NUMPAD7" SC="47"><Result Text="7"/></PK>
+  </PhysicalKeys>
+</KeyboardLayout>`
+
+func TestBuildFrom(t *testing.T) {
+	l, err := buildFrom("kbdtest", meta{
+		File:    "KBDTEST.DLL",
+		Locales: []kb.Locale{{KLID: "00000409", Tag: "en-US", Name: "Test"}},
+	}, []byte(miniLayout))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if l.ID != "kbdtest" || l.Name != "Test" || l.File != "KBDTEST.DLL" {
+		t.Errorf("layout header = %+v", l)
+	}
+
+	// The numeric keypad key is outside the block and must be gone.
+	if _, ok := l.Key("47"); ok {
+		t.Error("SC 47 is on the keypad and should have been dropped")
+	}
+
+	e, ok := l.Key("12")
+	if !ok {
+		t.Fatal("no key at SC 12")
+	}
+	if e.Base() != "e" || e.Shift() != "E" || e.AltGr() != "€" {
+		t.Errorf("SC 12 = base %q shift %q altgr %q", e.Base(), e.Shift(), e.AltGr())
+	}
+
+	// Caps here follows the ordinary rule, so Compact should have dropped
+	// both stored caps states, leaving them to be derived.
+	if got := e.Mods(); len(got) != 3 {
+		t.Errorf("SC 12 stores %v; caps should have been compacted away", got)
+	}
+	if o, ok := e.Text(kb.Caps); !ok || o.Text != "E" {
+		t.Errorf("caps derives to %q", o.Text)
+	}
+
+	// The Ctrl level produced a control code and must not have been kept.
+	for _, m := range e.Mods() {
+		if o, _ := e.Text(m); o.Text == "\x05" {
+			t.Error("a control code was stored as text")
+		}
+	}
+
+	// A dead key keeps its accent and its flag.
+	d, _ := l.Key("29")
+	if o, ok := d.Text(kb.AltGr); !ok || o.Text != "~" || !o.Dead {
+		t.Errorf("SC 29 altgr = %q dead=%v", o.Text, o.Dead)
+	}
+
+	// The name on the space bar survives.
+	if s, _ := l.Key("39"); s.Name != "Space" {
+		t.Errorf("SC 39 name = %q", s.Name)
+	}
+}
+
+func TestBuildFromRejectsRubbish(t *testing.T) {
+	if _, err := buildFrom("kbdtest", meta{}, []byte("<not xml")); err == nil {
+		t.Error("malformed XML should be an error")
+	}
+
+	// A key table with nothing in the alphanumeric block is not a layout.
+	only := `<KeyboardLayout><PhysicalKeys>
+		<PK VK="VK_NUMPAD7" SC="47"><Result Text="7"/></PK>
+	</PhysicalKeys></KeyboardLayout>`
+	if _, err := buildFrom("kbdtest", meta{}, []byte(only)); err == nil {
+		t.Error("a layout with no keys in the block should be an error")
+	}
+}
+
+func TestWriteLayout(t *testing.T) {
+	l, err := buildFrom("kbdtest", meta{Locales: []kb.Locale{{KLID: "00000409"}}}, []byte(miniLayout))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	path := filepath.Join(t.TempDir(), "kbdtest.pb")
+	if err := writeLayout(path, l); err != nil {
+		t.Fatal(err)
+	}
+
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	back := new(kb.Layout)
+	if err := back.Unmarshal(raw); err != nil {
+		t.Fatal(err)
+	}
+	if back.ID != l.ID || len(back.Keys) != len(l.Keys) {
+		t.Errorf("what was written back does not match what went in")
+	}
+}
+
+func TestWrite(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "index.json")
+	if err := write(path, []string{"a", "b"}); err != nil {
+		t.Fatal(err)
+	}
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(raw) != "[\n  \"a\",\n  \"b\"\n]\n" {
+		t.Errorf("write produced %q", raw)
+	}
+}
+
+func TestHTMLHelpers(t *testing.T) {
+	doc := parse(t, `<html><body><div id="x" class="y">one<span>two</span></div></body></html>`)
+
+	var div *html.Node
+	walk(doc, func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == "div" {
+			div = n
+		}
+	})
+	if div == nil {
+		t.Fatal("walk did not reach the div")
+	}
+
+	if got := attr(div, "id"); got != "x" {
+		t.Errorf("attr(id) = %q", got)
+	}
+	if got := attr(div, "nope"); got != "" {
+		t.Errorf("attr for a missing attribute = %q, want empty", got)
+	}
+	if got := text(div); got != "onetwo" {
+		t.Errorf("text = %q, want onetwo", got)
+	}
+}
+
+// The fetching below runs against a local server rather than kbdlayout.info,
+// which covers the caching and redirect handling that the parsing tests skip.
+
+func serve(t *testing.T) *httptest.Server {
+	t.Helper()
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/":
+			fmt.Fprint(w, `<html><a href="/00000409/">US</a><a href="/00000804/">zh</a></html>`)
+		case "/00000409/", "/00000804/":
+			// The site answers a KLID with a redirect to its driver.
+			http.Redirect(w, r, "/kbdtest", http.StatusFound)
+		case "/kbdtest":
+			fmt.Fprint(w, `<html><table>
+				<tr><th>KLID</th><td>00000409 (en-US)</td></tr>
+				<tr><th>Layout Display Name</th><td>Test</td></tr>
+				<tr><th>Layout File</th><td>KBDTEST.DLL</td></tr>
+			</table><table>
+				<tr><th>KLID</th><td>00000804 (zh-Hans-CN)</td></tr>
+				<tr><th>Layout Display Name</th><td>Test Chinese</td></tr>
+			</table></html>`)
+		case "/kbdtest/download/xml":
+			fmt.Fprint(w, miniLayout)
+		default:
+			http.NotFound(w, r)
+		}
+	})
+
+	srv := httptest.NewServer(mux)
+	t.Cleanup(srv.Close)
+
+	// Point the command at it, and take the politeness delay out.
+	oldBase, oldCache, oldDelay := *base, *cache, *delay
+	*base, *cache, *delay = srv.URL, t.TempDir(), 0
+	t.Cleanup(func() { *base, *cache, *delay = oldBase, oldCache, oldDelay })
+
+	return srv
+}
+
+func TestFetchAndCache(t *testing.T) {
+	serve(t)
+
+	raw, final, err := fetchFinal("/00000409/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	// The redirect is followed, and where it ended up is what names the driver.
+	if !strings.HasSuffix(final.Path, "/kbdtest") {
+		t.Errorf("ended at %q, want /kbdtest", final.Path)
+	}
+	if !strings.Contains(string(raw), "KBDTEST.DLL") {
+		t.Error("body is not the driver page")
+	}
+
+	// The second call is served from the cache, and agrees with the first.
+	again, finalAgain, err := fetchFinal("/00000409/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(again) != string(raw) || finalAgain.Path != final.Path {
+		t.Error("the cached answer differs from the fetched one")
+	}
+
+	if _, err := fetch("/nosuchpage"); err == nil {
+		t.Error("a 404 should be an error")
+	}
+}
+
+func TestCatalogueResolveBuild(t *testing.T) {
+	serve(t)
+
+	klids, err := catalogue()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(klids) != 2 || klids[0] != "00000409" {
+		t.Fatalf("catalogue = %v", klids)
+	}
+
+	driver, m, err := resolve(klids[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	if driver != "kbdtest" {
+		t.Errorf("driver = %q, want kbdtest", driver)
+	}
+	if m.File != "KBDTEST.DLL" || len(m.Locales) != 2 {
+		t.Errorf("meta = %+v", m)
+	}
+
+	l, err := build(driver, m)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if l.ID != "kbdtest" || l.Name != "Test" {
+		t.Errorf("layout = %s / %s", l.ID, l.Name)
+	}
+	if _, ok := l.Key("12"); !ok {
+		t.Error("the built layout has no E key")
+	}
+
+	if _, err := build("nosuchdriver", meta{}); err == nil {
+		t.Error("building an unknown driver should fail")
+	}
+}
+
+func TestFetchHTMLRejectsAMissingPage(t *testing.T) {
+	serve(t)
+
+	if _, err := fetchHTML("/nosuchpage"); err == nil {
+		t.Error("fetchHTML should pass the error through")
+	}
+}
+
+func TestWriteAtomicIntoAMissingDirectory(t *testing.T) {
+	// The temporary file is made beside the target, so a directory that is
+	// not there is an error rather than a panic.
+	if err := writeAtomic(filepath.Join(t.TempDir(), "nope", "x.cache"), []byte("x")); err == nil {
+		t.Error("writing into a missing directory should fail")
 	}
 }

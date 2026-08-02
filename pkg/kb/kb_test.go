@@ -1237,3 +1237,185 @@ func indexOf(haystack []string, needle string) int {
 	}
 	return -1
 }
+
+// The error paths below are the ones the package promises to take rather than
+// guess. They are cheap to leave untested and expensive to have wrong.
+
+func TestKeyAccessors(t *testing.T) {
+	fr, _ := MustGet("kbdfr").Key("12") // e, with € on AltGr
+	if got := fr.AltGr(); got != "€" {
+		t.Errorf("AltGr = %q, want €", got)
+	}
+	if !fr.Types("e") || !fr.Types("E") || fr.Types("nope") {
+		t.Error("Types disagrees with what the key produces")
+	}
+
+	// String is for diagnostics, so it just has to name the key and say
+	// what it does.
+	s := fr.String()
+	if !strings.Contains(s, "12") || !strings.Contains(s, `"e"`) {
+		t.Errorf("Key.String = %q", s)
+	}
+
+	// A key that types nothing still renders, with its label.
+	blank := NewKey("3A", "VK_CAPITAL", "Caps Lock")
+	if got := blank.String(); !strings.Contains(got, "Caps Lock") {
+		t.Errorf("blank Key.String = %q", got)
+	}
+
+	// A dead key says so.
+	de, _ := MustGet("kbdgr").Key("29")
+	if got := de.String(); !strings.Contains(got, "dead") {
+		t.Errorf("dead Key.String = %q", got)
+	}
+}
+
+func TestModStringAndParse(t *testing.T) {
+	for _, m := range mods {
+		name := m.String()
+		back, ok := parseMod(name)
+		if !ok || back != m {
+			t.Errorf("%v -> %q -> %v (%v)", m, name, back, ok)
+		}
+	}
+
+	// A modifier set outside the modelled range names itself numerically
+	// rather than pretending to be one of the known ones.
+	if got := Mod(200).String(); got != "mod(200)" {
+		t.Errorf("Mod(200).String() = %q", got)
+	}
+	if _, ok := parseMod("notamodifier"); ok {
+		t.Error("parseMod accepted a name it does not know")
+	}
+}
+
+func TestSetKeepsTheFirstValue(t *testing.T) {
+	// The source data lists the plainest spelling first, so a second write
+	// to the same state is ignored.
+	k := NewKey("10", "VK_Q", "")
+	k.Set(Base, Out{Text: "q"})
+	k.Set(Base, Out{Text: "OVERWRITTEN"})
+
+	if k.Base() != "q" {
+		t.Errorf("Base = %q, want the first value", k.Base())
+	}
+}
+
+func TestCompactLeavesInformativeStates(t *testing.T) {
+	// Caps that matches the fallback goes; caps that carries its own value
+	// stays.
+	ordinary := NewKey("10", "VK_Q", "")
+	ordinary.Set(Base, Out{Text: "q"})
+	ordinary.Set(Shift, Out{Text: "Q"})
+	ordinary.Set(Caps, Out{Text: "Q"})
+	ordinary.Compact()
+	if got := ordinary.Mods(); len(got) != 2 {
+		t.Errorf("ordinary key kept %v after compacting", got)
+	}
+
+	special := NewKey("03", "VK_2", "")
+	special.Set(Base, Out{Text: "2"})
+	special.Set(Shift, Out{Text: `"`})
+	special.Set(Caps, Out{Text: "2"}) // Caps Lock does nothing here
+	special.Compact()
+	if got := special.Mods(); len(got) != 3 {
+		t.Errorf("informative caps state was compacted away: %v", got)
+	}
+}
+
+func TestStrikeOnAKeyNarrowerThanOne(t *testing.T) {
+	// Nothing in the dataset is narrower than a key, but the rule has to
+	// mean something if one ever is: there is only one place to hit it.
+	narrow := Pos{X: 2, Y: 0, W: 0.5}
+	cx, _ := narrow.Center()
+	for _, from := range []float64{-10, 0, 2.25, 100} {
+		if got := narrow.strike(from); got != cx {
+			t.Errorf("strike(%v) = %v, want the centre %v", from, got, cx)
+		}
+	}
+}
+
+func TestIDs(t *testing.T) {
+	ids := IDs()
+	if len(ids) != len(List()) {
+		t.Errorf("IDs returned %d, List %d", len(ids), len(List()))
+	}
+	if !sort.StringsAreSorted(ids) {
+		t.Error("IDs is not sorted")
+	}
+	if indexOf(ids, "kbdus") < 0 {
+		t.Error("IDs does not include kbdus")
+	}
+}
+
+func TestMustGetPanics(t *testing.T) {
+	defer func() {
+		if recover() == nil {
+			t.Error("MustGet should panic on a layout that does not exist")
+		}
+	}()
+	MustGet("nosuchlayout")
+}
+
+func TestEncodingRejectsBadInput(t *testing.T) {
+	// A KLID that is not hex cannot be stored as the number it is meant to
+	// be, and saying so beats writing a zero.
+	if _, err := encodeKLID("not-hex"); err == nil {
+		t.Error("encodeKLID accepted a non-hex KLID")
+	}
+	if _, err := encodeLocales([]Locale{{KLID: "zzzz"}}); err == nil {
+		t.Error("encodeLocales accepted a non-hex KLID")
+	}
+
+	// The same on the way out of a layout and out of the catalogue.
+	bad := New("t", "T", ANSI, []Key{NewKey("10", "VK_Q", "")})
+	bad.Locales = []Locale{{KLID: "zzzz"}}
+	if _, err := bad.Marshal(); err == nil {
+		t.Error("Marshal accepted a layout with a non-hex KLID")
+	}
+	if _, err := MarshalCatalogue([]Entry{{ID: "t", Form: ANSI, Locales: []Locale{{KLID: "zzzz"}}}}); err == nil {
+		t.Error("MarshalCatalogue accepted a non-hex KLID")
+	}
+	if _, err := MarshalCatalogue([]Entry{{ID: "t", Form: Form("bogus")}}); err == nil {
+		t.Error("MarshalCatalogue accepted an unknown form")
+	}
+
+	// A scan code that is not hex either.
+	if _, err := New("t", "T", ANSI, []Key{{SC: "zz"}}).Marshal(); err != nil {
+		// index() drops it for having no position, so this must not fail
+		t.Errorf("a key outside the block should be dropped, not an error: %v", err)
+	}
+}
+
+func TestDecodingRejectsBadInput(t *testing.T) {
+	if err := new(Layout).Unmarshal([]byte("\xff\xff\xff\xff")); err == nil {
+		t.Error("Unmarshal accepted rubbish")
+	}
+	if _, err := UnmarshalCatalogue([]byte("\xff\xff\xff\xff")); err == nil {
+		t.Error("UnmarshalCatalogue accepted rubbish")
+	}
+
+	// A catalogue entry with no form is not one this package can place.
+	raw, err := proto.Marshal(&kbpb.Catalogue{Entries: []*kbpb.Entry{{Id: "t"}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := UnmarshalCatalogue(raw); err == nil {
+		t.Error("UnmarshalCatalogue accepted an entry with no form")
+	}
+}
+
+func TestJSONRejectsBadInput(t *testing.T) {
+	if err := new(Key).UnmarshalJSON([]byte(`{"sc":"10","out":{"nosuchstate":{"t":"q"}}}`)); err == nil {
+		t.Error("Key.UnmarshalJSON accepted an unknown modifier state")
+	}
+	if err := new(Key).UnmarshalJSON([]byte(`not json`)); err == nil {
+		t.Error("Key.UnmarshalJSON accepted rubbish")
+	}
+	if err := new(Layout).UnmarshalJSON([]byte(`not json`)); err == nil {
+		t.Error("Layout.UnmarshalJSON accepted rubbish")
+	}
+	if err := new(Layout).UnmarshalJSON([]byte(`{"keys":[{"sc":"10","out":{"bad":{"t":"q"}}}]}`)); err == nil {
+		t.Error("Layout.UnmarshalJSON accepted an unknown modifier state")
+	}
+}
