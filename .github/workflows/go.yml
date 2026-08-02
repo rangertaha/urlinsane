@@ -14,12 +14,14 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
-        go-version: '1.22'
+        # Read the version from go.mod rather than pinning it here. The pin said
+        # 1.22 while go.mod required 1.25, so CI could not have built this tree.
+        go-version-file: 'go.mod'
 
     - name: Build
       run: make build
 
-    - name: Test
-      run: make test
+    - name: Check
+      run: make check
