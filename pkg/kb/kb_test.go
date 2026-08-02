@@ -1087,13 +1087,68 @@ func TestTranslate(t *testing.T) {
 		}
 	}
 
-	// Characters no key can produce are passed through, so the result stays
-	// aligned with the input.
+	// Characters no key can produce are passed through rather than dropped.
 	if got := us.Translate("a中b", ru); got != "ф中и" {
 		t.Errorf("us.Translate(a中b, ru) = %q, want %q", got, "ф中и")
 	}
-	if got, want := len([]rune(us.Translate("a中b", ru))), 3; got != want {
-		t.Errorf("translation changed the length: %d runes, want %d", got, want)
+}
+
+// TestTranslateIsNotLengthPreserving pins a property it would be natural to
+// assume and wrong to rely on: a ligature key types two characters at once, so
+// one rune in can be two out.
+func TestTranslateCanGrow(t *testing.T) {
+	us, ar := MustGet("kbdus"), MustGet("kbda1")
+
+	// The Arabic 101 board reaches "لا" on the key US uses for "b".
+	k, ok := ar.Key("30")
+	if !ok || len([]rune(k.Base())) != 2 {
+		t.Skip("kbda1 SC 30 is no longer a ligature key")
+	}
+
+	got := us.Translate("b", ar)
+	if len([]rune(got)) != 2 {
+		t.Errorf("us.Translate(b, kbda1) = %q, %d runes; want the 2-rune ligature",
+			got, len([]rune(got)))
+	}
+}
+
+// TestTranslateRoundTripNeedsATypeableSource is the other assumption worth
+// nailing down. Pass-through is not invertible: a character the source layout
+// cannot type survives untouched, but it is an ordinary character on the way
+// back and gets translated then.
+func TestTranslateRoundTripNeedsATypeableSource(t *testing.T) {
+	ru, gr := MustGet("kbdru"), MustGet("kbdgr")
+
+	if ru.Types("a") {
+		t.Skip("kbdru now types Latin; this case no longer applies")
+	}
+
+	there := ru.Translate("abc", gr)
+	if there != "abc" {
+		t.Errorf("Russian cannot type abc, so it should pass through; got %q", there)
+	}
+	if back := gr.Translate(there, ru); back == "abc" {
+		t.Error("expected the return trip to translate what the outbound one passed through")
+	}
+}
+
+// TestLookupsAgreeOnEmpty checks that the catalogue lookups answer "nothing"
+// the same way. ByLanguage used to return nil for a full tag and an empty
+// non-nil slice for a bare one, from the same call.
+func TestLookupsAgreeOnEmpty(t *testing.T) {
+	for name, got := range map[string][]Entry{
+		"ByLanguage(bare)": ByLanguage("zz"),
+		"ByLanguage(full)": ByLanguage("zz-ZZ"),
+		"ByKeys":           ByKeys("中"),
+		"ByString":         ByString("中"),
+		"Find":             Find("zzzznotalayout"),
+	} {
+		if got != nil {
+			t.Errorf("%s returned a non-nil empty slice; the others return nil", name)
+		}
+		if len(got) != 0 {
+			t.Errorf("%s returned %d entries, want none", name, len(got))
+		}
 	}
 }
 

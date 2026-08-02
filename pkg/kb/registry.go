@@ -238,6 +238,9 @@ func IDs() []string {
 // primary subtag ("de") or a full BCP-47 tag ("de-CH"). A full tag matches
 // only the layouts carrying that exact locale; a bare subtag matches every
 // layout for the language.
+//
+// Like the other lookups here it returns nil when nothing matches, which
+// ranges and counts the same as an empty slice.
 func ByLanguage(tag string) []Entry {
 	if err := load(); err != nil {
 		return nil
@@ -261,9 +264,8 @@ func ByLanguage(tag string) []Entry {
 		return out
 	}
 
-	idx := catalogue.byLang[tag]
-	out := make([]Entry, 0, len(idx))
-	for _, i := range idx {
+	var out []Entry
+	for _, i := range catalogue.byLang[tag] {
 		out = append(out, catalogue.entries[i].clone())
 	}
 	return out

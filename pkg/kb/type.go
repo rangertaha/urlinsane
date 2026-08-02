@@ -93,9 +93,21 @@ func (l *Layout) Type(strokes []Stroke) string {
 //	us.Translate("google", ru)  // "пщщпдw"
 //
 // Characters this layout cannot type, and keys the other layout leaves bare,
-// are passed through unchanged rather than dropped, so the result lines up
-// with the input and a domain keeps its dots. Use Strokes and Type together
-// when you would rather see exactly what fell through.
+// are passed through unchanged rather than dropped, so a domain keeps its
+// dots. Use Strokes and Type together when you would rather see exactly what
+// fell through.
+//
+// Two things follow from that which are easy to assume away:
+//
+// The result is not always the same length as the input. A handful of layouts
+// have ligature keys that type two characters at once — the Arabic boards
+// reach "لا" on one key — so a rune can come back as two.
+//
+// And it does not round-trip unless this layout can type every character
+// given. A character that falls through untouched here is still an ordinary
+// character on the way back, and will be translated then: Russian cannot type
+// "abc", so it passes through, and translating the result back through
+// Russian yields "фис" rather than "abc".
 //
 // A key that is dead on the far layout contributes its accent, since that is
 // what the dataset records; it would really arm the accent instead.
