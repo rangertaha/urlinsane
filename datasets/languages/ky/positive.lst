@@ -1,1 +1,18 @@
 # Words with a favourable connotation, one per line.
+# Kyrgyz in Cyrillic script (36 letters). pkg/kb ships kbdkyr (Kyrgyz Cyrillic); CLDR ky is Cyrillic. Letters CLDR keeps in auxiliary (в ф ц щ ь) are included because they belong to the standard alphabet and occur in Russian loans.
+жакшы
+сонун
+мыкты
+коопсуз
+ишенимдүү
+расмий
+текшерилген
+ылдам
+оңой
+акысыз
+премиум
+топ
+жаңы
+чыныгы
+сапаттуу
+бактылуу

@@ -1,1 +1,37 @@
 # Smallest functional units of the writing system, one per line.
+# Script: LATIN (modern Azerbaijani alphabet) — kb ships kbdazel and kbdazst,
+# and CLDR's default for az is Latin. Source: CLDR az exemplarCharacters + auxiliary.
+a
+b
+c
+ç
+d
+e
+ə
+f
+g
+ğ
+h
+x
+ı
+i
+İ
+j
+k
+q
+l
+m
+n
+o
+ö
+p
+r
+s
+ş
+t
+u
+ü
+v
+y
+z
+w

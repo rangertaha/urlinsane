@@ -1,1 +1,18 @@
 # Words that sound alike, one group per line.
+# Tatar in Cyrillic script (39 letters). pkg/kb ships kbdtat and kbdtt102, both Cyrillic; CLDR tt is Cyrillic. Zamanalif/Latin is deliberately not used here.
+нокта точка .
+эт маймыл собака @
+сызык дефис тире -
+кыексызык слэш /
+астысызык астагысызык _
+йолдызча йолдыз звездочка *
+процент пайыз %
+плюс кушу +
+нуль ноль
+тәкъдим тәкдим
+мәгълүмат мәглүмат
+игълан иглан
+әгъза әгза
+игътибар игтибар
+мәгънә мәгнә
+шигърият шигрият

@@ -1,1 +1,18 @@
 # Words with a favourable connotation, one per line.
+# Kazakh in Cyrillic script (42 letters). The Latin alphabet Kazakhstan is transitioning to is deliberately not used here; pkg/kb ships kbdkaz (Cyrillic) and CLDR kk is Cyrillic.
+жақсы
+тамаша
+үздік
+қауіпсіз
+сенімді
+ресми
+тексерілген
+жылдам
+оңай
+тегін
+премиум
+топ
+жаңа
+шынайы
+сапалы
+бақытты

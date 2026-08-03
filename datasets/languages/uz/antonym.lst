@@ -1,1 +1,61 @@
 # A word and its opposite, one pair per line.
+# Uzbek written in CYRILLIC, deliberately against CLDR.
+# CLDR's default for uz is the Latin alphabet and modern Uzbek is officially
+# Latin, but pkg/kb ships exactly one Uzbek keyboard layout, kbduzb 'Uzbek
+# Cyrillic'. SKILL.md step 0 says to take the script of the layouts that ship,
+# so every uz file here is Cyrillic. Alphabet cross-checked against CLDR
+# uz-Cyrl exemplarCharacters.
+оқ қора
+катта кичик
+тез секин
+юқори паст
+юқорига пастга
+ичкарида ташқарида
+олдинга орқага
+кириш чиқиш
+баланд паст
+чиқиш кириш
+узоқ яқин
+яқин узоқ
+иссиқ совуқ
+совуқ иссиқ
+енгил оғир
+оғир енгил
+янги эски
+эски янги
+яхши ёмон
+ёмон яхши
+кўп оз
+оз кўп
+осон қийин
+қийин осон
+кучли заиф
+заиф кучли
+очиқ ёпиқ
+ёпиқ очиқ
+тўғри нотўғри
+нотўғри тўғри
+рост ёлғон
+ёлғон рост
+ҳа йўқ
+йўқ ҳа
+бор йўқ
+олдин кейин
+кейин олдин
+кун тун
+тун кун
+бой камбағал
+камбағал бой
+узун калта
+калта узун
+семиз ориқ
+ориқ семиз
+олиш сотиш
+хавфсиз хавфли
+хавфли хавфсиз
+ҳақиқий сохта
+сохта ҳақиқий
+қонуний ноқонуний
+ноқонуний қонуний
+бошланиш охири
+охири бошланиш

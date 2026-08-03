@@ -1,1 +1,31 @@
 # Syllabic characters, one per line.
+# Bangla (Bengali script). Graphemes from CLDR exemplarCharacters for bn.
+# Independent vowels and the dependent vowel signs (matras).
+অ
+আ
+ই
+ঈ
+উ
+ঊ
+ঋ
+ৠ
+ঌ
+ৡ
+এ
+ঐ
+ও
+ঔ
+া
+ি
+ী
+ু
+ূ
+ৃ
+ৄ
+ৢ
+ৣ
+ে
+ৈ
+ো
+ৌ
+ৗ

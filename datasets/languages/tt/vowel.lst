@@ -1,1 +1,15 @@
 # Syllabic characters, one per line.
+# Tatar in Cyrillic script (39 letters). pkg/kb ships kbdtat and kbdtt102, both Cyrillic; CLDR tt is Cyrillic. Zamanalif/Latin is deliberately not used here.
+а
+ә
+е
+ё
+и
+о
+ө
+у
+ү
+ы
+э
+ю
+я

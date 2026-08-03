@@ -1,1 +1,19 @@
 # Words that sound alike, one group per line.
+# Kazakh in Cyrillic script (42 letters). The Latin alphabet Kazakhstan is transitioning to is deliberately not used here; pkg/kb ships kbdkaz (Cyrillic) and CLDR kk is Cyrillic.
+нүкте точка .
+айқұлақ ит собака @
+сызықша дефис тире -
+қиғашсызық слэш /
+астыңғысызық астысызық _
+жұлдызша жұлдыз звездочка *
+пайыз процент %
+плюс қосу +
+аз ас
+боз бос
+жаз жас
+қаз қас
+қыз қыс
+тоз тос
+төз төс
+із іс
+нөл ноль

@@ -1,1 +1,11 @@
 # Syllabic characters, one per line.
+# Azerbaijani has nine vowels; ə, ı, ö and ü are full vowels, not accents.
+a
+e
+ə
+ı
+i
+o
+ö
+u
+ü

@@ -1,1 +1,43 @@
 # A number, then the words denoting it: 1 one first
+# Uzbek written in CYRILLIC, deliberately against CLDR.
+# CLDR's default for uz is the Latin alphabet and modern Uzbek is officially
+# Latin, but pkg/kb ships exactly one Uzbek keyboard layout, kbduzb 'Uzbek
+# Cyrillic'. SKILL.md step 0 says to take the script of the layouts that ship,
+# so every uz file here is Cyrillic. Alphabet cross-checked against CLDR
+# uz-Cyrl exemplarCharacters.
+0 нол
+1 бир биринчи
+2 икки иккинчи
+3 уч учинчи
+4 тўрт тўртинчи
+5 беш бешинчи
+6 олти олтинчи
+7 етти еттинчи
+8 саккиз саккизинчи
+9 тўққиз тўққизинчи
+10 ўн ўнинчи
+11 ўнбир ўнбиринчи
+12 ўникки ўниккинчи
+13 ўнуч ўнучинчи
+14 ўнтўрт ўнтўртинчи
+15 ўнбеш ўнбешинчи
+16 ўналти ўналтинчи
+17 ўнетти ўнеттинчи
+18 ўнсаккиз ўнсаккизинчи
+19 ўнтўққиз ўнтўққизинчи
+20 йигирма йигирманчи
+21 йигирмабир
+22 йигирмаикки
+23 йигирмауч
+24 йигирматўрт
+30 ўттиз ўттизинчи
+40 қирқ қирқинчи
+50 эллик элликинчи
+60 олтмиш олтмишинчи
+70 етмиш етмишинчи
+80 саксон саксонинчи
+90 тўқсон тўқсонинчи
+100 юз юзинчи
+1000 минг мингинчи
+1000000 миллион миллионинчи
+1000000000 миллиард миллиардинчи
