@@ -28,7 +28,7 @@ import (
 var ReportCmd = cli.Command{
 	Name:      "report",
 	Usage:     "Render a saved scan",
-	UsageText: "report <target> [flags]",
+	UsageText: "urlinsane report <target> [options]",
 	Description: `Renders a scan saved earlier with 'typo --save-graph'.
 
 You name the target, not the file: acme.com is what you scanned and what you

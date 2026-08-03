@@ -9,23 +9,12 @@ import (
 	"time"
 
 	"github.com/rangertaha/urlinsane/internal"
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 )
 
 func main() {
-	cli.AppHelpTemplate = fmt.Sprintf(`%s
-EXAMPLE:
-
-    urlinsane typo example.com
-    urlinsane typo -a co example.com
-    urlinsane typo -a co,oi,oy -c ip,idna,ns example.com
-    urlinsane typo -l fr,en -k en1,en2 example.com
-
-AUTHOR:
-   Rangertaha (rangertaha@gmail.com)
-
-     
-     `, cli.AppHelpTemplate)
+	helpTemplates()
 
 	cli.VersionFlag = &cli.BoolFlag{
 		Name:    "version",
@@ -39,15 +28,21 @@ AUTHOR:
 		Compiled:    time.Now(),
 		Suggest:     true,
 		HelpName:    "urlinsane",
-		Usage:       "Urlinsane is an advanced cybersecurity typosquatting tool",
+		Usage:       "find the names your target could be mistaken for",
 		Description: "",
-		UsageText:   "urlinsane [global opts..] [command] [opts..]",
+		UsageText:   "urlinsane [options] <command> [options]",
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:  "debug",
 				Value: false,
-				Usage: "Log debug messags for development",
-				Action: func(ctx *cli.Context, v bool) error {
+				Usage: "log debug messages to stderr",
+				// It used to be inert: a no-op Action and nothing reading the
+				// value, so --debug was a flag the help advertised and the
+				// program ignored.
+				Action: func(_ *cli.Context, v bool) error {
+					if v {
+						log.SetLevel(log.DebugLevel)
+					}
 					return nil
 				},
 			},
