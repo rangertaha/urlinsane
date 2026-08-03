@@ -54,6 +54,17 @@ type Side struct {
 
 	// Findings are the analyzers' output (§9).
 	Findings []graph.Finding
+
+	// Observers are the operator ids whose status attests to existence: the
+	// ones that actually looked something up.
+	//
+	// Existence is computed from this set, so it is part of what the scan
+	// concluded rather than part of how it was configured. Left out, a rebuilt
+	// graph falls back to "everything observes" and a decomposer's "I parsed
+	// this" is read as "this exists" — so `typo` and `report` disagreed about
+	// the same bytes, which is exactly what a content-addressed store is for
+	// preventing.
+	Observers []string
 }
 
 // PropRow is one assertion, retained with the provenance that produced it.
@@ -113,9 +124,9 @@ type ScoreRow struct {
 // encodeSide writes the side block:
 //
 //	[version, nodeProps, edgeProps, status, sched, scores, ledger,
-//	 truncations, findings]
+//	 truncations, findings, observers]
 func encodeSide(s *Side) ([]byte, cid.Cid, error) {
-	return encodeList(9, func(e *enc) {
+	return encodeList(10, func(e *enc) {
 		e.i64(int64(s.Version))
 		e.sub(len(s.NodeProps), func(e *enc) {
 			for _, r := range s.NodeProps {
@@ -189,6 +200,11 @@ func encodeSide(s *Side) ([]byte, cid.Cid, error) {
 		e.sub(len(s.Findings), func(e *enc) {
 			for _, f := range s.Findings {
 				encodeFinding(e, f)
+			}
+		})
+		e.sub(len(s.Observers), func(e *enc) {
+			for _, id := range s.Observers {
+				e.str(id)
 			}
 		})
 	})
@@ -281,7 +297,7 @@ func decodeSide(block []byte) (*Side, error) {
 	if err != nil {
 		return nil, err
 	}
-	d := newDec(n).expect("side block", 9)
+	d := newDec(n).expect("side block", 10)
 	s := &Side{Version: int(d.at(0).i64())}
 	if v := s.Version; v != FormatVersion && d.err() == nil {
 		return nil, fmt.Errorf("store: side block format version %d, this build writes %d", v, FormatVersion)
@@ -334,6 +350,7 @@ func decodeSide(block []byte) (*Side, error) {
 		})
 	})
 	d.at(8).each(func(r *dec) { s.Findings = append(s.Findings, decodeFinding(r)) })
+	d.at(9).each(func(r *dec) { s.Observers = append(s.Observers, r.str()) })
 
 	if err := d.err(); err != nil {
 		return nil, err

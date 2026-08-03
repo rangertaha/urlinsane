@@ -254,6 +254,14 @@ func replayProps(g *graph.Graph, scan *Scan, byID map[graph.NodeID]graph.NodeRef
 // also, at some point, been declined. Restoring it before the scan resumes is
 // what keeps "pruning is irreversible" true across a resume.
 func replaySideState(g *graph.Graph, scan *Scan, byID map[graph.NodeID]graph.NodeRef) error {
+	// Before the statuses, because Existence is computed from both and reading
+	// a status without knowing who may attest to existence is what made `typo`
+	// and `report` disagree about the same bytes: with no observer set the
+	// graph falls back to "everything observes", so a decomposer's successful
+	// parse counted as proof the name exists and every syntactically valid
+	// variant re-rendered as live.
+	g.SetObservers(scan.Side.Observers)
+
 	for _, r := range scan.Side.Status {
 		if _, ok := byID[r.Node]; !ok {
 			return fmt.Errorf("store: status references unknown node %s", r.Node)
