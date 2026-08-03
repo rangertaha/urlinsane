@@ -3,6 +3,7 @@
 package typo
 
 import (
+	"sort"
 	"strings"
 
 	"github.com/rangertaha/urlinsane/pkg/nlp"
@@ -511,43 +512,54 @@ func SplitTokens(token string) (parts []string, seps []string) {
 // cardinal word forms, or vice versa. This process creates variants by
 // converting numbers to words or words to numbers. For example, the token
 // "file2" might be altered to "filetwo", or "chapterthree" could become "chapter3".
-func CardinalSwap(token string, numerals map[string][]string) (variations []string) {
-	var fn func(map[string]string, string, bool) map[string]bool
+// numeralSwap walks digit<->word substitutions in both directions and returns
+// every distinct result.
+//
+// The seen set is shared across the whole walk rather than rebuilt in each
+// frame. Per frame it only stopped a variant repeating among its own siblings,
+// so any data that maps a word back to its digit sent the walk around a
+// two-cycle until the stack gave out. That is not a hypothetical shape: it is
+// exactly what dataset.Lang.Numerals returns, because a numeral line is stored
+// as a clique of transitions and every token on it becomes a key -- "1" ->
+// "first" and "first" -> "1" both exist. `urlinsane typo -a cns` crashed the
+// process with a stack overflow on the shipped English numerals, while the unit
+// tests passed because their fixture is keyed by digit alone and cannot cycle.
+//
+// Keys are walked in sorted order because ranging a map is randomised, and the
+// order variants come back in reaches admission order in the engine.
+func numeralSwap(token string, data map[string]string) (variations []string) {
+	keys := make([]string, 0, len(data))
+	for k := range data {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
 
-	cardinals := numeralMap(numerals, 0)
-
-	fn = func(data map[string]string, str string, reverse bool) (tokens map[string]bool) {
-		tokens = make(map[string]bool)
-
-		for num, word := range data {
-			{
-				var variant string
-				if !reverse {
-					variant = strings.Replace(str, word, num, -1)
-				} else {
-					variant = strings.Replace(str, num, word, -1)
-				}
-
-				if str != variant {
-					if _, ok := tokens[variant]; !ok {
-						tokens[variant] = true
-						for k, v := range fn(cardinals, variant, reverse) {
-							tokens[k] = v
-						}
-					}
-				}
+	seen := map[string]bool{token: true}
+	var walk func(str string, reverse bool)
+	walk = func(str string, reverse bool) {
+		for _, num := range keys {
+			word := data[num]
+			var variant string
+			if reverse {
+				variant = strings.Replace(str, num, word, -1)
+			} else {
+				variant = strings.Replace(str, word, num, -1)
 			}
+			if variant == str || seen[variant] {
+				continue
+			}
+			seen[variant] = true
+			variations = append(variations, variant)
+			walk(variant, reverse)
 		}
-		return tokens
 	}
+	walk(token, false)
+	walk(token, true)
+	return variations
+}
 
-	for token := range fn(cardinals, token, false) {
-		variations = append(variations, token)
-	}
-	for token := range fn(cardinals, token, true) {
-		variations = append(variations, token)
-	}
-	return
+func CardinalSwap(token string, numerals map[string][]string) (variations []string) {
+	return numeralSwap(token, numeralMap(numerals, 0))
 }
 
 // OrdinalSwap involves substituting numerical digits with their corresponding
@@ -559,44 +571,7 @@ func CardinalSwap(token string, numerals map[string][]string) (variations []stri
 //
 // "chapter3".
 func OrdinalSwap(token string, numerals map[string][]string) (variations []string) {
-	var fn func(map[string]string, string, bool) map[string]bool
-	ordinals := numeralMap(numerals, 1)
-
-	fn = func(data map[string]string, str string, reverse bool) (tokens map[string]bool) {
-		tokens = make(map[string]bool)
-
-		for num, word := range data {
-			{
-				var variant string
-				if !reverse {
-					variant = strings.Replace(str, word, num, -1)
-				} else {
-					variant = strings.Replace(str, num, word, -1)
-				}
-
-				if str != variant {
-					if _, ok := tokens[variant]; !ok {
-						tokens[variant] = true
-						for k, v := range fn(ordinals, variant, reverse) {
-							tokens[k] = v
-						}
-
-						fn(ordinals, variant, reverse)
-					}
-				}
-			}
-		}
-		return tokens
-	}
-
-	for token := range fn(ordinals, token, false) {
-		variations = append(variations, token)
-	}
-	for token := range fn(ordinals, token, true) {
-		variations = append(variations, token)
-	}
-
-	return
+	return numeralSwap(token, numeralMap(numerals, 1))
 }
 
 // DotHyphenSubstitution involves substituting dots (.) with hyphens (-) or
