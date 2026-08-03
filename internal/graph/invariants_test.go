@@ -349,3 +349,77 @@ func TestBeliefStepsDownAChainThatCostsNoDepth(t *testing.T) {
 		}
 	}
 }
+
+// Closure gates variant rooting, and it was latched once, at edge-admission
+// time, from whatever the source node happened to be at that moment. A
+// structural edge admitted while its source was still outside the closure left
+// its target outside forever — even after the source joined — so that target
+// and everything under it generated no variants at all, silently. A squat
+// nobody generated is the failure this tool exists to prevent.
+func TestClosureReachesNodesAdmittedBeforeTheirParentJoined(t *testing.T) {
+	g, seed := seeded(t)
+
+	// A structural edge whose source is not yet in the closure.
+	g.Apply(op("x"), seed, Delta{Edges: []EdgeRef{{
+		From: NodeRef{Type: "domain", Key: "a.com"}, Rel: "TLD_OF",
+		To:   NodeRef{Type: "domain", Key: "b.com"},
+	}}})
+	// Now the source joins, structurally, from the seed.
+	g.Apply(op("x"), seed, Delta{Edges: []EdgeRef{{
+		From: NodeRef{Type: "domain", Key: "example.com"}, Rel: "TLD_OF",
+		To:   NodeRef{Type: "domain", Key: "a.com"},
+	}}})
+
+	for _, key := range []string{"a.com", "b.com"} {
+		id := nodeByKey(t, g, key)
+		if !g.InClosure(id) {
+			t.Errorf("%s is reachable from the seed by structural edges but is outside the closure; "+
+				"it can root no variants", key)
+		}
+	}
+}
+
+// Depth bounds expansion and is printed in the report. It was computed once per
+// edge, so lowering a node's depth left its descendants holding the old, longer
+// distance: a node could be pruned for exceeding --depth when its real distance
+// was inside it.
+func TestDepthRelaxesThroughDescendants(t *testing.T) {
+	g, seed := seeded(t)
+	hop := func(from NodeRef, to NodeRef) {
+		g.Apply(op("dns"), seed, Delta{Edges: []EdgeRef{
+			{From: from, Rel: "RESOLVES_TO", To: to},
+		}})
+	}
+	ex := NodeRef{Type: "domain", Key: "example.com"}
+	ip1 := NodeRef{Type: "ip", Key: "1.1.1.1"}
+	h2 := NodeRef{Type: "domain", Key: "h2.com"}
+	ip3 := NodeRef{Type: "ip", Key: "3.3.3.3"}
+
+	hop(ex, ip1)
+	hop(ip1, h2)
+	hop(h2, ip3)
+	if got := g.Depth(nodeByKey(t, g, "3.3.3.3")); got != 3 {
+		t.Fatalf("depth of the far node = %d, want 3 before the shortcut", got)
+	}
+
+	// A shorter route to the middle of the chain appears.
+	hop(ex, h2)
+
+	if got := g.Depth(nodeByKey(t, g, "h2.com")); got != 1 {
+		t.Errorf("h2.com depth = %d, want 1 by the direct edge", got)
+	}
+	if got := g.Depth(nodeByKey(t, g, "3.3.3.3")); got != 2 {
+		t.Errorf("3.3.3.3 depth = %d, want 2; its parent got nearer and it did not follow", got)
+	}
+}
+
+func nodeByKey(t *testing.T, g *Graph, key string) NodeID {
+	t.Helper()
+	for _, n := range g.Nodes() {
+		if n.Key == key {
+			return n.ID
+		}
+	}
+	t.Fatalf("no node %q in the graph", key)
+	return NodeID{}
+}

@@ -463,12 +463,15 @@ func (g *Graph) admitEdge(ref EdgeRef, admit func(NodeRef) (NodeID, bool), by Pr
 		case !seen || g.provis[to]:
 			g.depth[to] = d
 			delete(g.provis, to)
+			g.relax(to, improveDepth)
 		case d < cur:
 			g.depth[to] = d
+			g.relax(to, improveDepth)
 		}
 	}
-	if rel.class == Structural && g.closure[from] {
+	if rel.class == Structural && g.closure[from] && !g.closure[to] {
 		g.closure[to] = true
+		g.relax(to, improveClosure)
 	}
 	g.considerParent(to, from, rel.name)
 	return id, true
@@ -684,4 +687,81 @@ func compareID(a, b []byte) int {
 		}
 	}
 	return 0
+}
+
+// relax propagates a monotone node property along out-edges until it stops
+// improving, starting from a node whose value has just improved.
+//
+// It exists because depth and closure are the same shape and were both wrong in
+// the same way. Each was computed once, where an edge was admitted, from the
+// value its source happened to hold at that moment — and a graph is not built
+// in dependency order. A later edge can put a node nearer the seed, or bring a
+// node into the seed closure, after its descendants have already been given the
+// old answer.
+//
+// Both were real, and both failed silently, which is why they get a shared
+// mechanism rather than two patches:
+//
+//   - Closure gates variant rooting. A structural edge admitted while its source
+//     was outside the closure left the target outside it forever, even once the
+//     source joined — so that target and everything under it generated no
+//     variants at all. A squat nobody generated is the failure this tool exists
+//     to prevent, and nothing reported it.
+//   - Depth bounds expansion and is printed. A descendant kept the depth it was
+//     first given, so a node could be pruned for exceeding --depth when its real
+//     distance was inside it, and the report showed the wrong number.
+//
+// A new monotone node property belongs here too: give it an improve func and
+// relax from wherever it improves. Computing it once at edge-admission time is
+// the mistake this retires, and it is not visible in the code that makes it.
+//
+// improve must return true only on a strict improvement. That is what
+// terminates the walk on a cyclic graph — depth is bounded below and closure is
+// a latch, so neither can improve forever.
+func (g *Graph) relax(start NodeID, improve func(g *Graph, from, to NodeID, rel *Rel) bool) {
+	// Adjacency is built per call rather than maintained. A relaxation only runs
+	// when a property actually improved, which is rare — a shorter route
+	// appearing, or a node joining the closure late — so paying O(edges) then
+	// beats keeping an index correct on every admission.
+	var adj map[NodeID][]*Edge
+
+	queue := []NodeID{start}
+	for i := 0; i < len(queue); i++ {
+		if adj == nil {
+			adj = make(map[NodeID][]*Edge, len(g.eord))
+			for _, eid := range g.eord {
+				e := g.edges[eid]
+				adj[e.From] = append(adj[e.From], e)
+			}
+		}
+		for _, e := range adj[queue[i]] {
+			if improve(g, e.From, e.To, e.Rel) {
+				queue = append(queue, e.To)
+			}
+		}
+	}
+}
+
+// improveDepth lowers a node's depth when a shorter route to it appears.
+func improveDepth(g *Graph, from, to NodeID, rel *Rel) bool {
+	if to == g.seed {
+		return false
+	}
+	d := g.depth[from] + rel.class.DepthCost()
+	if cur, seen := g.depth[to]; seen && d >= cur {
+		return false
+	}
+	g.depth[to] = d
+	delete(g.provis, to)
+	return true
+}
+
+// improveClosure brings a node into the seed closure when its structural parent
+// is in it.
+func improveClosure(g *Graph, from, to NodeID, rel *Rel) bool {
+	if rel.class != Structural || !g.closure[from] || g.closure[to] {
+		return false
+	}
+	g.closure[to] = true
+	return true
 }
