@@ -148,7 +148,7 @@ func (s *Scheduler) Run(ctx context.Context) error {
 			return nil
 		}
 		if s.round >= s.lim.MaxRounds {
-			s.g.declineFrontier(ReasonRoundCap, Provenance{Operator: "engine", Round: s.round})
+			s.g.noteStoppedEarly(ReasonRoundCap, Provenance{Operator: "engine", Round: s.round})
 			return nil
 		}
 		s.round++
@@ -337,5 +337,5 @@ func (s *Scheduler) applyAll(work []candidate, results []dispatchResult) {
 // it a bare prior forever.
 func (s *Scheduler) barrier() {
 	s.g.recomputeBelief()
-	s.g.enforceBudgets(Provenance{Operator: "engine", Round: s.round})
+	s.g.endRound(Provenance{Operator: "engine", Round: s.round})
 }

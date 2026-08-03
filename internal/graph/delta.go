@@ -84,9 +84,11 @@ type Graph struct {
 	parent     map[NodeID]parentRef
 	candidates map[NodeID][]parentRef
 
-	budgets Budgets
-	counts  map[string]int
-	total   int
+	budgets  Budgets
+	counts   map[string]int
+	total    int
+	frontier int // per-round admission cap; 0 is unbounded
+	admitted int // admissions so far this round, reset at the barrier
 
 	findings []Finding
 	scores   map[NodeID]map[string]float64
@@ -183,13 +185,45 @@ func (g *Graph) NoteTruncation(r Reason, round int, detail string) {
 // Truncations returns run-level limits that bound this expansion.
 func (g *Graph) Truncations() []RunTruncation { return g.truncations }
 
-func (g *Graph) declineFrontier(r Reason, by Provenance) {
+// noteStoppedEarly records that expansion ended with work still eligible.
+//
+// It was called declineFrontier and took a Reason, which read as though it
+// declined candidates for the frontier cap; its one caller passes
+// ReasonRoundCap, and the frontier is enforced in admitNode. The name was the
+// whole reason --frontier looked implemented from here.
+func (g *Graph) noteStoppedEarly(r Reason, by Provenance) {
 	g.NoteTruncation(r, by.Round, "expansion stopped before the frontier was exhausted")
 }
 
-// enforceBudgets is a barrier hook. Budgets are applied at admission, so there
-// is nothing to undo here; it exists so the barrier owns every limit check.
-func (g *Graph) enforceBudgets(Provenance) {}
+// endRound is the barrier hook for limits that are counted per round.
+//
+// Budgets are cumulative and applied at admission, so there is nothing to undo
+// for them here. The frontier is not: it caps admissions *within* a round, so
+// its counter resets at the barrier and nowhere else — reset it at the start of
+// a dispatch instead and a round with two operator generations would get two
+// frontiers.
+func (g *Graph) endRound(Provenance) { g.admitted = 0 }
+
+// SetFrontier caps how many nodes may be admitted in one round. Zero is
+// unbounded.
+//
+// The cap applies in admission order, which the scheduler has already made
+// deterministic — work is sorted by (depth, type, key, operator) and applied in
+// that order rather than in completion order — so the same scan truncates at
+// the same place on every run.
+//
+// DESIGN §8 specifies the survivors as the prefix of candidates sorted by
+// (-belief, depth, type, key). While the belief model is uniform those two
+// orderings are the same list, so this is that rule with the constant factored
+// out. A model that returns anything other than 1 makes them differ, and at
+// that point the frontier has to become a queue drained at the barrier rather
+// than a counter checked at admission.
+func (g *Graph) SetFrontier(n int) { g.frontier = n }
+
+// overFrontier reports whether this round has already admitted its allowance.
+func (g *Graph) overFrontier() bool {
+	return g.frontier > 0 && g.admitted >= g.frontier
+}
 
 // overBudget reports whether admitting one more node of this type would exceed
 // a budget.
@@ -340,12 +374,17 @@ func (g *Graph) admitNode(ref NodeRef, base int, by Provenance) (NodeID, Rejecti
 		_ = g.Decline(t.name, key, base, g.Belief(id), ReasonBudget, by)
 		return NodeID{}, Rejection{Kind: RejectDenied, Type: t.name, Key: key, Detail: "budget", By: by}, false
 	}
+	if g.overFrontier() {
+		_ = g.Decline(t.name, key, base, g.Belief(id), ReasonFrontier, by)
+		return NodeID{}, Rejection{Kind: RejectDenied, Type: t.name, Key: key, Detail: "frontier", By: by}, false
+	}
 	g.nodes[id] = &Node{ID: id, Type: t, Key: key, Props: newProps(t.sch)}
 	g.order = append(g.order, id)
 	g.depth[id] = base
 	g.provis[id] = true
 	g.counts[t.name]++
 	g.total++
+	g.admitted++
 	return id, Rejection{}, true
 }
 

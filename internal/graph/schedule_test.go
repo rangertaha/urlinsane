@@ -714,3 +714,122 @@ func TestOperatorDeadlineDoesNotCancelTheRun(t *testing.T) {
 		t.Fatal("a peer operator's timeout cancelled the whole round")
 	}
 }
+
+// --- frontier ----------------------------------------------------------------
+
+// The frontier caps admissions within a round, and the candidates it turns away
+// are recorded rather than dropped.
+//
+// This was accepted as a flag, hashed into the plan, and enforced nowhere:
+// --frontier changed the plan hash and nothing else, so a run asked to bound
+// its per-round expansion silently did not.
+func TestFrontierCapsAdmissionsPerRound(t *testing.T) {
+	g, _ := seeded(t)
+	g.SetFrontier(2)
+
+	// One operator, one round, five candidates. Two may land.
+	fan := &fakeOp{
+		id: "fan", ver: 1, trig: onDomain(Reads{}),
+		emits: Effects{Nodes: []string{"ip"}, Rels: []string{"RESOLVES_TO"}},
+		fn: func(v View) (Delta, Outcome) {
+			var d Delta
+			for i := 1; i <= 5; i++ {
+				d.Edges = append(d.Edges, EdgeRef{
+					From: v.Ref(), Rel: "RESOLVES_TO",
+					To: NodeRef{Type: "ip", Key: fmt.Sprintf("10.0.0.%d", i)},
+				})
+			}
+			return d, OK()
+		},
+	}
+	run(t, g, []Operator{fan}, Limits{MaxRounds: 1, Revisions: 1})
+
+	var ips int
+	for _, n := range g.Nodes() {
+		if n.Type.Name() == "ip" {
+			ips++
+		}
+	}
+	if ips != 2 {
+		t.Errorf("admitted %d ip nodes, want 2 — the frontier did not bind", ips)
+	}
+
+	var declined int
+	for _, row := range g.Ledger() {
+		if row.Reason == ReasonFrontier {
+			declined++
+		}
+	}
+	if declined != 3 {
+		t.Errorf("ledger holds %d frontier rows, want 3 — declined candidates must be reported", declined)
+	}
+}
+
+// The allowance is per round, not per run: a later round gets a fresh one.
+func TestFrontierResetsEachRound(t *testing.T) {
+	g, _ := seeded(t)
+	g.SetFrontier(1)
+
+	// Each domain emits one ip, and each ip emits one domain, so every round
+	// has exactly one candidate and none of them should ever be declined.
+	chain := &fakeOp{
+		id: "chain", ver: 1,
+		trig:  Trigger{On: Selector{Caps: []Capability{Nameable, Observed}}},
+		emits: Effects{Nodes: []string{"ip"}, Rels: []string{"RESOLVES_TO"}},
+		fn: func(v View) (Delta, Outcome) {
+			return Delta{Edges: []EdgeRef{{
+				From: v.Ref(), Rel: "RESOLVES_TO",
+				To: NodeRef{Type: "ip", Key: fmt.Sprintf("10.0.0.%d", v.Depth()+1)},
+			}}}, OK()
+		},
+	}
+	run(t, g, []Operator{chain}, Limits{MaxDepth: 3, MaxRounds: 6})
+
+	for _, row := range g.Ledger() {
+		if row.Reason == ReasonFrontier {
+			t.Fatalf("declined %s at depth %d for the frontier, but each round had one candidate",
+				row.Key, row.Depth)
+		}
+	}
+	var ips int
+	for _, n := range g.Nodes() {
+		if n.Type.Name() == "ip" {
+			ips++
+		}
+	}
+	if ips < 2 {
+		t.Errorf("admitted %d ip nodes across the run, want at least 2 — the cap did not reset", ips)
+	}
+}
+
+// Zero means unbounded, so the default run is unaffected.
+func TestFrontierZeroIsUnbounded(t *testing.T) {
+	g, _ := seeded(t)
+	g.SetFrontier(0)
+
+	fan := &fakeOp{
+		id: "fan", ver: 1, trig: onDomain(Reads{}),
+		emits: Effects{Nodes: []string{"ip"}, Rels: []string{"RESOLVES_TO"}},
+		fn: func(v View) (Delta, Outcome) {
+			var d Delta
+			for i := 1; i <= 5; i++ {
+				d.Edges = append(d.Edges, EdgeRef{
+					From: v.Ref(), Rel: "RESOLVES_TO",
+					To: NodeRef{Type: "ip", Key: fmt.Sprintf("10.0.0.%d", i)},
+				})
+			}
+			return d, OK()
+		},
+	}
+	run(t, g, []Operator{fan}, Limits{MaxRounds: 1, Revisions: 1})
+
+	var ips int
+	for _, n := range g.Nodes() {
+		if n.Type.Name() == "ip" {
+			ips++
+		}
+	}
+	if ips != 5 {
+		t.Errorf("admitted %d ip nodes with no frontier, want all 5", ips)
+	}
+}

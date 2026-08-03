@@ -207,12 +207,10 @@ func (s *Scheduler) barrier() {
 props to be in place, and it walks nodes in depth order so a parent's belief is
 current before its children read it.
 
-{: .todo }
-> `enforceBudgets` is the hook for making the barrier own every limit check, and
-> it is currently an empty function. Budgets are enforced at admission time
-> instead — `admit` checks `overBudget` and writes a ledger row — which works,
-> but means the decision is taken per-candidate rather than over the round's
-> whole admission set. See [Limits](../limits/).
+The barrier's other job is `endRound`, which resets the per-round frontier
+allowance. Budgets need nothing there — they are cumulative and applied at
+admission — but the frontier counts *within* a round, so the barrier is the only
+correct place to clear it. See [Limits](../limits/).
 
 Interruption stops expansion at the **end** of the current round for exactly this
 reason: the barrier still runs, so parents, belief and the ledger are finalised
