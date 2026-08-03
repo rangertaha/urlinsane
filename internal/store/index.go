@@ -145,6 +145,14 @@ func lock(dir string) (func(), error) {
 
 	deadline := time.Now().Add(timeout)
 	for {
+		// Checked at the top so no path can skip it. The stale-break branch
+		// below used to `continue` without consulting the deadline, so a lock
+		// it could not remove spun here forever instead of returning the
+		// "locked by another process" error -- an infinite loop, not a slow one.
+		if time.Now().After(deadline) {
+			return nil, fmt.Errorf("store: index locked by another process (%s)", path)
+		}
+
 		token, terr := newToken()
 		if terr != nil {
 			return nil, terr
@@ -169,12 +177,20 @@ func lock(dir string) (func(), error) {
 		// same lock and both proceed into the critical section.
 		if fi, serr := os.Stat(path); serr == nil && time.Since(fi.ModTime()) > lockStale {
 			if held, rerr := os.ReadFile(path); rerr == nil {
-				removeIfToken(path, string(held))
+				if len(held) == 0 {
+					// An empty lockfile is what a process killed between the
+					// O_EXCL create and the token write leaves behind, and it
+					// is precisely the abandoned lock the stale break exists
+					// for. removeIfToken refuses it -- an empty token matches
+					// nothing -- so it was never broken and every waiter spun
+					// on it forever. Nobody ever claimed this lock, and it is
+					// older than lockStale, so the creator is gone.
+					os.Remove(path)
+				} else {
+					removeIfToken(path, string(held))
+				}
 			}
 			continue
-		}
-		if time.Now().After(deadline) {
-			return nil, fmt.Errorf("store: index locked by another process (%s)", path)
 		}
 		time.Sleep(poll)
 	}
