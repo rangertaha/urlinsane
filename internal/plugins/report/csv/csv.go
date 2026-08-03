@@ -62,17 +62,9 @@ func Render(w io.Writer, r report.Report) error {
 	// to hang its column on and used to vanish — silently, and only from this
 	// format. Those get a row of their own, distinguished the way declined
 	// candidates already are: by an existence no node row carries.
-	shown := make(map[string]bool, len(r.Nodes))
-	for _, n := range r.Nodes {
-		shown[n.Type+":"+n.Key] = true
-	}
 	var orphaned []string
-	for _, f := range r.Findings {
-		for _, n := range f.Nodes {
-			if !shown[n] {
-				orphaned = append(orphaned, n+"\x00"+f.Severity+":"+f.Kind)
-			}
-		}
+	for _, s := range report.StrandedFindings(r) {
+		orphaned = append(orphaned, s.Node+"\x00"+s.Finding.Severity+":"+s.Finding.Kind)
 	}
 	sort.Strings(orphaned)
 

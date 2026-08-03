@@ -756,3 +756,51 @@ func TestEveryFormatSurvivesFiltering(t *testing.T) {
 		})
 	}
 }
+
+// An unfiltered report has no stranded findings, so no format may claim it has.
+//
+// dot built its "is this node shown" set from NodeRow.ID (a hex node id) but
+// looked it up with Finding.Nodes entries ("type:key"), so the test never
+// matched and every finding read as stranded: a plain `-o dot` drew a
+// "findings on filtered nodes" cluster listing findings that were right there
+// in the graph. csv had the same code with the right key, which is how the two
+// drifted apart.
+func TestNoFormatClaimsStrandedFindingsWhenNothingIsFiltered(t *testing.T) {
+	g := scan(t)
+
+	// The helper both renderers now share must agree there is nothing stranded.
+	if s := report.StrandedFindings(report.Build(g, report.Options{})); len(s) != 0 {
+		t.Fatalf("StrandedFindings = %d on an unfiltered report, want 0: %+v", len(s), s)
+	}
+
+	for _, format := range []string{"dot", "csv"} {
+		out := render(t, g, report.Options{Format: format})
+		if strings.Contains(out, "filtered") {
+			t.Errorf("%s output mentions filtered findings with no filter applied:\n%s", format, out)
+		}
+	}
+}
+
+// And when a filter really does strand one, it must still be surfaced — the
+// fix must not have bought silence.
+func TestStrandedFindingsAreStillReportedWhenAFilterHidesTheNode(t *testing.T) {
+	g := scan(t)
+	// The campaign finding sits on live variants; keep only absent nodes.
+	o := report.Options{Format: "dot", Filters: mustParse(t, "absent")}
+
+	if s := report.StrandedFindings(report.Build(g, o)); len(s) == 0 {
+		t.Fatal("filtering the findings' nodes away stranded nothing")
+	}
+	if out := render(t, g, o); !strings.Contains(out, "filtered") {
+		t.Errorf("dot did not surface a stranded finding:\n%s", out)
+	}
+}
+
+func mustParse(t *testing.T, specs ...string) []report.Filter {
+	t.Helper()
+	f, err := report.ParseFilters(specs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return f
+}
