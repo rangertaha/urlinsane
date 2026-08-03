@@ -18,7 +18,7 @@ COMMIT=$(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
 LDFLAGS=-s -w -X github.com/rangertaha/urlinsane/internal.COMMIT=$(COMMIT)
 BUILDFLAGS=-trimpath -ldflags "$(LDFLAGS)"
 
-.PHONY: help version build install dpkg deps test race vet fmt check dataset clean doc release update
+.PHONY: help version build install dpkg deps test race vet fmt check dataset clean doc release dist update
 
 # Every package, so a new top-level directory is covered without editing this.
 PKGS=./...
@@ -54,6 +54,33 @@ release: deps ## Build release binaries for every platform
 		sha512sum "$$out" > "$$out.sha512"; \
 	done
 	@echo "\n$(BDIR):"; ls -1 $(BDIR) | grep -v sha512
+
+# Archives rather than bare binaries. A release asset that unpacks to a
+# directory carrying the licence is what a human and a package manager both
+# expect, and one checksums.txt over the archives is easier to verify than a
+# .sha512 beside every binary.
+#
+# Depends on release rather than repeating the build, so the archives can only
+# ever contain the binaries release just produced.
+dist: release ## Package the release binaries into per-platform archives
+	@set -e; rm -rf $(BDIR)/dist; mkdir -p $(BDIR)/dist; \
+	for p in $(PLATFORMS); do \
+		os=$${p%/*}; arch=$${p#*/}; \
+		ext=""; [ "$$os" = "windows" ] && ext=".exe"; \
+		name="$(BINARY_NAME)-$(VERSION)-$$os-$$arch"; \
+		stage="$(BDIR)/dist/$$name"; \
+		mkdir -p "$$stage"; \
+		cp "$(BDIR)/$$name$$ext" "$$stage/$(BINARY_NAME)$$ext"; \
+		cp LICENSE README.md CHANGELOG.md "$$stage/"; \
+		if [ "$$os" = "windows" ]; then \
+			( cd $(BDIR)/dist && zip -qr "$$name.zip" "$$name" ); \
+		else \
+			tar -czf "$(BDIR)/dist/$$name.tar.gz" -C "$(BDIR)/dist" "$$name"; \
+		fi; \
+		rm -rf "$$stage"; \
+	done; \
+	( cd $(BDIR)/dist && sha256sum *.tar.gz *.zip > checksums.txt )
+	@echo; ls -1 $(BDIR)/dist
 
 build: deps ## Build both binaries
 	$(GOBUILD) -C cmd/$(BINARY_NAME) -o ../../$(BDIR)/$(BINARY_NAME)
