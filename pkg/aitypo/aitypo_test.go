@@ -5,6 +5,7 @@ package aitypo
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 	"testing"
 	"unicode/utf8"
@@ -222,7 +223,10 @@ func TestSummarizeIsMacroAveraged(t *testing.T) {
 		{Task: "co", Input: "ab", Expect: []string{"x"}, Predict: []string{"y"},
 			Missed: []string{"x"}, Spuri: []string{"y"}},
 	}
-	s := Summarize(results, Registry{"co": {ID: "co", Needs: NeedsNothing}})
+	s, err := Summarize(results, Registry{"co": {ID: "co", Needs: NeedsNothing}})
+	if err != nil {
+		t.Fatalf("Summarize: %v", err)
+	}
 	if len(s) != 1 {
 		t.Fatalf("got %d summaries, want 1", len(s))
 	}
@@ -518,11 +522,143 @@ func TestSummarizeLabelsFromTheRegistry(t *testing.T) {
 	results := []Result{{Task: "hr", Input: "google", Expect: []string{"g0ogle"},
 		Predict: []string{"g0ogle"}, Hit: []string{"g0ogle"}}}
 
-	s := Summarize(results, reg)
+	s, err := Summarize(results, reg)
+	if err != nil {
+		t.Fatalf("Summarize: %v", err)
+	}
 	if len(s) != 1 {
 		t.Fatalf("got %d summaries", len(s))
 	}
 	if s[0].Needs != NeedsLanguage {
 		t.Errorf("hr labelled %v, want language — it is a table lookup, not a rule", s[0].Needs)
+	}
+}
+
+// Scoring against a registry that does not have the task is an error, not a
+// silent relabelling.
+//
+// Registry is a map, so reg[id] on a miss yields the zero Task and its Needs is
+// NeedsNothing — the zero value of the very enum that distinguishes a learned
+// rule from a memorised table. Summarize's comment claimed taking a Registry
+// prevented that; it did not, because the type it took was still a map.
+//
+// It is reachable in normal use: Tasks(Data{}) deregisters every task that needs
+// language or keyboard data, so scoring a corpus built with that data against a
+// registry built without it reported hr (a homoglyph table) and acs (a keyboard
+// layout) as "nothing" — at a perfect 1.000.
+func TestSummarizeRefusesATaskTheRegistryDoesNotHave(t *testing.T) {
+	results := []Result{
+		{Task: "hr", Input: "example.com", Expect: []string{"exampIe.com"},
+			Predict: []string{"exampIe.com"}},
+		{Task: "acs", Input: "example.com", Expect: []string{"wxample.com"},
+			Predict: []string{"wxample.com"}},
+	}
+
+	// Tasks(Data{}) has neither: no homoglyphs, no keyboards.
+	bare := Tasks(Data{})
+	if _, ok := bare["hr"]; ok {
+		t.Fatal("premise changed: hr is registered without language data")
+	}
+
+	s, err := Summarize(results, bare)
+	if err == nil {
+		t.Fatalf("scored against a registry missing both tasks and reported %v; "+
+			"a memorised table would read as a learned rule", s)
+	}
+	for _, want := range []string{"hr", "acs"} {
+		if !strings.Contains(err.Error(), want) {
+			t.Errorf("err = %v, want it to name %q", err, want)
+		}
+	}
+
+	// With a registry that does have them, it works and labels them correctly.
+	full := Registry{
+		"hr":  {ID: "hr", Needs: NeedsLanguage},
+		"acs": {ID: "acs", Needs: NeedsKeyboard},
+	}
+	got, err := Summarize(results, full)
+	if err != nil {
+		t.Fatalf("Summarize with a complete registry: %v", err)
+	}
+	if len(got) != 2 || got[0].Needs != NeedsKeyboard || got[1].Needs != NeedsLanguage {
+		t.Errorf("labels = %v, want acs keyboard and hr language", got)
+	}
+}
+
+// A refused corpus must leave nothing on disk, however large it is.
+//
+// The check used to sit inside the write loop, and bufio.Writer flushes when its
+// 4 KB buffer fills — so a corpus whose first unrepresentable example came after
+// 4 KB was already partly written, ending in a half-encoded record. This corpus
+// is deliberately big enough to cross that boundary several times.
+func TestWriteRefusesWithoutLeavingATruncatedFile(t *testing.T) {
+	var ex []Example
+	for i := 0; i < 200; i++ {
+		ex = append(ex, Example{
+			Task:  "co",
+			Input: fmt.Sprintf("exampledomain%03d.com", i),
+			Expect: []string{
+				fmt.Sprintf("xampledomain%03d.com", i),
+				fmt.Sprintf("eampledomain%03d.com", i),
+				fmt.Sprintf("exmpledomain%03d.com", i),
+			},
+		})
+	}
+	// The offender, far past the buffer boundary.
+	ex = append(ex, Example{Task: "bf", Input: "münchen",
+		Expect: []string{"m\xfcnchen"}})
+
+	var buf bytes.Buffer
+	if err := WriteJSONL(&buf, ex); err == nil {
+		t.Fatal("an unrepresentable corpus was written")
+	}
+	if buf.Len() != 0 {
+		got, _ := ReadJSONL(bytes.NewReader(buf.Bytes()))
+		t.Errorf("a refused corpus left %d bytes on disk (%d records parsed); "+
+			"the tail is a truncated record that would corrupt the next append",
+			buf.Len(), len(got))
+	}
+}
+
+// Source is provenance, and it round trips or it is refused like anything else.
+func TestRepresentableCoversSource(t *testing.T) {
+	e := Example{Task: "co", Input: "example.com", Expect: []string{"xample.com"},
+		Source: "datasets/\xff\xfe.lst"}
+	if Representable(e) {
+		t.Error("an Example whose Source is not valid UTF-8 was called representable; " +
+			"encoding/json would coerce it and the corpus would misreport its own origin")
+	}
+	var buf bytes.Buffer
+	if err := WriteJSONL(&buf, []Example{e}); err == nil {
+		t.Error("it was written anyway")
+	}
+}
+
+// sp memorises an English dictionary, so it must not be reported as a rule.
+func TestSingularPluraliseIsATableNotARule(t *testing.T) {
+	r := Tasks(Data{})
+	sp, ok := r["sp"]
+	if !ok {
+		t.Fatal("sp is not registered")
+	}
+	if sp.Needs != NeedsLanguage {
+		t.Errorf("sp.Needs = %v, want %v: typo.SingularPluralise goes through "+
+			"nlp.NewClient, so mouse->mice and person->people are dictionary "+
+			"entries derivable by no rule", sp.Needs, NeedsLanguage)
+	}
+	// The evidence, so this does not become a claim nobody rechecks.
+	for in, want := range map[string]string{
+		"mouse": "mice", "goose": "geese", "child": "children", "person": "people",
+	} {
+		var found bool
+		for _, v := range sp.Oracle(in) {
+			if v == want {
+				found = true
+			}
+		}
+		if !found {
+			t.Errorf("premise changed: sp(%q) no longer yields %q (%v)",
+				in, want, sp.Oracle(in))
+		}
 	}
 }

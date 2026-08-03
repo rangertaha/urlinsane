@@ -58,7 +58,6 @@ func Tasks(d Data) Registry {
 	add("di", "Dot Insertion", NeedsNothing, typo.DotInsertion)
 	add("do", "Dot Omission", NeedsNothing, typo.DotOmission)
 	add("dhs", "Dot Hyphen Substitution", NeedsNothing, typo.DotHyphenSubstitution)
-	add("sp", "Singular Pluralise", NeedsNothing, typo.SingularPluralise)
 	add("tos", "Token Order Swap", NeedsNothing, typo.TokenOrderSwap)
 
 	// Bit flipping is a rule, but not a rule about characters: it models a bit
@@ -68,6 +67,25 @@ func Tasks(d Data) Registry {
 	add("bf", "Bit Flipping", NeedsNothing, func(s string) []string {
 		return typo.BitFlipping(s)
 	})
+
+	// Singular/plural inflection is a table, not a rule, and it sat in the block
+	// above until this comment was written. typo.SingularPluralise goes through
+	// nlp.NewClient, which loads every irregular, plural, singular and
+	// uncountable entry it knows — so mouse/mice, goose/geese, child/children,
+	// index/indices, ox/oxen, person/people, datum/data, cactus/cacti and the
+	// uncountables (news -> nothing) are dictionary lookups, derivable from the
+	// input by no rule at all. Reported as NeedsNothing, a model scoring 1.000
+	// on sp was credited with a rule it had in fact memorised as an English
+	// dictionary, which is the one distinction Needs exists to keep.
+	//
+	// It is not gated on a Data field like the tables below, because its table
+	// is compiled into the library rather than supplied by the caller. That has
+	// a consequence worth stating: sp is the one task that is *not* silenced on
+	// a non-English corpus, and it will happily emit English inflection as
+	// ground truth for other languages — sp("maison") is ["maisons"] and
+	// sp("hund") is ["hunds"]. Treat sp results on a non-English corpus as
+	// measuring English morphology applied to foreign strings.
+	add("sp", "Singular Pluralise", NeedsLanguage, typo.SingularPluralise)
 
 	// --- tables: reproducing these means memorising a lookup ---
 

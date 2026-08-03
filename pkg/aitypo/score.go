@@ -6,6 +6,7 @@ package aitypo
 import (
 	"fmt"
 	"sort"
+	"strings"
 )
 
 // Result is one prediction scored against its oracle.
@@ -120,11 +121,18 @@ func (s Summary) String() string {
 
 // Summarize aggregates per task, macro-averaged over inputs.
 //
-// It takes the Registry rather than a needs map so a task cannot be
-// mislabelled by omission. A map lookup that misses yields NeedsNothing, which
-// is indistinguishable from a real entry — so an incomplete map silently
-// reported a memorised table as a learned rule, which is the one distinction
-// this package exists to keep.
+// It takes the Registry rather than a needs map, and errors on a result naming
+// a task the registry does not have. Both halves are needed and only the first
+// was here: Registry is itself a map, so reg[id] on a miss returned the zero
+// Task, whose Needs is NeedsNothing — exactly the silent mislabelling the type
+// was supposed to prevent.
+//
+// It is reachable in normal use. Building a corpus with language and keyboard
+// data and then scoring it against a registry built without them — which is
+// what Tasks(Data{}) gives, and it deregisters hr, hs, acs, aci, vs and gi —
+// reported a memorised homoglyph table and a memorised keyboard layout as
+// learned rules, at a perfect 1.000. That is the one distinction this package
+// exists to keep, so it is an error rather than a footnote.
 //
 // Macro, not micro: micro-averaging would weight an input by how many variants
 // it happens to produce, so a ten-character name would count ten times as much
@@ -133,7 +141,7 @@ func (s Summary) String() string {
 //
 // Results are grouped by task and returned in task order, so two runs of the
 // same evaluation print identically.
-func Summarize(results []Result, reg Registry) []Summary {
+func Summarize(results []Result, reg Registry) ([]Summary, error) {
 	type acc struct {
 		n              int
 		exact, p, r, f float64
@@ -160,6 +168,21 @@ func Summarize(results []Result, reg Registry) []Summary {
 	}
 	sort.Strings(ids)
 
+	var unknown []string
+	for _, id := range ids {
+		if _, ok := reg[id]; !ok {
+			unknown = append(unknown, id)
+		}
+	}
+	if len(unknown) > 0 {
+		return nil, fmt.Errorf(
+			"aitypo: results name task(s) the registry does not have: %s; "+
+				"their Needs would default to %v and a memorised table would be "+
+				"reported as a learned rule — score against the registry the "+
+				"corpus was built from (have: %s)",
+			strings.Join(unknown, ", "), NeedsNothing, strings.Join(reg.IDs(), ", "))
+	}
+
 	out := make([]Summary, 0, len(ids))
 	for _, id := range ids {
 		a := by[id]
@@ -174,5 +197,5 @@ func Summarize(results []Result, reg Registry) []Summary {
 			F1:         a.f / n,
 		})
 	}
-	return out
+	return out, nil
 }

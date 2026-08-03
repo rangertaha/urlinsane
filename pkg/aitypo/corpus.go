@@ -26,8 +26,15 @@ import (
 // precise. That is the failure this package is least able to detect from the
 // outside, because nothing errors and the numbers look plausible.
 func Representable(e Example) bool {
-	if !utf8.ValidString(e.Input) {
-		return false
+	// Every string field, not only the ones a generator produces. Source is
+	// caller-supplied and is often a filesystem path, which on Linux is bytes
+	// and need not be UTF-8 — and it is the field that answers "what is this
+	// corpus made of", so a corpus that came back with a coerced Source would
+	// misreport its own provenance while looking intact.
+	for _, str := range []string{e.Input, e.Task, e.Split, e.Source} {
+		if !utf8.ValidString(str) {
+			return false
+		}
 	}
 	for _, v := range e.Expect {
 		if !utf8.ValidString(v) {
@@ -49,18 +56,32 @@ func Representable(e Example) bool {
 // identical — which is what lets a training run be identified by the hash of
 // its data.
 func WriteJSONL(w io.Writer, examples []Example) error {
+	// Every example is checked before any is written.
+	//
+	// Refused, not coerced: a corpus that does not round trip is not a corpus,
+	// and writing one silently costs a whole experiment, because the model is
+	// graded against expectations the file cannot hold. Filter with
+	// Representable if some examples are expected to be unwritable.
+	//
+	// The check used to sit inside the write loop, which made the refusal a lie
+	// whenever the offending example was not in the first 4 KB: bufio.Writer
+	// flushes when its buffer fills, so everything before it had already reached
+	// the file — including a half-encoded record. Measured with 40 ASCII names
+	// followed by "münchen" under bf: 90,112 bytes left on disk, cut mid-string,
+	// and re-reading it failed with "line 40: unexpected end of JSON input".
+	// Since JSONL is chosen here so a corpus can be appended to, that truncated
+	// tail becomes a permanently broken record in the middle of the next file.
+	for _, e := range examples {
+		if !Representable(e) {
+			return fmt.Errorf(
+				"aitypo: %s/%q has a field or variant that is not valid UTF-8 and cannot survive JSONL; "+
+					"filter with Representable, or drop this task from the corpus", e.Task, e.Input)
+		}
+	}
+
 	bw := bufio.NewWriter(w)
 	enc := json.NewEncoder(bw)
 	for _, e := range examples {
-		// Refused, not coerced. A corpus that does not round trip is not a
-		// corpus, and writing one silently costs a whole experiment: the model
-		// is graded against expectations the file cannot hold. Filter with
-		// Representable if some examples are expected to be unwritable.
-		if !Representable(e) {
-			return fmt.Errorf(
-				"aitypo: %s/%q produced a variant that is not valid UTF-8 and cannot survive JSONL; "+
-					"filter with Representable, or drop this task from the corpus", e.Task, e.Input)
-		}
 		if err := enc.Encode(e); err != nil {
 			return fmt.Errorf("aitypo: writing example %s/%s: %w", e.Task, e.Input, err)
 		}

@@ -21,7 +21,19 @@
 set -euo pipefail
 
 # Matches config.DirName + config.MaxMindDB. Override for a non-standard home.
-DEST="${URLINSANE_DIR:-$HOME/.config/urlinsane}/maxmind.db.gz"
+#
+# $HOME is checked rather than expanded blind: under `set -u` an unset HOME
+# aborts with "HOME: unbound variable", which is true and useless to someone
+# following the remedy printed by a scan.
+DIR="${URLINSANE_DIR:-}"
+if [ -z "$DIR" ]; then
+    if [ -z "${HOME:-}" ]; then
+        echo "error: HOME is not set; pass URLINSANE_DIR=/path/to/.config/urlinsane" >&2
+        exit 1
+    fi
+    DIR="$HOME/.config/urlinsane"
+fi
+DEST="$DIR/maxmind.db.gz"
 TMP="$(mktemp)"
 trap 'rm -f "$TMP"' EXIT
 
