@@ -49,6 +49,14 @@ old/
 .html
 /main
 
+# The binary, when built into the repository root rather than into build/.
+#
+# Anchored with a leading slash on purpose: an unanchored "urlinsane" would also
+# match the cmd/urlinsane directory, and every new file added there would be
+# silently ignored. For the same reason there is no /datasets entry -- that is
+# the reference-data tree, and the datasets binary builds into build/ already.
+/urlinsane
+
 
 // Debian Packaging
 debhelper-build-stamp
