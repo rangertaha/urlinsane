@@ -222,17 +222,42 @@ func (g *Graph) readDigest(t Trigger, id NodeID) [32]byte {
 	}
 	for _, rel := range r.Rels {
 		writeField(h, rel)
-		edges := g.outEdges(id, rel)
-		var ids [][]byte
-		for _, e := range edges {
-			ids = append(ids, e.ID[:])
-		}
-		sort.Slice(ids, func(i, j int) bool { return compareID(ids[i], ids[j]) < 0 })
+
+		// Edges sorted by id, so the digest does not inherit adjacency order.
+		edges := append([]*Edge(nil), g.outEdges(id, rel)...)
+		sort.Slice(edges, func(i, j int) bool {
+			return compareID(edges[i].ID[:], edges[j].ID[:]) < 0
+		})
+
 		var count [8]byte
-		binary.BigEndian.PutUint64(count[:], uint64(len(ids)))
+		binary.BigEndian.PutUint64(count[:], uint64(len(edges)))
 		_, _ = h.Write(count[:])
-		for _, b := range ids {
-			_, _ = h.Write(b)
+
+		for _, e := range edges {
+			_, _ = h.Write(e.ID[:])
+
+			// The edge's props as well as its identity. View.Edges hands an
+			// operator the props of every edge on a declared relation, so they
+			// are part of what it reads — and this function's whole rule is
+			// that what is read decides re-dispatch and the cache key. Hashing
+			// the id alone meant an edge whose props changed left the digest
+			// identical: the pair stayed marked seen, the operator was never
+			// dispatched again, and a cached result computed from the old props
+			// was served in its place. An id is a content address of the
+			// endpoints and relation, not of the props hung off it, so nothing
+			// else was covering this.
+			if e.Rel == nil || e.Rel.sch == nil {
+				continue
+			}
+			for _, f := range e.Rel.sch.fields {
+				writeField(h, f.name)
+				v, set := e.Props.Get(f)
+				if !set {
+					writeField(h, "\x00unset")
+					continue
+				}
+				writeValue(h, v)
+			}
 		}
 	}
 	var out [32]byte

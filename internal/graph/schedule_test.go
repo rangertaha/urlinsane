@@ -883,3 +883,58 @@ func TestANegativeWorkerCountDoesNotPanic(t *testing.T) {
 		t.Fatalf("semaphore capacity = %d, want at least 1", cap(sem))
 	}
 }
+
+// The read digest decides two things: whether a pair is dispatched again, and
+// what its cached result is keyed on. It has to cover everything the operator
+// can see, and View.Edges hands over the props of every edge on a declared
+// relation -- not just the edges' identities.
+//
+// It hashed only edge ids. An id is a content address of the endpoints and the
+// relation, not of the props hung off the edge, so an operator reading an edge
+// prop saw the digest stay identical when that prop changed: the pair stayed
+// marked seen, it was never dispatched again, and the cache served a result
+// computed from the old value.
+func TestReadDigestCoversEdgeProps(t *testing.T) {
+	g, seed := seeded(t)
+	trig := onDomain(Reads{Rels: []string{"VARIANT_OF"}})
+
+	edge := EdgeRef{
+		From: NodeRef{Type: "domain", Key: "example.com"},
+		Rel:  "VARIANT_OF",
+		To:   NodeRef{Type: "domain", Key: "exarnple.com"},
+	}
+	g.Apply(op("omission"), seed, Delta{Edges: []EdgeRef{edge}})
+	before := g.readDigest(trig, seed)
+
+	// A second operator fills in a field the first left unset. The edge is the
+	// same edge -- same endpoints, same relation, same id -- so nothing about
+	// its identity moves.
+	g.Apply(op("distance"), seed, Delta{
+		Props: []PropSet{{Edge: &edge, Field: "distance", Value: Int(3)}},
+	})
+
+	if after := g.readDigest(trig, seed); before == after {
+		t.Fatal("setting an edge prop left the read digest identical; the operator would never re-run")
+	}
+}
+
+// An operator that declares no relation reads must not be disturbed by one.
+func TestReadDigestIgnoresEdgePropsItDidNotDeclare(t *testing.T) {
+	g, seed := seeded(t)
+	trig := onDomain(Reads{}) // declares nothing
+
+	edge := EdgeRef{
+		From: NodeRef{Type: "domain", Key: "example.com"},
+		Rel:  "VARIANT_OF",
+		To:   NodeRef{Type: "domain", Key: "exarnple.com"},
+	}
+	g.Apply(op("omission"), seed, Delta{Edges: []EdgeRef{edge}})
+	before := g.readDigest(trig, seed)
+
+	g.Apply(op("distance"), seed, Delta{
+		Props: []PropSet{{Edge: &edge, Field: "distance", Value: Int(3)}},
+	})
+	if after := g.readDigest(trig, seed); before != after {
+		t.Fatal("an undeclared edge prop changed the digest; it is invisible to this operator")
+	}
+}
