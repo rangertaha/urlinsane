@@ -222,17 +222,27 @@ func (r Registry) Select(ids ...string) ([]Task, error) {
 	}
 	var out []Task
 	var unknown []string
+	// Deduplicated: a repeated id would emit the same example twice and give
+	// that task two votes in the macro average, so `--task co --task co,cs`
+	// would quietly weight co double.
+	picked := map[string]bool{}
+	var named int
 	for _, raw := range ids {
 		for _, id := range strings.Split(raw, ",") {
 			id = strings.TrimSpace(id)
 			if id == "" {
 				continue
 			}
+			named++
 			t, ok := r[id]
 			if !ok {
 				unknown = append(unknown, id)
 				continue
 			}
+			if picked[id] {
+				continue
+			}
+			picked[id] = true
 			out = append(out, t)
 		}
 	}
@@ -240,6 +250,14 @@ func (r Registry) Select(ids ...string) ([]Task, error) {
 		sort.Strings(unknown)
 		return nil, fmt.Errorf("aitypo: unknown task(s): %s; have: %s",
 			strings.Join(unknown, ", "), strings.Join(r.IDs(), ", "))
+	}
+	// A caller that passed something naming nothing gets an error, not silence.
+	// Returning no tasks would build an empty corpus and report success, which
+	// is the quiet drop this function's contract exists to prevent — and it is
+	// what `--task ""` produced.
+	if named == 0 {
+		return nil, fmt.Errorf("aitypo: %q names no task; pass none to select all of: %s",
+			ids, strings.Join(r.IDs(), ", "))
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].ID < out[j].ID })
 	return out, nil

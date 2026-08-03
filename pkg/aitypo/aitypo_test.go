@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"strings"
 	"testing"
+	"unicode/utf8"
 )
 
 func testData() Data {
@@ -221,7 +222,7 @@ func TestSummarizeIsMacroAveraged(t *testing.T) {
 		{Task: "co", Input: "ab", Expect: []string{"x"}, Predict: []string{"y"},
 			Missed: []string{"x"}, Spuri: []string{"y"}},
 	}
-	s := Summarize(results, map[string]Needs{"co": NeedsNothing})
+	s := Summarize(results, Registry{"co": {ID: "co", Needs: NeedsNothing}})
 	if len(s) != 1 {
 		t.Fatalf("got %d summaries, want 1", len(s))
 	}
@@ -257,8 +258,20 @@ func TestCorpusRoundTrips(t *testing.T) {
 	}
 	for i := range ex {
 		if back[i].Task != ex[i].Task || back[i].Input != ex[i].Input ||
-			back[i].Split != ex[i].Split || len(back[i].Expect) != len(ex[i].Expect) {
+			back[i].Split != ex[i].Split {
 			t.Fatalf("example %d changed: %+v vs %+v", i, back[i], ex[i])
+		}
+		// Contents, not lengths. Comparing only len() is what let a corpus
+		// come back with sixteen of its sixty-four variants silently rewritten
+		// to U+FFFD and still pass.
+		if len(back[i].Expect) != len(ex[i].Expect) {
+			t.Fatalf("example %d: %d expectations, wrote %d", i, len(back[i].Expect), len(ex[i].Expect))
+		}
+		for j := range ex[i].Expect {
+			if back[i].Expect[j] != ex[i].Expect[j] {
+				t.Fatalf("example %d expectation %d changed: %q -> %q",
+					i, j, ex[i].Expect[j], back[i].Expect[j])
+			}
 		}
 	}
 }
@@ -301,5 +314,215 @@ func TestEmitEmptyIsOptedInto(t *testing.T) {
 	got := EmitWithEmpty(tasks, []string{"example"}, "u")
 	if len(got) != 1 || len(got[0].Expect) != 0 {
 		t.Errorf("EmitWithEmpty = %+v, want one example with an empty set", got)
+	}
+}
+
+// The empty-set definitions are documented behaviour, so they need a test:
+// simplifying Precision to hits/len(predict) divides by zero, and nothing
+// else in the suite would notice.
+func TestEmptySetScoringDefinitions(t *testing.T) {
+	// Said nothing, so said nothing wrong — but found nothing either.
+	silent := Result{Expect: []string{"a", "b"}}
+	if silent.Precision() != 1 {
+		t.Errorf("precision on an empty prediction = %v, want 1", silent.Precision())
+	}
+	if silent.Recall() != 0 {
+		t.Errorf("recall on an empty prediction = %v, want 0", silent.Recall())
+	}
+	if silent.F1() != 0 {
+		t.Errorf("F1 = %v, want 0 when recall is 0", silent.F1())
+	}
+
+	// Nothing to find, and nothing claimed: both sides are vacuously right.
+	nothingToFind := Result{}
+	if nothingToFind.Precision() != 1 || nothingToFind.Recall() != 1 {
+		t.Errorf("empty/empty = P%v R%v, want 1 and 1",
+			nothingToFind.Precision(), nothingToFind.Recall())
+	}
+	if !nothingToFind.Exact() {
+		t.Error("empty expectation answered with nothing is not exact")
+	}
+
+	// Invented an answer where there was none: precision 0, recall vacuously 1.
+	invented := Result{Predict: []string{"x"}, Spuri: []string{"x"}}
+	if invented.Precision() != 0 {
+		t.Errorf("precision = %v, want 0", invented.Precision())
+	}
+	if invented.Exact() {
+		t.Error("an invented answer counted as exact")
+	}
+}
+
+// Describe is what a training run prints before it starts, and Variants is the
+// figure that predicts cost — the example count does not.
+func TestDescribeCountsTheCorpus(t *testing.T) {
+	tasks, err := Tasks(testData()).Select("co", "cs")
+	if err != nil {
+		t.Fatal(err)
+	}
+	ex := Emit(tasks, []string{"google", "example"}, "unit")
+	Assign(ex, DefaultRatio, "")
+
+	s := Describe(ex)
+	if s.Examples != len(ex) {
+		t.Errorf("Examples = %d, want %d", s.Examples, len(ex))
+	}
+	if s.Inputs != 2 {
+		t.Errorf("Inputs = %d, want 2 distinct names", s.Inputs)
+	}
+	if s.Tasks != 2 {
+		t.Errorf("Tasks = %d, want 2", s.Tasks)
+	}
+	var variants int
+	for _, e := range ex {
+		variants += len(e.Expect)
+	}
+	if s.Variants != variants {
+		t.Errorf("Variants = %d, want %d — this is the number that predicts training cost",
+			s.Variants, variants)
+	}
+	var split int
+	for _, n := range s.Splits {
+		split += n
+	}
+	if split != s.Examples {
+		t.Errorf("splits total %d, want every one of %d examples assigned", split, s.Examples)
+	}
+	if s.String() == "" {
+		t.Error("Describe renders empty")
+	}
+}
+
+// Filter selects one split and nothing else.
+func TestFilterSelectsOneSplit(t *testing.T) {
+	ex := []Example{
+		{Input: "a", Split: SplitTrain},
+		{Input: "b", Split: SplitTest},
+		{Input: "c", Split: SplitTrain},
+		{Input: "d"}, // unassigned: belongs to no split
+	}
+	if got := Filter(ex, SplitTrain); len(got) != 2 {
+		t.Errorf("train split has %d, want 2", len(got))
+	}
+	if got := Filter(ex, SplitTest); len(got) != 1 {
+		t.Errorf("test split has %d, want 1", len(got))
+	}
+	if got := Filter(ex, SplitVal); len(got) != 0 {
+		t.Errorf("val split has %d, want 0", len(got))
+	}
+}
+
+// Needs.String is what a summary line prints; an unnamed bucket makes a report
+// unreadable.
+func TestNeedsRenders(t *testing.T) {
+	for n, want := range map[Needs]string{
+		NeedsNothing:  "nothing",
+		NeedsLanguage: "language",
+		NeedsKeyboard: "keyboard",
+	} {
+		if got := n.String(); got != want {
+			t.Errorf("Needs(%d).String() = %q, want %q", n, got, want)
+		}
+	}
+	if s := (Summary{Task: "co", Needs: NeedsNothing, N: 3}).String(); s == "" {
+		t.Error("Summary renders empty")
+	}
+}
+
+// A corpus that cannot round trip must not be written.
+//
+// bf models a bit flipping in a resolver's memory, so it flips bits inside
+// multi-byte runes and produces byte sequences that are not text. encoding/json
+// coerces those to U+FFFD without erroring, so the file comes back changed and
+// a model that reproduced the corpus exactly is graded at 0.750.
+func TestWriteRefusesWhatItCannotRoundTrip(t *testing.T) {
+	tasks, err := Tasks(testData()).Select("bf")
+	if err != nil {
+		t.Fatal(err)
+	}
+	ex := Emit(tasks, []string{"münchen"}, "probe")
+	if len(ex) == 0 {
+		t.Fatal("bf produced nothing for a non-ASCII name")
+	}
+
+	var invalid int
+	for _, v := range ex[0].Expect {
+		if !utf8.ValidString(v) {
+			invalid++
+		}
+	}
+	if invalid == 0 {
+		t.Skip("bf no longer produces invalid UTF-8; the hazard is gone")
+	}
+
+	if Representable(ex[0]) {
+		t.Error("Representable accepted an example with invalid UTF-8")
+	}
+	var buf bytes.Buffer
+	err = WriteJSONL(&buf, ex)
+	if err == nil {
+		t.Fatal("WriteJSONL silently wrote a corpus that cannot round trip")
+	}
+	if !strings.Contains(err.Error(), "bf") || !strings.Contains(err.Error(), "UTF-8") {
+		t.Errorf("error = %v, want it to name the task and the reason", err)
+	}
+	if buf.Len() != 0 {
+		t.Error("a refused corpus still wrote bytes")
+	}
+
+	// ASCII input is fine, so bf is not banned outright.
+	ascii := Emit(tasks, []string{"example"}, "probe")
+	if err := WriteJSONL(&bytes.Buffer{}, ascii); err != nil {
+		t.Errorf("bf over ASCII was refused: %v", err)
+	}
+}
+
+// A repeated id must not give its task two votes in the macro average.
+func TestSelectDeduplicates(t *testing.T) {
+	got, err := Tasks(testData()).Select("co", "co", "co,cs")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 2 {
+		t.Fatalf("Select returned %d tasks, want 2 distinct", len(got))
+	}
+	seen := map[string]bool{}
+	for _, task := range got {
+		if seen[task.ID] {
+			t.Errorf("task %s returned twice", task.ID)
+		}
+		seen[task.ID] = true
+	}
+}
+
+// A selection that names nothing is an error, not an empty corpus reported as
+// success — which is what --task "" produced.
+func TestSelectRefusesABlankSelection(t *testing.T) {
+	for _, spec := range [][]string{{""}, {",, ,"}, {"", ""}} {
+		got, err := Tasks(testData()).Select(spec...)
+		if err == nil {
+			t.Errorf("Select(%q) returned %d tasks and no error", spec, len(got))
+		}
+	}
+	// No arguments at all still means every task.
+	all, err := Tasks(testData()).Select()
+	if err != nil || len(all) == 0 {
+		t.Errorf("Select() = %d tasks, err %v; want all of them", len(all), err)
+	}
+}
+
+// Summarize takes the registry, so a task cannot be mislabelled by omission:
+// a map lookup that missed reported a memorised table as a learned rule.
+func TestSummarizeLabelsFromTheRegistry(t *testing.T) {
+	reg := Tasks(testData())
+	results := []Result{{Task: "hr", Input: "google", Expect: []string{"g0ogle"},
+		Predict: []string{"g0ogle"}, Hit: []string{"g0ogle"}}}
+
+	s := Summarize(results, reg)
+	if len(s) != 1 {
+		t.Fatalf("got %d summaries", len(s))
+	}
+	if s[0].Needs != NeedsLanguage {
+		t.Errorf("hr labelled %v, want language — it is a table lookup, not a rule", s[0].Needs)
 	}
 }

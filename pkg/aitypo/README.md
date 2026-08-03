@@ -89,6 +89,21 @@ There is one implementation, in `pkg/typo`. Every oracle here calls it. A task
 registry that reimplemented a generator would train a model against a second
 definition of the truth.
 
+## What cannot be written
+
+`bf` models a bit flipping in a resolver's memory, so it flips bits *inside*
+multi-byte runes: `bf("münchen")` returns 16 byte sequences out of 64 that are
+not text at all.
+
+JSON strings are UTF-8 by definition and `encoding/json` **coerces invalid input
+to U+FFFD without erroring**. Written anyway, those 16 come back changed, and
+scoring the corpus against its own oracle then grades a model that reproduced it
+*exactly* at 0.750 precision — with no error anywhere.
+
+So `WriteJSONL` refuses, naming the task and the input. Filter with
+`Representable` if some examples are expected to be unwritable, or keep such a
+corpus to ASCII inputs. `bf` over ASCII is fine and is not banned.
+
 ## Cost
 
 Generation is cheap per call and large in aggregate. 300 domains over 8 tasks is
