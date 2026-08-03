@@ -101,3 +101,47 @@ func TestDetectSeedAgreesWithTheCanonicalizer(t *testing.T) {
 		}
 	}
 }
+
+// The username rule is the last one, so it decides what happens to every target
+// nothing else recognised. It used to be guarded only by canonUsername, which
+// rejects three characters and accepts the rest -- and it is permissive on
+// purpose, because it also admits the usernames the variant algorithms
+// generate, where odd shapes are the point.
+//
+// That made a seed of almost any shape a username scan. A fumbled package spec
+// or a mistyped domain was not refused; it was varied, probed against every
+// platform, and reported as an empty result that read exactly like a clean one.
+func TestDetectRefusesAMistypedTargetRatherThanCallingItAUsername(t *testing.T) {
+	for _, tc := range []struct{ in, why string }{
+		{"npm:", "a package spec with no name is not a handle called \"npm:\""},
+		{":lodash", "a package spec with no registry is not a handle called \":lodash\""},
+		{"exmaple,com", "a comma for a dot is a mistyped domain, not a handle"},
+		{"..", "there is nothing nameable in it"},
+		{"--", "there is nothing nameable in it"},
+		{"[::1]", "an IPv6 literal is not the package \":1]\" on registry \"[\""},
+		{"[::1]:8080", "nor with a port on it"},
+	} {
+		if typ, key, err := DetectSeed(tc.in); err == nil {
+			t.Errorf("DetectSeed(%q) = %s:%q, want an error: %s", tc.in, typ, key, tc.why)
+		}
+	}
+}
+
+// The guard must not cost the handles that are real. A username is still the
+// answer for anything that looks like one, including the awkward shapes a
+// squatter actually registers.
+func TestDetectStillAcceptsRealHandles(t *testing.T) {
+	for _, in := range []string{
+		"lodash", "rangertaha", "acme-tool", "acme_tool",
+		"a1", "-hyphen", "trailing-", "_underscore", "café", "bob+tag",
+	} {
+		typ, _, err := DetectSeed(in)
+		if err != nil {
+			t.Errorf("DetectSeed(%q): %v", in, err)
+			continue
+		}
+		if typ != TypeUsername {
+			t.Errorf("DetectSeed(%q) = %s, want a username", in, typ)
+		}
+	}
+}
