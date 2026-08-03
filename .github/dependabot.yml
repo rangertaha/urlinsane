@@ -1,12 +1,28 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
+# Dependabot version updates.
+#
 # https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
-
+#
+# package-ecosystem was the empty string left in from the starter template, and
+# that is not one of the values the schema allows. Dependabot rejects the whole
+# file on it, so no update has ever been raised: the repository looked as though
+# it had dependency updates configured and had none.
 version: 2
 updates:
-  - package-ecosystem: "" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  # Go module dependencies.
+  - package-ecosystem: "gomod"
+    directory: "/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
 
+  # The workflows' own actions. Without this the pinned versions rot in place
+  # and keep working until GitHub retires the runtime under them, which is how
+  # main.yml was left on checkout@v3.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"

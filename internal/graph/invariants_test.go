@@ -362,12 +362,12 @@ func TestClosureReachesNodesAdmittedBeforeTheirParentJoined(t *testing.T) {
 	// A structural edge whose source is not yet in the closure.
 	g.Apply(op("x"), seed, Delta{Edges: []EdgeRef{{
 		From: NodeRef{Type: "domain", Key: "a.com"}, Rel: "TLD_OF",
-		To:   NodeRef{Type: "domain", Key: "b.com"},
+		To: NodeRef{Type: "domain", Key: "b.com"},
 	}}})
 	// Now the source joins, structurally, from the seed.
 	g.Apply(op("x"), seed, Delta{Edges: []EdgeRef{{
 		From: NodeRef{Type: "domain", Key: "example.com"}, Rel: "TLD_OF",
-		To:   NodeRef{Type: "domain", Key: "a.com"},
+		To: NodeRef{Type: "domain", Key: "a.com"},
 	}}})
 
 	for _, key := range []string{"a.com", "b.com"} {

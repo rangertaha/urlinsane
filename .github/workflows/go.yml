@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ "master" ]
 
+# The job checks out, builds and tests. It writes nothing back, so it does not
+# need the write token the repository default may hand it.
+permissions:
+  contents: read
+
 jobs:
 
   build:
