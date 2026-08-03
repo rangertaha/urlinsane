@@ -273,3 +273,60 @@ func TestWriteAtomicPublishesWholeFilesOnly(t *testing.T) {
 		t.Errorf("directory holds %v, want only scans.json", names)
 	}
 }
+
+// Releasing a lock must remove only the lock that was taken.
+//
+// The release was an unconditional os.Remove while the stale-breaking path took
+// os.SameFile care — the same rule, enforced in one of the two places that
+// needed it. So a holder whose lock had been broken as stale deleted its
+// replacement, and two writers ended up inside the read-modify-write together.
+// That is the lost update the lock exists to prevent: the loser's Entry
+// disappears from scans.json, its blocks stay in the blockstore with nothing
+// naming them, and `report <target>` can never find that scan again.
+func TestReleasingABrokenLockDoesNotRemoveItsReplacement(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, lockName)
+
+	unlockA, err := lock(dir)
+	if err != nil {
+		t.Fatalf("A could not take the lock: %v", err)
+	}
+
+	// A stalls past lockStale. The mtime is set once at creation and never
+	// refreshed, so from outside A's lock is now indistinguishable from one left
+	// by a killed process.
+	old := time.Now().Add(-31 * time.Second)
+	if err := os.Chtimes(path, old, old); err != nil {
+		t.Fatal(err)
+	}
+
+	unlockB, err := lock(dir)
+	if err != nil {
+		t.Fatalf("B could not break the stale lock: %v", err)
+	}
+
+	// A wakes up and releases. It must not touch B's file.
+	unlockA()
+
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		t.Fatal("A's release removed B's lock; a third writer can now enter the " +
+			"critical section alongside B and one of their scans will vanish from the index")
+	}
+
+	// And the proof of what that costs: with B still holding, nobody else gets in.
+	done := make(chan error, 1)
+	go func() { _, err := lock(dir); done <- err }()
+	select {
+	case err := <-done:
+		if err == nil {
+			t.Error("a third holder acquired the lock while B still held it")
+		}
+	case <-time.After(2 * time.Second):
+		// Still blocking, which is correct — B has not released.
+	}
+
+	unlockB()
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		t.Error("B's release left the lock file behind")
+	}
+}

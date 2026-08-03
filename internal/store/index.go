@@ -4,7 +4,9 @@
 package store
 
 import (
+	"crypto/rand"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -143,27 +145,31 @@ func lock(dir string) (func(), error) {
 
 	deadline := time.Now().Add(timeout)
 	for {
+		token, terr := newToken()
+		if terr != nil {
+			return nil, terr
+		}
 		f, err := os.OpenFile(path, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0o640)
 		if err == nil {
-			f.Close()
-			return func() { os.Remove(path) }, nil
+			// The token goes in before the handle closes, so the file is never
+			// visible as an empty lock somebody else would read as "not mine".
+			_, werr := f.WriteString(token)
+			cerr := f.Close()
+			if werr != nil || cerr != nil {
+				os.Remove(path)
+				return nil, errors.Join(werr, cerr)
+			}
+			return func() { removeIfToken(path, token) }, nil
 		}
 		if !os.IsExist(err) {
 			return nil, err
 		}
-		// Breaking a stale lock removes only the file that was observed to be
-		// stale. An unconditional Remove let two waiters both break the same
-		// lock: the first removed it and created its own, the second then
-		// removed *that* fresh lock and created a third, and both proceeded
-		// into the critical section — reintroducing exactly the lost update
-		// the lock exists to prevent, with the loser's scan silently absent
-		// from the index and its blocks left unreferenced.
-		//
-		// Re-stat and compare identity, so a lock created between the two
-		// calls is a different file and is left alone.
+		// Breaking a stale lock removes only the lock observed to be stale — see
+		// removeIfToken. An unconditional Remove let two waiters both break the
+		// same lock and both proceed into the critical section.
 		if fi, serr := os.Stat(path); serr == nil && time.Since(fi.ModTime()) > lockStale {
-			if again, serr := os.Stat(path); serr == nil && os.SameFile(fi, again) {
-				os.Remove(path)
+			if held, rerr := os.ReadFile(path); rerr == nil {
+				removeIfToken(path, string(held))
 			}
 			continue
 		}
@@ -172,6 +178,51 @@ func lock(dir string) (func(), error) {
 		}
 		time.Sleep(poll)
 	}
+}
+
+// newToken is a value no other lock holder will produce.
+func newToken() (string, error) {
+	var b [16]byte
+	if _, err := rand.Read(b[:]); err != nil {
+		return "", fmt.Errorf("store: lock token: %w", err)
+	}
+	return fmt.Sprintf("%d:%x", os.Getpid(), b), nil
+}
+
+// removeIfToken deletes the lock file only if it still holds the given token.
+//
+// One implementation, used by the breaking path and the release path, because
+// they enforce the same rule — remove only the lock you observed — and only one
+// of them used to. Releasing was an unconditional Remove, so a holder whose
+// lock had been broken as stale deleted its *replacement*:
+//
+//	A takes the lock and stalls past lockStale (a suspend, a slow ~/.config on
+//	a network mount — the mtime is set once at creation and never refreshed).
+//	B breaks A's lock as stale and creates its own. A wakes, finishes, and its
+//	deferred release removes B's file. C acquires immediately and enters the
+//	read-modify-write alongside B. Both load the same scans.json and both save
+//	it; the loser's Entry is gone, its blocks sit in the blockstore with nothing
+//	naming them, and `report <target>` can never find that scan.
+//
+// That is the lost update the lock exists to prevent, and the same one the
+// breaking side was fixed for in bd1d7e8.
+//
+// A token rather than os.SameFile, which is what the breaking side used and
+// what the first attempt at this fix used too. It does not work here: SameFile
+// compares device and inode, and removing a file frees its inode for immediate
+// reuse. Measured on tmpfs — create, remove, create again at the same path, and
+// both files report inode 37495985, so SameFile says a replacement *is* the
+// original. The breaking side was therefore unsound in the same way, and both
+// are fixed by this.
+func removeIfToken(path, token string) {
+	if token == "" {
+		return
+	}
+	held, err := os.ReadFile(path)
+	if err != nil || string(held) != token {
+		return
+	}
+	os.Remove(path)
 }
 
 func (ix *Index) save() error {
