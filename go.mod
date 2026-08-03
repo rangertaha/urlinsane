@@ -4,7 +4,7 @@ go 1.26.5
 
 require (
 	github.com/glebarez/sqlite v1.11.0
-	github.com/ipfs/go-cid v0.6.1
+	github.com/ipfs/go-cid v0.6.2
 	github.com/ipld/go-ipld-prime v0.24.0
 	github.com/jedib0t/go-pretty/v6 v6.8.0
 	github.com/likexian/whois v1.15.7
