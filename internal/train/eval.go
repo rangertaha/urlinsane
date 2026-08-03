@@ -101,13 +101,19 @@ func Evaluate(g *graph.Graph) Quality {
 	sortScored(judged)
 
 	q.Scored = len(judged)
-	if q.Scored == 0 || q.Live == 0 || q.Absent == 0 {
-		// One class only: AUC is undefined and any number would be a claim
-		// nobody can check.
+	if q.Scored == 0 {
 		return q
 	}
 	q.BaseRate = float64(q.Live) / float64(q.Scored)
-	q.AUC = auc(judged)
+
+	// AUC alone is undefined with one class — it is a statement about pairs and
+	// there are none. The base rate and precision@k are perfectly well defined,
+	// and zeroing them made a scan where everything resolved print
+	// "base=0.000 p@10=0.000", which reads as a perfectly inverted model rather
+	// than as one class observed.
+	if q.Live > 0 && q.Absent > 0 {
+		q.AUC = auc(judged)
+	}
 
 	for _, k := range []int{10, 25, 50} {
 		n := k

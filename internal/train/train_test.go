@@ -189,9 +189,8 @@ func TestTrainAndServeFeaturizeIdentically(t *testing.T) {
 	g, _ := scan(t)
 	a := g.Analyze()
 	id := node(t, g, "exmple.com")
-	n, _ := g.Node(id)
 
-	fromGraph := Features(nodeView{a: a, id: id, n: n})
+	fromGraph := newFeaturizer(a).Symbols(id)
 	fromView := Featurizer(captureView(t, g, "exmple.com"))
 
 	if len(fromGraph) != len(fromView) {
@@ -246,8 +245,7 @@ func TestFeaturesCarryTheAlgorithm(t *testing.T) {
 	g, _ := scan(t)
 	a := g.Analyze()
 	id := node(t, g, "exmple.com")
-	n, _ := g.Node(id)
-	syms := Features(nodeView{a: a, id: id, n: n})
+	syms := newFeaturizer(a).Symbols(id)
 
 	want := map[string]bool{"type:domain": false, "live:true": false,
 		"edge:RESOLVES_TO": false, "len:mid": false}
