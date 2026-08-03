@@ -154,12 +154,41 @@ func RegisteredKeyboards() []*kb.Layout {
 // adjacencySignature identifies a layout by how it types, not by what it is
 // called. Two layouts that differ only in their non-alphanumeric keys produce
 // the same variants, so they are the same layout for this purpose.
+//
+// The sample is the layout's OWN character set, not a fixed Latin alphabet.
+// It used to be the literal "abcdefghijklmnopqrstuvwxyz0123456789", which meant
+// every layout typing none of those characters produced the same empty
+// signature and all but one were discarded as duplicates: all four Thai boards,
+// Pashto, Persian, Kazakh, Bashkir, N'Ko, Ogham, Osmanya, Sora Sompeng and
+// fifteen others, 24 in total, collapsed to whichever sorted first. The
+// keyboard-driven algorithms then had nothing to say about those scripts at
+// all -- acs on a Thai name returned zero variants against 89 for the full
+// layout set -- and package, username and repository keys are not punycoded, so
+// those names reach the generators verbatim.
+//
+// Sampling the layout's own keys also makes the comparison meaningful rather
+// than merely non-empty: two layouts are the same here only if they type the
+// same characters and put the same neighbours around each one.
 func adjacencySignature(l *kb.Layout) string {
+	texts := map[string]bool{}
+	for _, k := range l.Keys {
+		for _, t := range k.Texts() {
+			if t != "" {
+				texts[t] = true
+			}
+		}
+	}
+	chars := make([]string, 0, len(texts))
+	for t := range texts {
+		chars = append(chars, t)
+	}
+	sort.Strings(chars)
+
 	var b strings.Builder
-	for _, c := range "abcdefghijklmnopqrstuvwxyz0123456789" {
-		adj := l.Adjacent(string(c))
+	for _, c := range chars {
+		adj := l.Adjacent(c)
 		sort.Strings(adj)
-		b.WriteString(string(c))
+		b.WriteString(c)
 		b.WriteByte(':')
 		b.WriteString(strings.Join(adj, ""))
 		b.WriteByte('|')
