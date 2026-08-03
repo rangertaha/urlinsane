@@ -9,8 +9,8 @@ description: Work on urlinsane's reference data — the .lst tree under datasets
 language: homoglyphs, misspellings, synonyms, keyboards' worth of vowels and
 graphemes, plus the registries and platforms a name can exist on.
 
-Nothing generates these files. They are hand-curated, they are the artifact, and
-the database is built *from* them — never the other way round. A `sync-languages`
+Nothing generates these files. They are hand-curated, they are the artifact,
+and the database is built *from* them — never the reverse. A `sync-languages`
 command once generated this tree from Go plugins; it pointed the wrong way and
 was deleted along with those plugins.
 
@@ -83,18 +83,75 @@ joined. Match the file you are editing rather than imposing these.
 `#` at the start of a word makes it a comment. Blank lines are ignored. Runs of
 whitespace collapse, so alignment is free.
 
+## Researching and populating a language
+
+`go run ./cmd/datasets languages` scaffolds a directory for every language
+`pkg/kb` ships. Most are stubs: a comment line and nothing else. As of this
+writing 30 of 111 are curated and 81 hold one placeholder line, so "add a
+language" almost always means filling in a scaffold rather than making one.
+
+Fill it in this order. The list is ordered by how much each file changes what
+the scanner can find, so a language stopped halfway is still useful:
+
+1. **`homoglyph.lst`** — the highest-value file by a wide margin, and the one a
+   general search engine is worst at. Work from the script's Unicode blocks and
+   from the confusables data (Unicode TR39), not from "letters that look
+   similar" in prose. One line per base character, that character first:
+   `a à á â ã ä å ɑ а ạ ǎ ă ȧ ӓ`. Include cross-script neighbours — Cyrillic `а`
+   on a Latin `a` line is the entire point.
+2. **`misspelling.lst`** — pairs, wrong first: `hwile while`. Sources that work:
+   a Wikipedia "commonly misspelled words" page in that language, spellchecker
+   correction lists, and keyboard-adjacent errors for that language's layout.
+   German has 1,349 pairs and English 4,256; a few hundred is already useful.
+3. **`synonym.lst`** — despite the name, not a thesaurus. These are the
+   brand-adjacent words an attacker bolts onto a name: login, verify, secure,
+   pay, invoice, support, delivery, account. One theme per line, in that
+   language. The curated set runs to ~65 groups; match that shape.
+4. **`vowel.lst`**, **`grapheme.lst`** — small, mechanical, from the script.
+5. **`homophone.lst`**, **`numeral.lst`**, **`antonym.lst`** — lower value; fill
+   if the language makes them easy.
+
+While researching:
+
+- **Check the script, not the language.** Azerbaijani is written in Latin,
+  Cyrillic and Arabic depending on where; the file should carry the script the
+  target audience actually types.
+- **Verify a claim before adding it.** A wrong homoglyph produces variants that
+  nobody would ever mistype, which costs scan time on every future run and is
+  invisible once merged.
+- **Do not translate the English file.** The English synonym groups reflect
+  English phishing lures. Another language's lures are its own.
+
+**Never rewrite entries that are already there.** Add to a file; pass existing
+lines through untouched. The one time a bulk pass normalised existing entries it
+destroyed data — see the editing rules above — so the safe shape for a
+populating pass is: read the file, keep every existing line verbatim, append
+what is new, deduplicate exact repeats only.
+
+Then:
+
+```bash
+wc -l datasets/languages/<code>/*.lst   # sanity: did anything shrink?
+go run ./cmd/datasets build datasets
+urlinsane typo --list languages | grep <code>
+urlinsane typo -a hr -l <code> -d 0 example.com   # homoglyphs actually fire
+```
+
+A file that shrank is the signal to stop and look, not to continue.
+
 ## Source lists
 
 `sources/*.lst` say where a name can be checked for existence. Three shapes,
 because the kinds genuinely differ:
 
 ```
-pypi https://pypi.org/project/%s/ https://pypi.org/pypi/%s/json   # code page check
-github https://github.com/%s                                      # code url
-gmail.com                                                         # bare domain
+pypi   https://pypi.org/project/%s/  https://pypi.org/pypi/%s/json
+github https://github.com/%s
+gmail.com
 ```
 
-`%s` is replaced by the name. Where a third column exists it is the endpoint
+Three columns is `code page-url check-url`, two is `code url`, one is a bare
+provider domain. `%s` is replaced by the name. Where a third column exists it is the endpoint
 that answers existence cleanly — usually an API — and it is what gets stored and
 probed; the page URL is for humans.
 
