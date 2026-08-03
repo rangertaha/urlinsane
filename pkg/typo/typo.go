@@ -3,7 +3,6 @@
 package typo
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/rangertaha/urlinsane/pkg/nlp"
@@ -15,15 +14,12 @@ import (
 // the word "example" could become "examlpe" by swapping the position of the
 // letters "l" and "p".
 func CharacterSwapping(token string) (tokens []string) {
-	for i := range token {
-		if i <= len(token)-2 {
-			variant := fmt.Sprint(token[:i], string(token[i+1]), string(token[i]), token[i+2:])
-			if token != variant {
-				tokens = append(tokens, variant)
-			}
-		}
+	rs := runesOf(token)
+	u := newUniq()
+	for i := 0; i+1 < len(rs); i++ {
+		u.add(token, joinRunes(rs[:i], rs[i+1], rs[i], rs[i+2:]))
 	}
-	return
+	return u.tokens()
 }
 
 // AdjacentCharacterSubstitution typos happen when a character in the original
@@ -33,29 +29,29 @@ func CharacterSwapping(token string) (tokens []string) {
 // substituted with "z," which is the neighboring key on an English QWERTY
 // keyboard layout.
 func AdjacentCharacterSubstitution(token string, keyboard ...string) (tokens []string) {
-	for i, char := range token {
-		for _, key := range adjacentCharacters(string(char), keyboard...) {
-			variant := token[:i] + string(key) + token[i+1:]
-			tokens = append(tokens, variant)
+	rs := runesOf(token)
+	u := newUniq()
+	for i, r := range rs {
+		for _, key := range adjacentCharacters(string(r), keyboard...) {
+			u.add(token, joinRunes(rs[:i], key, rs[i+1:]))
 		}
 	}
-	return
+	return u.tokens()
 }
 
 // AdjacentCharacterInsertion typos occur when characters adjacent of each
 // letter are inserted. For example, googhle inserts "h" next to it's
 // adjacent character "g" on an English QWERTY keyboard layout.
 func AdjacentCharacterInsertion(token string, keyboard ...string) (tokens []string) {
-	for i, char := range token {
-		for _, key := range adjacentCharacters(string(char), keyboard...) {
-			d1 := token[:i] + string(key) + string(char) + token[i+1:]
-			tokens = append(tokens, d1)
-
-			d2 := token[:i] + string(char) + string(key) + token[i+1:]
-			tokens = append(tokens, d2)
+	rs := runesOf(token)
+	u := newUniq()
+	for i, r := range rs {
+		for _, key := range adjacentCharacters(string(r), keyboard...) {
+			u.add(token, joinRunes(rs[:i], key, r, rs[i+1:]))
+			u.add(token, joinRunes(rs[:i], r, key, rs[i+1:]))
 		}
 	}
-	return
+	return u.tokens()
 }
 
 // HyphenInsertion typos happen when hyphens are mistakenly placed between
@@ -68,14 +64,7 @@ func AdjacentCharacterInsertion(token string, keyboard ...string) (tokens []stri
 //
 // "example-", with hyphens appearing before, between, or after the letters.
 func HyphenInsertion(token string) (tokens []string) {
-	for i, char := range token {
-		variant := token[:i] + "-" + string(char) + token[i+1:]
-		if i == len(token)-1 {
-			variant = token[:i] + string(char) + "-" + token[i+1:]
-		}
-		tokens = append(tokens, variant)
-	}
-	return
+	return insertEverywhere(token, "-")
 }
 
 // HyphenOmission typos occur when hyphens are unintentionally left out of a
@@ -94,22 +83,17 @@ func HyphenOmission(token string) (tokens []string) {
 // or "examp.le", where the dot appears at different locations
 // within the token, disrupting the original structure.
 func DotInsertion(token string) (tokens []string) {
-	var nmap = map[string]bool{}
-	for i, char := range token {
-		variant := token[:i] + "." + string(char) + token[i+1:]
-		if i == len(token)-1 {
-			variant = token[:i] + string(char) + "." + token[i+1:]
+	// A leading or trailing dot is not a name, so those two positions are
+	// dropped rather than trimmed back onto the token: trimming turned them
+	// into the token itself, and DotInsertion("ab") returned nothing but "ab".
+	u := newUniq()
+	for _, v := range insertEverywhere(token, ".") {
+		if strings.HasPrefix(v, ".") || strings.HasSuffix(v, ".") {
+			continue
 		}
-		variant = strings.Trim(variant, ".")
-		nmap[variant] = true
-		// tokens = append(tokens, variant)
+		u.add(token, v)
 	}
-
-	for n := range nmap {
-		tokens = append(tokens, n)
-	}
-
-	return
+	return u.tokens()
 }
 
 // DotOmission typos happen when periods (.) that should be present in the target
@@ -136,20 +120,13 @@ func DotOmission(token string) (tokens []string) {
 //
 // the token, distorting its original structure.
 func GraphemeInsertion(token string, graphemes ...string) (tokens []string) {
-	alphabet := map[string]bool{}
-	for _, a := range graphemes {
-		alphabet[a] = true
-	}
-	for i, char := range token {
-		for alp := range alphabet {
-			variant := token[:i] + alp + string(char) + token[i+1:]
-			if i == len(token)-1 {
-				variant = token[:i] + string(char) + alp + token[i+1:]
-			}
-			tokens = append(tokens, variant)
+	u := newUniq()
+	for _, g := range graphemes {
+		for _, v := range insertEverywhere(token, g) {
+			u.add(token, v)
 		}
 	}
-	return
+	return u.tokens()
 }
 
 // GraphemeReplacement, also known as alphabet replacement, occurs when characters
@@ -161,23 +138,14 @@ func GraphemeInsertion(token string, graphemes ...string) (tokens []string) {
 // letters like "a", "b", "c", "d", or "e" are substituted, altering the
 // word slightly but keeping its general structure.
 func GraphemeReplacement(token string, graphemes ...string) (tokens []string) {
-	alphabet := map[string]bool{}
-
-	for _, a := range graphemes {
-		alphabet[a] = true
-	}
-
-	for i := range token {
-		for alp := range alphabet {
-			variant := token[:i] + alp + token[i+1:]
-
-			if i == len(token)-1 {
-				variant = token[:i] + alp + token[i+1:]
-			}
-			tokens = append(tokens, variant)
+	rs := runesOf(token)
+	u := newUniq()
+	for i := range rs {
+		for _, g := range graphemes {
+			u.add(token, joinRunes(rs[:i], g, rs[i+1:]))
 		}
 	}
-	return
+	return u.tokens()
 }
 
 // CharacterRepetition typos occur when a letter is unintentionally repeated
@@ -187,15 +155,12 @@ func GraphemeReplacement(token string, graphemes ...string) (tokens []string) {
 // "exaample", "exammple", "examplee", or "examplle", where one or more
 // characters are repeated, causing the token to diverge from its original form.
 func CharacterRepetition(token string) (tokens []string) {
-	for i := range token {
-		if i <= len(token) {
-			variant := fmt.Sprint(token[:i], string(token[i]), string(token[i]), token[i+1:])
-			if token != variant {
-				tokens = append(tokens, variant)
-			}
-		}
+	rs := runesOf(token)
+	u := newUniq()
+	for i := range rs {
+		u.add(token, joinRunes(rs[:i], rs[i], rs[i], rs[i+1:]))
 	}
-	return
+	return u.tokens()
 }
 
 // RepetitionAdjacentReplacement typos occur when consecutive, identical letters
@@ -206,18 +171,17 @@ func CharacterRepetition(token string) (tokens []string) {
 // letters are swapped with neighboring keys on the keyboard, causing the word
 // to be misspelled.
 func RepetitionAdjacentReplacement(token string, keyboard ...string) (tokens []string) {
-	for i, char := range token {
-		if i < len(token)-1 {
-			if token[i] == token[i+1] {
-				for _, key := range adjacentCharacters(string(char), keyboard...) {
-					variant := token[:i] + string(key) + string(key) + token[i+2:]
-
-					tokens = append(tokens, variant)
-				}
-			}
+	rs := runesOf(token)
+	u := newUniq()
+	for i := 0; i+1 < len(rs); i++ {
+		if rs[i] != rs[i+1] {
+			continue
+		}
+		for _, key := range adjacentCharacters(string(rs[i]), keyboard...) {
+			u.add(token, joinRunes(rs[:i], key, key, rs[i+2:]))
 		}
 	}
-	return
+	return u.tokens()
 }
 
 // CharacterOmission occurs when one character is unintentionally omitted from
@@ -228,15 +192,12 @@ func RepetitionAdjacentReplacement(token string, keyboard ...string) (tokens []s
 // missing from different positions in the word, causing it to deviate from
 // the correct spelling.
 func CharacterOmission(token string) (tokens []string) {
-	for i := range token {
-		if i <= len(token)-1 {
-			variant := fmt.Sprint(token[:i], token[i+1:])
-			if token != variant {
-				tokens = append(tokens, variant)
-			}
-		}
+	rs := runesOf(token)
+	u := newUniq()
+	for i := range rs {
+		u.add(token, joinRunes(rs[:i], rs[i+1:]))
 	}
-	return
+	return u.tokens()
 }
 
 // SingularPluralise typos are where a word is altered by switching between its
@@ -339,15 +300,14 @@ func HomophoneSwapping(token string, homophones ...[]string) (words []string) {
 // the Cyrillic letter "о" (which looks nearly identical) in a URL or word. This
 // can trick people into clicking a fraudulent link or misreading text.
 func HomoglyphSwapping(token string, homoglyphs map[string][]string) (tokens []string) {
-	for i, char := range token {
-		for _, kchar := range similarChars(string(char), homoglyphs) {
-			variant := fmt.Sprint(token[:i], kchar, token[i+1:])
-			if token != variant {
-				tokens = append(tokens, variant)
-			}
+	rs := runesOf(token)
+	u := newUniq()
+	for i, r := range rs {
+		for _, kchar := range similarChars(string(r), homoglyphs) {
+			u.add(token, joinRunes(rs[:i], kchar, rs[i+1:]))
 		}
 	}
-	return
+	return u.tokens()
 }
 
 // BitFlipping involves altering the binary representation of characters in a
@@ -493,7 +453,17 @@ func OrdinalSwap(token string, numerals map[string][]string) (variations []strin
 // might become "my.example.com", or "my.example-com" could be changed
 // to "my-example.com".
 func DotHyphenSubstitution(token string) (variations []string) {
-	return characterReplace(token, ".", "-")
+	// Both directions. "or vice versa" is in the doc comment above and was
+	// never implemented, so a name with hyphens and no dots — every package
+	// and repo name shaped like "my-lib" — produced nothing at all.
+	u := newUniq()
+	for _, v := range characterReplace(token, ".", "-") {
+		u.add(token, v)
+	}
+	for _, v := range characterReplace(token, "-", ".") {
+		u.add(token, v)
+	}
+	return u.tokens()
 }
 
 // StemSwapping involves replacing words with their corresponding root or stem forms,

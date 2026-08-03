@@ -15,8 +15,22 @@ import (
 // booleans that were domain-only, settable to contradict each other, and could
 // not express the third case at all.
 type Filter struct {
+	// spec is the filter exactly as the user wrote it, for String and for
+	// error messages. Nothing may match on it: it carries the user's casing,
+	// so `--filter Live` and `--filter live` are the same filter with
+	// different spellings, and code comparing spec to a literal sees two
+	// different things. keep did, and quietly turned the OR between two
+	// existence filters into an AND that no node can satisfy — `--filter
+	// Live,Absent` rendered an empty report and exited 0.
 	spec string
-	fn   func(NodeRow) bool
+
+	// existence marks the filter as belonging to the existence family, which
+	// is the one family whose members are alternatives rather than
+	// conjunctions. Set where the filter is built, from the parse that already
+	// knows the answer, rather than recovered afterwards from its text.
+	existenceFilter bool
+
+	fn func(NodeRow) bool
 }
 
 // String returns the filter as written, for help and error messages.
@@ -138,7 +152,11 @@ func ValidateTypes(filters []Filter, known []string) error {
 }
 
 func existence(spec string, want graph.Existence) Filter {
-	return Filter{spec: spec, fn: func(n NodeRow) bool { return n.existence == want }}
+	return Filter{
+		spec:            spec,
+		existenceFilter: true,
+		fn:              func(n NodeRow) bool { return n.existence == want },
+	}
 }
 
 // split parses `field op arg`, longest operator first so ">=" is not read as
@@ -181,10 +199,8 @@ func keep(filters []Filter, n NodeRow) bool {
 	}
 	var sawExistence, matchedExistence bool
 	for _, f := range filters {
-		isExistence := f.spec == "live" || f.spec == "absent" ||
-			f.spec == "unknown" || f.spec == "untried"
 		switch {
-		case isExistence:
+		case f.existenceFilter:
 			sawExistence = true
 			if f.fn(n) {
 				matchedExistence = true

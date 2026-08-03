@@ -52,6 +52,7 @@ AUTHOR:
 			&ImportCmd,
 			&DownloadCmd,
 			&BuildCmd,
+			&LanguagesCmd,
 		},
 	}
 

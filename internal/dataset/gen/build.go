@@ -37,6 +37,13 @@ func Build(dbPath, root string) error {
 		return fmt.Errorf("gen: could not open %s", dbPath)
 	}
 
+	// Scaffold before importing, so a language kb has just started shipping a
+	// layout for has a directory to be curated in rather than only a row in the
+	// Language table. It creates what is missing and overwrites nothing, so the
+	// import that follows reads the curated tree unchanged.
+	if _, err := Scaffold(root); err != nil {
+		return err
+	}
 	if err := Languages(); err != nil {
 		return err
 	}
@@ -56,15 +63,18 @@ func Build(dbPath, root string) error {
 // moment its corpus was empty.
 //
 // The two sets overlap but neither contains the other: kb ships 110 languages,
-// the repo curates 30, and a curated language with no layout still gets a row
-// from the import that follows.
+// and a curated language with no layout still gets a row from the import that
+// follows. Scaffold closes the gap the other way — every kb language now has a
+// directory — but having a directory is not having a corpus, and 30 of them are
+// all that anyone has curated.
 //
-// Three curated directories use a code kb does not: iw (kb has he), no (kb has
-// nb) and la (kb has no Latin layout at all). Each therefore lands as a second
-// row for a language kb already listed, so homoglyphs would be looked up under
-// one code while keyboard adjacency uses the other. Reconciling them is a
-// dataset change rather than a code one, so this records the split instead of
-// silently folding the codes together.
+// Two curated directories use a code kb does not: no (kb has nb) and la (kb has
+// no Latin layout at all). Each therefore lands as a second row for a language
+// kb already listed, so homoglyphs would be looked up under one code while
+// keyboard adjacency uses the other. Reconciling them is a dataset change rather
+// than a code one, so this records the split instead of silently folding the
+// codes together. A third, iw, is folded onto he by CanonicalCode, because that
+// one is a retired spelling rather than a different language.
 func Languages() error {
 	names := display.English.Languages()
 	for _, code := range kb.Languages() {

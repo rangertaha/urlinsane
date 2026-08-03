@@ -124,12 +124,19 @@ func One(language, name, file string) error {
 		return err
 	}
 	for _, line := range parsed {
+		// A leading # comments out the whole line, which is what every list
+		// that uses one means by it. Dropping only the # token instead left
+		// the prose behind: the header of sources/repos.lst put "Code-repository",
+		// "forges" and sixty more English words into the shipped vocabulary,
+		// where they read as squattable names like any other token.
+		if len(line) > 0 && strings.HasPrefix(line[0], "#") {
+			continue
+		}
+
 		uniq := make([]string, 0, len(line))
 		seen := map[string]bool{}
 		for _, w := range line {
-			// A leading # marks a comment in the configuration-shaped datasets
-			// and nothing else uses it.
-			if w == "" || seen[w] || strings.HasPrefix(w, "#") {
+			if w == "" || seen[w] {
 				continue
 			}
 			seen[w] = true

@@ -95,6 +95,32 @@ func TestOneStoresVocabularyAndTransitions(t *testing.T) {
 	}
 }
 
+// A # comments out the whole line. Dropping only the # token left the prose
+// behind, and the header of sources/repos.lst put sixty English words --
+// "Code-repository", "forges", "Columns" -- into the shipped vocabulary, where
+// they read as squattable names like any other token.
+func TestOneTreatsAHashAsAWholeLineComment(t *testing.T) {
+	fresh(t)
+	root := write(t, map[string]string{
+		"syn.lst": "# Columns: code display-url check-url\nlogin signin\n",
+	})
+
+	if err := One("en", "synonym", filepath.Join(root, "syn.lst")); err != nil {
+		t.Fatal(err)
+	}
+
+	if got := count(t, &dataset.Vocabulary{}); got != 2 {
+		t.Errorf("vocabulary = %d, want 2 (login, signin); the comment was imported", got)
+	}
+	for _, word := range []string{"Columns:", "code", "display-url", "check-url"} {
+		var n int64
+		dataset.DB.Model(&dataset.Vocabulary{}).Where("token = ?", word).Count(&n)
+		if n != 0 {
+			t.Errorf("%q from a comment line is in the vocabulary", word)
+		}
+	}
+}
+
 // Probabilities out of a word must sum to 1, or the weights mean nothing.
 func TestTransitionProbabilitiesAreNormalised(t *testing.T) {
 	fresh(t)

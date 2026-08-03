@@ -105,14 +105,15 @@ The largest tables are `word` (73,990), `misspelling` (60,127), the name lists
 `homophone` (4,435).
 
 {: .note }
-> The 113 language rows exceed the 30 curated directories because languages are
-> also **seeded from the keyboard catalogue** in `pkg/kb`: a language the tool
-> can reason about at all is listed whether or not its corpus has been curated
-> yet. So `--list languages` answers "what can be named", not "what has data
-> behind it" — the keyboard-driven algorithms work for all of them, the
-> vocabulary-driven ones only for the curated set. Of the 113 codes, 31 have
-> vocabulary rows in the shipped database and 30 have curated trees under
-> `datasets/languages/`.
+> The language rows come from the **keyboard catalogue** in `pkg/kb`, not from
+> the directories: a language the tool can reason about at all is listed whether
+> or not its corpus has been curated yet. So `--list languages` answers "what can
+> be named", not "what has data behind it" — the keyboard-driven algorithms work
+> for all of them, the vocabulary-driven ones only for the curated set.
+>
+> `datasets/languages/` now has a directory for every one of those languages, but
+> most hold only empty `.lst` files waiting to be filled: **30 are curated**, the
+> rest are scaffolding. A directory is a place to put data, not data.
 
 Check what *your* installation actually has:
 
@@ -138,9 +139,10 @@ The `datasets` tool is the maintainer's side of this. It is built by
 ```console
 $ datasets --help
 COMMANDS:
-   import, i    Import datasets into the database
-   download, d  Download datasets
-   build, b     Build the shipped dataset database from a datasets tree
+   import, i        Import datasets into the database
+   download, d      Download datasets
+   build, b         Build the shipped dataset database from a datasets tree
+   languages, l     Create a directory of .lst files for every language with a keyboard
 ```
 
 ```bash
@@ -161,12 +163,20 @@ so it must run **before** `make build` for a data change to reach the binary.
 
 ## Adding a language
 
-1. Create `datasets/languages/<code>/` — a two-letter code matching the
-   directory name; Pashto is `ps`, Latin is `la`.
-2. Add the `.lst` files you have. None is mandatory; an algorithm whose file is
-   missing simply generates nothing for that language.
+1. Find `datasets/languages/<code>/`. If the language has a keyboard layout the
+   directory is already there, scaffolded with an empty `.lst` per relation and a
+   comment in each saying what belongs in it. If it has no layout — Latin is
+   `la` — create the directory yourself.
+2. Fill in the `.lst` files you can. None is mandatory; an algorithm whose file
+   is empty simply generates nothing for that language.
 3. `make dataset` to rebuild the embedded database.
 4. `make build` and check `urlinsane typo --list languages`.
+
+The scaffolding itself comes from `go run ./cmd/datasets languages datasets`,
+which `build` also runs. It creates what is missing and never overwrites a file,
+so a language kb starts shipping a layout for gets somewhere to put its data
+without anyone noticing the catalogue grew. Use `--dry-run` to see what it would
+add.
 
 There is no Go code to write, no registration, and no release needed for anyone
 who builds from source. That is the entire point of the change.
