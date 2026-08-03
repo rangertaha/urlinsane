@@ -50,10 +50,15 @@ func characterReplace(token string, character, replacement string) (tokens []str
 //
 // Outputs: ["wwwexample", "ftpexample", "shopexample"]
 func PrefixInsertion(token string, prefixes ...string) (tokens []string) {
+	// Through uniq like every other generator in this package. Appending
+	// straight to the result meant an empty prefix -- or a list carrying the
+	// same prefix twice -- produced the token itself, which is not a typo of
+	// anything, and every caller downstream had to filter it out again.
+	u := newUniq()
 	for _, prefix := range prefixes {
-		tokens = append(tokens, prefix+token)
+		u.add(token, prefix+token)
 	}
-	return
+	return u.tokens()
 }
 
 // SuffixInsertion creates tokens by appending each suffix from the provided
@@ -65,10 +70,12 @@ func PrefixInsertion(token string, prefixes ...string) (tokens []string) {
 //
 // Outputs: ["examplecom", "examplenet", "exampleio"]
 func SuffixInsertion(token string, suffixes ...string) (tokens []string) {
+	// Through uniq, for the same reason PrefixInsertion is.
+	u := newUniq()
 	for _, suffix := range suffixes {
-		tokens = append(tokens, token+suffix)
+		u.add(token, token+suffix)
 	}
-	return
+	return u.tokens()
 }
 
 func numeralMap(data map[string][]string, pos int) (words map[string]string) {

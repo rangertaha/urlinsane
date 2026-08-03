@@ -5,6 +5,7 @@ package typo
 import (
 	"sort"
 	"strings"
+	"sync"
 
 	"github.com/rangertaha/urlinsane/pkg/nlp"
 )
@@ -201,6 +202,21 @@ func CharacterOmission(token string) (tokens []string) {
 	return u.tokens()
 }
 
+// pluralizer is the inflection client, built once and shared by every call.
+//
+// nlp.NewClient loads every irregular, plural, singular and uncountable rule
+// and compiles a regexp, and SingularPluralise built a fresh one on every
+// invocation: 500us per name against 4us for the next slowest generator in this
+// package, 113x, to rebuild a value that is identical every time. sp runs once
+// per candidate, so a scan paid for the whole rule set once per name it
+// generated.
+//
+// Sharing it is safe rather than merely convenient: the Add*Rule methods are
+// the only ones that write to a Client, nothing here calls them, and
+// Plural/Singular/IsPlural/IsSingular only read. OnceValue makes the build
+// happen once even if the engine runs generators concurrently.
+var pluralizer = sync.OnceValue(nlp.NewClient)
+
 // SingularPluralise typos are where a word is altered by switching between its
 // singular and plural forms. This subtle change can create a word that looks
 // similar to the original, but with a small variation that is easy to overlook.
@@ -217,7 +233,7 @@ func SingularPluralise(token string) (tokens []string) {
 	// and plural and inflects to itself either way, so "mail", "news", "media"
 	// and "famous" each came back as two copies of the name itself — a variant
 	// equal to its origin, twice.
-	pluralize := nlp.NewClient()
+	pluralize := pluralizer()
 	u := newUniq()
 	if pluralize.IsPlural(token) {
 		u.add(token, pluralize.Singular(token))
@@ -529,7 +545,16 @@ func SplitTokens(token string) (parts []string, seps []string) {
 // order variants come back in reaches admission order in the engine.
 func numeralSwap(token string, data map[string]string) (variations []string) {
 	keys := make([]string, 0, len(data))
-	for k := range data {
+	for k, v := range data {
+		// A degenerate entry is skipped rather than walked. strings.Replace
+		// with an empty `old` does not match nothing -- it matches between
+		// every character, so "abc" becomes "1a1b1c1". Each step then produces
+		// a strictly longer string the seen set has never seen, the walk never
+		// converges, and the process grows until it dies. An empty numeral or
+		// an empty word is not a substitution anyone can make anyway.
+		if k == "" || v == "" {
+			continue
+		}
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
