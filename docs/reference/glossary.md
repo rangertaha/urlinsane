@@ -202,9 +202,9 @@ is the maximum severity among findings referencing it, and the only user-facing
 score in the system. See [Analysis]({{ site.baseurl }}/internals/analysis/).
 
 **frontier** — The admitted candidates not yet expanded, which belief orders.
-`Limits.Frontier` (`--frontier`) is specified as a cap on candidates admitted
-per round and is hashed into the plan, but the scheduler does not enforce it
-today, so no ledger row currently cites the `frontier` reason. See
+`Limits.Frontier` (`--frontier`) caps how many nodes may be admitted between one
+barrier and the next; the counter resets at the barrier, and a candidate turned
+away gets a ledger row citing the `frontier` reason. See
 [Limits]({{ site.baseurl }}/internals/limits/).
 
 **node** — An admitted graph entity: a type, a canonical key and its props. It

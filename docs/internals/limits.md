@@ -88,20 +88,30 @@ type Budgets struct {
 }
 ```
 
-`--budget` sets the global one; `0` is unbounded. Enforcement is at **admission
-time**, not at the barrier: `admit` checks `overBudget` before creating the node
-and, when it binds, writes a `budget` row to the ledger and refuses the
-candidate.
+`--budget` sets the global one; `0` is unbounded.
 
-{: .todo }
-> The design puts every limit check at the barrier, and `enforceBudgets` exists
-> as the hook for that — but it is currently an empty function, and admission-time
-> checking is what actually runs.
->
-> `--frontier` is worse off: the flag is accepted and hashed into the plan, and
-> `ReasonFrontier` exists in the ledger's reason set, but **nothing enforces the
-> cap** — `declineFrontier` is only ever called with `ReasonRoundCap`. Setting
-> `--frontier` today changes the plan hash and nothing else.
+`--frontier` is the other half, and it counts per round rather than per run: it
+caps how many nodes may be admitted between one barrier and the next.
+
+Both are enforced at **admission time**. `admitNode` checks `overBudget` and
+then `overFrontier` before creating the node, and when either binds it writes a
+`budget` or `frontier` row to the ledger and refuses the candidate. The
+frontier's counter resets at the barrier and nowhere else — reset it at the
+start of a dispatch instead and a round with two operator generations would get
+two frontiers.
+
+The cap applies in **admission order**, which the scheduler has already made
+deterministic (work sorted by `(depth, type, key, operator)`, applied in that
+order rather than completion order), so the same scan truncates at the same
+place on every run.
+
+{: .note }
+> The design specifies the survivors as the prefix of candidates sorted by
+> `(-belief, depth, type, key)`. While the belief model is uniform those two
+> orderings are the same list, so the implementation is that rule with the
+> constant factored out. A model returning anything other than 1 makes them
+> differ, and at that point the frontier has to become a queue drained at the
+> barrier rather than a counter checked at admission.
 
 ## 6. The round cap
 

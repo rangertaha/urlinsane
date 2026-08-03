@@ -225,6 +225,7 @@ func Run(ctx context.Context, o Options, ropts report.Options) (*Result, error) 
 		Global:  o.Limits.NodeBudget,
 		PerType: o.Limits.TypeBudget,
 	})
+	g.SetFrontier(o.Limits.Frontier)
 	// From the plan, not from Options: the plan is what --explain printed and
 	// what --plan pins, so reading scope from anywhere else would let a pinned
 	// plan and the run that used it disagree.

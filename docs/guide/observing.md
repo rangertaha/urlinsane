@@ -146,7 +146,7 @@ too large, or too rude to a registry.
 | `--rounds` | backstop for a type flow that never converges (default 64) |
 | `--workers` | concurrent operator calls |
 | `--budget` | global admitted-node cap; `0` is unbounded |
-| `--frontier` | cap on candidates admitted per round — **accepted but not enforced today** |
+| `--frontier` | cap on nodes admitted per round; declined candidates go to the ledger |
 | `--attempts` | per-pair attempts within a round |
 | `--timeout` | bound on a single operator call |
 | `--no-color` | disable ANSI styling |
