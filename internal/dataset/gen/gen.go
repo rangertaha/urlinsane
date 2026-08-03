@@ -29,7 +29,10 @@ import (
 	"sort"
 	"strings"
 
+	"golang.org/x/text/language"
+
 	"github.com/rangertaha/urlinsane/internal/dataset"
+	"github.com/rangertaha/urlinsane/pkg/kb"
 )
 
 // Progress, if set, is called after each file is imported. Nil is silent.
@@ -75,6 +78,7 @@ func languageID(code string) uint {
 	if code == "" {
 		return 0
 	}
+	code = CanonicalCode(code)
 	lng := dataset.Language{Code: code}
 	dataset.DB.FirstOrCreate(&lng, dataset.Language{Code: code})
 	return lng.ID
@@ -265,4 +269,38 @@ func All(root string) error {
 		}
 	}
 	return nil
+}
+
+// CanonicalCode maps a dataset directory name to the code the rest of the tool
+// uses, which is pkg/kb's.
+//
+// The directories were named by hand and some use a code that BCP 47 retired:
+// "iw" for Hebrew, which every language library resolves to "he". Left alone it
+// produced two Language rows for one language -- kb's "he" with a keyboard and
+// no words, and the directory's "iw" with words and no keyboard -- and
+// --list languages showed both.
+//
+// A code that canonicalizes to something kb does not ship is kept as it is.
+// "la" (Latin) and "no" (Norwegian, where kb ships the Bokmal tag "nb") are
+// real languages with curated data and no keyboard layout, and dropping or
+// renaming them would lose the data to make the table tidier.
+func CanonicalCode(code string) string {
+	tag, err := language.Parse(code)
+	if err != nil {
+		return code
+	}
+	base, conf := tag.Base()
+	if conf == language.No {
+		return code
+	}
+	canon := base.String()
+	if canon == code {
+		return code
+	}
+	for _, k := range kb.Languages() {
+		if k == canon {
+			return canon
+		}
+	}
+	return code
 }

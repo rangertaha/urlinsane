@@ -332,3 +332,63 @@ func TestBuildDiscardsWhateverWasThere(t *testing.T) {
 		t.Error("a row from the previous database survived the rebuild")
 	}
 }
+
+// Dataset directories were named by hand and some use a retired BCP 47 code.
+// Left alone, "iw" produced a second Language row for Hebrew alongside kb's
+// "he" -- one with words and no keyboard, one with a keyboard and no words.
+func TestCanonicalCodeMergesRetiredCodes(t *testing.T) {
+	if got := CanonicalCode("iw"); got != "he" {
+		t.Errorf("CanonicalCode(iw) = %q, want he", got)
+	}
+}
+
+// A code with no keyboard layout keeps its own identity: "la" and "no" are real
+// languages with curated data, and renaming them to tidy the table would lose
+// that data.
+func TestCanonicalCodeKeepsLanguagesKbDoesNotShip(t *testing.T) {
+	for _, code := range []string{"la", "no"} {
+		if got := CanonicalCode(code); got != code {
+			t.Errorf("CanonicalCode(%s) = %q, want it unchanged", code, got)
+		}
+	}
+}
+
+func TestCanonicalCodeLeavesNonsenseAlone(t *testing.T) {
+	for _, code := range []string{"", "zzzz", "not-a-tag"} {
+		if got := CanonicalCode(code); got != code {
+			t.Errorf("CanonicalCode(%q) = %q, want it unchanged", code, got)
+		}
+	}
+}
+
+// The whole point: importing the iw directory must not create a second row.
+func TestImportUsesTheCanonicalLanguageRow(t *testing.T) {
+	fresh(t)
+	if err := Languages(); err != nil {
+		t.Fatal(err)
+	}
+	before := count(t, &dataset.Language{})
+
+	root := write(t, map[string]string{"languages/iw/synonym.lst": "שלום היי\n"})
+	if err := All(root); err != nil {
+		t.Fatal(err)
+	}
+	if got := count(t, &dataset.Language{}); got != before {
+		t.Errorf("importing iw added %d language rows; it should reuse he", got-before)
+	}
+
+	var he dataset.Language
+	if err := dataset.DB.Where("code = ?", "he").First(&he).Error; err != nil {
+		t.Fatal(err)
+	}
+	var n int64
+	dataset.DB.Model(&dataset.Vocabulary{}).Where("language = ?", he.ID).Count(&n)
+	if n == 0 {
+		t.Error("the iw corpus did not land on the he row")
+	}
+	var iw int64
+	dataset.DB.Model(&dataset.Language{}).Where("code = ?", "iw").Count(&iw)
+	if iw != 0 {
+		t.Error("a separate iw row was created")
+	}
+}

@@ -35,6 +35,7 @@
 package config
 
 import (
+	"bytes"
 	_ "embed"
 	"fmt"
 	"github.com/rangertaha/urlinsane/internal/dataset"
@@ -84,10 +85,16 @@ type Setup struct {
 	Settings File
 }
 
-// FirstRun reports whether anything had to be created, which is when the setup
-// is worth showing the user.
+// FirstRun reports whether the setup is worth showing the user: something had
+// to be created, or something could not be.
+//
+// The failure half is not decoration. A shipped file that never validates is
+// wrong on every run, not only the first, and reporting it once would leave
+// every subsequent run silently missing an operator — which is the failure this
+// package exists to make loud (§12.6).
 func (s Setup) FirstRun() bool {
-	return s.Created || s.Dataset.Written || s.GeoIP.Written
+	return s.Created || s.Dataset.Written || s.GeoIP.Written ||
+		s.Dataset.Err != nil || s.GeoIP.Err != nil
 }
 
 // Dir returns the application directory, creating it if absent, and whether it
@@ -127,8 +134,8 @@ func Init() (Setup, error) {
 	}
 	s := Setup{Dir: dir, Created: created}
 
-	s.Dataset = extract(dir, DatasetDB, datasetDB)
-	s.GeoIP = extract(dir, MaxMindDB, maxmindDB)
+	s.Dataset = extract(dir, DatasetDB, datasetDB, isSQLite)
+	s.GeoIP = extract(dir, MaxMindDB, maxmindDB, isGzip)
 	s.Settings = File{Path: filepath.Join(dir, ConfigFile)}
 
 	// Opening is separate from extracting: a file that is present but corrupt
@@ -139,8 +146,52 @@ func Init() (Setup, error) {
 	return s, nil
 }
 
-// extract writes a shipped file if it is not already there.
-func extract(dir, name string, data []byte) File {
+// validator reports whether shipped bytes are the format their name claims.
+//
+// It reads the header and nothing else. The point is not to prove a database is
+// intact — that costs a full parse of tens of megabytes on every run — but to
+// refuse the one failure that has actually happened here: a binary asset round
+// tripped through a text decoder, which destroys every byte >= 0x80 and so
+// always destroys a magic number.
+type validator func([]byte) error
+
+// isGzip checks the two-byte gzip magic and the deflate method that follows it.
+func isGzip(b []byte) error {
+	if len(b) < 3 {
+		return fmt.Errorf("truncated: %d bytes", len(b))
+	}
+	if b[0] != 0x1f || b[1] != 0x8b {
+		return fmt.Errorf("not gzip data: magic is % x, want 1f 8b", b[:min(4, len(b))])
+	}
+	if b[2] != 0x08 {
+		return fmt.Errorf("gzip method is %#02x, want 08 (deflate)", b[2])
+	}
+	return nil
+}
+
+// sqliteMagic is the header every SQLite 3 database begins with.
+var sqliteMagic = []byte("SQLite format 3\x00")
+
+func isSQLite(b []byte) error {
+	if len(b) < len(sqliteMagic) {
+		return fmt.Errorf("truncated: %d bytes", len(b))
+	}
+	if !bytes.Equal(b[:len(sqliteMagic)], sqliteMagic) {
+		return fmt.Errorf("not a SQLite database: header is %q", b[:len(sqliteMagic)])
+	}
+	return nil
+}
+
+// extract writes a shipped file if it is not already there, refusing bytes that
+// are not the format they claim to be.
+//
+// Validating before the write rather than trusting the embed is what stops the
+// tool reporting "extracted" for a file it has just made unusable. The shipped
+// maxmind.db.gz is exactly that case: its gzip magic reads 1f ef bf bd, the 8b
+// replaced by the UTF-8 replacement character, so 49 MB was written out on every
+// fresh install and then failed to open — and deleting it, the obvious remedy,
+// re-extracted the same corruption.
+func extract(dir, name string, data []byte, valid validator) File {
 	f := File{Path: filepath.Join(dir, name)}
 	if _, err := os.Stat(f.Path); err == nil {
 		return f
@@ -148,6 +199,13 @@ func extract(dir, name string, data []byte) File {
 	if len(data) == 0 {
 		f.Err = fmt.Errorf("config: %s was not compiled into this binary", name)
 		return f
+	}
+	if valid != nil {
+		if err := valid(data); err != nil {
+			f.Err = fmt.Errorf("config: the embedded %s is corrupt (%w); "+
+				"replace internal/config/%s and rebuild", name, err, name)
+			return f
+		}
 	}
 	if err := os.WriteFile(f.Path, data, 0o640); err != nil {
 		f.Err = fmt.Errorf("config: writing %s: %w", f.Path, err)
