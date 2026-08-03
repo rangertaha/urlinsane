@@ -44,6 +44,9 @@ Chapters:
    identical CIDs, and what that buys for diffing.
 8. **[Extending URLInsane](extending/)** — adding an algorithm, an operator, a
    language, or a keyboard.
+9. **[Learning what to scan](learning/)** — fitting the execution model from
+   recorded scans, so a bounded frontier keeps the candidates that turn out to
+   be registered.
 
 The full design document, longer and more formal than these chapters, is
 [DESIGN]({{ site.baseurl }}/DESIGN/). Where the two disagree, the code wins and
