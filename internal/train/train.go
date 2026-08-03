@@ -66,6 +66,27 @@ func Fit(cfg model.Config, scans ...Scan) (*model.Result, model.Corpus, error) {
 	if err != nil {
 		return nil, c, fmt.Errorf("train: %w", err)
 	}
+
+	// Anchored here, not left to the caller. Baum-Welch is unsupervised, so
+	// which of its states means "live" is decided by the jitter in the
+	// initialisation, not by the names in Config.States — and because the seed
+	// is fixed for reproducibility, an arbitrary orientation becomes a
+	// *reproducible* one. AnchorFocus existed for this and nothing called it, so
+	// every model this package produced had a coin-flip chance of being
+	// confidently backwards, identically on every fold.
+	//
+	// Measured on three saved scans, leave-one-out: held-out AUC 0.150 and 0.210
+	// unanchored against a 0.500 uniform prior, 0.867 and 0.802 anchored. Same
+	// fit, same data, read from opposite axes.
+	//
+	// Doing it in Fit is what retires that: there is no longer a way to obtain a
+	// model from this package that has not been oriented on its own evidence.
+	anchored, focus, err := AnchorFocus(res.Model)
+	if err != nil {
+		return nil, c, fmt.Errorf("train: fitted model cannot be oriented: %w", err)
+	}
+	res.Model = anchored
+	_ = focus // recoverable from res.Model.Focus(); reported by Describe
 	return res, c, nil
 }
 
@@ -84,8 +105,35 @@ type Scan struct {
 // model fitted on Features must be served Features. Letting a caller supply a
 // different one is how train/serve skew gets in, and it would not fail —
 // belief would just quietly collapse to the prior.
-func BeliefFrom(h *model.HMM) graph.BeliefModel {
-	return model.NewBelief(h, Featurizer)
+//
+// It also refuses a model whose Focus is not the state that emits live
+// observations. Fit anchors, so a model from this package always passes; the
+// check is here because this is the seam where the harm happens. An
+// unanchored model does not degrade — it inverts, and an inverted belief
+// ranks the frontier worse than no belief at all, spending the budget on the
+// names least likely to exist while reporting confidence. That is worth an
+// error rather than a scan nobody can tell is backwards.
+func BeliefFrom(h *model.HMM) (graph.BeliefModel, error) {
+	if err := checkOriented(h); err != nil {
+		return nil, err
+	}
+	return model.NewBelief(h, Featurizer), nil
+}
+
+// checkOriented reports whether the model's Focus is the state most likely to
+// emit a live observation — the same comparison AnchorFocus makes.
+func checkOriented(h *model.HMM) error {
+	want, _, err := focusOn(h)
+	if err != nil {
+		return err
+	}
+	got := h.Focus()
+	if len(got) != 1 || got[0] != want {
+		return fmt.Errorf("train: model reports state %v, but %q is the one that emits %q; "+
+			"belief would be inverted — build it with Fit, or pass it through AnchorFocus",
+			got, want, LiveSymbol)
+	}
+	return nil
 }
 
 // Summary is what a training run should print. It is deliberately small: the

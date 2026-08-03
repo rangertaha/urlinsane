@@ -5,10 +5,12 @@ package train
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/rangertaha/urlinsane/internal/graph"
+	"github.com/rangertaha/urlinsane/internal/model"
 )
 
 // Finalize must not lose the observer set.
@@ -137,5 +139,79 @@ func TestEvaluateReportsWhatIsDefinedWithOneClass(t *testing.T) {
 	if q.AUC != 0 {
 		t.Errorf("AUC = %.3f, want 0: it is undefined with one class and must not "+
 			"be invented", q.AUC)
+	}
+	// And it must not *print* as 0.000, which reads as the worst possible score
+	// rather than as an undefined one.
+	if q.Comparable != 0 {
+		t.Errorf("Comparable = %d, want 0: there are no (live, absent) pairs", q.Comparable)
+	}
+	if !strings.Contains(q.String(), "AUC=n/a") {
+		t.Errorf("String() = %q, want AUC reported as n/a", q.String())
+	}
+}
+
+// Fit must hand back an oriented model, and BeliefFrom must refuse one that is
+// not.
+//
+// This is the defect that made the whole learned-belief path worse than no
+// belief at all. Baum-Welch is unsupervised, so which latent state means "live"
+// is decided by initialisation jitter rather than by the names in Config.States;
+// with the seed fixed for reproducibility, an arbitrary orientation becomes a
+// reproducible one. AnchorFocus was written for exactly this and its own comment
+// says an unanchored model is "confidently backwards" — and nothing called it.
+//
+// Measured over three saved scans, leave-one-out: held-out AUC 0.150 and 0.210
+// unanchored against a 0.500 uniform prior, 0.867 and 0.802 anchored. The same
+// fit, read from opposite axes.
+func TestFitAnchorsAndBeliefFromRefusesAnInvertedModel(t *testing.T) {
+	g, seed := scan(t)
+
+	// Seed 3 deliberately. Over seeds 1..12 on this fixture, five (3, 6, 8, 9,
+	// 12) leave Config.Focus naming the wrong state and seven do not — a coin
+	// flip, which is the whole point. Pinning to a seed that inverts is what
+	// makes this a regression test rather than one that passes because the
+	// arbitrary choice happened to land right.
+	cfg := DefaultConfig()
+	cfg.Seed = 3
+	res, _, err := Fit(cfg, Scan{Graph: g, Seed: seed})
+	if err != nil {
+		t.Fatalf("fit: %v", err)
+	}
+
+	// What Fit returns is oriented on the evidence, whatever Config.Focus said.
+	want, _, err := focusOn(res.Model)
+	if err != nil {
+		t.Fatalf("focusOn: %v", err)
+	}
+	if got := res.Model.Focus(); len(got) != 1 || got[0] != want {
+		t.Errorf("Fit returned focus %v, want [%s]: the model is not oriented on "+
+			"the state that emits %q", got, want, LiveSymbol)
+	}
+	if _, err := BeliefFrom(res.Model); err != nil {
+		t.Errorf("BeliefFrom rejected a model Fit produced: %v", err)
+	}
+
+	// And an inverted one cannot be served. Invert by pointing Focus at the
+	// other state — the exact thing an unanchored fit does by chance.
+	spec := specOf(res.Model)
+	for _, s := range res.Model.States() {
+		if s != want {
+			spec.Focus = []string{s}
+		}
+	}
+	bad, err := model.New(spec)
+	if err != nil {
+		t.Fatal(err)
+	}
+	bm, err := BeliefFrom(bad)
+	if err == nil {
+		t.Fatal("BeliefFrom served a model whose belief is inverted; the scan " +
+			"would spend its budget on the names least likely to exist")
+	}
+	if bm != nil {
+		t.Error("a belief model was returned alongside the error")
+	}
+	if !strings.Contains(err.Error(), "inverted") {
+		t.Errorf("err = %v, want it to say belief would be inverted", err)
 	}
 }
