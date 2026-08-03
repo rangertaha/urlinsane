@@ -30,9 +30,8 @@ type fakeOp struct {
 	// which is the configuration the concurrency tests exist to exercise.
 	// Reads in assertions are unguarded on purpose: they run after Run returns,
 	// and the scheduler's wait group already establishes happens-before.
-	mu     sync.Mutex
-	calls  int
-	rounds []int // the round each call landed in, filled by the harness
+	mu    sync.Mutex
+	calls int
 }
 
 func (o *fakeOp) Id() string       { return o.id }
