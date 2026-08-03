@@ -3,6 +3,10 @@ description: A book about typosquatting, and the tool that hunts it.
 url: https://rangertaha.github.io
 baseurl: /urlinsane
 
+# Directory-style URLs: /guide/first-scan/ rather than /guide/first-scan.html.
+# The cross-references throughout the book are relative and assume this.
+permalink: pretty
+
 remote_theme: just-the-docs/just-the-docs
 plugins:
   - jekyll-remote-theme

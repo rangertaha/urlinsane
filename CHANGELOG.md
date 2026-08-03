@@ -43,6 +43,12 @@ rewrite superseded that work, the newer entry says so.
 - Cross-platform release builds for 14 GOOS/GOARCH pairs, `-trimpath` and
   reproducible flags.
 - `make check` — gofmt, vet and the race detector; plus `make dataset`, `make race`.
+- **Documentation site** under `docs/`, published with GitHub Pages: a book in
+  four parts — the attack, the working manual, the engine internals, and
+  reference. Every command and output in it was run against the binary, and
+  passages describing behaviour that is designed but not built are marked as
+  such rather than left to read as promises. `CLI.md`, `DESIGN.md` and `KB.md`
+  keep their paths and become the reference section.
 
 ### Changed
 - **SQLite driver is now pure Go** (`glebarez/sqlite` over `modernc.org/sqlite`).

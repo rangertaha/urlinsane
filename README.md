@@ -10,6 +10,11 @@ Urlinsane is a tool for detecting domain typosquatting and supporting OSINT inve
 
 It's inspired by [URLCrazy](https://morningstarsecurity.com/research/urlcrazy), [Dnstwist](https://github.com/elceef/dnstwist), and a few other libraries and tools I was researching at the time.
 
+**Full documentation: [rangertaha.github.io/urlinsane](https://rangertaha.github.io/urlinsane/)** —
+the CLI reference, the engine design, and the keyboard model, as a book. The
+same pages live in this repo as [docs/CLI.md](docs/CLI.md),
+[docs/DESIGN.md](docs/DESIGN.md) and [docs/KB.md](docs/KB.md).
+
 
 
 ## Installation
@@ -67,6 +72,7 @@ urlinsane typo domain bob@acme.com      # vary only acme.com
 | `--filter` | `-f` | | Select report rows: `live`, `absent`, `unknown`, `untried`, `risk>SEV`, `type=NAME`, `depth<=N` |
 | `--output` | `-o` | `table` | `table`, `json`, `ndjson`, `csv`, `dot` |
 | `--save` | | | Write the report to a path; format from the extension |
+| `--save-graph` | | | Persist the graph to the store and print its root CID; `urlinsane report <target>` renders it again |
 | `--fail-on` | | | Exit `2` if any finding reaches a severity — the CI gate |
 | `--verbose` | `-v` | | Include provenance and engine belief |
 | `--explain` | | | Compile and print the plan without running it |
@@ -80,7 +86,8 @@ Exit codes: `0` clean, `1` execution error, `2` a finding at or above
 
 **[docs/CLI.md](docs/CLI.md) is the full reference**, including the flags that
 are specified but not yet built. [docs/DESIGN.md](docs/DESIGN.md) §12 is the
-reasoning behind the interface.
+reasoning behind the interface. Both are also in the
+[book](https://rangertaha.github.io/urlinsane/).
 
 List what a build has registered:
 
@@ -93,12 +100,20 @@ urlinsane typo --list keyboards
 
 | Kind | Count | |
 |---|---|---|
-| Node types | 10 | domain, email, package, repo, username, ip, nameserver, … |
+| Node types | 10 | asn, domain, email, ip, package, platform, registrant, repo, tld, username |
 | Algorithms | 27 | generate variants of a name |
-| Operators | 39 | expand and observe the graph |
-| Keyboards | 133 | distinct key-adjacency sets, from 203 shipped layouts |
-| Languages | 30 | curated dataset directories |
+| Operators | 42 | 27 variant operators, one per algorithm, plus 15 that decompose and observe |
+| Keyboards | 133 | distinct key-adjacency sets, from the 203 layouts `pkg/kb` ships |
+| Languages | 113 | codes in `dataset.db`; 30 have curated trees under `datasets/languages/` |
 | Formats | 5 | table, json, ndjson, csv, dot |
+
+Counts are what `--list` prints on a build of this tree with `internal/config/dataset.db`
+imported. Types, algorithms, operators and formats come from Go registries, so
+they are fixed by the binary; keyboards come from `pkg/kb`, also compiled in.
+**Languages come from the dataset database in `~/.config/urlinsane/`**, which is
+extracted only when absent — an older copy left there from a previous version
+will list something else. `geo` and the `pkg`/`usr`/`repo` operators are
+conditional (see below), so 42 is the count when their data is present.
 
 Languages and keyboards are **data**, not plugins: a language is a directory
 under `datasets/languages/`, a keyboard a layout in `pkg/kb`, and neither needs
@@ -114,8 +129,9 @@ urlinsane typo --list languages
 ```
 
 Languages are two-letter directory names under `datasets/languages/`; Pashto is
-`ps` and Latin is `la`. Note that this lists what the *dataset database* holds,
-which is not yet what the repo ships — see `docs/CLI.md` §9.1.
+`ps` and Latin is `la`. Note that this lists every code the *dataset database*
+knows — 113 — not the ones with data behind them: 31 carry vocabulary, and 30
+have a curated tree in this repo.
 
 ### Language Datasets (`datasets/languages/`)
 
@@ -218,8 +234,11 @@ are opposite conclusions, and collapsing them turns a broken network into a
 clean bill of health.
 
 `geo`, `pkg`, `usr` and `repo` are omitted from the plan when the data they
-need is missing, rather than failing at runtime — which is why they do not
-appear in `--list operators` today (see `docs/CLI.md` §9.1).
+need is missing, rather than failing at runtime — so `--list operators` shows
+them only on a build that has it. `pkg`, `usr` and `repo` need the source lists,
+which `dataset.db` now carries, and appear; `geo` needs the MaxMind database
+extracted into `~/.config/urlinsane/`, and drops out when that is absent or
+unreadable.
 
 ## Output formats
 
@@ -263,11 +282,15 @@ not yet wired up.
   directories and 203 keyboard layouts built from
   [kbdlayout.info](http://kbdlayout.info/), neither needing Go code.
 - **Cross-scan diffing** exists in `internal/store`.
+- **Saving and replaying scans.** `typo --save-graph` writes the graph to the
+  store; `urlinsane report <target>` renders it again from the stored blocks,
+  and `report --scans <target>` lists what has been saved. Plugin settings in
+  `~/.config/urlinsane/config.yaml` reach the plugins that declare them.
 
 **Open:**
 
-- Wire the pieces that build but have no caller — `report`, `--save-graph`,
-  `config.yaml` settings, and `config.Init()` from `typo` (`docs/CLI.md` §9.1).
+- Flags that are specified but not built — `--quiet`, `--why`, `--ledger`,
+  `--tui`, and `--ttl`/`--resume` cross-run caching (`docs/CLI.md` §9).
 - An advanced keyboard model with layer-shifting.
 - DNS queries against several resolvers.
 - Dataset updates downloadable rather than embedded, to cut binary size.
