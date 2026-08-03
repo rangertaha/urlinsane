@@ -22,7 +22,6 @@
 package xhs
 
 import (
-	"github.com/rangertaha/urlinsane/datasets"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant"
 	"github.com/rangertaha/urlinsane/pkg/typo"
 )
@@ -44,13 +43,13 @@ func crossHomophones(groups [][]string) variant.Generate {
 
 // Spec declares the algorithm.
 //
-// It takes no language argument, which is the point: the groups are not a
-// language's data. Passing the run's languages would suggest the output could
-// be narrowed to them, and it cannot — a group is only in the file because it
-// crosses a language boundary.
-func Spec() variant.Spec {
+// It takes groups rather than languages, which is the point: the data is not a
+// language's. A language argument would suggest the output could be narrowed to
+// the run's languages, and it cannot — a group is in the dataset precisely
+// because it crosses a language boundary.
+func Spec(groups [][]string) variant.Spec {
 	return variant.Spec{
 		ID: "xhs", Title: "Cross-language Homophone", Version: 1,
-		Gen: crossHomophones(datasets.CrossHomophones()),
+		Gen: crossHomophones(groups),
 	}
 }

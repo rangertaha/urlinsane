@@ -233,7 +233,12 @@ func CommonMisspellings(token string, dataset ...[]string) (words []string) {
 // match of the longer one yields nonsense ("hola" -> "hhola"), so a member is
 // skipped when a longer member of the same set also matches the token.
 func swapWordSets(token string, dataset [][]string) (words []string) {
-	words = []string{}
+	// Deduplicated like every other generator here. Two different sets can
+	// contain the same pair — the cross-language homophone data stores one
+	// group per pronunciation, and a word with two pronunciations appears in
+	// both — so the same substitution is reachable twice and the caller would
+	// get the same variant twice.
+	u := newUniq()
 	for _, wordset := range dataset {
 		for _, word := range wordset {
 			if !strings.Contains(token, word) || shadowed(token, word, wordset) {
@@ -241,12 +246,12 @@ func swapWordSets(token string, dataset [][]string) (words []string) {
 			}
 			for _, w := range wordset {
 				if w != word {
-					words = append(words, strings.Replace(token, word, w, -1))
+					u.add(token, strings.Replace(token, word, w, -1))
 				}
 			}
 		}
 	}
-	return
+	return u.tokens()
 }
 
 // shadowed reports whether word is a proper substring of a longer member of
@@ -346,9 +351,122 @@ func BitFlipping(token string, graphemes ...string) (variations []string) {
 // "2024example" could be altered to "example2024", or "shop-online" could
 //
 //	become "online-shop", where the elements are swapped in position.
-func TokenOrderSwap(token string, tokens []string) (variations []string) {
-	// TODO: create a multilingual tokenizer first
-	return
+func TokenOrderSwap(token string) (variations []string) {
+	parts, seps := SplitTokens(token)
+	if len(parts) < 2 {
+		return nil
+	}
+
+	u := newUniq()
+	emit := func(order []int) {
+		var b []rune
+		for i, idx := range order {
+			if i > 0 {
+				// Separators stay in their original positions. Moving them
+				// with the tokens would rewrite "shop-online24" as
+				// "24-onlineshop", which is a different edit; this algorithm
+				// reorders the words and nothing else.
+				b = append(b, []rune(seps[i-1])...)
+			}
+			b = append(b, []rune(parts[idx])...)
+		}
+		u.add(token, string(b))
+	}
+
+	// Every permutation while there are few enough to enumerate, and only the
+	// cheap ones beyond that: 5 tokens is 120 orderings and 8 is 40,320, which
+	// is a combinatorial blowup for names nobody types anyway.
+	if len(parts) <= 4 {
+		permute(len(parts), func(order []int) { emit(order) })
+		return u.tokens()
+	}
+
+	rev := make([]int, len(parts))
+	for i := range rev {
+		rev[i] = len(parts) - 1 - i
+	}
+	emit(rev)
+	for i := 0; i+1 < len(parts); i++ {
+		order := make([]int, len(parts))
+		for j := range order {
+			order[j] = j
+		}
+		order[i], order[i+1] = order[i+1], order[i]
+		emit(order)
+	}
+	return u.tokens()
+}
+
+// permute calls fn with every ordering of n indices, in a deterministic order.
+func permute(n int, fn func([]int)) {
+	order := make([]int, n)
+	for i := range order {
+		order[i] = i
+	}
+	var rec func(int)
+	rec = func(k int) {
+		if k == n {
+			fn(order)
+			return
+		}
+		for i := k; i < n; i++ {
+			order[k], order[i] = order[i], order[k]
+			rec(k + 1)
+			order[k], order[i] = order[i], order[k]
+		}
+	}
+	rec(0)
+}
+
+// SplitTokens breaks a name into the words a reader sees, and the separators
+// between them.
+//
+// Two boundaries count: an explicit separator (- _ .) and the join between
+// letters and digits, so "shop-online" is two tokens and "2024example" is also
+// two. len(seps) is always len(parts)-1, and rejoining parts[i] with seps[i]
+// reproduces the input exactly.
+func SplitTokens(token string) (parts []string, seps []string) {
+	rs := runesOf(token)
+	if len(rs) == 0 {
+		return nil, nil
+	}
+
+	var cur []rune
+	flush := func() {
+		if len(cur) > 0 {
+			parts = append(parts, string(cur))
+			cur = nil
+		}
+	}
+	isSep := func(r rune) bool { return r == '-' || r == '_' || r == '.' }
+	digit := func(r rune) bool { return r >= '0' && r <= '9' }
+
+	for i, r := range rs {
+		switch {
+		case isSep(r):
+			flush()
+			// Runs of separators belong to one boundary: "a--b" is two tokens.
+			if n := len(seps); n > 0 && len(parts) == n {
+				seps[n-1] += string(r)
+				continue
+			}
+			seps = append(seps, string(r))
+		default:
+			if i > 0 && len(cur) > 0 && digit(r) != digit(rs[i-1]) {
+				flush()
+				seps = append(seps, "")
+			}
+			cur = append(cur, r)
+		}
+	}
+	flush()
+
+	// A trailing or leading separator leaves more separators than gaps; that is
+	// not a token boundary and reordering around it would move the separator.
+	if len(seps) != len(parts)-1 {
+		return nil, nil
+	}
+	return parts, seps
 }
 
 // CardinalSwap involves replacing numerical digits with their corresponding
