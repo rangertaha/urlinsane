@@ -51,6 +51,12 @@ func TestGeneratorsAreRuneSafe(t *testing.T) {
 		"GraphemeInsertion":             func(s string) []string { return GraphemeInsertion(s, graphemes...) },
 		"GraphemeReplacement":           func(s string) []string { return GraphemeReplacement(s, graphemes...) },
 		"HomoglyphSwapping":             func(s string) []string { return HomoglyphSwapping(s, homoglyphs) },
+		// Added after it was found returning its own input twice for an
+		// uncountable noun: the class test only covers what its registry
+		// lists, so a generator missing from here is a generator nobody
+		// checks.
+		"SingularPluralise": SingularPluralise,
+		"VowelSwapping":     func(s string) []string { return VowelSwapping(s, "а", "e", "ü") },
 	}
 
 	for name, gen := range gens {

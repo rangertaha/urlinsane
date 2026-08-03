@@ -211,15 +211,20 @@ func SingularPluralise(token string) (tokens []string) {
 	if token == "" {
 		return nil
 	}
+	// Through uniq like every other generator here, rather than appending
+	// straight to the result. An uncountable noun is reported as both singular
+	// and plural and inflects to itself either way, so "mail", "news", "media"
+	// and "famous" each came back as two copies of the name itself — a variant
+	// equal to its origin, twice.
 	pluralize := nlp.NewClient()
+	u := newUniq()
 	if pluralize.IsPlural(token) {
-		tokens = append(tokens, pluralize.Singular(token))
+		u.add(token, pluralize.Singular(token))
 	}
 	if pluralize.IsSingular(token) {
-		tokens = append(tokens, pluralize.Plural(token))
+		u.add(token, pluralize.Plural(token))
 	}
-
-	return
+	return u.tokens()
 }
 
 // CommonMisspellings refers to typos created by frequent spelling errors or
