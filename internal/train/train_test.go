@@ -247,7 +247,7 @@ func TestFeaturesCarryTheAlgorithm(t *testing.T) {
 	id := node(t, g, "exmple.com")
 	syms := newFeaturizer(a).Symbols(id)
 
-	want := map[string]bool{"type:domain": false, "live:true": false,
+	want := map[string]bool{"type:domain": false,
 		"edge:RESOLVES_TO": false, "len:mid": false}
 	for _, s := range syms {
 		if _, ok := want[s]; ok {
@@ -262,6 +262,12 @@ func TestFeaturesCarryTheAlgorithm(t *testing.T) {
 	for _, s := range syms {
 		if strings.HasPrefix(s, "algo:") || strings.HasPrefix(s, "dist:") {
 			t.Errorf("symbol %q is not obtainable from a View; training on it fits noise", s)
+		}
+		// The label must not be a feature. The fixture sets the "live" prop, so
+		// this fires the moment anything starts emitting it again.
+		if strings.HasPrefix(s, "live:") {
+			t.Errorf("symbol %q is the label; belief would restate the answer "+
+				"rather than estimate it, and score well doing it", s)
 		}
 	}
 }
