@@ -152,10 +152,15 @@ the accented half from Unicode decomposition:
 ```python
 # every character whose NFD base is the target -> the accented variants
 import unicodedata as u
-variants = [chr(cp) for cp in range(0x20, 0x2500)
-            if (d := u.normalize("NFD", chr(cp)))[:1] == ("a",)
-            and len(d) > 1 and all(u.combining(x) for x in d[1:])]
-# a: à á â ã ä å ā ă ą ǎ ǟ ǡ ǻ ȁ ȃ ȧ ḁ ạ ả ấ ...  (29 in the BMP range above)
+
+def variants_of(base):
+    out = []
+    for cp in range(0x20, 0x2500):
+        d = u.normalize("NFD", chr(cp))
+        if len(d) > 1 and d[0] == base and all(u.combining(x) for x in d[1:]):
+            out.append(chr(cp))
+    return out
+# variants_of("a") -> à á â ã ä å ā ă ą ǎ ǟ ǡ ǻ ȁ ȃ ȧ ḁ ạ ả ấ ...  (29)
 ```
 
 Union the two, then **drop what nobody can type into a name**: the
