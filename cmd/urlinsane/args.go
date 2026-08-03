@@ -30,10 +30,15 @@ func reorder(cmds []*cli.Command, args []string) []string {
 	if len(args) < 2 {
 		return args
 	}
-	cmd := find(cmds, args[1])
-	if cmd == nil {
+	// The command is not always args[1]: a global flag may precede it, and
+	// looking only at position 1 made "urlinsane --debug typo x -o json" skip
+	// reordering entirely and fail with the error this function exists to
+	// prevent.
+	at := commandIndex(cmds, args)
+	if at < 0 {
 		return args
 	}
+	cmd := find(cmds, args[at])
 
 	// Only boolean flags stand alone; every other flag consumes the token
 	// after it, which must not be mistaken for a positional.
@@ -47,15 +52,18 @@ func reorder(cmds []*cli.Command, args []string) []string {
 		}
 	}
 
-	head := append([]string{}, args[:2]...) // program, command
-	rest := args[2:]
+	head := append([]string{}, args[:at+1]...) // program, globals, command
+	rest := args[at+1:]
 
 	var flags, positional []string
 	for i := 0; i < len(rest); i++ {
 		a := rest[i]
 		switch {
 		case a == "--":
-			positional = append(positional, rest[i+1:]...)
+			// Keep the separator. Dropping it put the escaped arguments after
+			// the flags with nothing marking them as positional, so cli parsed
+			// "-weird.com" as a flag -- the exact case the escape exists for.
+			positional = append(positional, rest[i:]...)
 			i = len(rest)
 		case strings.HasPrefix(a, "-") && a != "-":
 			flags = append(flags, a)
@@ -84,4 +92,25 @@ func find(cmds []*cli.Command, name string) *cli.Command {
 		}
 	}
 	return nil
+}
+
+// commandIndex finds the command token, skipping any global flags before it.
+//
+// Global flags are matched loosely on purpose: this only decides where the
+// command starts, and cli still validates them. Guessing wrong costs a
+// reordering, not a misparse.
+func commandIndex(cmds []*cli.Command, args []string) int {
+	for i := 1; i < len(args); i++ {
+		if args[i] == "--" {
+			return -1
+		}
+		if strings.HasPrefix(args[i], "-") {
+			continue
+		}
+		if find(cmds, args[i]) != nil {
+			return i
+		}
+		return -1
+	}
+	return -1
 }

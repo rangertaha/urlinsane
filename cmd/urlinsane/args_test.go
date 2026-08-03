@@ -79,13 +79,26 @@ func TestReorderMovesFlagsAheadOfPositionals(t *testing.T) {
 	}
 }
 
-// Everything after "--" is positional, however it is spelled. A target that
-// begins with a dash is the reason the escape exists.
+// Everything after "--" is positional, and the separator must SURVIVE: without
+// it the escaped arguments arrive after the flags with nothing marking them as
+// positional, and cli parses "-weird.com" as an undefined flag. This test
+// previously asserted the separator-less output and so encoded the bug.
 func TestReorderRespectsTheDoubleDash(t *testing.T) {
 	got := reorder(testCmds(), []string{"urlinsane", "typo", "-v", "--", "-weird.com"})
-	want := []string{"urlinsane", "typo", "-v", "-weird.com"}
+	want := []string{"urlinsane", "typo", "-v", "--", "-weird.com"}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v, want %v", got, want)
+	}
+}
+
+// A global flag before the command must not disable reordering. Looking only at
+// args[1] made this a no-op and reintroduced the error reorder exists to
+// prevent.
+func TestReorderFindsTheCommandAfterGlobalFlags(t *testing.T) {
+	got := reorder(testCmds(), []string{"urlinsane", "--debug", "typo", "example.com", "-o", "json"})
+	want := []string{"urlinsane", "--debug", "typo", "-o", "json", "example.com"}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %v\nwant %v", got, want)
 	}
 }
 

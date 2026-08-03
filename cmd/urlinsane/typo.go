@@ -41,6 +41,7 @@ const (
 // the string is read, only what gets varied.
 var TypoCmd = cli.Command{
 	Name:                   "typo",
+	UsageText:              "urlinsane typo [<scope>] <target> [options]",
 	Aliases:                []string{"t"},
 	Usage:                  "Scan a target for typosquatting and confusable names",
 	ArgsUsage:              "[<scope>] <target>",
@@ -51,7 +52,7 @@ variants of each, and observes what exists.
 The target's kind is detected from the string alone:
 
     urlinsane typo example.com                 a domain
-    urlinsane typo bob@example.com             an email: varies bob, example.com and the address
+    urlinsane typo bob@example.com             an email address
     urlinsane typo npm:lodash                  a package on a named registry
     urlinsane typo github.com/acme/tool        a repository
 
