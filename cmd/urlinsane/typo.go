@@ -128,6 +128,10 @@ func runTypo(c *cli.Context) error {
 		return exit(err, exitError)
 	}
 
+	if err := checkLimitFlags(c); err != nil {
+		return exit(err, exitError)
+	}
+
 	opts := scan.Options{
 		Target:     target,
 		Scope:      scope,
@@ -481,4 +485,28 @@ func saveGraph(dir string, res *scan.Result) (string, error) {
 		At:      time.Now(),
 		Partial: res.Interrupt,
 	})
+}
+
+// limitFlags are the numeric bounds a scan is run under. Every one of them is
+// a count or a duration, so a negative is never meaningful.
+var limitFlags = []string{"depth", "rounds", "workers", "budget", "frontier", "attempts"}
+
+// checkLimitFlags rejects a negative bound before the scan starts.
+//
+// The scheduler clamps these too, but clamping is not the whole answer at this
+// level: someone who typed `--workers -4` meant something, and silently running
+// with one worker tells them nothing. Before either check existed, `--workers -4`
+// panicked in make(chan) and `--attempts -1` was worse than a panic -- the
+// attempt loop ran zero times, so nothing was probed and the empty report came
+// back as a successful scan.
+func checkLimitFlags(c *cli.Context) error {
+	for _, name := range limitFlags {
+		if v := c.Int(name); v < 0 {
+			return fmt.Errorf("--%s must not be negative, got %d", name, v)
+		}
+	}
+	if d := c.Duration("timeout"); d < 0 {
+		return fmt.Errorf("--timeout must not be negative, got %s", d)
+	}
+	return nil
 }

@@ -157,7 +157,7 @@ func TestMissingReportsWhatScaffoldWouldCreateWithoutWriting(t *testing.T) {
 }
 
 // The scaffolded headers are comments, so a scaffolded language imports as an
-// empty corpus rather than as thirteen files of English prose.
+// empty corpus rather than as twelve files of English prose.
 func TestScaffoldedFilesImportAsEmpty(t *testing.T) {
 	fresh(t)
 	root := t.TempDir()

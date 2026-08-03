@@ -62,6 +62,89 @@ Weights are counted, then normalised per source word, so a word that appears in
 many groups is weighted by how often it was associated rather than by whichever
 group happened to be imported last.
 
+## The twelve files
+
+Every `languages/<code>/` holds the same twelve files. `go run ./cmd/datasets
+languages` scaffolds all of them, each as a stub holding a one-line comment, so
+an empty language is twelve stubs rather than a missing directory — absence of
+data never shows up as an absent file, and `ls` will not tell you what is done.
+Counts below are `en`, the fullest set, for calibration.
+
+**`word.lst`** (8783) — the language's vocabulary, one word per line, and the
+largest file by an order of magnitude. It is list-shaped, so it contributes no
+edges; its job is to be the thing a candidate name is checked against. It is not
+a dictionary: `en` holds `agregate`, `agreing` and `ahev` alongside their correct
+forms, because a squatted name is a real string that has to be recognised, not a
+well-formed one. It also holds digits, `-`, `.` and `/`. Source it from a
+Hunspell dictionary whose licence is GPL-3.0 compatible, and fold in the wrong
+halves of `misspelling.lst`.
+
+**`misspelling.lst`** (4256) — the errors people actually make, group-shaped,
+`wrong right` per line. This is the highest-value file after `word.lst` and the
+one with a real corpus behind it: Wikipedia's machine-readable list for English,
+its local equivalent on other large Wikipedias, and keyboard-adjacency slips
+derived from the `pkg/kb` layout where no list exists. A misspelling that is
+itself a real word still belongs here.
+
+**`homophone.lst`** (487) — words that sound alike, group-shaped: `acts ax axe`,
+`hoard horde`. The first few lines are the special case that matters most for
+names — the spoken form of a character, `dot .`, `dash -`, `at @`, `slash /`,
+`underscore _` — which is what turns a dictated or voice-phished address into a
+typo. Author those five before the rhyming pairs.
+
+**`antonym.lst`** (93) — a word and its opposite, one pair per line: `above
+below`, `accept refuse`. Group-shaped, so the pair becomes an edge in both
+directions, which is the point: an attacker swaps `secure` for `insecure` as
+readily as for a synonym.
+
+**`synonym.lst`** (65) — not a thesaurus. These are the brand-adjacent lure words
+appended to a name — `login signin logon access`, `verify confirm validate
+check` — one theme per line, most natural word first. No corpus exists; get them
+from what real lures in that language say, and translate the concept rather than
+the English line. About 65 groups is the curated size, and every populated
+language has exactly that, which makes it the quickest way to spot a language
+somebody started and abandoned.
+
+**`stopword.lst`** (61) — words carrying no distinguishing sense, list-shaped.
+They mark the parts of a candidate name that should not be weighted, so `the` in
+`thebank` does not read as signal. Any standard stopword list for the language
+does.
+
+**`numeral.lst`** (36) — `digit word ordinal` per line: `0 zero zeroth`, `1 one
+first`. Group-shaped, so it wires the digit to its names in both directions,
+which is what catches `1` for `one` and `4` for `four` in a label. It comes from
+CLDR's spelled-out number rules or a grammar reference, never from a corpus;
+`en`'s 36 lines cover 0–24, the tens to 90, then 100, 1000, and the millions and
+billions.
+
+**`grapheme.lst`** (26) — the smallest functional units of the writing system,
+one per line. Take it from CLDR `exemplarCharacters` for the locale, which is
+exactly this data: strip the brackets and split. For Latin languages it is the
+alphabet including the accented letters the language actually uses; for an
+abugida it is the consonants and the dependent vowel signs both.
+
+**`homoglyph.lst`** (26) — a character followed by everything that looks like it:
+`a à á â ã ä å ɑ а ạ ǎ ă ȧ ӓ ٨`. Group-shaped and the heart of the whole tool.
+Build it from Unicode confusables (UTS #39), which needs **inverting** — it maps
+confusable → skeleton and this file is keyed the other way — then unioned with
+the NFD-derived accented forms, which confusables does not carry. A line holding
+only the accents or only the cross-script look-alikes is doing half the job. `en`
+has one row per ASCII letter; the other Latin languages extend that same block
+with rows headed by their own accented letters, to 42, and scripts that must map
+onto Latin run longer still — `el` to 65.
+
+**`negative.lst`** (20) and **`positive.lst`** (20) — connotation, one word per
+line, list-shaped. Deliberately small and deliberately domain-specific rather
+than general sentiment: `positive` is `safe trusted secure official`, `negative`
+is `scam malicious fraud phishing spam`. They are the words a squatted name
+leans on to look legitimate or the words that flag one, not a sentiment lexicon.
+Keep them ASCII-folded for Latin-script languages, as the existing files do.
+
+**`vowel.lst`** (5) — the syllabic characters, list-shaped, feeding the
+vowel-swap algorithms. Decide the subset from the script rather than from the
+Latin five: for an abugida the dependent vowel signs belong here, and a language
+whose `y` is syllabic should list it, as `cs` does.
+
 ## Rules for editing linguistic data
 
 **Never "clean" these files.** They look full of errors because they are lists
@@ -331,3 +414,10 @@ urlinsane typo -a hr -d 0 example.com    # exercise one algorithm
 The importer is tested in `internal/dataset/gen`. If you change a file's shape
 rather than its contents, add a case there — a malformed line is silently
 imported as vocabulary with no edges, which looks like success.
+
+
+
+
+
+
+Researching a language from datasets/languages/* and reasearch each of the .lst files is a multi-step process. The steps are:

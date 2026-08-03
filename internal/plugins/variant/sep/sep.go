@@ -29,9 +29,14 @@ func separatorSubstitution(name string) []string {
 // Spec declares the algorithm.
 func Spec() variant.Spec {
 	return variant.Spec{
+		// On the whole key the separators it re-joins on include the ones
+		// holding the key together: "github.com/acme/tool" tokenized on "."
+		// and came back as "github-com/acme/tool", a repo on a forge that does
+		// not exist. The core is the name with its forge or registry removed,
+		// which is the only part with word separators worth substituting.
 		ID: "sep", Title: "Separator Substitution", Version: 1,
 		Types: []string{variant.TypePackage, variant.TypeRepo, variant.TypeUsername},
-		Whole: true,
+		Whole: false,
 		Gen:   separatorSubstitution,
 	}
 }

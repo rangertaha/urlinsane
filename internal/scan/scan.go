@@ -16,6 +16,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sort"
+	"strings"
 	"time"
 
 	"github.com/rangertaha/urlinsane/internal/graph"
@@ -216,6 +218,9 @@ func Run(ctx context.Context, o Options, ropts report.Options) (*Result, error) 
 	if err != nil {
 		return nil, err
 	}
+	if err := checkNamedAlgorithms(o.Algorithms, plan); err != nil {
+		return nil, err
+	}
 
 	g := graph.New(reg)
 	if o.Belief != nil {
@@ -283,4 +288,49 @@ func Run(ctx context.Context, o Options, ropts report.Options) (*Result, error) 
 	}
 	res.Report = report.Build(g, ropts)
 	return res, nil
+}
+
+// checkNamedAlgorithms refuses a run whose named algorithms were all pruned.
+//
+// Selection and compilation are two different gates and only the first was
+// honest about it. `--algorithm tld` on a package seed passes selection, because
+// tld exists, and is then pruned by Compile as unreachable — nothing produces a
+// domain from a package. The run went ahead with no variant operators at all
+// and reported a clean, empty result: doing nothing presented as a finding of
+// nothing, which is the exact failure SelectOperators documents itself as
+// preventing.
+//
+// An exclusion is not checked. `^tld` asks for tld to be absent, and pruning it
+// is that wish granted rather than denied.
+//
+// Only a total loss is fatal. Naming five algorithms on a seed that can use
+// three is a reasonable thing to do — the run still varies something — so the
+// survivors run and the plan records the rest, which --explain prints.
+func checkNamedAlgorithms(ids []string, plan *graph.Plan) error {
+	named, exclude, err := graph.Selection(ids)
+	if err != nil || exclude || len(named) == 0 {
+		// A malformed selection has already failed in Operators; returning it
+		// again here would report it twice.
+		return nil
+	}
+
+	pruned := make(map[string]bool, len(plan.Pruned))
+	for _, id := range plan.Pruned {
+		pruned[id] = true
+	}
+
+	var lost []string
+	for id := range named {
+		if pruned[id] {
+			lost = append(lost, id)
+		}
+	}
+	if len(lost) < len(named) {
+		return nil // something the user named survived
+	}
+	sort.Strings(lost)
+
+	return fmt.Errorf(
+		"scan: every named algorithm (%s) is unreachable from a %s seed, so the scan would generate nothing; see --list algorithms",
+		strings.Join(lost, ", "), plan.Seed.Type)
 }

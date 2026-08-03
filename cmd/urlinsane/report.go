@@ -110,15 +110,18 @@ func runReport(c *cli.Context) error {
 		return exit(err, exitError)
 	}
 	if path := c.String("save"); path != "" {
+		// Infer the format before creating the file. os.Create truncates, so
+		// checking afterwards meant `--save notes.txt` emptied notes.txt and
+		// then refused to write anything into it.
+		format, ok := report.FormatFor(path)
+		if !ok {
+			return exit(fmt.Errorf("report: cannot infer a format from %q", path), exitError)
+		}
 		f, err := os.Create(path)
 		if err != nil {
 			return exit(err, exitError)
 		}
 		defer f.Close()
-		format, ok := report.FormatFor(path)
-		if !ok {
-			return exit(fmt.Errorf("report: cannot infer a format from %q", path), exitError)
-		}
 		so := o
 		so.Format, so.Color = format, false
 		if err := reportall.Write(f, report.Build(re.Graph, so), so); err != nil {

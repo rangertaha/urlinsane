@@ -47,18 +47,44 @@ type Limits struct {
 	OpTimeout time.Duration
 }
 
+// withDefaults fills in the unset bounds.
+//
+// Negative is treated as unset rather than passed through, at every field, so
+// that no caller can reach the scheduler with one. A negative Workers panicked
+// outright in make(chan) -- the loud failure of the set. The quiet ones were
+// worse: a negative Attempts or MaxRounds made the loops they bound run zero
+// times, so the scan expanded nothing, reported no error, and printed an empty
+// report as a completed run.
+//
+// The CLI rejects negatives before they get here, with a message naming the
+// flag. This is the backstop for every other caller, and it clamps rather than
+// erroring because a Limits value has nowhere to put an error.
 func (l Limits) withDefaults() Limits {
-	if l.Revisions == 0 {
+	if l.Revisions <= 0 {
 		l.Revisions = 3
 	}
-	if l.Attempts == 0 {
+	if l.Attempts <= 0 {
 		l.Attempts = 2
 	}
-	if l.Workers == 0 {
+	if l.Workers <= 0 {
 		l.Workers = 1
 	}
-	if l.MaxRounds == 0 {
+	if l.MaxRounds <= 0 {
 		l.MaxRounds = 64
+	}
+	// Zero is unbounded for these, which is their documented default, so a
+	// negative means the same thing rather than a bound of minus four.
+	if l.MaxDepth < 0 {
+		l.MaxDepth = 0
+	}
+	if l.NodeBudget < 0 {
+		l.NodeBudget = 0
+	}
+	if l.Frontier < 0 {
+		l.Frontier = 0
+	}
+	if l.OpTimeout < 0 {
+		l.OpTimeout = 0
 	}
 	return l
 }

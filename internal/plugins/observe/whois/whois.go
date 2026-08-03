@@ -150,16 +150,54 @@ func whoisParseOutcome(err error) graph.Outcome {
 // contactName picks the stable identity out of a whois contact: the
 // organization if there is one, the personal name otherwise. Both are
 // whitespace-normalized so "ACME  Inc" and "ACME Inc" converge on one node.
+//
+// A redaction placeholder is not a name and yields "". Most registrars answer a
+// redacted contact by filling the field with "REDACTED FOR PRIVACY" rather than
+// omitting it, so taking the field at its word gave every such domain the same
+// registrant node — and the campaign analyzer, which clusters on REGISTERED_BY,
+// read forty unrelated domains sharing one placeholder as one operator running
+// forty. That is a high-severity finding on boilerplate, and under --fail-on it
+// is the difference between exit 0 and exit 2.
 func contactName(c *parser.Contact) string {
 	if c == nil {
 		return ""
 	}
 	for _, candidate := range []string{c.Organization, c.Name} {
-		if name := strings.Join(strings.Fields(candidate), " "); name != "" {
+		name := strings.Join(strings.Fields(candidate), " ")
+		if name != "" && !redacted(name) {
 			return name
 		}
 	}
 	return ""
+}
+
+// redactionMarkers are what registrars write where the contact used to be.
+//
+// "privacy" and "proxy" catch the shielding services — "Whois Privacy Service",
+// "Perfect Privacy, LLC", "Domains By Proxy". Those are real companies, so
+// clustering on them is not wrong the way clustering on "REDACTED" is, but it
+// is useless: they front for millions of unrelated domains, which is a hub
+// every scan of a popular name would trip over and no scan can act on.
+var redactionMarkers = []string{
+	"redacted", "privacy", "proxy", "not disclosed", "non-public",
+	"data protected", "data redacted", "gdpr", "statutory masking",
+	"withheld", "anonymi", // anonymised, anonymized, Anonymize
+}
+
+// redacted reports whether a contact value is a placeholder rather than a name.
+func redacted(name string) bool {
+	lower := strings.ToLower(name)
+	for _, m := range redactionMarkers {
+		if strings.Contains(lower, m) {
+			return true
+		}
+	}
+	// Bare non-values registries use for the same purpose.
+	switch strings.Trim(lower, ".-_ ") {
+	case "", "n/a", "na", "none", "null", "unknown", "not applicable":
+		return true
+	}
+	return false
 }
 
 // New builds the registration-lookup operator.

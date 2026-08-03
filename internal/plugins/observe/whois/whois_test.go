@@ -7,6 +7,7 @@ import (
 	"errors"
 	"testing"
 
+	parser "github.com/likexian/whois-parser"
 	"github.com/rangertaha/urlinsane/internal/graph"
 	"github.com/rangertaha/urlinsane/internal/plugins/observe"
 	"github.com/rangertaha/urlinsane/internal/plugins/observe/observetest"
@@ -108,5 +109,56 @@ func TestContactNameNormalizes(t *testing.T) {
 	g := observetest.Run(t, observe.TypeDomain, "a.com", newWhois(observe.Options{}, client))
 	if !observetest.HasNode(g, observe.TypeRegistrant, "acme inc") {
 		t.Errorf("registrant not normalized; graph has %s", observetest.Dump(g))
+	}
+}
+
+// Most registrars answer a redacted contact by filling the field with a
+// placeholder rather than omitting it. Taking that at face value gave every
+// redacted domain the same registrant node, and the campaign analyzer -- which
+// clusters on REGISTERED_BY -- reported unrelated domains as one operation.
+func TestContactNameRejectsRedactionPlaceholders(t *testing.T) {
+	for _, in := range []string{
+		"REDACTED FOR PRIVACY",
+		"Redacted for privacy",
+		"redacted",
+		"Data Protected",
+		"GDPR Masked",
+		"Statutory Masking Enabled",
+		"Whois Privacy Service",
+		"Perfect Privacy, LLC",
+		"Domains By Proxy, LLC",
+		"Not Disclosed",
+		"Anonymize, Inc.",
+		"N/A",
+		"-",
+		"none",
+	} {
+		if got := contactName(&parser.Contact{Organization: in}); got != "" {
+			t.Errorf("contactName(%q) = %q, want no registrant", in, got)
+		}
+	}
+}
+
+// The fix must not swallow real registrants, which are the entire point of the
+// registrant node.
+func TestContactNameKeepsRealNames(t *testing.T) {
+	for _, in := range []string{
+		"ACME Inc",
+		"Google LLC",
+		"Cloudflare, Inc.",
+		"Wikimedia Foundation, Inc.",
+	} {
+		if got := contactName(&parser.Contact{Organization: in}); got != in {
+			t.Errorf("contactName(%q) = %q, want it kept", in, got)
+		}
+	}
+}
+
+// The organization is preferred, but a redacted organization must fall through
+// to the personal name rather than stopping at the placeholder.
+func TestContactNameFallsThroughARedactedOrganization(t *testing.T) {
+	c := &parser.Contact{Organization: "REDACTED FOR PRIVACY", Name: "ACME Inc"}
+	if got := contactName(c); got != "ACME Inc" {
+		t.Errorf("contactName = %q, want the personal name", got)
 	}
 }
