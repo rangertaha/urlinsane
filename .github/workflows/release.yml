@@ -1,0 +1,90 @@
+name: Release
+
+# Cutting a release is tagging one. Pushing a v-tag builds every platform and
+# publishes the archives; nothing else creates a release, so the tag and the
+# artifacts cannot drift apart.
+#
+# workflow_dispatch runs the same build without publishing, which is how to
+# check the pipeline still works without spending a version number on it.
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      # Only this job writes, and only to create the release.
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # --generate-notes needs the history behind the tag, which a shallow
+          # clone does not have.
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          # The same source of truth the build workflow uses.
+          go-version-file: 'go.mod'
+
+      # The archive names come from internal/version.go, not from the tag, so a
+      # tag that disagrees with it would publish v1.2.3 containing binaries
+      # named 1.2.2. Fail here rather than ship that.
+      - name: Tag must match internal/version.go
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          src="$(make version)"
+          if [ "$tag" != "$src" ]; then
+            echo "::error::tag ${GITHUB_REF_NAME} is version '${tag}', internal/version.go says '${src}'"
+            exit 1
+          fi
+          echo "version ${src} matches ${GITHUB_REF_NAME}"
+
+      # A release is not the place to discover the tests fail.
+      - name: Check
+        run: make check
+
+      - name: Build every platform
+        run: make dist
+
+      - name: Verify the checksums we are about to publish
+        working-directory: build/dist
+        run: sha256sum -c checksums.txt
+
+      # gh is preinstalled on the runner. Using it rather than a third-party
+      # release action keeps the set of things trusted with contents: write to
+      # the ones GitHub already ships.
+      - name: Publish
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # A tag carrying a pre-release suffix -- v1.0.0-rc1 -- is published as
+          # one, so it does not become the "latest" anyone downloads by default.
+          prerelease=""
+          case "${GITHUB_REF_NAME}" in
+            *-*) prerelease="--prerelease" ;;
+          esac
+          gh release create "${GITHUB_REF_NAME}" \
+            --title "${GITHUB_REF_NAME}" \
+            --generate-notes \
+            $prerelease \
+            build/dist/*.tar.gz build/dist/*.zip build/dist/checksums.txt
+
+      # The dispatch path has nothing to attach the archives to, so they go up
+      # as a workflow artifact and expire on their own.
+      - name: Upload archives (dry run only)
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: build/dist/
+          retention-days: 7
