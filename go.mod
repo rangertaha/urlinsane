@@ -13,7 +13,7 @@ require (
 	github.com/rainycape/geoip v0.0.0-20170217195415-79e9946b7c4c
 	github.com/sirupsen/logrus v1.9.4
 	github.com/urfave/cli/v2 v2.27.7
-	golang.org/x/net v0.55.0
+	golang.org/x/net v0.56.0
 	gorm.io/gorm v1.31.1
 )
 
@@ -52,9 +52,9 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/xrash/smetrics v0.0.0-20250705151800-55b8f293f342 // indirect
-	golang.org/x/crypto v0.52.0 // indirect
+	golang.org/x/crypto v0.53.0 // indirect
 	golang.org/x/sys v0.46.0 // indirect
-	golang.org/x/text v0.37.0
+	golang.org/x/text v0.39.0
 	google.golang.org/protobuf v1.36.11
 	gopkg.in/yaml.v3 v3.0.1
 	lukechampine.com/blake3 v1.4.1 // indirect
