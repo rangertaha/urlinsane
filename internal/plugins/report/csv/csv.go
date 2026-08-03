@@ -10,6 +10,7 @@ package csv
 import (
 	"encoding/csv"
 	"io"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -36,12 +37,44 @@ func Render(w io.Writer, r report.Report) error {
 		return err
 	}
 
+	// A run that stopped early says so in every other format. Without a row for
+	// it, a truncated export is byte-identical to a complete one — the failure
+	// §11 forbids, and the one an analyst is least able to detect from a
+	// spreadsheet.
+	if r.Partial {
+		if err := write([]string{
+			"run", r.Target, "", "partial", "", "", "", r.PartialWhy, "",
+		}); err != nil {
+			return err
+		}
+	}
+
 	byNode := map[string][]string{}
 	for _, f := range r.Findings {
 		for _, n := range f.Nodes {
 			byNode[n] = append(byNode[n], f.Severity+":"+f.Kind)
 		}
 	}
+
+	// Findings are never filtered (report.Build, §11): hiding one behind
+	// --filter would hide exactly what --fail-on gates on. Nodes are filtered,
+	// so a finding reachable only through a node the filter removed has no row
+	// to hang its column on and used to vanish — silently, and only from this
+	// format. Those get a row of their own, distinguished the way declined
+	// candidates already are: by an existence no node row carries.
+	shown := make(map[string]bool, len(r.Nodes))
+	for _, n := range r.Nodes {
+		shown[n.Type+":"+n.Key] = true
+	}
+	var orphaned []string
+	for _, f := range r.Findings {
+		for _, n := range f.Nodes {
+			if !shown[n] {
+				orphaned = append(orphaned, n+"\x00"+f.Severity+":"+f.Kind)
+			}
+		}
+	}
+	sort.Strings(orphaned)
 
 	for _, n := range r.Nodes {
 		var props []string
@@ -54,6 +87,15 @@ func Render(w io.Writer, r report.Report) error {
 			strings.Join(props, " "),
 			strings.Join(byNode[n.Type+":"+n.Key], " "),
 			"",
+		}); err != nil {
+			return err
+		}
+	}
+	for _, o := range orphaned {
+		ref, finding, _ := strings.Cut(o, "\x00")
+		typ, key, _ := strings.Cut(ref, ":")
+		if err := write([]string{
+			typ, key, "", "filtered", "", "", "", finding, "",
 		}); err != nil {
 			return err
 		}
