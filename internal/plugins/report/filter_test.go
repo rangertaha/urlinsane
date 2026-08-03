@@ -84,3 +84,66 @@ func TestFilterStringKeepsTheUsersSpelling(t *testing.T) {
 		t.Errorf("String() = %q, want the spec as written", f.String())
 	}
 }
+
+// Two filters on an attribute a node has exactly one of are alternatives, in
+// EVERY family — not just existence.
+//
+// This is the class test for that rule. The behaviour was special-cased for
+// existence, which fixed `--filter Live,Absent` and left type, risk= and depth=
+// broken in exactly the same way: `--filter type=domain,type=ip` matched no node
+// at all, rendering an empty report with exit 0 — a scan that reads as "found
+// nothing" rather than a query that cannot match. A new single-valued filter
+// declares its family where it is parsed and is covered here.
+func TestSameFamilyFiltersAreAlternatives(t *testing.T) {
+	domain := NodeRow{Key: "d", Type: "domain", Depth: 0,
+		existence: graph.Live, severity: graph.SeverityHigh}
+	ip := NodeRow{Key: "i", Type: "ip", Depth: 1,
+		existence: graph.Absent, severity: graph.SeverityCritical}
+
+	for _, tc := range []struct {
+		specs []string
+		why   string
+	}{
+		{[]string{"live", "absent"}, "a node has one existence"},
+		{[]string{"type=domain", "type=ip"}, "a node has one type"},
+		{[]string{"risk=high", "risk=critical"}, "a node has one severity"},
+		{[]string{"depth=0", "depth=1"}, "a node has one depth"},
+	} {
+		filters := mustFilters(t, tc.specs...)
+		for _, n := range []NodeRow{domain, ip} {
+			if !keep(filters, n) {
+				t.Errorf("%v dropped %q: %s, so the two filters must be alternatives",
+					tc.specs, n.Key, tc.why)
+			}
+		}
+	}
+}
+
+// A comparison is not mutually exclusive, so two of them still narrow — that is
+// what the user asked for and the family rule must not swallow it.
+func TestComparisonFiltersStillNarrow(t *testing.T) {
+	filters := mustFilters(t, "risk>=high", "depth<=0")
+
+	hot := NodeRow{Key: "hot", Depth: 0, severity: graph.SeverityCritical}
+	deep := NodeRow{Key: "deep", Depth: 5, severity: graph.SeverityCritical}
+
+	if !keep(filters, hot) {
+		t.Error("a shallow, critical node was dropped")
+	}
+	if keep(filters, deep) {
+		t.Error("a deep node was kept; two comparisons must still both apply")
+	}
+}
+
+// Across families they narrow, which is the behaviour the family rule carves
+// the alternatives out of.
+func TestDifferentFamiliesStillNarrowAcross(t *testing.T) {
+	filters := mustFilters(t, "type=domain", "type=ip", "live")
+
+	if !keep(filters, NodeRow{Key: "a", Type: "domain", existence: graph.Live}) {
+		t.Error("a live domain was dropped")
+	}
+	if keep(filters, NodeRow{Key: "b", Type: "ip", existence: graph.Absent}) {
+		t.Error("an absent ip was kept; the existence family must still narrow across")
+	}
+}
