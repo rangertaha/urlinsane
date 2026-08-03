@@ -10,6 +10,9 @@ import (
 	"time"
 
 	"github.com/ipfs/go-cid"
+	"github.com/ipld/go-ipld-prime/codec/dagcbor"
+	"github.com/ipld/go-ipld-prime/datamodel"
+	"github.com/ipld/go-ipld-prime/node/basicnode"
 	"github.com/multiformats/go-multihash"
 )
 
@@ -220,5 +223,95 @@ func TestDecodeRejectsAMismatchedShape(t *testing.T) {
 	}
 	if _, err := Decode(block); err == nil {
 		t.Fatal("Decode accepted a table whose shape disagrees with the alphabet")
+	}
+}
+
+// A field that should be a list but is a scalar must be an error, not a panic
+// and not a silent empty.
+//
+// Every list reader opened with make([]T, 0, v.Length()) and then walked
+// v.ListIterator(). Length() returns -1 for every non-recursive kind, so the
+// make panicked with "cap out of range"; where it did not, ListIterator()
+// returned nil, the loop never ran, and the field decoded as an empty list with
+// no error at all. A model block whose emission table had been replaced by a
+// string loaded as a model with no emissions.
+func TestDecodeRejectsAScalarWhereAListBelongs(t *testing.T) {
+	// Field 1 is states, field 4 symbols, 5 logInit, 6 logTrans, 7 logEmit —
+	// one per reader, so every one of the five is covered.
+	for _, field := range []int{1, 2, 3, 4, 5, 6, 7} {
+		block := blockWithScalarAt(t, field)
+
+		var h *HMM
+		var err error
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					t.Errorf("field %d: Decode panicked instead of erroring: %v", field, r)
+				}
+			}()
+			h, err = Decode(block)
+		}()
+
+		if err == nil {
+			t.Errorf("field %d: Decode returned a model (%v) for a scalar where a list belongs", field, h != nil)
+		}
+	}
+}
+
+// blockWithScalarAt encodes a well-formed 10-element model block with one field
+// replaced by a string.
+func blockWithScalarAt(t *testing.T, field int) []byte {
+	t.Helper()
+	nb := basicnode.Prototype.List.NewBuilder()
+	la, err := nb.BeginList(10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i := 0; i < 10; i++ {
+		av := la.AssembleValue()
+		switch {
+		case i == field:
+			err = av.AssignString("not-a-list")
+		case i == 0:
+			err = av.AssignInt(blockVersion)
+		default:
+			// An empty list is shape-valid for every other position; the
+			// decoder is expected to fail on `field`, not before it.
+			var sub datamodel.ListAssembler
+			sub, err = av.BeginList(0)
+			if err == nil {
+				err = sub.Finish()
+			}
+		}
+		if err != nil {
+			t.Fatalf("assembling field %d: %v", i, err)
+		}
+	}
+	if err := la.Finish(); err != nil {
+		t.Fatal(err)
+	}
+	var buf bytes.Buffer
+	if err := dagcbor.Encode(nb.Build(), &buf); err != nil {
+		t.Fatal(err)
+	}
+	return buf.Bytes()
+}
+
+// New is the validation boundary, so a malformed spec must come back as an
+// error. The emission guard tested len(s.Emit) != 0 while the row read tested
+// s.Emit != nil: an empty-but-present table passed the first and was indexed by
+// the second. The transition guard beside it already used the nil form.
+func TestNewRejectsAnEmptyButPresentEmissionTable(t *testing.T) {
+	defer func() {
+		if r := recover(); r != nil {
+			t.Fatalf("New panicked on a malformed spec instead of erroring: %v", r)
+		}
+	}()
+	if _, err := New(Spec{
+		States: []string{"A"},
+		Focus:  []string{"A"},
+		Emit:   [][]float64{},
+	}); err == nil {
+		t.Fatal("New accepted an emission table with zero rows")
 	}
 }

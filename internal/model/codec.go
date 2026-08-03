@@ -409,6 +409,32 @@ func at(n datamodel.Node, i int) (datamodel.Node, error) {
 	return v, nil
 }
 
+// listItems requires a list and returns its iterator with a capacity safe to
+// preallocate.
+//
+// Every list reader below used to open with `make([]T, 0, v.Length())` and then
+// `it := v.ListIterator(); for it != nil && ...`, and both halves of that are
+// wrong for a node that is not a list — which is exactly what a corrupt or
+// foreign block decodes to. Length() returns -1 for every non-recursive kind,
+// so the make panicked with "cap out of range"; and where it did not,
+// ListIterator() returned nil, the loop never ran, and the field decoded as an
+// empty list with no error at all. A model block whose emission table had been
+// replaced by a string loaded as a model with no emissions.
+//
+// Five readers had it, identically, so it is fixed once here rather than five
+// times. A new reader should call this instead of touching Length() or
+// ListIterator() directly.
+func listItems(v datamodel.Node) (datamodel.ListIterator, int, error) {
+	if k := v.Kind(); k != datamodel.Kind_List {
+		return nil, 0, fmt.Errorf("model: want a list, got %s", k)
+	}
+	n := v.Length()
+	if n < 0 {
+		n = 0
+	}
+	return v.ListIterator(), int(n), nil
+}
+
 func readInt(n datamodel.Node, i int) (int64, error) {
 	v, err := at(n, i)
 	if err != nil {
@@ -422,9 +448,12 @@ func readStrings(n datamodel.Node, i int) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	out := make([]string, 0, v.Length())
-	it := v.ListIterator()
-	for it != nil && !it.Done() {
+	it, size, err := listItems(v)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]string, 0, size)
+	for !it.Done() {
 		_, e, err := it.Next()
 		if err != nil {
 			return nil, err
@@ -443,9 +472,12 @@ func readInts(n datamodel.Node, i int) ([]int, error) {
 	if err != nil {
 		return nil, err
 	}
-	out := make([]int, 0, v.Length())
-	it := v.ListIterator()
-	for it != nil && !it.Done() {
+	it, size, err := listItems(v)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]int, 0, size)
+	for !it.Done() {
 		_, e, err := it.Next()
 		if err != nil {
 			return nil, err
@@ -468,9 +500,12 @@ func readFloats(n datamodel.Node, i int) ([]float64, error) {
 }
 
 func floatsOf(v datamodel.Node) ([]float64, error) {
-	out := make([]float64, 0, v.Length())
-	it := v.ListIterator()
-	for it != nil && !it.Done() {
+	it, size, err := listItems(v)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]float64, 0, size)
+	for !it.Done() {
 		_, e, err := it.Next()
 		if err != nil {
 			return nil, err
@@ -493,9 +528,12 @@ func readMatrix(n datamodel.Node, i int) ([][]float64, error) {
 }
 
 func matrixOf(v datamodel.Node) ([][]float64, error) {
-	out := make([][]float64, 0, v.Length())
-	it := v.ListIterator()
-	for it != nil && !it.Done() {
+	it, size, err := listItems(v)
+	if err != nil {
+		return nil, err
+	}
+	out := make([][]float64, 0, size)
+	for !it.Done() {
 		_, e, err := it.Next()
 		if err != nil {
 			return nil, err
@@ -514,9 +552,12 @@ func readCube(n datamodel.Node, i int) ([][][]float64, error) {
 	if err != nil {
 		return nil, err
 	}
-	out := make([][][]float64, 0, v.Length())
-	it := v.ListIterator()
-	for it != nil && !it.Done() {
+	it, size, err := listItems(v)
+	if err != nil {
+		return nil, err
+	}
+	out := make([][][]float64, 0, size)
+	for !it.Done() {
 		_, e, err := it.Next()
 		if err != nil {
 			return nil, err
