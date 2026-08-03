@@ -195,6 +195,35 @@ lists first. Record the choice in a comment at the top of each file you fill.
 
 ### Step 1 — homoglyph.lst
 
+**Start from this language's own alphabet, not from the confusables table.**
+
+The file is keyed by the characters the target audience types, and each line
+answers one question: *what, in any other script, looks like this character?*
+A Russian brand is attacked with Latin look-alikes of Cyrillic letters; a Latin
+brand is attacked with Cyrillic and Greek look-alikes of Latin ones. Same
+computation, opposite direction, and the direction is decided by whose alphabet
+supplies the keys.
+
+Get the keys from the same CLDR exemplar set step 4 uses, then look each one up.
+Working from the confusables file alone produces a Latin-keyed file whatever
+language you meant to fill, because Latin is what most of that table targets —
+which is how `el/homoglyph.lst` ended up opening with `a`, `b`, `c`.
+
+Check the result before writing it:
+
+```bash
+# how many keys are actually in the language's script?
+awk '{print $1}' datasets/languages/<code>/homoglyph.lst | \
+  python3 -c "import sys,unicodedata as u
+from collections import Counter
+print(Counter(u.name(l.strip()[0]).split()[0] for l in sys.stdin if l.strip()))"
+```
+
+`ru` is the shape to aim for: 43 Cyrillic keys and 14 Latin ones — its own
+alphabet, plus the Latin letters a Russian brand is also written in. A file
+whose keys are *all* Latin for a non-Latin language has been copied, not
+derived.
+
 **Source: Unicode confusables (UTS #39).** This is the authoritative data and it
 is a file, not a search.
 
@@ -213,9 +242,16 @@ It maps confusable → skeleton, which is the direction this file needs
 **inverted**: group every line by its TARGET, and each group becomes one
 `homoglyph.lst` line with the target first.
 
+Read it as a **skeleton function**: every line says "this character reduces to
+that one". Two characters are confusable when they reduce to the same skeleton,
+which is the relation the file actually encodes and the one to build:
+
 ```python
-# confusables.txt -> cross-script look-alikes, grouped by target
-groups = {}
+# confusables.txt -> skeleton(char), and the inverse: skeleton -> everything
+import unicodedata as u
+from collections import defaultdict
+
+skeleton, family = {}, defaultdict(set)
 for line in open("confusables.txt", encoding="utf-8"):
     line = line.split("#")[0].strip()
     if not line:
@@ -223,8 +259,42 @@ for line in open("confusables.txt", encoding="utf-8"):
     src, tgt, *_ = [c.strip() for c in line.split(";")]
     if " " in tgt:            # multi-character skeletons are not homoglyphs
         continue
-    groups.setdefault(chr(int(tgt, 16)), []).append(chr(int(src, 16)))
+    s, t = chr(int(src, 16)), chr(int(tgt, 16))
+    skeleton[s] = t
+    family[t].add(s)
+
+def lookalikes(ch):
+    """Everything that could be mistaken for ch, in any script."""
+    root = skeleton.get(ch, ch)          # ch's own skeleton, or ch itself
+    return {c for c in family[root] | {root} if c != ch}
 ```
+
+4,462 of the file's ~10,000 lines are single-character mappings; the rest are
+multi-character skeletons (`rn` → `m`) and are not homoglyphs in this sense.
+
+Then drive it from the alphabet, which is what makes the file this language's:
+
+```python
+alphabet = "αβγδεζηθικλμνξοπρστυφχψω"        # CLDR exemplars for the code
+for ch in alphabet:
+    row = sorted(lookalikes(ch) | set(nfd_variants(ch)))
+    print(ch, *row)
+```
+
+Measured output, so you know what to expect:
+
+```
+ο  →  79 look-alikes: o σ ϭ о օ ס ه ٥ ھ ہ ە ۵ ० ০ ੦ ૦ ୦ ௦ ౦ ഠ ൦ ๐ ໐ ဝ ၀ …
+α  →  23:             a ɑ а
+```
+
+Greek `ο` pulls Latin `o`, Cyrillic `о`, Armenian `օ`, Hebrew `ס`, Arabic `ه`
+and a long tail of zero-shaped digits from a dozen scripts. Run the same
+function on Cyrillic `а` and it returns `a ɑ α` — the attack on a Russian brand,
+from the same table, because the key changed.
+
+The tail of zero-shapes is why the filtering below matters: `੦` is a real
+look-alike and no registrar will accept it next to Greek.
 
 **Confusables alone is not enough, and this is the part that is easy to get
 wrong.** It carries cross-script look-alikes but *not* accented forms: the
@@ -281,8 +351,21 @@ https://en.wiktionary.org/wiki/Category:<Language>_misspellings
 ```
 
 Spanish 274 entries, Portuguese 312, Italian 208, German 71, French 77. Each
-entry page names the correct form, which is the second column. Most large
-Wikipedias also keep their own version of the list above; search
+entry page names the correct form, which is the second column.
+
+**Use the MediaWiki API, not the category page.** The HTML paginates at 200 and
+the API does not:
+
+```bash
+curl -s 'https://en.wiktionary.org/w/api.php?action=query&list=categorymembers\
+&cmtitle=Category:German%20misspellings&cmlimit=500&format=json' | jq -r '.query.categorymembers[].title'
+# ab messen, Abszeße, Abszeßes, Ahmadinedschad, an's, Archillesferse, Armeisen, auf's …
+```
+
+`cmcontinue` in the response pages the rest. Fetch each title to get the
+correct form it points at.
+
+Most large Wikipedias also keep their own version of the list above; search
 `site:<lang>.wikipedia.org` for the local equivalent of "commonly misspelled
 words".
 
@@ -403,6 +486,91 @@ Three groups, and the difference matters:
 A comment line at the top of a `.lst` costs nothing and is the only record of
 where a line came from once it is one word among four thousand.
 
+### When a source needs a browser
+
+**Look for the API first.** Nearly everything in this catalogue is a static file
+or a JSON endpoint, and a page that looks like it needs scraping usually does
+not:
+
+| Looks like scraping | Actually |
+|---|---|
+| Wiktionary category pages | `api.php?action=query&list=categorymembers` |
+| OpenThesaurus | `openthesaurus.de/synonyme/search?q=<w>&format=application/json` |
+| crates.io, NuGet, RubyGems | documented JSON APIs |
+| kaikki, CLDR, WikiPron, stopwords-iso | plain files in a repo |
+
+Reaching for a browser where an API exists costs you pagination, rate limits and
+reproducibility for nothing.
+
+**A browser is right when the data is rendered client-side** and there is no
+endpoint behind it. In practice that is the lure-word research in step 3 — bank
+and CERT advisory portals, phishing-report dashboards — rather than any
+linguistic corpus.
+
+In this harness, drive the real browser rather than fetching:
+
+```
+mcp__claude-in-chrome__tabs_create_mcp   → open a tab
+mcp__claude-in-chrome__navigate          → go to the page
+mcp__claude-in-chrome__get_page_text     → the rendered text, after JS
+mcp__claude-in-chrome__find              → locate an element to click
+mcp__claude-in-chrome__javascript_tool   → pull structured values out of the DOM
+```
+
+`get_page_text` after `navigate` is the whole job for a JS-rendered list —
+`WebFetch` on the same URL returns the empty SPA shell. For something
+repeatable, script Playwright against headless Chromium instead and commit the
+script beside the data.
+
+Rules that are not optional:
+
+- **Cache the fetch to disk** and work from the cache. Re-running a parser is
+  free; re-running a scrape is rude and gets you blocked.
+- **One request at a time**, and stop at the first sign of a rate limit.
+- **Respect robots.txt and the terms.** A tool for investigating abuse cannot
+  be sloppy about how it collects.
+- **Never authenticate to scrape.** If the data needs a login, it is not a
+  source for a public dataset.
+- **Record the URL and the date** at the top of the `.lst`. A scraped page is
+  the one source that cannot be re-derived later.
+
+### One source covers four files
+
+Before working through the per-file lists: **Wiktionary, machine-readable,
+covers synonyms, antonyms, homophones and misspellings in one download.**
+
+[Wiktextract](https://github.com/tatuylonen/wiktextract) parses Wiktionary into
+JSONL, and [kaikki.org](https://kaikki.org/) publishes the output for **500+
+languages**. One object per word, one JSON per line:
+
+```
+https://kaikki.org/dictionary/downloads/<code>/<code>-extract.jsonl.gz
+```
+
+`de` is 2.8GB uncompressed, `es` 1.1GB — stream it, do not load it. The fields
+that matter here:
+
+| Field | Fills |
+|---|---|
+| `synonyms[].word` | `synonym.lst` |
+| `antonyms[].word` | `antonym.lst` |
+| `sounds[].ipa` | `homophone.lst`, by grouping words with equal IPA |
+| `forms[]` with a `misspelling` tag, and `alt_of` | `misspelling.lst` |
+| `word` | `word.lst` |
+
+```bash
+# every German word tagged as a misspelling, with what it is a misspelling of
+zcat de-extract.jsonl.gz | jq -r '
+  select(.forms[]?.tags[]? == "misspelling")
+  | "\(.word) \(.alt_of[0].word // empty)"'
+```
+
+Use the edition in the language you are filling (`downloads/de/` is
+de.wiktionary), not the English edition's coverage of it: a language's own
+Wiktionary carries far more of its own misspellings and regional forms.
+
+Licence is Wiktionary's — CC BY-SA. The tool is MIT.
+
 ### homoglyph.lst
 
 | Source | Coverage | Licence |
@@ -428,8 +596,18 @@ exclusion in step 1.
 |---|---|---|
 | [Wikipedia machine-readable list](https://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines) | English, ~4,000 pairs, already `wrong->right` | CC BY-SA |
 | [Wiktionary misspelling categories](https://en.wiktionary.org/wiki/Category:Misspellings_by_language) | **144 languages** | CC BY-SA |
+| kaikki `forms[].tags` (above) | 500+ languages, structured | CC BY-SA |
+| [AWB typo lists](https://en.wikipedia.org/wiki/Wikipedia:AutoWikiBrowser/Typos) | English, regex rules used by editing bots | CC BY-SA |
+| [de: Liste von Tippfehlern](https://de.wikipedia.org/wiki/Wikipedia:Liste_von_Tippfehlern) | German, large and maintained | CC BY-SA |
 | [GitHub Typo Corpus](https://github.com/mhagiwara/github-typo-corpus) | 350k edits, 15+ languages, mined from commits | check the repo |
 | [Birkbeck spelling error corpora](https://www.dcs.bbk.ac.uk/~roger/corpora.html) | English, human error data | check |
+
+The AutoWikiBrowser typo lists are what Wikipedia's own cleanup bots run, so
+they are the errors that survive into published prose rather than the ones a
+dictionary predicts. Most large Wikipedias keep an equivalent — German's is
+`Wikipedia:Liste von Tippfehlern`, misspelling first with the correction in
+parentheses. They are regex rules, not pairs, so take the literal alternations
+and skip the patterned ones.
 
 **The Wiktionary categories are the answer to the gap step 2 admits.** They
 follow one naming pattern — `Category:<Language> misspellings` — so the same
@@ -453,9 +631,18 @@ from a real lure:
 
 | Source | Coverage | Licence |
 |---|---|---|
-| [Open Multilingual WordNet](https://omwn.org/) | 60 wordnets, 49 languages | open, but **per-wordnet** — check each |
+| [Open Multilingual WordNet](https://omwn.org/) | 60 wordnets, 49 languages, synsets | open, but **per-wordnet** — check each |
+| kaikki `synonyms[].word` (above) | 500+ languages | CC BY-SA |
+| [LibreOffice thesauri](https://github.com/LibreOffice/dictionaries) | ~20 languages, MyThes format | per-language |
 | [OpenThesaurus](https://www.openthesaurus.de/) | German, large and current | LGPL / GPL |
 | [ConceptNet](https://conceptnet.io/) | ~300 languages, weaker per-language | CC BY-SA |
+
+The LibreOffice repo is one directory per locale (`de/`, `fr_FR/`, `en/`) each
+holding `.aff` + `.dic` for spelling and `th_<locale>_v2.dat` + `.idx` for the
+thesaurus. MyThes `.dat` is plain text and trivially parsed — an entry line
+`word|n` followed by `n` sense lines of `(pos)|syn1|syn2|…`. It ships spelling
+and synonyms for the same locale in one clone, which is why it is worth knowing
+even though its language coverage is narrower than kaikki's.
 
 ### antonym.lst
 
@@ -470,12 +657,44 @@ transcription are homophones by definition.**
 | Source | Coverage | Licence |
 |---|---|---|
 | [WikiPron](https://github.com/CUNY-CL/wikipron) | 1.7M pronunciations, **165 languages**, mined from Wiktionary | Apache-2.0 tool, CC BY-SA data |
+| kaikki `sounds[].ipa` (above) | 500+ languages, same origin | CC BY-SA |
 | [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict) | English, 134k words | permissive — check |
 
-Group a WikiPron TSV by its transcription column and every bucket with more
-than one member is a homophone group. That is the whole derivation, and it is
-the single highest-yield source in this catalogue for languages nobody has
-curated.
+WikiPron ships the scraped data in the repo, no tool run needed:
+
+```
+https://raw.githubusercontent.com/CUNY-CL/wikipron/master/data/scrape/tsv/<iso639-3>_<script>_broad.tsv
+```
+
+Filenames are `<lang>_<script>_<dialect?>_<broad|narrow>.tsv` — `deu_latn_broad.tsv`,
+`ell_grek_broad.tsv`, `ben_beng_dhaka_broad.tsv`. Two tab-separated columns,
+word then IPA with phones space-separated. German is 60,277 rows. Take `broad`
+rather than `narrow`: narrow transcription encodes allophonic detail that
+splits words a listener hears as identical, which is the opposite of what a
+homophone list wants.
+
+```bash
+curl -sL .../deu_latn_broad.tsv \
+  | awk -F'\t' '{k=$2; w[k]=w[k]" "$1} END{for(k in w) if (split(w[k],a," ")>1) print w[k]}'
+```
+
+Every bucket with more than one member is a homophone group. That is the whole
+derivation, and it is the single highest-yield source in this catalogue for
+languages nobody has curated.
+
+German yields 2,332 groups from that one command — but look at them before
+writing:
+
+```
+Slowakisch slowakisch          case only, worthless: names are case-folded
+achtunddreissigmal achtunddreißigmal   orthographic, and a real confusion
+Amen amen                      case only
+```
+
+**Drop the groups that differ only by case**, which is a large fraction and
+contributes nothing to a scan of a case-insensitive namespace. Keep the
+orthographic pairs — `ss`/`ß`, `ae`/`ä` — because those are exactly what someone
+types when their keyboard cannot reach the other form.
 
 Note the English file also holds symbol names — `dot .`, `dash -` — which no
 corpus will give you. Those are typed-aloud spellings and have to be written by
@@ -485,9 +704,20 @@ hand.
 
 | Source | Coverage | Licence |
 |---|---|---|
-| [CLDR exemplar characters](https://github.com/unicode-org/cldr-json) | per-locale alphabet, `cldr-misc-full/main/<code>/characters.json` | Unicode |
+| [CLDR exemplar characters](https://github.com/unicode-org/cldr-json) | per-locale alphabet | Unicode |
 | Unicode `Script` property | what belongs to a script at all | Unicode |
 | [PHOIBLE](https://phoible.org/) | phoneme inventories, 2,000+ languages | CC BY-SA |
+
+```
+https://raw.githubusercontent.com/unicode-org/cldr-json/main/cldr-json/
+  cldr-misc-full/main/<code>/characters.json
+```
+
+`.main.<code>.characters.exemplarCharacters` is a bracketed string —
+`[a b c … x y z]` — with `{}` around multi-character graphemes (Hungarian
+`{cs}`, `{sz}`) and `-` denoting ranges. Parse those two, do not split on
+whitespace and hope. The same object carries `auxiliary` (borrowed and accented
+forms a name may still contain), `index`, and `punctuation`.
 
 CLDR's `exemplarCharacters` is the alphabet; `auxiliaryExemplarCharacters` in
 the same file is the borrowed-and-accented set a name may still contain, which
@@ -509,7 +739,19 @@ in this language — for scripts where the Latin five are no guide.
 **Frequency ranking is what Hunspell does not give you**, and it is what this
 file wants: a combosquat is built from words people actually use, so the top
 few thousand by frequency beat a complete dictionary sorted alphabetically.
-FrequencyWords is one file per language, `word count` per line.
+
+```
+https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/<code>/<code>_50k.txt
+```
+
+`word count`, space separated, already sorted descending — `ich 5890279`,
+`sie 3806767`. The `_50k` file is the top 50,000; the unsuffixed `<code>.txt`
+beside it is the full list and is mostly corpus noise. Cut at a few thousand.
+
+Hunspell's `.dic` counts the word list on line 1 and then gives one entry per
+line as `word/FLAGS`, where the flags index affix rules in the neighbouring
+`.aff`. Strip everything from `/` onward; expanding the affixes needs a
+Hunspell binding and is rarely worth it for this file.
 
 ### stopword.lst
 
@@ -517,8 +759,14 @@ FrequencyWords is one file per language, `word count` per line.
 |---|---|---|
 | [stopwords-iso](https://github.com/stopwords-iso/stopwords-iso) | **57 languages**, ISO 639-1 keyed, one JSON | MIT |
 
-One file, permissively licensed, keyed by the same codes this tree uses. There
-is no reason to source this anywhere else.
+```
+https://raw.githubusercontent.com/stopwords-iso/stopwords-iso/master/stopwords-iso.json
+```
+
+One JSON object, ISO 639-1 keys, array of words per language:
+`{"de": ["ab","aber",…], "el": [...]}`. Permissively licensed and keyed by the
+same codes this tree uses, so it is `jq -r '.<code>[]'` and done. There is no
+reason to source this anywhere else.
 
 ### positive.lst and negative.lst
 
@@ -537,6 +785,63 @@ files are twenty lines — this is an afternoon of judgement, not a scrape.
 CLDR's spelled-out number rules (RBNF) or a grammar reference. `0 zero zeroth`
 per line — digit, cardinal, ordinal — and it stops being worth automating at
 about thirty lines.
+
+### packages/*.lst — popular library names
+
+A different tree and a different job: these are the names a dependency-confusion
+or combosquat scan works against, one per line, one file per registry. The repo
+ships four — `npm`, `pypi`, `crates`, `rubygems` — at 30–50 names each, while
+`sources/packages.lst` can already *probe* thirteen registries. **`nuget`,
+`packagist`, `hex`, `conda`, `homebrew`, `pub`, `cpan`, `hackage` and
+`cocoapods` have no corpus**, which is the gap to fill first.
+
+Rank by downloads, not by opinion. A squat targets what people install.
+
+**One API covers almost all of it.** [ecosyste.ms](https://packages.ecosyste.ms/)
+indexes **100 registries** with a uniform interface:
+
+```bash
+curl -s 'https://packages.ecosyste.ms/api/v1/registries/npmjs.org/packages?sort=downloads&order=desc&per_page=100' \
+  | jq -r '.[].name'
+```
+
+Swap the host segment for the registry: `pypi.org`, `rubygems.org`,
+`crates.io`, `nuget.org`, `packagist.org`, `repo1.maven.org`,
+`proxy.golang.org`, `hub.docker.com`. Package counts as of writing — npm 5.7M,
+Go 2.2M, PyPI 921k, NuGet 834k, Maven 614k, Packagist 508k, crates 318k,
+RubyGems 210k — so the sort matters more than the endpoint.
+
+Per-registry alternatives, all verified:
+
+| Ecosystem | Source | Notes |
+|---|---|---|
+| Python | [top-pypi-packages](https://hugovk.dev/top-pypi-packages/top-pypi-packages.min.json) | monthly dump, top 15,000 by real download counts, JSON and CSV |
+| Rust | `https://crates.io/api/v1/crates?per_page=100&sort=downloads` | official, JSON, `.crates[].id` |
+| C# / .NET | `https://azuresearch-usnc.nuget.org/query?q=&take=100&sortBy=totalDownloads-desc` | the endpoint nuget.org's own search uses; `.data[].id` |
+| Ruby | ecosyste.ms `rubygems.org` | RubyGems has no public most-downloaded endpoint |
+| npm | ecosyste.ms `npmjs.org` | the registry's own `/-/v1/search` needs a text query, so it cannot list a global top |
+
+**C and C++ have no registry**, so there is no download ranking to sort. Use
+what the package managers ship, which is the closest thing to a popularity
+signal that exists:
+
+```bash
+# vcpkg — 2,858 ports
+curl -s https://raw.githubusercontent.com/microsoft/vcpkg/master/versions/baseline.json \
+  | jq -r '.default | keys[]'
+
+# Conan Center — one directory per recipe
+curl -s https://api.github.com/repos/conan-io/conan-center-index/contents/recipes \
+  | jq -r '.[].name'
+```
+
+The intersection of the two is a better list than either alone: a library both
+ecosystems bothered to package is one people actually build against.
+
+**Take hundreds, not thousands.** These files are a corpus of plausible targets,
+not a mirror of the registry — the shipped lists are 30–50 and the useful
+ceiling is a few hundred. Past that you are scanning the long tail, where a name
+collision is more likely to be a coincidence than a squat.
 
 ## Source lists
 
