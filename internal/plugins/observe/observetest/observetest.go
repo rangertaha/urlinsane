@@ -17,6 +17,7 @@ import (
 	"testing"
 
 	"github.com/rangertaha/urlinsane/internal/graph"
+	"github.com/rangertaha/urlinsane/internal/plugins/decompose"
 	"github.com/rangertaha/urlinsane/internal/plugins/observe"
 	"golang.org/x/net/idna"
 )
@@ -72,9 +73,18 @@ func TestRegistry(t *testing.T) *graph.Registry {
 			Name: observe.TypeDomain, Cap: graph.Nameable, Version: 1, Canonical: domain,
 			Fields: append(registrarDomainFields, fields[observe.TypeDomain]...),
 		},
-		{Name: observe.TypeUsername, Cap: graph.Nameable, Version: 1, Canonical: lower},
-		{Name: observe.TypePackage, Cap: graph.Nameable, Version: 1, Canonical: lower},
-		{Name: observe.TypeRepo, Cap: graph.Nameable, Version: 1, Canonical: lower},
+		// Production's canonicalizers, not `lower`, for the types whose keys
+		// carry a qualifier. See decompose.CanonicalFor: `lower` accepted
+		// "lodash", which canonPackage rejects, so these tests seeded a key the
+		// tool cannot produce and never exercised the operator on the
+		// "npm:lodash" it really gets — which it was mangling into a URL for a
+		// package that cannot exist.
+		{Name: observe.TypeUsername, Cap: graph.Nameable, Version: 1,
+			Canonical: decompose.CanonicalFor(observe.TypeUsername)},
+		{Name: observe.TypePackage, Cap: graph.Nameable, Version: 1,
+			Canonical: decompose.CanonicalFor(observe.TypePackage)},
+		{Name: observe.TypeRepo, Cap: graph.Nameable, Version: 1,
+			Canonical: decompose.CanonicalFor(observe.TypeRepo)},
 		{Name: observe.TypeIP, Cap: graph.Observed, Version: 1, Canonical: address, Fields: fields[observe.TypeIP]},
 		{Name: observe.TypeRegistrant, Cap: graph.Observed, Version: 1, Canonical: lower},
 		{Name: observe.TypePlatform, Cap: graph.Observed, Version: 1, Canonical: lower, Fields: fields[observe.TypePlatform]},

@@ -230,3 +230,67 @@ func canonRegistrant(raw string) (string, error) {
 	}
 	return s, nil
 }
+
+// SplitKey is the inverse of the canonicalizers above: it takes a key one of
+// them produced and returns the qualifier and the bare name inside it.
+//
+// It lives here, next to the functions that build these keys, because the two
+// have to agree about their shape and nothing else should be guessing at it.
+// The qualifier is the registry for a package ("npm"), the forge host for a
+// repo ("github.com"), and empty for every other type — a username or a domain
+// is already bare.
+//
+// It exists because an operator that substitutes a whole key where a bare name
+// belongs produces a request for something that cannot exist. observe's source
+// probe did exactly that: it expanded "npm:lodash" into
+// https://registry.npmjs.org/%s, requested .../npm%3Alodash, got a 404 from
+// every registry, and reported one of the most downloaded packages on npm as
+// unpublished — with a CRITICAL dependency-confusion finding attached. The
+// qualifier is also what says *which* source to ask, so dropping it made the
+// operator ask all thirteen.
+//
+// A key that is not qualified comes back with an empty qualifier and itself as
+// the name, rather than an error: this is a reader of already-canonical keys,
+// and a key that reached the graph without a qualifier was admitted by
+// something that did not require one.
+func SplitKey(nodeType, key string) (qualifier, name string) {
+	switch nodeType {
+	case TypePackage:
+		registry, pkg, ok := strings.Cut(key, ":")
+		if !ok || registry == "" || pkg == "" {
+			return "", key
+		}
+		return registry, pkg
+	case TypeRepo:
+		host, path, ok := strings.Cut(key, "/")
+		if !ok || host == "" || path == "" {
+			return "", key
+		}
+		return host, path
+	}
+	return "", key
+}
+
+// CanonicalFor returns the canonicalizer a node type is registered with, or nil
+// for a type this package does not declare.
+//
+// It exists for test fixtures that build their own registry. observetest does,
+// deliberately — declaring its own field lists keeps every test in that package
+// from being coupled to this one's schema version — but it also substituted its
+// own permissive canonicalizer, `lower`, for package and repo. That is a
+// different thing, and it hid a real defect: `lower` accepts "lodash", which
+// canonPackage rejects because it carries no registry qualifier, so the source
+// tests seeded a key production cannot produce and the operator was never
+// exercised on the qualified key it actually receives. It spent that entire time
+// substituting "npm:lodash" into a registry template.
+//
+// Field lists may diverge between a fixture and production. Key shape may not:
+// a key is what every operator matches, splits and requests on.
+func CanonicalFor(nodeType string) func(string) (string, error) {
+	for _, d := range nodeTypes() {
+		if d.Name == nodeType {
+			return d.Canonical
+		}
+	}
+	return nil
+}

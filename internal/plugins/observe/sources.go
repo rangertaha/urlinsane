@@ -6,6 +6,7 @@ package observe
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -13,6 +14,7 @@ import (
 
 	"github.com/rangertaha/urlinsane/internal/dataset"
 	"github.com/rangertaha/urlinsane/internal/graph"
+	"github.com/rangertaha/urlinsane/internal/plugins/decompose"
 )
 
 // Source is one registry or platform a name may exist on. URL is the page
@@ -192,6 +194,49 @@ func (o sourceOp) Exec(ctx context.Context, v graph.View) (graph.Delta, graph.Ou
 		return graph.Delta{}, graph.Failed(errors.New("observe: no " + o.kind + " sources configured"))
 	}
 
+	// The bare name is what a registry template takes, and the qualifier is
+	// what says which registry to ask. Substituting the whole key produced
+	// https://registry.npmjs.org/npm%3Alodash — a 404 from every registry, so
+	// lodash was reported absent with a CRITICAL dependency-confusion finding.
+	qualifier, name := decompose.SplitKey(o.on, v.Key())
+
+	// A repo key is host/owner/name, and datasets/sources/repos.lst is by its
+	// own header a list of *namespace* endpoints — "%s is the org/user/project
+	// namespace". A full repo path substituted into one asks
+	// api.github.com/users/rangertaha/urlinsane, which 404s for every real
+	// repository, so this operator has never been able to answer for a repo.
+	// Before the qualifier was honoured it asked all nine forges and reported
+	// "live" off the one that 200s on nonsense (gitee); honouring it turned that
+	// into a uniform "absent", which is a wrong answer rather than a random one.
+	//
+	// Neither is worth reporting. The namespace question this list *can* answer
+	// is already answered: canonRepo decomposes github.com/acme/tool into
+	// platform:github.com and username:acme, and the username sweep probes acme
+	// against these same endpoints. So the honest state for the repo node is
+	// undetermined, not absent — turning "I could not check" into "this name is
+	// free" is the one inference this codebase is arranged to prevent.
+	//
+	// The fix is repo-path endpoints in the dataset (api.github.com/repos/%s
+	// returns 200 for rangertaha/urlinsane, /users/ returns 404), which needs a
+	// dataset rebuild.
+	if o.on == TypeRepo {
+		return graph.Delta{}, graph.Failed(fmt.Errorf(
+			"observe: %s sources check namespaces, not repository paths; %q cannot be answered from them",
+			o.kind, v.Key()))
+	}
+
+	if qualifier != "" {
+		sources = forQualifier(sources, qualifier)
+		if len(sources) == 0 {
+			// Nothing was asked, so nothing was learned. Reporting this as
+			// absence is the same mistake as the empty-source-list case above,
+			// and on this path it would be worse: a package on a registry this
+			// build does not know about would read as an unclaimed name.
+			return graph.Delta{}, graph.Failed(fmt.Errorf(
+				"observe: no %s source for %q; %q cannot be checked", o.kind, qualifier, v.Key()))
+		}
+	}
+
 	var d graph.Delta
 	self := v.Ref()
 	var undetermined error
@@ -215,7 +260,7 @@ func (o sourceOp) Exec(ctx context.Context, v graph.View) (graph.Delta, graph.Ou
 		// A hit among the first few then returned OK, so a name reported as
 		// found on one platform had sixty others silently unchecked behind it.
 		probe, cancel := o.Call(ctx)
-		found, perr := o.prober.Exists(probe, Expand(check, v.Key()))
+		found, perr := o.prober.Exists(probe, Expand(check, name))
 		cancel()
 
 		if perr != nil {
@@ -228,7 +273,7 @@ func (o sourceOp) Exec(ctx context.Context, v graph.View) (graph.Delta, graph.Ou
 			continue
 		}
 
-		display := Expand(s.URL, v.Key())
+		display := Expand(s.URL, name)
 		ref := graph.NodeRef{Type: TypePlatform, Key: PlatformKey(s)}
 		edge := graph.EdgeRef{From: self, Rel: RelExistsOn, To: ref}
 		d.Nodes = append(d.Nodes, ref)
@@ -264,6 +309,24 @@ func Expand(template, name string) string {
 // The placeholder is dropped before parsing because "%s" is an invalid percent
 // escape and url.Parse rejects the whole template over it — which silently sent
 // every platform key to the fallback.
+// forQualifier keeps the sources a qualified key names.
+//
+// A package key qualifies by registry code ("npm:lodash" -> the source whose
+// Code is "npm"); a repo key qualifies by forge host
+// ("github.com/acme/tool" -> the source whose URL host is "github.com"), which
+// is what PlatformKey already computes. Both are checked because the two types
+// name their source differently and matching on only one of them silently
+// selected nothing for the other.
+func forQualifier(sources []Source, qualifier string) []Source {
+	var out []Source
+	for _, s := range sources {
+		if s.Code == qualifier || PlatformKey(s) == qualifier {
+			out = append(out, s)
+		}
+	}
+	return out
+}
+
 func PlatformKey(s Source) string {
 	template := strings.ReplaceAll(s.URL, "%s", "")
 	if u, err := url.Parse(template); err == nil && u.Host != "" {
