@@ -1,6 +1,6 @@
 ---
 name: datasets
-description: Work on urlinsane's reference data — the .lst tree under datasets/, how it becomes dataset.db, and the rules for editing linguistic data without destroying it. Use when adding or editing a language, a source list, or any .lst file, or when rebuilding the shipped database.
+description: Work on urlinsane's reference data — the .lst tree under datasets/, how it becomes dataset.db, where to source each relation (homoglyphs, misspellings, synonyms, homophones, graphemes, vowels, dictionaries, stopwords) and the rules for editing linguistic data without destroying it. Use when adding or editing a language, a source list, or any .lst file, or when rebuilding the shipped database.
 ---
 
 # Datasets
@@ -255,6 +255,13 @@ and digit-shaped look-alikes.
 A line holding only diacritic variants of its own script is doing half the job;
 so is one holding only the cross-script half.
 
+Two files beside it in the same directory are worth knowing about:
+`intentional.txt` is 6KB against confusables' 728KB and holds the pairs Unicode
+considers *intended* to look alike, which is closer to what a squatter picks;
+`IdentifierType.txt` says which characters are permitted in identifiers at all,
+and filtering by it drops the mathematical-alphanumeric noise more precisely
+than excluding blocks by hand. See the source catalogue below.
+
 ### Step 2 — misspelling.lst
 
 **English — Wikipedia's machine-readable list**, which is already pairs:
@@ -266,9 +273,20 @@ https://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machine
 Format is `wrong->right`, one per line, so the conversion is
 `line.replace("->", " ")`.
 
-**Other languages** — most large Wikipedias keep the same page under their own
-name; search `site:<lang>.wikipedia.org` for the local equivalent of "commonly
-misspelled words". Where none exists, generate from two sources instead:
+**Other languages — Wiktionary's misspelling categories cover 144 of them**,
+under one naming pattern, so the same scrape works everywhere:
+
+```
+https://en.wiktionary.org/wiki/Category:<Language>_misspellings
+```
+
+Spanish 274 entries, Portuguese 312, Italian 208, German 71, French 77. Each
+entry page names the correct form, which is the second column. Most large
+Wikipedias also keep their own version of the list above; search
+`site:<lang>.wikipedia.org` for the local equivalent of "commonly misspelled
+words".
+
+Where neither exists, generate from two sources instead:
 
 1. **Keyboard-adjacent slips**, derived from the layout `pkg/kb` already ships
    for that code. These are mechanical and language-specific, and no external
@@ -365,6 +383,160 @@ There is **no `--language` flag** to scan with one language in isolation; `-l`
 is specified but not built. The query above is the check.
 
 **A file that shrank is the signal to stop and look, not to continue.**
+
+## Source catalogue
+
+Where the data comes from, per file. The procedure above names the one source to
+reach for first; this is the rest, for when that one has no coverage for your
+language.
+
+**Read the licence before copying anything.** This repo is
+**GPL-3.0-or-later**, and these sources are not uniformly compatible with it.
+Three groups, and the difference matters:
+
+| | |
+|---|---|
+| **Unicode / CLDR** | Unicode licence, permissive. Copy freely. |
+| **Wikipedia / Wiktionary / OpenSubtitles-derived** | CC BY-SA 4.0. Usable, but attribution is a condition — record the source URL and the licence in a comment at the top of any file you fill from it. |
+| **Research-only corpora** | Cannot be copied in at all. Use them to *check* words you sourced elsewhere. |
+
+A comment line at the top of a `.lst` costs nothing and is the only record of
+where a line came from once it is one word among four thousand.
+
+### homoglyph.lst
+
+| Source | Coverage | Licence |
+|---|---|---|
+| [confusables.txt](https://www.unicode.org/Public/security/latest/confusables.txt) | ~6,500 characters, cross-script | Unicode |
+| [intentional.txt](https://www.unicode.org/Public/security/latest/intentional.txt) | the deliberately-confusable subset — small, high signal | Unicode |
+| Unicode NFD decomposition | the accented half confusables omits | n/a, computed |
+| [codebox/homoglyph](https://github.com/codebox/homoglyph) | pre-grouped char sets, several languages | MIT |
+
+`intentional.txt` is the one worth adding to the procedure's step 1: it is 6KB
+rather than 728KB and holds the pairs Unicode considers *intended* to look
+alike in a harmonised typeface, which is a closer match to what a squatter
+picks than the full confusables table.
+
+The `IdentifierStatus.txt` and `IdentifierType.txt` files in the same directory
+say which characters are *allowed* in identifiers at all. Filtering by those is
+a cheaper way to drop the mathematical-alphanumeric noise than the block
+exclusion in step 1.
+
+### misspelling.lst
+
+| Source | Coverage | Licence |
+|---|---|---|
+| [Wikipedia machine-readable list](https://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines) | English, ~4,000 pairs, already `wrong->right` | CC BY-SA |
+| [Wiktionary misspelling categories](https://en.wiktionary.org/wiki/Category:Misspellings_by_language) | **144 languages** | CC BY-SA |
+| [GitHub Typo Corpus](https://github.com/mhagiwara/github-typo-corpus) | 350k edits, 15+ languages, mined from commits | check the repo |
+| [Birkbeck spelling error corpora](https://www.dcs.bbk.ac.uk/~roger/corpora.html) | English, human error data | check |
+
+**The Wiktionary categories are the answer to the gap step 2 admits.** They
+follow one naming pattern — `Category:<Language> misspellings` — so the same
+scrape works for all 144: English 2,490 entries, Portuguese 312, Spanish 274,
+Italian 208, French 77, German 71, Dutch 73. Each entry page names the correct
+form, which is the second column.
+
+The GitHub Typo Corpus is real typing errors rather than curated ones, which
+makes it the better source for keyboard-shaped slips and the worse one for the
+knowledge errors an attacker banks on. Its paper is already in
+`docs/papers/2020.lrec-1.835.pdf`.
+
+### synonym.lst
+
+The procedure is right that no corpus fits: this file is brand-adjacent **lure
+words**, not a thesaurus, and translating an English thesaurus entry gives you
+the dictionary word rather than the one on the phishing button.
+
+Thesauri are still useful for *widening* a group you have already established
+from a real lure:
+
+| Source | Coverage | Licence |
+|---|---|---|
+| [Open Multilingual WordNet](https://omwn.org/) | 60 wordnets, 49 languages | open, but **per-wordnet** — check each |
+| [OpenThesaurus](https://www.openthesaurus.de/) | German, large and current | LGPL / GPL |
+| [ConceptNet](https://conceptnet.io/) | ~300 languages, weaker per-language | CC BY-SA |
+
+### antonym.lst
+
+Same shape as synonyms, same sources — Open Multilingual WordNet carries
+antonymy as a relation, so it is one query rather than a second corpus.
+
+### homophone.lst
+
+Nothing ships a homophone list per language. Derive one: **words sharing an IPA
+transcription are homophones by definition.**
+
+| Source | Coverage | Licence |
+|---|---|---|
+| [WikiPron](https://github.com/CUNY-CL/wikipron) | 1.7M pronunciations, **165 languages**, mined from Wiktionary | Apache-2.0 tool, CC BY-SA data |
+| [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict) | English, 134k words | permissive — check |
+
+Group a WikiPron TSV by its transcription column and every bucket with more
+than one member is a homophone group. That is the whole derivation, and it is
+the single highest-yield source in this catalogue for languages nobody has
+curated.
+
+Note the English file also holds symbol names — `dot .`, `dash -` — which no
+corpus will give you. Those are typed-aloud spellings and have to be written by
+hand.
+
+### grapheme.lst and vowel.lst
+
+| Source | Coverage | Licence |
+|---|---|---|
+| [CLDR exemplar characters](https://github.com/unicode-org/cldr-json) | per-locale alphabet, `cldr-misc-full/main/<code>/characters.json` | Unicode |
+| Unicode `Script` property | what belongs to a script at all | Unicode |
+| [PHOIBLE](https://phoible.org/) | phoneme inventories, 2,000+ languages | CC BY-SA |
+
+CLDR's `exemplarCharacters` is the alphabet; `auxiliaryExemplarCharacters` in
+the same file is the borrowed-and-accented set a name may still contain, which
+is worth unioning in for `grapheme.lst` and worth *excluding* from a strict
+alphabet.
+
+PHOIBLE is phonemic, not orthographic, so it does not give graphemes. It
+answers the one question `vowel.lst` actually poses — which sounds are syllabic
+in this language — for scripts where the Latin five are no guide.
+
+### word.lst
+
+| Source | Coverage | Licence |
+|---|---|---|
+| [wooorm/dictionaries](https://github.com/wooorm/dictionaries) | Hunspell, 92 languages | MIT wrapper, **per-dictionary licence** |
+| [FrequencyWords](https://github.com/hermitdave/FrequencyWords) | 61 languages, ranked by frequency | CC BY-SA (OpenSubtitles) |
+| [SCOWL](http://wordlist.aspell.net/) | English, size-tiered | permissive — check |
+
+**Frequency ranking is what Hunspell does not give you**, and it is what this
+file wants: a combosquat is built from words people actually use, so the top
+few thousand by frequency beat a complete dictionary sorted alphabetically.
+FrequencyWords is one file per language, `word count` per line.
+
+### stopword.lst
+
+| Source | Coverage | Licence |
+|---|---|---|
+| [stopwords-iso](https://github.com/stopwords-iso/stopwords-iso) | **57 languages**, ISO 639-1 keyed, one JSON | MIT |
+
+One file, permissively licensed, keyed by the same codes this tree uses. There
+is no reason to source this anywhere else.
+
+### positive.lst and negative.lst
+
+| Source | Coverage | Licence |
+|---|---|---|
+| [NRC Emotion Lexicon](https://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm) | 27k terms, 100+ languages | **research only — do not copy in** |
+| Wiktionary / OMW | per-language, hand-picked | CC BY-SA / per-wordnet |
+
+The NRC lexicon is the obvious source and the one you cannot use: it is
+research-licensed, so copying it into a GPL-3.0 repo is not open to us. It is
+still legitimate to *consult* it and write your own twenty words. Both curated
+files are twenty lines — this is an afternoon of judgement, not a scrape.
+
+### numeral.lst
+
+CLDR's spelled-out number rules (RBNF) or a grammar reference. `0 zero zeroth`
+per line — digit, cardinal, ordinal — and it stops being worth automating at
+about thirty lines.
 
 ## Source lists
 
