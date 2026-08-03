@@ -101,7 +101,7 @@ urlinsane typo --list keyboards
 | Kind | Count | |
 |---|---|---|
 | Node types | 10 | asn, domain, email, ip, package, platform, registrant, repo, tld, username |
-| Algorithms | 27 | generate variants of a name |
+| Algorithms | 29 | generate variants of a name |
 | Operators | 42 | 27 variant operators, one per algorithm, plus 15 that decompose and observe |
 | Keyboards | 133 | distinct key-adjacency sets, from the 203 layouts `pkg/kb` ships |
 | Languages | 113 | codes in `dataset.db`; 30 have curated trees under `datasets/languages/` |
@@ -195,8 +195,10 @@ type — those run on any nameable node, domain or package or handle alike.
 | `rar` | Repetition Adjacent Replacement | any | Double a character, then replace the double with a neighbour. |
 | `sep` | Separator Substitution | package, repo, username | Swap the separator a registry allows. |
 | `si` | Subdomain Insertion | domain | Insert a subdomain label. |
+| `sld` | Wrong Second-Level Domain | domain | Swap the second level under a ccTLD: `bbc.co.uk` → `bbc.org.uk`. |
 | `sp` | Singular Pluralise | any | Make a word singular or plural. |
 | `tld` | Wrong TLD | domain | Substitute a different public suffix. |
+| `tli` | TLD Insertion | domain | Append a suffix so the whole name becomes a subdomain: `example.com.br`. |
 | `vs` | Vowel Swapping | any | Swap one vowel for another. |
 
 ## Operators

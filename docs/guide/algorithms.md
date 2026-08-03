@@ -10,7 +10,7 @@ nav_order: 4
 - TOC
 {:toc}
 
-An algorithm generates plausible variants of a name. There are 27, each one
+An algorithm generates plausible variants of a name. There are 29, each one
 modelling a specific way a name goes wrong — the error taxonomy behind them is
 [chapter 3](../../attack/errors/).
 
@@ -49,8 +49,10 @@ type: those run on any nameable node, domain or package or handle alike.
 | `rar` | Repetition Adjacent Replacement | any | Double a character, then replace the double with a neighbour: `gppgle` |
 | `sep` | Separator Substitution | package, repo, username | Swap the separator a registry allows: `-` ⇄ `_` ⇄ `.` |
 | `si` | Subdomain Insertion | domain | Insert a subdomain label |
+| `sld` | Wrong Second-Level Domain | domain | Swap the second level under a ccTLD: `bbc.co.uk` → `bbc.org.uk` |
 | `sp` | Singular Pluralise | any | Make a word singular or plural |
 | `tld` | Wrong TLD | domain | Substitute a different public suffix |
+| `tli` | TLD Insertion | domain | Append a suffix, making the whole name a subdomain: `example.com.br` |
 | `vs` | Vowel Swapping | any | Swap one vowel for another: `ixample` |
 
 ## Selecting them
@@ -81,7 +83,7 @@ of every nameserver it happens to discover. See
 
 ## Which ones to run
 
-Running all 27 is the default and is right for a one-off audit where you have
+Running all 29 is the default and is right for a one-off audit where you have
 time. For anything repeated, pick by threat model.
 
 **A consumer-facing brand.** Human error dominates, and reading errors dominate
@@ -137,9 +139,21 @@ entirely. [Keyboards]({{ site.baseurl }}/KB/) has the model.
 **`tld`** substitutes from the public suffix list, which is large. It is the
 main reason a default scan produces so many candidates against a domain target.
 
-**`si` (subdomain insertion)** and **`nsc` (namespace confusion)** model
-*structural* attacks rather than errors: the attacker is not imitating a typo
-but exploiting how a name is parsed.
+**`si` (subdomain insertion)**, **`nsc` (namespace confusion)** and **`tli`
+(TLD insertion)** model *structural* attacks rather than errors: the attacker is
+not imitating a typo but exploiting how a name is parsed.
+
+**`tli`** is the one with no misspelling in it at all. `example.com.br` contains
+the target name in full, spelled correctly, and is a subdomain of somebody
+else's registration — so it defeats the check most people actually perform,
+which is "does the address contain the name I expect". It is also what a
+truncating mobile address bar shows first.
+
+**`sld`** exists because `tld` cannot produce it. `tld` replaces the whole
+public suffix, so `bbc.co.uk` becomes `bbc.de` — a different country. `sld`
+keeps the country and changes the category: `bbc.org.uk`, `bbc.ac.uk`. A reader
+checking "is this the UK site?" gets the right answer and still lands on the
+wrong name.
 
 {: .todo }
 > `--language` and `--keyboard` are registered flags but do not yet reach the

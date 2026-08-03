@@ -41,8 +41,10 @@ import (
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/rar"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/sep"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/si"
+	"github.com/rangertaha/urlinsane/internal/plugins/variant/sld"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/sp"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/tld"
+	"github.com/rangertaha/urlinsane/internal/plugins/variant/tli"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/vs"
 )
 
@@ -68,6 +70,8 @@ func Specs(o variant.Options) []variant.Spec {
 		nsc.Spec(),
 		si.Spec(o.Subdomains),
 		tld.Spec(o.Suffixes),
+		sld.Spec(o.Suffixes),
+		tli.Spec(o.Suffixes),
 		aci.Spec(o.Keyboards),
 		acs.Spec(o.Keyboards),
 		rar.Spec(o.Keyboards),
