@@ -105,6 +105,11 @@ func runReport(c *cli.Context) error {
 		Partial:    entry.Partial,
 		PartialWhy: partialWhy(entry),
 		Format:     c.String("output"),
+		// From the index, like Partial: these describe the run that produced
+		// the graph, and re-rendering must not silently zero them.
+		Scope:  entry.Scope,
+		Plan:   entry.Plan,
+		Rounds: entry.Rounds,
 	}
 	if err := reportall.Write(c.App.Writer, report.Build(re.Graph, o), o); err != nil {
 		return exit(err, exitError)

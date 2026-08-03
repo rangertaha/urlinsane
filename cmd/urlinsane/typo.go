@@ -484,6 +484,11 @@ func saveGraph(dir string, res *scan.Result) (string, error) {
 		Root:    root.String(),
 		At:      time.Now(),
 		Partial: res.Interrupt,
+		// Every run fact the renderer reads, or `report` prints a different
+		// page from the one the scan printed.
+		Scope:  res.Report.Scope,
+		Plan:   res.Report.Plan,
+		Rounds: res.Rounds,
 	})
 }
 

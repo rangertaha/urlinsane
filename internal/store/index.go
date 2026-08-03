@@ -35,6 +35,20 @@ type Entry struct {
 	// Partial marks a scan that stopped early — an interrupt, a deadline, a
 	// budget. It is a fact about the scan, so every re-render reports it.
 	Partial bool `json:"partial"`
+
+	// Scope, Plan and Rounds are the rest of the run facts the root does not
+	// carry, for the same reason At and Partial are here: they describe the
+	// invocation rather than the content, so putting them in the root would
+	// make two identical scans produce different CIDs.
+	//
+	// They were missing, and the report command therefore rendered them as
+	// their zero values off bytes that had them: `typo --save-graph -o json`
+	// printed rounds 4 with a scope and a plan hash, and `report` off the same
+	// scan printed rounds 0 with neither. Same bytes, two renderings — the
+	// failure the observer set had before it was persisted (9944703).
+	Scope  []string `json:"scope,omitempty"`
+	Plan   string   `json:"plan,omitempty"`
+	Rounds int      `json:"rounds,omitempty"`
 }
 
 // Index is the list of saved scans, newest first.
