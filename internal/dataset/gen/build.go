@@ -19,22 +19,38 @@ import (
 // Build creates the default dataset database from scratch: schema, languages,
 // vocabulary, transitions and sources.
 //
-// It deletes any existing file first. That is the point of a build rather than
-// an import: migrating a database through three schema generations leaves the
-// columns of all three, and the shipped database had exactly that — `template`,
-// `check` and `check_url` beside the `url`, `success` and `failed` that
-// replaced them, with the new columns empty because AutoMigrate can add a
-// column but cannot fill it. A build has one schema by construction.
+// It starts from an empty file rather than migrating. That is the point of a
+// build rather than an import: migrating a database through three schema
+// generations leaves the columns of all three, and the shipped database had
+// exactly that — `template`, `check` and `check_url` beside the `url`,
+// `success` and `failed` that replaced them, with the new columns empty because
+// AutoMigrate can add a column but cannot fill it. A build has one schema by
+// construction.
+//
+// The empty file is a *temporary* beside the target, promoted by rename only
+// once the whole build succeeded. Removing the target up front instead made a
+// failed build unrecoverable: internal/config carries `//go:embed dataset.db`,
+// so the moment the file is gone the module stops compiling — including
+// cmd/datasets, the very binary needed to rebuild it. A half-written import, a
+// disk error, any error at all, and the only way back was `git checkout`.
+// Renaming last means a failed build leaves the previous database exactly where
+// it was.
 func Build(dbPath, root string) error {
 	if err := os.MkdirAll(filepath.Dir(dbPath), 0o750); err != nil {
 		return err
 	}
-	if err := os.Remove(dbPath); err != nil && !os.IsNotExist(err) {
+
+	// Same directory as the target, so the rename is atomic rather than a
+	// cross-filesystem copy.
+	tmp := dbPath + ".building"
+	if err := os.Remove(tmp); err != nil && !os.IsNotExist(err) {
 		return err
 	}
-	dataset.Config(dbPath)
+	defer os.Remove(tmp)
+
+	dataset.Config(tmp)
 	if dataset.DB == nil {
-		return fmt.Errorf("gen: could not open %s", dbPath)
+		return fmt.Errorf("gen: could not open %s", tmp)
 	}
 
 	// Scaffold before importing, so a language kb has just started shipping a
@@ -50,7 +66,31 @@ func Build(dbPath, root string) error {
 	if err := All(root); err != nil {
 		return err
 	}
-	return Sources(filepath.Join(root, "sources"))
+	if err := Sources(filepath.Join(root, "sources")); err != nil {
+		return err
+	}
+
+	// Close before renaming, so the write-ahead log is checkpointed into the
+	// database rather than left beside the temporary name and lost with it.
+	if sqlDB, err := dataset.DB.DB(); err == nil {
+		if err := sqlDB.Close(); err != nil {
+			return fmt.Errorf("gen: close %s: %w", tmp, err)
+		}
+	}
+	dataset.DB = nil
+
+	if err := os.Rename(tmp, dbPath); err != nil {
+		return fmt.Errorf("gen: install %s: %w", dbPath, err)
+	}
+
+	// Reopen at the final path: callers read the result through dataset.DB
+	// once Build returns, and leaving it pointed at the renamed-away temporary
+	// would have them querying a file that no longer has that name.
+	dataset.Config(dbPath)
+	if dataset.DB == nil {
+		return fmt.Errorf("gen: could not reopen %s", dbPath)
+	}
+	return nil
 }
 
 // Languages seeds the Language table from the keyboard catalogue.
