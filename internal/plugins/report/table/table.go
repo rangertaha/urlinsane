@@ -194,8 +194,13 @@ func summary(w io.Writer, r report.Report, c colorer) error {
 	}
 	fmt.Fprintln(w, line)
 
-	if r.Elapsed > 0 {
-		fmt.Fprintf(w, "%s\n", c(dim, fmt.Sprintf("%d rounds in %s", r.Rounds, r.Elapsed.Round(1e6))))
+	// Rounds, but never Elapsed. A duration differs on every run, and the table
+	// is a canonical rendering like any other — `--save out.txt` twice over one
+	// graph produced files differing on the last line, so a week-to-week diff
+	// showed a change on every scan. Timing is printed out of band by the CLI,
+	// which is what the invariant on Report.Elapsed has always said.
+	if r.Rounds > 0 {
+		fmt.Fprintf(w, "%s\n", c(dim, fmt.Sprintf("%d rounds", r.Rounds)))
 	}
 	return nil
 }

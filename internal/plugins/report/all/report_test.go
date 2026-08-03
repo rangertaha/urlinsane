@@ -804,3 +804,19 @@ func mustParse(t *testing.T, specs ...string) []report.Filter {
 	}
 	return f
 }
+
+// Elapsed must not reach a saved rendering in ANY format. It is documented as
+// out-of-band because a duration differs on every run, and the existing test
+// checked json only — where the field is json:"-" and could not have leaked.
+// The table renderer printed it, so `--save out.txt` twice over one graph gave
+// files differing on the last line.
+func TestElapsedIsNotInAnyCanonicalFormat(t *testing.T) {
+	g := scan(t)
+	for _, format := range report.Formats() {
+		a := render(t, g, report.Options{Format: format, Elapsed: 1})
+		b := render(t, g, report.Options{Format: format, Elapsed: 999999999})
+		if a != b {
+			t.Errorf("%s output changes with Elapsed; a saved report would differ on every run", format)
+		}
+	}
+}

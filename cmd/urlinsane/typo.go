@@ -301,11 +301,29 @@ func knownScope(scope []string) error {
 }
 
 func write(w io.Writer, r report.Report, format string, c *cli.Context) error {
-	return reportall.Write(w, r, report.Options{
+	if err := reportall.Write(w, r, report.Options{
 		Format:  format,
 		Verbose: c.Bool("verbose"),
 		Color:   useColor(c),
-	})
+	}); err != nil {
+		return err
+	}
+	// Timing goes to stderr, out of band, which is what Report.Elapsed has
+	// always documented: a duration differs on every run, so inside a rendering
+	// it would make two identical scans diff. On stderr it stays visible to a
+	// person and out of `-o json > out.json`.
+	if r.Elapsed > 0 {
+		fmt.Fprintf(c.App.ErrWriter, "  %s in %s\n",
+			plural(r.Rounds, "round"), r.Elapsed.Round(time.Millisecond))
+	}
+	return nil
+}
+
+func plural(n int, unit string) string {
+	if n == 1 {
+		return fmt.Sprintf("%d %s", n, unit)
+	}
+	return fmt.Sprintf("%d %ss", n, unit)
 }
 
 // save writes to a second sink. The format follows the extension, not -o, so
