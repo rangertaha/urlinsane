@@ -42,7 +42,10 @@ func TestExtractRefusesMangledBytes(t *testing.T) {
 		want  string
 	}{
 		{"maxmind.db.gz", mangle(goodGzip), isGzip, "not gzip data"},
-		{"dataset.db", mangle(goodSQLite), isSQLite, "not a SQLite database"},
+		// SQLite's magic is ASCII and survives the mangling (see
+		// TestManglingIsInvisibleInAnASCIIHeader), so the case that reaches
+		// this validator is a wrong or damaged header rather than that one.
+		{"dataset.db", []byte("SQLite format 2\x00................"), isSQLite, "not a SQLite database"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			dir := t.TempDir()
@@ -79,6 +82,24 @@ func TestMangleDestroysTheGzipMagic(t *testing.T) {
 	}
 	if err := isGzip(bad); err == nil {
 		t.Error("isGzip accepted the corruption that shipped")
+	}
+}
+
+// What a header check can and cannot catch, recorded so nobody assumes it
+// catches more.
+//
+// gzip's magic contains 0x8b, so a text round trip always destroys it and the
+// corruption is detectable from three bytes. SQLite's magic is the ASCII string
+// "SQLite format 3", which the same round trip leaves untouched — a mangled
+// database would keep a perfect header and be ruined from the first page
+// onward. dataset.db happens to be intact; if it ever is not, this check will
+// not be what tells us.
+func TestManglingIsInvisibleInAnASCIIHeader(t *testing.T) {
+	if err := isSQLite(mangle(goodSQLite)); err != nil {
+		t.Fatalf("the premise changed: mangling now alters the SQLite header (%v)", err)
+	}
+	if err := isGzip(mangle(goodGzip)); err == nil {
+		t.Fatal("the premise changed: mangling no longer destroys the gzip magic")
 	}
 }
 
