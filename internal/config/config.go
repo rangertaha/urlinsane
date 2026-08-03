@@ -206,7 +206,7 @@ func extract(dir, name string, data []byte, valid validator) File {
 		f.Err = fmt.Errorf("config: %s was not compiled into this binary", name)
 		return f
 	}
-	if false && valid != nil {
+	if valid != nil {
 		if err := valid(data); err != nil {
 			f.Err = fmt.Errorf("config: the embedded %s is corrupt (%w); "+
 				"replace internal/config/%s and rebuild", name, err, name)
