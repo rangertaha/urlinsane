@@ -14,6 +14,7 @@ Flat material — look things up here rather than reading it through.
 | [CLI]({{ site.baseurl }}/CLI/) | Every command, flag, filter, format and exit code, including the ones specified but not yet built (§9) |
 | [Design]({{ site.baseurl }}/DESIGN/) | The graph engine design document in full: data model, registry, operators, plan, execution, termination |
 | [Keyboards]({{ site.baseurl }}/KB/) | The `pkg/kb` layout model — geometric adjacency, layout selection, wrong-layout typing |
+| [Algorithms](algorithms/) | All thirty-two variant algorithms, what each models, the data it reads, and the tools and papers behind it |
 | [Glossary](glossary/) | Terms used across the book, defined once |
 | [Bibliography](bibliography/) | The measurement literature the algorithms come from, with the PDFs |
 
