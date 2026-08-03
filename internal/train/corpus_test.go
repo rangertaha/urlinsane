@@ -215,3 +215,52 @@ func TestFitAnchorsAndBeliefFromRefusesAnInvertedModel(t *testing.T) {
 		t.Errorf("err = %v, want it to say belief would be inverted", err)
 	}
 }
+
+// A model must arrive at a scan still oriented.
+//
+// Fit anchors and BeliefFrom checks, but between them lies the artifact: a
+// model is encoded to dag-cbor, addressed by CID, and decoded somewhere else.
+// If Focus did not survive that, every model loaded from disk would be rejected
+// by the guard — or worse, accepted while inverted. The path is fit -> Addressed
+// -> Decode -> BeliefFrom, and it is the one a --model flag will use, so it is
+// worth asserting rather than assuming.
+//
+// Seed 3 because it is one of the seeds whose unanchored orientation is wrong
+// (see TestFitAnchorsAndBeliefFromRefusesAnInvertedModel), so this also proves
+// the anchoring is what survives, not a coincidence.
+func TestAModelSurvivesTheArtifactRoundTripOriented(t *testing.T) {
+	g, seed := scan(t)
+	cfg := DefaultConfig()
+	cfg.Seed = 3
+	res, _, err := Fit(cfg, Scan{Graph: g, Seed: seed})
+	if err != nil {
+		t.Fatalf("fit: %v", err)
+	}
+
+	block, want, err := res.Model.Addressed()
+	if err != nil {
+		t.Fatalf("encode: %v", err)
+	}
+	back, err := model.Decode(block)
+	if err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+
+	if got, orig := back.Focus(), res.Model.Focus(); len(got) != len(orig) ||
+		(len(got) == 1 && got[0] != orig[0]) {
+		t.Errorf("Focus = %v after the round trip, was %v", got, orig)
+	}
+	if _, err := BeliefFrom(back); err != nil {
+		t.Errorf("BeliefFrom rejected a model that came back off its own artifact: %v", err)
+	}
+
+	// The CID is the model's identity, so it must not depend on having been
+	// decoded rather than fitted.
+	got, err := back.CID()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got != want {
+		t.Errorf("CID = %s after the round trip, was %s", got, want)
+	}
+}
