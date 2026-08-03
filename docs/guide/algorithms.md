@@ -10,7 +10,7 @@ nav_order: 4
 - TOC
 {:toc}
 
-An algorithm generates plausible variants of a name. There are 29, each one
+An algorithm generates plausible variants of a name. There are 30, each one
 modelling a specific way a name goes wrong — the error taxonomy behind them is
 [chapter 3](../../attack/errors/).
 
@@ -54,6 +54,7 @@ type: those run on any nameable node, domain or package or handle alike.
 | `tld` | Wrong TLD | domain | Substitute a different public suffix |
 | `tli` | TLD Insertion | domain | Append a suffix, making the whole name a subdomain: `example.com.br` |
 | `vs` | Vowel Swapping | any | Swap one vowel for another: `ixample` |
+| `xhs` | Cross-language Homophone | any | Swap for a spelling that sounds the same in another language: `youtube` → `yutup` |
 
 ## Selecting them
 
@@ -83,7 +84,7 @@ of every nameserver it happens to discover. See
 
 ## Which ones to run
 
-Running all 29 is the default and is right for a one-off audit where you have
+Running all 30 is the default and is right for a one-off audit where you have
 time. For anything repeated, pick by threat model.
 
 **A consumer-facing brand.** Human error dominates, and reading errors dominate
@@ -124,6 +125,16 @@ a lot. Exclude it unless you specifically want bitsquat coverage.
 **`hr` (homoglyphs)** is the algorithm you cannot replace with careful reading.
 Its output often looks *identical* to the seed in a terminal. Pair it with the
 `idn` operator's punycode output to see what is really there.
+
+**`xhs` is the one generator that is not about a single language.** `hs` swaps a
+word for one that sounds like it *in the same language* — base and bass. `xhs`
+swaps for one that sounds like it to a speaker of a different language:
+`youtube` → `yutup`, `boutique` → `boetiek` → `butik`, `baby` → `bebi`. It
+catches the person who heard a name in a language whose orthography spells that
+sound differently and wrote down what they heard, which a curated English
+homophone list cannot reach by construction. X-squatter (ACM TOPS 2024) measured
+these and found ~15% carry TLS certificates against 7% for other squatting
+types — they are provisioned, not just registered.
 
 **`cm`, `hs`, `vs`, `gi`, `gr`, `cns`, `ons`** are **language-driven**: they read
 vocabulary out of the dataset database, and what they generate depends on which

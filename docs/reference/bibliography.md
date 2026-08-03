@@ -43,19 +43,11 @@ mapping, and it is the answer to "why is this one here?".
 | `cb` | Kintis et al., *Hiding in Plain Sight* (CCS 2017) — combosquatting outnumbers and outlives typo variants | [p569-kintisA.pdf](../../papers/p569-kintisA.pdf) |
 | `co` `cs` `cr` `acs` `aci` | Szurdi et al., *The Long "Taile" of Typosquatting* (USENIX Sec 2014) | [sec14-paper-szurdi.pdf](../../papers/sec14-paper-szurdi.pdf) |
 | `hs` | Nikiforakis et al., *Soundsquatting* — homophones as a squatting vector | see below |
-| `hs` (cross-language) | Valentim et al., *X-squatter* (ACM TOPS 2024) — sound-squatting **across** languages, ~15% of candidates carry TLS certificates | [3663569.pdf](../../papers/3663569.pdf) |
+| `xhs` | Valentim et al., *X-squatter* (ACM TOPS 2024) — sound-squatting **across** languages, ~15% of candidates carry TLS certificates | [3663569.pdf](../../papers/3663569.pdf) |
 | `hr` | Unicode UTS #39, plus the IDN homograph literature | — |
 | `cm` | Birkbeck / human spelling-error corpora | — |
 | `afx` `nsc` `sep` | Duan et al. (NDSS 2021) and the PyPI/npm supply-chain measurements | [ndss2021_1B-1_23055_paper.pdf](../../papers/ndss2021_1B-1_23055_paper.pdf) |
 | `tld` `sld` `tli` | Agten et al. and the ccTLD/level measurement work | [imc17-final215.pdf](../../papers/imc17-final215.pdf) |
-
-{: .warning }
-> **26 of the 27 PDFs in `docs/papers/` are byte-damaged** — every byte ≥ 0x80
-> was replaced by the UTF-8 replacement character before they were committed, so
-> the Flate streams are broken and most readers will refuse them. Only
-> `3663569.pdf` (X-squatter) and `Measuring and Analyzing Typosquatting.pdf`
-> still open. The damage is in git history; the original URLs below are the way
-> back.
 
 ## Start here
 

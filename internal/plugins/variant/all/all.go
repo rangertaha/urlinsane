@@ -46,6 +46,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/tld"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/tli"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/vs"
+	"github.com/rangertaha/urlinsane/internal/plugins/variant/xhs"
 )
 
 // Specs returns every algorithm declaration, in id order.
@@ -78,6 +79,7 @@ func Specs(o variant.Options) []variant.Spec {
 		vs.Spec(o.Languages),
 		hr.Spec(o.Languages),
 		hs.Spec(o.Languages),
+		xhs.Spec(),
 		cm.Spec(o.Languages),
 		gi.Spec(o.Languages),
 		gr.Spec(o.Languages),

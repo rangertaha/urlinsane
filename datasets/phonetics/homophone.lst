@@ -1,0 +1,7670 @@
+# Cross-language homophones: spellings that sound alike to speakers of
+# different languages.
+#
+# One group per line, space separated. These are NOT the per-language
+# homophones in languages/<code>/homophone.lst — those are words that rhyme
+# within one language, and `hs` uses them. These span languages: "youtube" and
+# "yutup" are the same sound written by an English and a Turkish speaker, and
+# "boutique / boetiek / butik" is one word spelled by four.
+#
+# The technique is sound-squatting across languages, described in
+# X-squatter (Valentim et al., ACM TOPS 2024, docs/papers/3663569.pdf), which
+# found ~15% of such candidates carry TLS certificates against 7% for other
+# squatting types. The `xhs` algorithm reads this file.
+#
+# Derived, not curated. Regenerate with:
+#
+#     python3 scripts/crosshomophones.py <wikipron-tsv-dir> datasets/phonetics/homophone.lst
+#
+# Source: WikiPron broad transcriptions (github.com/CUNY-CL/wikipron), 15
+# languages, 1.2M pronunciations, grouped by IPA after stripping stress, length
+# and syllable marks. Kept: groups of 2-6 typeable spellings drawn from two or
+# more languages, minimum four characters. Data is CC BY-SA, from Wiktionary.
+aagt acht
+aake acker aken
+aalbert albert
+aalbrecht albrecht
+aalen haleine
+aaleniano alleniano
+aalten alte
+aalto alto altto
+aami army emmi
+aanbinden anbinden
+aandienen andienen
+aankoop angkop
+aanmaak hamac hamacs
+aanname annahme
+aannemen annehmen
+aantaal antal
+aantreden antrede
+aapa apaa empan empans
+aarde aarden arde
+aaron aron
+aasa ansant ansas encens
+aase azen
+aasen azen
+aasi arsey assi assie aussie
+aasig asyik
+abac abak abaque abaques
+abaca abacas abaka
+abacial abbatial abbatiale
+abacuc habacuc
+abad abade abades
+abada abadas
+abadai abade abader
+abadas abadasse abadassent
+abadesa abadessa
+abadesas abadessas
+abaieras aberra aberrar aberras
+abaja abaya
+abajoue abaju
+abala abalar
+abalada avalada
+abalado avalado
+abalar avalar
+abale abaler
+abales aval
+abana abanar habana
+abanos habanos
+abarca abarcar
+abasia abazia
+abasta abastar
+abastarda abastardar
+abat abatte abattent abattes
+abataj abattage
+abate abater abattez
+abatis abattisse abattissent abattisses
+abcug abzug
+abdala abdallah
+abdia abdias
+abdic abdique abdiquent abdiques
+abdica abdiqua
+abdicas abdiquasse abdiquasses
+abdique abdiquer abdiquez
+abdomen abdomens
+abdoul abdul
+abdoulla abdula
+abductor abduktor
+abeel abel
+abeiros haberos
+aberante aberrante
+abetouro avetoro
+abidos habidos
+abil habile habiles
+abilita habilitar
+abiose abiosi
+abiotic abiotik
+abis abysse abysses
+abisal abyssal abyssale abyssales
+abise abisser avise
+abita habita habitar habitas habitat habitats
+abitante habitante
+abito habito
+abitua habitua habituar
+abiye habiller
+ablater hablate
+ablatif ablatifs
+ablativ ablative
+abnega abnegar
+aboba abobar
+abobada abobadar
+aboli abolir
+aboli abolit
+aborda abordar
+aborda abordas
+aborta abortar
+aboulie aboulies abulie
+aboulique abouliques abulik
+abouta aboutas abuta
+abracadabra abrakadabra
+abrasif abrasifs abrasiv
+abrikoos abrikos
+abscisa abscissa
+abscisse absis apsis
+abstract abstrakt
+abusar abuza
+abyssaux aviso
+acaba acabar akaba
+acabe acabit
+acabo acabou
+acacia acacias
+academie akademi akademie
+acai asai
+acajou acajous acaju akaju
+acal akal
+acantosis akantosis
+acar akar
+acaricia acariciar
+acatholique akatolik
+acaz akas
+acclama acclamas aclama aclamar
+acclamai acclamer acclamez aclame
+acclamasse acclamassent acclamasses aclamas
+acclimata acclimatas aclimata aclimatar
+acclimatai acclimater acclimatez aclimate
+acclimatasse acclimatassent acclimatasses aclimatas
+accorda accordas acorda
+accordai accorder accordez acorde
+accouda accoudas acuda
+accoudai accouder accoudez acude
+accoudasse accoudassent accoudasses acudas
+accra acra
+acea assear
+acente agente
+acera acerar
+acerba acerbar
+acerbar acervar
+acerca acercar
+acertar asertar assertar
+acessar acezar
+acetal asetal
+acetil asetil
+acha achar achat achats hacha hachas
+acha ascher
+achar achard
+achas aschers
+achas hachasse hachassent hachasses
+ache hachai hacher hachez
+ache hachis
+achina atinar
+achinar atinar
+achino acino
+achira atirar
+achita acquitta acquittas akita
+achiva aquiva
+achivo aquivo
+achsel aksel
+acid acide acides
+acidosis asidosis
+acinar assinar hacinar
+acino asino hacino
+acme acmi
+acne acni
+acne akne
+acobarda acobardar
+acolytat akolita
+acomete acometer
+acomoda acomodar
+acopla acoplar
+acorda acordar
+acosa acossar
+acosar acossar
+acosta acostar
+acoustique acoustiques akoestiek akustik
+acqui aquae
+acquiescer aquiescer
+acra akra
+acrecer acrescer
+acrobata akrobata
+acromia akromia
+acta akta
+actief aktif
+actif actifs aktif
+activ active activent actives
+activa activas aktiva
+activiste activistes aktivist hacktiviste
+acuar aqua
+acuarelista aquarelista
+acuarista aquarista
+acuartelar aquartelar
+acumula acumular
+acusar acuza
+acustica akustika
+acute acutes acuut
+adagi haddad
+adamik adamique
+adapta adaptar adaptas
+addictif adiktif
+addictive adictiv
+additif additiv
+adecuado adequado
+adecuar adequar
+adept adepte adeptes
+aderir adherir
+adieu adieux
+aditar agita
+adiutant adjutant
+adolecer adolescer
+adolf adolphe
+adolfo adolpho
+adonis adonisch
+adoptief adoptif adoptifs
+adorna adornar
+adri adrie
+aduaneiro aduanero
+adula adular
+aduna adunar
+adusi aduzir
+advent adwent
+adverbiom adverbium
+aera aerar
+aerodinamica aerodinamika aerodynamica
+aeschne eschen
+afachia afaquia
+afamar affama affamas
+afar enfant enfants
+afasie aphasie
+afeksi affectie
+afekt affect affecte affectent
+afemina afeminar
+afete affaiter
+afeto affetto
+afetuoso affettuoso
+affiler afile
+affirma affirmas afirmar
+affixa affixas afixar
+affixe affixent affixes afiks
+affront affronts
+afgan afghane afghanes
+afgana afghana
+afgani afghani
+afganistan afghanistan
+afgano afghano
+afila afilar
+afirma afirmar
+aflora aflorar
+africa afrika
+afta after
+afte after
+aften often
+agace agacent agaces hagas
+agami agamie
+agar hagar hagard hagards
+agat agate agathe
+agata agatha
+aggressiv agressif agressifs
+agir agirent
+agita agitar agitas
+agnat ania
+agoniza agonizar
+agora agourar
+agorar agourar
+agorero agoureiro
+agra agrar
+agradece agradecer
+agras agraz
+agrega agregar
+agresor agressor
+agua aguar
+aguaceiro aguacero
+ahlak akhlak
+ahndung andung
+aiche esch esche
+ailloli aioli
+aimant aimants aimas emma
+ainsi esse
+aira erra errar erras
+airer erre
+aische aisha
+aisselle aisselles esel
+ajouta ajoutas ajuta
+akaa akka encan encas
+akcent akzent
+aksel axel axelle
+aksi axis haxe
+aksila axila
+aksioma axioma
+akvavit aquavit
+alado halado
+alaga alagar halaga
+alagar halagar
+alameda alamedar
+alar allard
+alar halar
+alarm alarme alarment alarmes
+alarma alarmar
+alarme alarmer
+alas allasse allassent allasses halas
+alasca alaska
+alauda alaudar
+alauita alawita
+alba albe
+albatros albatross
+albert alberte
+albi halbi
+albiino albino
+albit albite
+alca alka
+alcali alcalis alkali
+alcalosis alkalosis
+alcana alkana
+alcane alkan
+alchile alkyler
+alchimia alkimia
+alchimia alquimia
+alcohol alcool
+alcol alcool alkohol alkol
+alcova alkowa
+alcyne alcynes alsin
+alda allda halda
+alega alegar
+aleksin alexine
+aleksja alexia alexya
+alem allem
+alene halener
+alepo aleppo
+alerj allergie
+alerta alertar
+aleviner alvine
+alfa alpha
+alfabet alphabet
+algal algale algales
+algaux algo
+alia aliar allias alya
+alibi alibis
+alice alis
+alice ellis
+alicia aliciar
+aliena alienar
+aligator alligator
+aliso alisso
+alita halita
+allah alle allen olla
+allein alloy
+allianssi alliantie
+allopathie alopati
+allophone alofon
+alloula alula
+allwo alvo
+aloca alocar
+aloi aluar
+alopecia alopesia
+alora alourar
+alosa aloza
+alpaca alpaka
+alta altar haleta
+alta auta
+alte haleter
+alto auto autu
+alucina alucinar
+alunissar alunizar
+amaca hamaca
+amada hamada
+amado amadou
+amalgam amalgame amalgames
+amalgama amalgamas
+amalgamai amalgame amalgamer
+amalgamas amalgamasse amalgamasses
+aman amman
+amaneirar amanerar
+amar amarre
+amara amarra
+amare amarre
+amarga amargar
+amargura amargurar
+amari amarre
+amarra amarrar amhara
+amarre amarrer
+amas amasse amassent amasses
+amasado amassado
+amasar amassar
+amasiar amazia
+amaso amasso
+amassa amassar amassas
+amassai amasse amasser amassez
+amati ammatti
+amato hamato
+ambrosia ambrozja
+amen amme
+amenorea amenorrea
+american amerikaan
+amfibi amfibie
+amic amik
+amical amicale
+amiga amigar
+amigis amigues amiguis
+amigue amigui
+amin amine
+aminoplast aminoplaste
+ammon amon
+ammoniac ammoniak amonyak
+ammonit amonit
+ampa hampa
+amper ampere
+amulet amulett
+amulet amulette
+anabolisme anabolizm
+anaco hanako
+anaconda anakonda
+anafilaksi anaphylaxie
+analecta analekta
+analisar analiza
+analisi analizi
+analist analyste analystes annaliste annalistes
+analiz analyse analyses
+analogie analoji
+anapest anapeste
+anatol anatole
+anatomi anatomie
+anatomis anatomisch
+anca anka
+ancha ancia
+ancho anco
+anchoa ancoa
+andora andorra
+aneks annexe
+anelante anhelante
+anelar anhelar
+anestesia anestesiar
+anexa anexar
+anfal anfall
+angka anka
+angle angles ogle
+anguria angurria
+anhidro anidro
+anii anille
+anilin aniline
+anima animar
+animal animale animales
+animaliza animalizar
+animas animasse animasses
+animasi animatie
+animaux animo
+anime animer
+ankilosis anquilosis
+annecy ansi
+annons anons
+anomali anomalie
+anomi anomie
+anonim anonyme
+ansaldo anzaldo
+ansen answer
+anta antage hanta
+antant entente
+antarctisch antarktis
+ante onto
+anti antti auntie
+antic antik antique
+antinomi antinomie
+anton antoon antton
+anula anular
+apago apagou
+apanage apanaj
+apara aparar
+aparat apparat
+aparece aparecer
+apart appart
+apeadeiro apeadero
+apel appel appelle
+apela apelar
+apena apenar
+aplaca aplacar
+apli appli
+aplicar aplika
+aplique appliquer
+aploide haploide
+aplot upload
+apocalypse apokalips
+apocar apoucar
+apocopa apocopar
+apocopa apokopa
+apocope apocopi
+apocope apokope
+apopa apoupar
+aporte apporter
+aposta apostar
+aposta apostat
+apostata apostatar
+apostrofe apostrophe
+apoteose apoteosi
+appellatif appellatifs appellativ
+apresa apressar
+apresado apressado
+apresar apressar
+apropo apropos
+apura apurar
+aquecer aquese
+aram haram
+aras arras
+arbitra arbitrar
+arca arcar arka
+arca arka
+arda harda
+arde arder
+arde arder harder
+area arrea
+argo argot
+aria arya
+ariano arriano
+aritmetica aritmetika
+arma armar
+arma armar armas
+arma armer
+armas armasse armasses
+arme armee
+arnaud arno
+arras harasse harassent
+arre arrher
+arson assen
+artchi arte
+arthur artur
+aryan egen
+asado assado
+asadura assadura
+asalariado assalariado
+asalariar assalariar
+asam assam
+asar assar azar
+asar azar hasard hasards hazard hazards
+asara assara
+asas asaz assaz hazas
+asat assad
+asbest asbeste
+asco ascou
+aseado asseado
+asear assear
+asegurar assegurar
+asesor assessor
+asesora assessora assessorar
+asesorar assessorar
+asestar assestar
+asfalt asphalt asphalte
+asfiksia asfixiar
+asfiksja asfixiar
+asia assear hacia
+asia aziar azja
+asiago aziago
+asiarca asiarcat
+asiel asile azil
+asimila assimilar
+asimilacionista assimilacionista
+asimilada assimilada
+asimilar assimilar
+asimile assimiler
+asina assinar azina hacina
+asis assis
+asistas assistas
+asociaal asocial
+asociado associado
+asociar associar
+asolar assolar
+asomar assomar
+asomo assomo
+aspi aspie
+aspic aspik
+aspirin aspirine
+assassina assassinar assassinat
+assassinai assassine assassiner
+assertif assertifs assertiv
+assiste assister
+assumido asumido
+assumir asumir
+assur azur
+assustado asustado
+assustador asustador
+assustar asustar
+asta hasta
+astat astate astates
+aste haste
+asteca azteca
+asten hasta
+aster hasta
+astico asticot asticots
+astioso hastioso
+astronomi astronomie
+ataca atacar hataca
+atacama atakama
+ataco ataku
+atak attack attaque attaques
+ataki ataque
+ataksia ataxia
+atal attal attale
+ataque attaquer
+atavisme atawizm
+atea atear
+atel attelle
+aten atten
+atena athena
+atest atteste attestent attestes
+athonita atonita
+atjeh entier entiers hantiez
+atol atoll
+atoleiro atolero
+atom atome atoom attohm
+atom atomes
+atos attouche attouchent attouches
+atrabiles atrabilis
+atrofia atrofiar
+atte enter hanter hantez
+atura aturar
+aucuba aukuba
+audace odas
+audio odio
+audit auxdits oodi
+auger hoje
+aule auli aulir
+aumaille omai
+auna aunar
+aunant aunas oona
+aussi ossi
+aussie fussel vermeer
+aussie ossi
+autel hotel
+auto autto
+autodidacte otodidakt
+automaat otomat
+automatisch otomatis
+autonome otonom
+autonomie otonomi
+autopsia autopsiar
+autoritair otoriter
+autsch ooch ouch ouche
+aval awal
+avale avaler
+avalista awalista
+avance awans
+avaria awaria
+avatar avatars
+avatar awatar
+avatara awatara
+avelino avellino
+aven awen
+avere havere
+aves avis awiz
+avida havida
+avido havido
+avir havir
+avisa avisar avisas
+aviso avizo
+aviva avivar
+avocado avokado
+awny honni
+axer haxe
+azot azote azotes
+azuleijo azulejo
+baard bard bart
+baardloos bartlos
+baarn bahren baren barren
+baarn barn
+baatten baten
+baba babar
+babbe babet
+babbel barbal barbel
+babe babi babie
+babie barbie bobby
+babilon babylon babylone
+babin babine
+babisme babizm
+babo babou
+baboe babu
+baboes babus
+babole babolein
+babu bambou
+baby bebe
+baby bebi
+baby beibi
+baca bacha bacia
+baca badgea badgeas baja
+baca baka vaca
+bacai bakaj
+bacak bajak
+bacchant bekannt bekant
+bach bakh
+bachata baciata
+bachi baki baque
+bachkir bachquir
+bacilar basilar vacilar
+backe bake baken bakke
+backen baken
+baclava baklava baklawa
+baco bacu bakoe bakou baku
+baco bako vaco
+bacterie bakteeri
+bada bader
+badaud bado vado
+baddeck bedek
+bade bader
+bael beil bile
+baga bagger
+baga bagua baguas vaga
+bagage bagages bagaj
+bagal vagal
+bagasse baguasse baguassent baguasses vagas
+bagatel bagatelle
+bage bague
+baggy bagi buggy
+bago bagou bagout
+bago vago
+bagos bagus
+bagos vagos
+baguai baguer baguez vague
+baia baja baya
+baie bailler bayer
+bailli baillis bayi
+bais vais
+baisons bezo
+bait byte
+baita baitar bajta
+bajam bayam
+bajan bayan
+bajd bajt bite byte
+bajki bike
+bajonet bajonett bayonet
+baju bayou bayu
+baka bakken
+bakken barchan barken
+bala balar
+balai balle ballet
+balalaica balalaika
+balan balane
+balast ballast
+balaste ballaster
+balba valva
+balcon balkon
+bald ballt balte
+baldo baudo
+bale bali balie balir
+bale ballet vale
+balear balia
+balear baliar
+balen ballen
+balet ballet
+bali barley
+balido valido
+balina valina
+balioso valioso
+balk baulk
+balk baulk bolk
+balkan balken
+ballonne ballonnent ballonnes balon
+ballot balo
+ballote ballotte balot
+ballute belut
+balzac balzak
+bamboe bambu
+bami bammy
+banaal banal banale banales banals
+banaan banan banane bananes
+banaliza banalizar
+bananeira bananera
+bananeiro bananero
+banaux bano vano
+banca banka
+banche bosh
+banchina banquina
+band bannt bant
+band bent
+bandara bandarra
+bande banen
+bandit body
+bands bents bentz benz
+banff barf barff
+bang bank
+bang bong
+bangku banku
+banir bannir
+bank bonk
+bankett banquette
+bannen barna
+banner vane
+banni barney
+bantoe bantu
+bantoestan bantustan
+bantou batu
+baptiste batist batiste
+bara barra
+bara barra barrar
+baraka barraca
+barakuda barracuda
+baras varas
+barata baratar
+barbeau barbo
+barbi barbie
+barbote barboter
+barca barka
+barca basse bassen
+bardo bardot bardots
+bare baren barre
+barena barrena
+bareno barreno
+barett barrette
+barg bark
+barica barrica
+baril barre barrir bary
+bario barrio
+barista barrista
+barman barmann
+baro barro
+barock barok
+barracuda barrakuda
+barre barrer
+barreau barreaux barro barrot
+barricada barricadas
+bars base
+barson bassen
+basa baza
+basa baza bazar
+basaal basale
+basalt basalte bazalt
+basca vasca
+baschina baskina
+basco vasco
+base basen bazen
+base baser
+base basset
+baseball beisbol
+basel bazel
+basen bazen
+basiel basile
+basilect basilecte
+basique bazic
+bask basque basques
+bask basque bosk bosque
+basket baskets
+basket basquet
+basta bastar vasta
+bastar bastard
+basto vasto
+bate bater batter battez vate
+bateau bato vato
+bathyale batial
+bato batu
+batoon betun
+baud bawd bird board bonde bored
+baud board
+baume boom
+bave baver
+bawdy body
+bazaar bazar
+bazaar besant besants bezant bezants bizarre
+bazar bazars
+bazo bazou
+bazooka bazuca
+bazooka bezoeken
+beach beech bitch
+beagle bigle
+beagle bigler
+beaked biegt
+beaky viqui
+beamen beamer beemer bema bima
+beanie bini
+beast biest
+beaten bieten
+beats beets bits
+beatty biitti bitti
+beaucoup buku
+bebe bebee beber
+beca beka
+beccs becks binks
+beck becki becky beki beque
+becken beckon bekken
+bedaagd bedacht
+bedeau bedo
+bedecken bedekken
+bedst best
+beefy bife
+beeper biepen
+bega vega
+begano vegano
+beghina beguina
+beghino beguino
+begin beginn
+beig bike
+beige biga
+beige binche
+bein bind bine
+beira beirar vera
+beissen bison
+beiz bights bites bytes
+bejaard bejahrt
+bela bella
+bela bella vela
+belag belak
+belah bilde
+belaroes belarus
+beletten burletta
+beli belly
+belice belize
+bella belle bellen
+bello belo
+beloega beluga
+belohnen belonen
+belum bloem bloom
+benda venda
+bende bender
+bendee bendi bendy
+bendo vendo
+benedict benedikt
+beneficia beneficiar
+benehmen benemen
+beni benny
+beoley biili bile bili billig
+beraad berat
+berg berk
+berna bernas
+berna berner
+bernai berne berner bernez
+besingen bezingen
+besinnen bezinnen
+beste veste
+beta betar veta
+beta betta
+betar vetar
+bete vete
+betone betonen
+betoneira betonera
+bets betts
+betta bette better bettor
+bewb boob
+bezi bezie
+bezoar bison
+bhutan butan
+biathlon biatlon
+biba viva
+bibace vivas vivaz
+bibe bibi
+bibe vibe vive
+bibelot biblo
+bibliofiili bibliofilie
+bica bicar
+biceps bizeps
+bicha bichar bichat
+bici biisi bisi
+bicker bikken
+bickern bikken
+bico bicot vico
+bico biku
+bida vida
+bidas bidasse vidas
+bidden bidder
+bide bidee
+bido bidon
+bidou bidu
+bienal biennal
+bies biesse biez
+bife biffer buffet
+biga viga
+bigami bigamie
+bigas vigas
+bighi bigue
+bight bite byte
+bigi biji
+bigo bigot vigo
+bigot bigote bigott
+bije billet
+bijou bijoux
+bike biker
+bikini biquini
+bilabial bilabiale
+bild bilt built
+bile biler
+bileet bilet billett
+bilet billett
+biliar billiard
+bilirrubina bilirubina
+biljet billett
+biljoen biljon
+biller billett biye
+billett billette
+binair biner
+binasa vinaza
+binde binden
+bine biner vine
+binnen binner
+bino vino
+biofisica biofysica
+biologi biologie
+biomasa biomassa
+biotop biotopes
+bipa bipas
+bira vira
+biro birro
+biruta viruta
+bisa bisar
+bisa visa viza
+bisar bizarre
+bisca bizca
+biscaia biskaja
+bische bisquer
+bischkek bishkek
+biscuit biskuit
+bise bisse bisser vise
+bisnes business
+bison bisonne bizon
+bisou bisu bizu bzou
+bisschen bissen bisson
+bistro bistrot
+bitola bitolar vitola
+bitte bitter
+bitten bittern
+biznes business
+biznesmen businessman businessmen
+bizoune bizun
+blaa blah blanc
+blaag blag
+blaas blas blass
+black blacks blag
+blad blot
+blag blague
+blanco blanko
+blant blunt
+blaow blau
+blase blazen
+blase blows
+blasen blazen
+blasfema blasfemar
+blat blatt blatte blattes
+blaten blatter
+blawg blog blogg blogs blogue
+bleak blik
+bleargh blech
+blech bleck blek
+bled blet blette
+bled blinde blindes
+bleeder blide
+bleek blik
+bleen blin
+blende blenden blender
+bles bless blesse
+bleu bleue bleues bleus
+blick blik
+blinken blinker
+blits blitz
+bloc block blog blogg blok
+bloc blok bloke
+blocage blocages blokaj
+bloch blog
+block bloki bloque
+block bloque bloquer
+bloco bloku
+blod blued
+bloed blut
+bloei bluey
+bloemen bloomer blume
+bloes blouse blues bluz
+blog blogi blogue
+bloggero blogueiro bloguero
+blogue bloguer
+blokere blokkeren
+blond blore
+blondi blondie
+blouse blues bluz
+blucin bluejean
+blusa bluza
+boars bons bonze bores
+boba bomba bombas
+boba bouba
+bobas bombasse bombassent bombasses
+bobe bombai bomber bombez
+bobes bobis
+bobina bobinar bovina
+bobo bombons bonbon bonbons
+boboc bobok
+bocal bokaal vocal
+boce boche
+boceta buceta buseta
+bocha bocia
+boche borsch boss
+bodden borden bourdon
+bodi body
+boeddha bouddha buda
+boeddhist buddhist
+boedel boodle budel
+boekarest bucarest
+boeket buket
+boelen buhle
+boelen buhlen
+boemboe bumbu
+boenen bugne buhne
+boerka burka
+boerkini burkini
+boerlaan burlan
+boert burd burt
+boetiek boutiek boutique butik
+boezem buzem
+bogey bogi boguey
+bogey borgi
+bogie bourgie
+bohle bowle bowlen
+bohne bonde bunde
+bohren boren
+bohrer borra
+boia boiar boya
+boia boja
+boicot boikot
+boiu boyu
+bojkot boycott
+boka buca buka
+boksen boxen
+bokt borked
+bola bolar
+bolada volada
+bolado volado
+bolar volar
+bolear volea
+bolear volear
+boleiro bolero
+bolen bowlen
+boli bolig bolir booli voli
+bolina bolinar
+boliviaan bolivian
+bolle bollen
+bolo bolu
+bolo boorloo
+bolos boloss
+bolos boulos
+boma bomma bumma bummas
+bond bont bundt
+boneca boneka
+booba boober bube
+booby bubi
+booch butch
+booker bouquet bukee buque
+books buchs
+booly bule buli bulir bulli bully
+boomen boomer
+boordi bordi
+boote bote boten
+bootsen bozen
+bootsi bootsy buutsi
+booyah bouillant
+boozy busi
+boraat borat
+borda bordar
+bordeaux bordo
+borge borgen
+borste borsten
+bosa bossa
+boschi boski bosque
+bota botar bouta boutas buta
+bota botar vota
+bota botta bottas
+botani botanie
+botanic botanik
+botar votar
+boti botti
+boto voto
+botsuana botswana
+botten boughten
+boucane boucanent boucanes bukan
+boucaque bukak
+bouche bush
+boucler bucle bukle buklee
+bouddhisme budism
+boudi budi
+bouffant buffa
+bouffer buffet
+bougie bourgie buji
+bouilli bouillie bouillies bouillis
+bouillon bulion
+boulaie boulet boulin bule
+boulbi bulbi
+bouleau bouleaux boulot bulo
+bouledogue bulldog
+bouler bule
+boulette bulette
+boulevard bulwar
+boulimie bulimie
+bouline bullying
+boulon boulot bulo
+boulonnais bulone
+bouquet bouquin
+bourreau burro
+bourricot burrico
+bouton buto
+bouzouki busuki buzuki
+bouzouki buzuki
+braak brak
+braam bram
+brabo bravo
+brahma brama
+branca branka
+brava brawa
+bravura brawura
+break brek
+break brik brzeg
+bredt breed
+brett brette
+brice bries
+brida bridar
+bries bris
+briesen brise
+brique briquet
+broca brocar
+broeder bruder
+broek bruk
+broekie bruchi
+broer bror brur
+brom broom
+bron brun
+brons brunch
+bronze brossen
+bros brus
+brota brotar
+brusc brusk
+bruschetta brusqueta
+bruto brutto
+buca bugia
+bucal bukal
+bucaneiro bucanero
+buchara bujarra
+buchi buki buque
+buda buddha bude
+budda buddha
+bufa bufar buffar
+bufalo buffalo
+bufar buffar
+buga bugar
+buhler bula
+buia buja
+bukake bukkake
+bulla bulle buller
+bulli bully
+bumi buumi
+bura burra
+burada burda
+buras burras
+burca burka burqa
+buri buuri
+burila burilar
+burla burlar
+busca buscar
+buschi busque
+bushido busyido
+busi bussi
+busti buusti
+butaan butane
+buter buttai buttez byte
+butin buttaient buttais buttait byte
+butine butinent butines butyn
+caaba kaaba
+caama karma
+caba cabas cava kaba
+cabal cabale cabales kabaal
+cabala kavala
+caban cabane cavan kaban
+cabaret kabare
+cabaret kabaret
+cabaz cavas
+cabe caber cave
+cabeceira cabecera
+cabina kabina
+cabine kabine
+cabo cabot cavo
+cabo chabo chavo
+cabotage kabotaj
+cabreiro cabrero
+cabular kabula
+caca kacker
+caca kaka
+caca kaka kakken
+cacatua kakatua
+cace case casser cassez
+caceta caseta
+caceteira casetera
+cacha kaca
+cachar caixa kacha
+cacharro caciaro
+cache cacher
+cache cash
+cache cash kash
+cache catcher
+cachemiri kashmiri
+cachi caci cate cati
+cachi caqui kaki khaki
+cachis cates
+cacho cachot cachou
+cacho cacio
+caci chachi
+caciki tzatziki zaziki
+caco kaku
+cada kader
+caddie caddy
+caddie caddy cadi kadi
+cadeau cadeaux cado kado
+cadeira cadera
+cadeirona caderona
+cadeirudo caderudo
+cader kader
+cadette kadet kadett
+cadix kadis
+cadru kadru
+caduca caducar
+caecal cykel
+cafeteira cafetera
+cafta kafta
+cafuso cafuzo
+caga cagar
+cagna kania
+cago cagot cagots
+cago cagou
+cague caguer
+cahier cahiers cailler
+caia caiar kaja kaya
+caiaque kajaki
+caiaque kayakai kayaker kayakez
+caias kayas
+cailleau caillot caio
+caillette kajet
+caillou cailloux caio kajoe kayu
+caiman kajman
+cair kaai
+cajou caju
+cakal chacal
+cake keik
+cako chaco tschako
+cala calar calas kala
+calabria kalabria
+calai cale caler caller kale
+calai kalaj
+calaient calais calait kale
+calama calamar
+calamar kalamar
+calambur kalambur
+calame kalam
+calandra kalandra
+calas calasse calasses
+calbo calvo
+calc calque kalk
+calca kalka
+calcha calcia
+calche calque calquer
+calcuta kalkuta
+cald called
+caldera kaldera
+cale cali kali quali
+calebasse calvas
+caleira calera
+cales calice kalis
+calice caliche
+calicot kaliko
+califa califat kalifa kalifat
+califal kalifaal
+calife kalief kalif
+calina kalina
+calla cola colar colla kola
+caller kaalee kale kalle
+calligraphie kalligraphie
+calloo kelu
+calm kalm
+calmar kalmar
+calme calmer
+calmer cama kaama kama kammen karma
+calmy commie kammi
+calorie kalori
+calota kalota
+caluga kalouga kaluga
+calva calvas
+calva kalven
+cama kama
+camareira camarera
+camareiro camarero
+cambium kambium
+cambogia kambodscha
+camee camer
+camelia kamelia
+camelia kamelya
+camicase kamikaze
+camila kamila
+camion kamyon
+camionette camionnette kamyonet
+camisa kamisa
+camoi chamoy
+camoufler kamufle
+camp kamp
+camp kemp
+campania kampanya
+camper kamper
+campo kampo
+campus kampus
+cana khanat
+canabis cannabis
+canada kanada kannada
+canai cianai
+canal kanaal kanal
+canal kenal
+canal quenelle
+canapa kanapa
+canape kanapee
+canaque kanak kanake
+canaque kanaky
+canar canard kanar
+canaria kanarya
+canasta kanasta
+canato khanato
+canaux cano canot kano kanot
+cancan kaka kakka
+cancha kanca
+candela kandela
+cane caner canner
+canela canelar
+canella quenelle
+caneton canto
+canevas kanwa
+cangi kanji
+cangur kangur
+canibal cannibale kanibal
+canine kanin
+cannock kanak
+canon kanon
+canoniek canonique
+cans chance
+canseau canso kaaso
+canta kanta
+cantabria kantabria
+cantaron kantaron
+cantata kantata
+canto kanto
+canton kanton
+cantou kaatuu katu
+canu kanu
+canvas kanvas
+canyon kenyan
+caouanne caouannes kawan
+caoutchouc kautschuk
+capa capar cappa kapa kappa
+capac kapak
+capace capaz kapas
+capacitif kapasitif
+cape caper
+cape capi
+capela kapela
+capibara kapibara
+capisca capiscar
+capita capitar
+capital capitale capitales kapitaal kapital
+capitalisme kapitalizm
+capitalismo kapitalizmu
+capitalista kapitalista
+capitana capitanat kapitana
+capitaux capito
+capitol capitool kapitol
+capitoulat capitular
+capo capot kapo
+capo capoue
+capoc kapok
+capon capot kapo
+capota capotar
+capota kapota
+capote capoter
+capote kapot
+cappa kappa
+capped capte captent captes
+capping kaping
+cappuccino capuchino
+caps capse kaaps kaps
+caps kapis
+capsule kapsyl
+capta captar
+capuche capuz
+caput kaput
+capuz kapus
+cara charra
+cara kara
+carabineiro carabinero
+caramel karamell
+caravan karavaan karawan
+carbon karbon
+carbonat karbonat
+carca carcar
+carca karka
+carcajou carcaju
+carchi carte
+carchi karki
+cardinal kardinal
+cardo kardo
+care kare
+careiro carero
+carfie coffee kaffi
+cari kari
+cari kari karry
+caria karya
+caricatura caricaturar
+caricia cariciar
+carina karina
+carine karin karine karyne
+caritatif karitativ
+carla kalle kallen
+carla karla
+carli karli
+carma karma
+carmaux carmo
+carmen common kammen
+carmi karmi
+carminatif carminatifs karminativ
+carne karne
+carnes karnies
+carny kaani kani
+caro carreau carro karo
+caro carro karo
+caro karo
+carota karota
+carpa karpa
+carpeau carpo
+carpi karpi
+cars case cause
+carson kassen
+carta cartar
+carta cartar charta
+carta karta
+cartago karthago
+cartai carte carter quarter
+cartel kartell
+carter katten khata
+cartograf kartograf
+carton cotten katten
+carts kats
+casa casar casas kaza
+casa cassa cassar caza kasa
+casai case caser
+casali kazali
+casamata kazamata
+casaque kazak kazakh
+casar cassar cazar
+casar quasar
+casara kazara
+casas casasse casasses cazas
+casata cassata kasata
+casca cascar
+cascada kaskada
+cascado kaskado
+caschi kaski
+casco kasku
+case casi quasi
+casi cassie cassis kasi
+casia kasja
+casini cassini
+casino cassino
+casino kasino
+casis cassis
+cask casque kansk
+caso cazo
+casos cassos
+casos casus kasus kazus
+casque casques kask
+cassaco kazako
+cassant kaasa kasa kassa
+cassons kaso
+cast caste cost karst kast
+cast castes kast
+casta castar kasta
+caste caster
+castel castell
+castel kastel kastell
+casten caster castor costa kaste kasten
+casti kasti
+castra castrar
+cata catar catas kata
+cata cutter kater
+cataclysme kataklizm
+catafalque katafalk
+catalaan catalan catalane catalanes
+catalepsie katalepsie
+catalisar cataliza kataliza
+cataloga catalogar
+catana katana
+catapulta katapulta
+catar cathare cathares katar qatar
+catar qatar
+cataro catarro
+catas katers
+catastrofe katastrofe
+catechesi catequese
+catechismo catequismo
+cater kate
+catho cathos cato
+catholique catholiques katolik
+cato katu
+caton kato
+caudal caudale caudales codal
+caudaux codo
+caudex codex kodeks
+cauf coff conf confs corf cough
+caughten kotten
+causa causas cosa cousa coza koza
+causer coser cozer
+causey cose coze
+cautie kausi kaussi
+cava cavar kawa
+caval cavale cavalent cavales
+cavala cavalas
+cave cavi
+caveau cavo
+caviar kaviar
+cawed chord code cord
+cazuar kazuar
+cear ciar
+ceba seba sebba
+cebil sebil
+cebo sebo
+ceca cieca tcheca
+ceca seca secar seka
+cecear sesear
+ceche checker cieche
+cechi chequy ciechi
+ceco ceko cieco tcheco
+ceco seco seko
+ceda seda sedar zeda
+cedar seudah side
+cede ceder sede
+cedes sedes
+cedi seedy sidi
+cedo sedo
+cefa sefa
+cegada segada
+cegador segador
+cegadora segadora
+cegadoras segadoras
+cegadores segadores
+cegar sega segar
+cegar segar
+cegueira ceguera
+ceilidh keli kelli
+cela sela
+cela sela selar
+celac selak
+celado selado
+celar selar
+cele chele
+cella cellar selge seller
+cello celo cielo
+cello scelo
+cello selo
+cellofaan cellofan
+celo sello selo zelo
+celos selos
+celt celte sold
+celt kelt
+celt zelt
+celta ceuta
+cemita semita
+cena seina seinas sena senna
+cenado senado
+cenador senador
+cengli ceqli
+cenofobia xenofobia
+cense scents sens sense
+cent saat sente sentes sought
+cent saint scent sent
+cent sent
+centraal sentral
+cenzus zensus
+cepa sepa zepa
+cepal sepaal
+cepo sepo seppo
+cera seira sera
+cerca cercar
+ceres seres
+ceri cherry
+cern cerne cerner
+cerra serra serras
+cerrar serra serrar serras
+cerro sero
+cerveau cerveaux servo
+cesar cessar
+cesco chesco
+cese cesser sece seze
+cessa sinsat
+cest ceste sayest
+cesta sexta sextar
+cesto sesto
+cesto sexto sextou
+ceti chete
+cevo sevo
+ceylan scellant seela sela selaa
+ceylon sillan
+chacal chacals schakal
+chada chadda shadda
+chaetae chiti kiitti kitti
+chai chaix cheh shear
+chai chay
+chaine shen
+chainer scene
+chais chez skje
+chalet xale
+chalk choke
+challah challe
+chaman chamane sjamaan
+chamar chamard
+chamar sciama
+chameau chamou sciamo
+champi champis sharpie sjappie
+chan chon
+chanca cianca
+chance chances chasse
+chano ciano
+chanoekia chanukija
+chanque cianche
+chans szans
+chanson chansons
+chanten chanter tjanten
+chanuka hanukkah
+chao chau chow ciao tschau
+chao ciao tchao tchau
+chaon pshaw shaw shore sure zzxjoanw
+chape schapp
+chape sharp shop sjap
+chapeau chapeaux sciapo
+chaque sjaak syak
+char schar
+charakter karakter
+charco charkow
+charge charger
+charisma karisma
+charme charmer
+charo charro
+charpie choppy sjappie
+chassi chassie chassis
+chat khat
+chateau chato
+chatte schad
+chatti chatty
+chau ciao
+chaudeau syodo
+chausse schoss
+chauvi chovi
+chawarma shawarma xauarma
+chawwal syawal
+cheaply tiple
+cheaps cheeps chips
+cheat sciite xite
+checa shaka xeca
+checar shaka
+checheno tchetcheno
+check cheque czech
+checken checker cheka chequer
+checker cheque
+checks cheques czechs
+cheek chic
+cheeky chiqui ciki tique txiki
+cheeta chita cita
+chef chefe cheffy
+chef cheffe cheffes chefs
+chela keeler kiele kilde kile
+chelato quelato
+chelles shell
+chema quema
+chemie kemi
+chemise chemisent chemises
+cheney cheyney tinir
+cheng tcheng
+chenil chenille
+cheta queta
+cheti ketti
+cheto keto ketto
+cheto quieto quinteau
+cheval schwall
+chewie chewy chuy
+chia chiar
+chia chiar scia
+chia schier
+chiasma quiasma
+chic chique sheik
+chica cica tica ticar
+chicana chicanar chicanas
+chicha chichar shisha xixa
+chichi xixi
+chick tschick
+chicle chicly scicli
+chico chicot
+chico tico
+chicote chicoter
+chida tida
+chidas tidas
+chido tido
+chidos tidos
+chierie schiri
+chifa tifa
+chiffe schief sheaf
+chiite sjiiet
+children chillen chillun
+chile chili
+chile chili chilli chilly
+chile cile
+chile sheela sheila
+chili cili
+chillen chiller
+chilo kilo quilo
+chimento cimento
+chimie scimi
+chimio scimio
+chimo kimmo kimo quimo
+chin keane keen keene kien quine
+china chinar
+china cina tina
+china quina quinar
+chincha cincia
+chinche cince
+chine quiner
+chine schien sheen sheene
+chinese chinezen
+chinga cinga
+chingo cingo
+chinin quinine
+chino cino
+chino kino quinaud quino
+chinta cinta
+chinto cinto
+chio shiur
+chioschi quiosque
+chip chipai chipe chiper chipez
+chip chipe chipie chipies ship
+chipa chipar chipas shippar
+chipe chipent chipes sheep ship skip
+chips ships
+chique chiquer
+chique tique
+chiquito tiquito
+chira tira tirar
+chirotear tirotear
+chiru kiiru
+chispa cispa
+chiste ciste
+chito cito tito
+chiton kiten
+chiton kito
+chiudo kyudo
+chivo cibo
+chlor clor klor
+choc choque schock shalk shock
+choco schoko
+chocolade schokolade
+choepa jupa
+choix schwa
+choker chokez choque
+chola tchola
+choline coline colleen colline
+chona chonar shona xonar
+chop sjap tjap
+chope shoppi
+choque choquer
+chorie corre
+chorro coro
+chose shows
+chott schott short shot
+chouan schwa
+choucas chuca
+chouchou chuchu
+chousse chus schuss
+choute chute shoot
+chova coba
+chris crisse kris
+christopher cristopher
+chrom chrome
+chuchi cuci
+chuco ciuco
+chufe shoefie
+chula cula
+chuligan hooligan huligan
+chuma cuma
+chunga ciunga
+churri curi
+chusta justa
+chute shchuchy
+chute shooter shute
+chutzpah chuzpe
+chyle keil kile kyle
+chyme keim keinem
+ciao tchao
+cibe seaby
+cibe sibbe xibe
+ciborie sibori
+cibuti djibouti gibuti jibuti
+cica sica
+cici djidji gigi
+cicla ciclar
+ciclo siclo
+ciclos siclos
+cida seeda sida
+cider citer sider
+cidra sidra
+cidreira sidrera
+cifra cifrar
+cigar sigar
+cigarro sigaro
+cihat dschihad
+cillant sija
+cima sima
+cimeira cimera
+ciment siima sima
+cimes siimes
+cimmyt simit
+cimo simo
+cimo timo
+cine sine
+cinestesia sinestesia
+cingel singel single
+cinglant segla
+cingle segl seigle
+cingle single
+cinque sink sync
+cins jeans
+cinthie cynthie settee
+cinto siinto
+cipaille cipaye sipai
+cipo siipo sipoo sippo
+cipo sippu sipu
+cips jeeps
+cirene sirene
+cirro siro
+cirro sirop
+cisco sisko
+ciseau ciseaux siso
+cisma cismar sisma
+cist kissed kist
+cita citar citas sita
+citadel citadelle citadelles
+citai cite citer citez site sitte
+citar cithare sitar
+citar sitar
+citas citasse citasses
+citatie sitasi
+citent sitta
+citere citeren
+cito siitto sito
+citoplasma sitoplasma
+city scythie setae shitti siitti siti
+ciuchi cuki
+ciul kjol
+cive tive
+civiel civil civiles
+civil sibil sibylle
+clac clacs claque klak
+clacson klakson
+claimen glemme klemme
+claire clef cleph klee
+clan claw
+clan clen
+clan klan
+clap klap klapp
+claque claquer
+clara klara
+clarea clarear
+clarineta clarinete
+clart clot klad
+clase classe classer
+clasificado classificado
+clasificador classificador
+clasificar classificar
+clasista classista
+class classe klas
+classe classes klaas klas
+classique classiques klasik
+claudia klaudia
+clausura klauzura
+clava klawa
+clave klawi
+cleam clim
+clean clun klin
+clef cleph klef
+cleft klephte
+clem klem
+clepe clip clips klip
+cleuch kloek klug kluk
+cleuch kluch klug
+clica clicar klika
+click clique klick klik
+clicker clique klikken
+cliff klif kliff
+clignaient clignais clignait klinie
+clima climat klima
+climax klimaks klimax
+cline klein
+cling kling
+clinico kliinikko
+clinique kliniek
+clink klink
+clinker klinke klinken
+clinti klintti
+clio klio
+clip klip
+clipar klipa
+clipe clipper
+clipe klippi
+clipper klippe
+clips klips
+clique cliquer
+clique cliquey klikki
+clit klit
+clitique klitik
+clon clone clown klon kloon
+clona clonar
+clonal clonale
+clone klon
+cloop klub
+clop klap
+clopas klopa
+clope klop
+cloque klok
+clorhidrato cloridrato
+clorosi kloroosi
+clough klau
+clown clowns klon
+clown klauen
+clube klubi
+clutch klatsch
+coabita coabitar
+coabitar cohabitar
+coacher coche
+coaduna coadunar
+coagula coagular
+coala koala
+coalitie koalisi
+coar coua
+coar couard
+coarta coartar
+cobai kobay
+cobalt kobalt
+cobra cobrar
+cobra kobra
+cobrir cubrir
+coca cocar
+coca koka
+cocear coucear
+coche cocher
+coche conche kosch
+coche coque
+cochinchina cocincina
+cockpit kokpit
+cocktail kokteyl
+cocky kaakki kaki kakki kakkie khaki
+coco concots
+coco kokko koko kookoo
+coco koku
+cocon cocons koko
+cocon kokon kokoon
+cocos kokos kookos
+cocos kookkuus
+cocotte kokot
+coda codar koda
+codifiche codifique
+coene kuna
+coffee confit coughy koffie
+cofia cofiar
+cognac koniak
+cognat konia
+cognitif kognitiv
+cohibir coibir
+coin coing coins quint
+coiote coyote
+coito koitto
+cola collas kola kolla
+cola koller
+colaj collage
+cole coli colis collie koli
+cole colle
+cole coller
+colega kolega
+colera kolera
+coleta coletar
+colibri kolibri kolibrie
+colidir college
+colin collet colley kole
+collectief collectif collectifs kollektiv
+colleen kalin
+colleter colte
+collie colly kaali kali kalli
+collie koli kolli
+collo colo kollo kolo
+coloca colocar
+coloco colocou
+colocolo kolokolo
+colofon kolofon kolophon
+colon kolo
+colon kolon
+colon koolon
+colona colonna
+coloniza colonizar
+colonne kolonne
+colosal kolossal
+coloso colosso
+colugo kolugo
+coluna colunar
+coma comas koma komma
+coma koma
+comando komando
+combe corb corbe
+combi kombi
+combinatie kombinasi
+combine kombajn
+combine kombin
+combo kombo
+come comer
+comeau comeaux como
+comento komento
+comete cometer
+comfort komfort
+comi komi
+comice comices commies komis
+comique comiques komik
+comisionado comissionado
+commando kommando
+comment komma komment
+commies commis commit komi kommi
+comodo komodo
+compagnie compagnies kopani
+compas copa coppa kopa koppa
+competitie kompetisi
+compi kompi komppi
+compilatie kompilasi
+complex kompleks komplex
+complot komplot
+complot komplot komplott
+compo copeau copo
+componist komponist
+compost kompost
+composti komposti
+compres kompres
+compresi kompressi
+compressor kompresor
+compus kompus
+comu komu
+comunica comunicar
+conasse conasses connasse connasses konas
+concept koncept
+concert koncert
+conchae kanki
+concordaat konkordat
+concreet konkret
+conde konde
+conditie kondisi
+condom condoom kondom
+condom kodom
+cone coni koni kooni
+confeti confetti konfeti konfetti
+confirmatie konfirmasi
+conflict konflikt
+coni connil corny
+conisch konis
+conosco conozco
+conota conotar
+cons kans
+conseil kosej
+conso coso
+consoli konsoli
+constat constats costa
+consul kansel
+consulti konsultti
+contasse contasses kotas
+content kontent
+context kontekst
+conti kontti koonti
+continent kontinent
+conto konto
+conto kontto koonto
+contro kontro
+control kontrol
+contur kontur
+convel kowel
+convent konwent
+cook guck koch
+cooker koeken
+cookie cuque cuqui koekie kooky kuki
+cookie kooky
+cooler kuller
+cooling koeling
+coolly culli
+coonass kunas
+cooperar copeira copera
+cooping kuping
+coos cooze coups couse cousent couses
+cootie coutil cuti kuti kutti kuutti
+copa copar qoppa
+copal kopal
+copechi copeque
+copeiro copero
+copi copie copies kopi
+copia copiar
+copia copiar kopya
+copia copias kopia
+copiai copie copier
+copiaient copiais copiait kopie
+copie kopi kopie koppi
+copiloot kopilot
+coprocesador coprocessador
+coprocesadores coprocessadores
+copt koopt
+copte kopt
+copula copular kopula
+copy kaappi kapi kappi
+coqueiro coquero
+coquet koket kokett
+cora corar
+corba korba
+corda cordas
+cordas cordasse cordassent cordasses
+cori corrie
+coris corres
+cork corks kork
+corna korna
+cornar korna
+cornet kornet
+coro couro
+coronair koroner
+coronavirus koronavirus
+corporale korporale
+corpse kobz
+corpsman kommen
+corpus korpus
+corra kora
+corral koraal koral
+corre kore
+correa korea
+correct correcte korrekt
+corrector korektor
+correspondent korespondent
+corro koro
+corsa korsa
+corsi korsi kursi
+corso korso
+corta cortar
+corte coti kotti
+corti kortti
+cosa kosa
+cosa kosa xhosa
+cosa koza
+cosaco cossaco
+cosaque kozak
+cose cosser
+cose couce
+cose coze
+coseno cosseno
+cosmonaut kosmonaut
+cosmos kosmos
+coso cosso koso
+cossin kose
+cosso kossu
+cost kost
+costae kasti
+costaud costo
+costea costear
+costeiro costero
+costo koosto kosto
+costume kostuum
+costura costurar
+costureira costurera
+cota cotar kota
+cote kotte
+coteau coto
+cotero couteiro
+coto couto koottu
+coto couto koto
+coto kotu
+cotor kotor
+couac cuac quac
+couce kossi
+couenne cuan
+couillonne couillonnes kujon
+coulaient kule
+coulant khula kulla kullaa kuula kuulla
+couler cule
+coulisse kulis
+coulomb coulon kulo
+coulomb kulom
+coulomb kulomb
+coupant kuppa kuupa kuuppa
+coupee cupi kupi kuppi
+couper cupe kupee
+couplet kuplet
+coupon kupo
+cousaient cousais cousait cousin
+couscous cuscus cuscuz kuskus
+cousit koozie
+coussin kuse
+couteau couteaux cuto
+couve cove
+couvert kuvert
+cowan kauen
+coyote kojot
+coyote kojote
+crac kraak krak
+craca kraka
+crackear craquear
+crai kraj
+crap krab
+crasa crassa
+craso crasso
+crasse krass
+crecer crescer
+crecido crescido
+crediti krediitti
+credo kredo
+crema cremar
+creme krem
+cresta crestar
+creta kreta
+cria criar
+cric crick kriek
+cric crique krieg
+crime krim
+crimi krimi
+criminal kriminal
+criminel criminelle kriminell
+criminolog kriminolog
+cripto kripto
+cristal kristal
+cristo kristo
+critic kritiek kritik
+critico kriitikko
+critique critiques kritik
+croche krosch
+crocitar croscitar
+croissant croissons
+crom krom
+croma cromar
+croma kroma
+cromosoma cromossoma
+cronic kroniek kronik
+croquet kroket
+cross crosse kross
+crosta krosta
+crug krog
+cruise kroes krus
+cruna krona
+crup kroep krup
+crus crush cruz
+crus cruz
+cuado quado
+cuadra quadra quadrar
+cuadrado quadrado
+cuadrar quadrar
+cuadriciclo quadriciclo
+cuadriculado quadriculado
+cuadricular quadricular
+cuadriga quadriga
+cuadro quadro
+cuadruplicar quadruplicar
+cual qual
+cualificar qualificar
+cualque qualche
+cuando quando
+cuanta quanta
+cuanto quanto
+cuantum quantum
+cuarta quartar
+cuatro quatro
+cuba cubar kuba
+cuba cubas
+cubi koebi
+cubic kubik
+cubo kubu
+cubos kubus
+cuca cucar kuka
+cucaburra kukabura
+cuchito cucito
+cuco kukko
+cucul kyky kyykky
+cucuy kukui
+cueiro cuero
+cuesta questa
+cuesto questo
+cuilio quilio
+cuir queer
+cuisse quiz
+culca kulka
+culo kulo kuulo
+cult kult
+culti kulti kultti
+culto kuulto
+cultura kultura
+cuma kuma
+cumulatief cumulatif cumulatifs
+cuna kuna
+cunda kunda
+cunha cunhar kunia
+cuotidiano quotidiano
+cupa kupa
+cupo kupo kuuppo
+cupru kupru
+cura curar kura
+cura kora kura
+curan kuran
+curante currante
+curatela kuratela
+curcuma kurkuma
+curdi kurdi
+cure kurre kuure
+curi curri curry kuri kurri kuuri
+curia curiar
+curia kuria
+curo curro kuuro
+curo kuru
+cursori kursori
+curti kurtti
+curul kuru kuuru
+curva kurva kurwa
+curvami kurwami
+curvatura kurwatura
+cusco cuzco
+cush kusch kush
+cuspo kuspo
+custa custar
+custodia kustodia
+cute kjoet
+cvas kvas kwass
+cyaan sian
+cyclone cycloon siklon
+cynisch sinis
+cyste kiste kisten
+czar tsar tsars tzar tzars
+daag dach
+daags dachs
+daaki daki darkey
+daami dami dommy
+daaraan daran
+daarom darom
+daca daker
+daca dhaka
+dacar dakar
+dacha dacia datcha datscha
+dachshund dechsel deksel
+dachshund teckel
+daci date
+dacke tacke taquet taquin
+dactilic dactylique
+dactylo daktilo
+dada datter
+dado dadou dadu
+dafne daphne
+dafne daphne daphnie
+dahlem dalem
+dahlia dalia
+dahme dame
+daimio daimyo
+daki daqui
+dala dalla
+dalas dallas
+dale dalen
+dale daller
+dali dalli
+dalo dalot
+dama damas damma dhamma
+damai dame damer damez
+damas damasse damassent damasses
+dami dummy
+damie damien
+dammen dharma
+dana danar
+dance dans
+dance dense
+dancer dansen
+dandi dandy
+dani dany
+daniele danielle
+danilo danylo
+dank denk
+dansa danza
+darma dharma
+dasa daza
+dashi dasyi
+dasi dasse
+data datar datas
+datai date dater
+datas datasse datassent datasses
+datief datif dativ
+dato datu
+daub dombes
+daube doop
+daumen dowman
+daun down
+daune downer
+daus douse dowse
+dauzat dosar
+davi david davy
+david davide
+david dawid
+davos vermeer
+dawley doli
+dawny donnie
+dead dinde
+deaf dief
+deagle digo jigo
+dealai dealer dealez dile
+dealen dealer diele
+dealie dele diili dili dilli
+deason diessen
+debate debater
+debela debelar
+debelar develar
+debiel debil
+debil debile
+debilita debilitar
+debita debitar
+debout debu
+deca decke decker dekken
+deca deka
+decaan decan dekan
+decade dekade
+decal deckel deckle
+decan deccan decken dekken
+decepar descepar
+deceptie desepsi
+decida descida
+decido descido
+decifrador descifrador
+decifrar descifrar
+decimaal decimal
+decking dekking
+declama declamar
+declara declarar
+declare deklare
+declaro declarou
+declina declinar
+decrecer decrescer
+decreti dekreetti
+deeky dikki
+deem deme dyme dymes
+deemoed demut
+deener dienen diener dina
+deens dens
+deepen diepen
+deeper diepen
+deets diets
+defecatie defekasi
+defechi defeque
+defect defekt
+defendee difendi
+defensi defensie
+defensief defensiv
+definisi definitie
+definitief definitiv
+dego dingo
+deia deja
+dein deinen digne dine dyne
+deine dinah diner
+deinem dime disme
+deker dekker
+dele delhi deli
+dele delhi deli delir
+delega delegar
+deles deliz
+delfin delphin delphine
+deliberar deliverar
+delicaat delicat delikat
+delicatesse delikatesse
+delicia deliciar
+delimita delimitar
+della delle
+demagogi demagogie
+demiurghi demiurgi
+demontere demonteren
+demora demorar
+demoro demorou
+demosi demotie
+denis denni
+denke denken
+denota denotar
+depara deparar
+depiece dipis
+depila depilar
+deplora deplorar
+depo depot
+depresor depressor
+depura depurar
+deputa deputar
+desa dessa
+descarta descartar
+desce desi desse
+descer dese desse
+desclasificar desclassificar
+descobrir descubrir
+descualificar desqualificar
+deser dessert
+deses desses
+desfigura desfigurar
+desfiladeiro desfiladero
+desi desse
+design dizajn dizayn
+desire desiree
+deski deskie
+desolaat desolat
+dessous desu
+destaca destacar
+determina determinar
+detesta detestar
+detona detonar
+deva dewa
+devasa devassa devassar
+deve dever
+deve devi
+devi devir
+devoot devot
+devosi devotie
+dewey dewy doei
+dhimma dimmen dimmer
+diacon diakon
+diacritic diakritik
+diadeem diadem
+dialecte dialekt
+diapo diapos
+diascopi diascopie
+dibbuk dybbuk
+dica jika
+dicke dicker dikke dikken
+dicked dikt
+dickon dikken
+dickte dicta
+dictaat diktat
+dictee dicter
+dictie dixey dixie dixy
+didascalia didaskalia
+dieet diet
+dieet diyet
+dienaar dinar
+diet dite dites
+diffuusi difusi
+diftong diphthong
+digestif digestiv
+dimeeri dimeri
+dimensi dimensie
+dinamic dynamiek dynamique
+dinamica dinamika
+dinamis dynamisch
+dinamiza dynamisa dynamisas
+dinamo dynamo
+dinasti dynastie dynasties
+ding dink dinq
+dinge dingen dinger
+dinghi dinghy
+dino gino
+dipi dippi
+diplomaat diplomat
+diplomasi diplomatie
+diptic diptyque
+direct directe directes direkt
+directe direkte
+directie direksi
+disc disk disques
+discale discaler
+disciplin discipline disiplin
+disco disko
+discotheek diskothek
+discreti diskreetti
+disez dizer
+dispens dispense
+disse dissen
+disso jesu
+distal distel
+distinct distinkt
+dita ditar gita
+dito jitu
+diva diwa
+divan diwan
+divers diverse diverses
+divin divine
+divisa divisas
+divisai divise diviser
+divisi divisie
+djihad jihad
+doar douar
+doca doka
+doce dosi
+doctor doktor
+doctrine doktrin
+documenti dokumentti
+dodo doudo
+doeg duch
+doeken dukkha
+doekoen dukun
+doelen doula dulle
+doemen doomer duma
+doepa dupa
+doer douer
+doerak durak
+doge doghe
+doggi doghi dogi
+dogma dogme
+dogmatic dogmatik
+dohle dolen
+dokter doktor
+dola dollar
+dolin doline
+dollar dolle dollen
+dolomiitti dolomiti
+doma domar
+domaine domen
+domestik domestique domestiquent domestiques
+domi doomi
+domina dominar
+domina dominat
+dominanssi dominantie
+dominasi dominatie
+domine dominee
+dominica dominika
+dompter dotai dote doter dotez
+donasi donatie
+donat donut
+doomy dumi
+dora dourar
+dorada dourada
+dorado dourado
+dorador dourador
+doradora douradora
+dorar dourar
+dores doris
+dosa doza
+dosage dozaj
+doser doze
+dota dotas
+dotrina doutrina doutrinar
+douane duane
+doublage dublaj
+doubler dublee
+douchen dusche
+douchen duschen
+doucher duche
+douchy duche
+doudou dudu
+douillet duje
+doula doullens dulla
+doula dula
+douma doumas duma
+doumas duuma
+draak drag drak
+draga dragar
+dragon dragun
+drob drop
+droeg druch druh
+droga drogar
+droghi drogi
+dron drone
+drong dronk
+drost drozd
+drug druk dryck
+dseta seta setar zeta
+dubai dubaj
+dubla dublar
+duca duka
+ducat dukat
+duce duche
+duchi duque
+duel duell
+duela duelar
+dueto duetto
+duli duly
+duly juli julie
+dupleks duplex
+duplex duplexe duplexent duplexes
+dura durar
+dure duren dyre
+duri duuri
+duro duru
+dynamiet dynamite dynamites
+dzeta zeta
+dzeus zeus
+eagle egal igel
+eats iets
+ebbe ebben
+ebben ebon
+ecatombe hecatombe
+echi ekkie
+ecke ekka ekker
+eclair eklair ekler
+eclipse eklipsi
+econom econoom
+economie ekonomi
+ecuador equador
+eczeem eksem
+edisi editie
+edit eedit
+educa educar
+eelen elen
+eelis eles
+eensy inssi
+eepos epos
+eerde erde
+eerst erst
+eerste eersten erste
+eesti esti
+eetos ethos etos
+efekt effect effekt infect infecte infectes
+efektif effectief effektiv
+efendi effendi
+efeso epheso
+effe effen ephor
+efficace eficaz
+eftalita heftalita
+eggah eggar egge egger
+ehren eren
+eifel eiffel
+eile isla islay
+eise yser
+eitel ital
+eksempel exempel
+ekspedisi expeditie
+ekspert expert
+eksplicit expliciet explicit explicite explicites
+eksplikatif explicatif explicatifs
+eksplorasi exploratie
+eksport export
+ekspres expres
+ekspresi expressie
+ekstra extra
+ekstrapolasi extrapolatie
+ekstrem extreem
+elabora elaborar
+elba elbe
+elce elche
+elchi eltchi
+elde elden elder
+elden eldon
+electoraal elektoral
+elena helena
+eleno heleno
+eles heles
+elfen elvan elven
+elimina eliminar
+eliminasi eliminatie
+elips ellipse ellipses
+elipse ellipsi
+elit elite
+elki elqui
+ella elle
+elocuentemente eloquentemente
+elsa elsen
+elsen elson
+elsi elsy
+elven elver
+elvira elwira
+embrio embryo
+emfase emphase
+emigra emigrar
+emina hemina
+emiraat emirat
+emisor emissor
+emisora emissora
+emma emme emmen emmer
+emolisina hemolisina
+emos hemos
+emoticon emotikon
+empiirikko empirico
+emula emular
+ende ender
+ende enne enneh
+endek hendek
+ender hender
+endian indian indien
+endue indu
+enemy ennemi ennemie ennemies ennemis
+engkel enkel
+enig enni henni
+ensemble ensembles
+enso enzo
+ente enten enter
+enzim enzym
+epaulet epaulette
+epica epika
+epidemiologi epidemiologie
+epifanie epiphanie
+epilepsi epilepsie
+epiloghi epilogi
+epis episch
+episcoop episkop
+epitaf epitaph
+epiteetti epiteti
+eppstein epstein
+equipara equiparar
+eraan eran
+erata errata
+erectie ereksi
+ergatif ergativ
+ergo ergot
+erie iiri irri
+erme ermee
+erotica erotika
+erotiek erotik
+erotis erotisch
+erts hertz
+esala exala exalar
+esau iisa
+esausto exausto
+escala escalar
+escalatie eskalasi
+escalona escalonar
+escalope eskalop
+escama escamar
+escanea escanear
+escanear escania
+escanear scanear
+escape eskap
+escapisme eskapizm
+escasear escassear
+escasez escassez
+escaso escasso
+eschyle esquil ezquil
+escita excitar
+esclop slab slap slop
+esclusivo exclusivo
+escompte escort
+escora escorar
+escritura escriturar
+escuadra esquadra
+escualidez esqualidez
+escudeiro escudero
+esculaap esculape
+esel ezel
+eses esses
+esikko exsico
+esimi eximir
+esiste existe
+eskimo esquimau esquimaux
+espadeiro espadero
+espanar hispana
+espera esperar
+espero esperou
+espeso espesso
+espessura espesura
+espeto espetou
+espiar expiar
+espiga espigar
+espira espirar expirar
+espirar expirar
+esplanada explanada
+esplicado explicado
+esplicar explicar
+esplosivo explosivo
+espo espoo expo
+espora esporar
+esposto exposto
+espuma espumar
+espumadeira espumadera
+esquiar ischia
+esquila esquilar
+esquina esquinar
+esquisso esquizo
+essa esser
+essay esse
+esse essen
+esstisch estish
+esta estar
+esta ester
+esta insta
+estaca estacar
+estafa estafar
+estafet estafette
+estala estalar
+estalinista stalinista
+estase estasi
+este ester
+este ester esther
+estee esti
+esteira estera
+estenuante extenuante
+ester esther
+esterior exterior
+estetika esthetica
+esto estou
+estofa estofar
+estou isto
+estrato extrato
+estremadura extremadura
+estresa estressar
+estresado estressado
+estresar estressar
+estriar istria
+estubo estuvo
+estufa estufar
+esuatini eswatini
+etanol ethanol
+eteen etheen
+eter ether
+eter etter
+ethyl etil
+etic etik
+etica etika
+etiket etikett
+etikette etiquette
+etta ette etten
+ette hete
+euge yudi yuezhi
+eula euler joelen jule
+euston houston
+eutanasia eutanasiar
+eutaw jutta utah
+evacua evacuar
+evita invita invitas
+excel excellent
+excel exel
+excellent exzellent
+exces excess
+excessief excessif
+excitar hesitar
+exclusief exclusif
+exoot exot
+explosief explosif explosiv
+expressif expressifs expressiv
+extern externe
+faam femme femmes
+faasi farcy farsi fossae
+fabrica fabricar
+fabriek fabrik
+fabrik fabrique
+face fase
+facet facette fassett
+faceta facetar
+faceta faseta
+facho fascho
+facial fascial
+fackel fakkel
+factie faksi foxy
+factitif faktitif
+fada fadar vadda
+faena faenas
+fago fagot
+fagot fagott
+fagote fagoter
+fahrer farra
+fahrrad farad
+fahrt fart
+faia faiar faja
+faiar fayard
+faida fayda
+fail file
+failliet faillite
+faina fajna
+faio fayot
+fair fare fehe
+faitout feto
+fake feyk
+fake pheic
+fakir fakirs faquir
+fala falar
+falak falaque
+falas falaz
+falc pfalz
+falcon fokken
+fale fali falir
+fale fallait
+falen falle
+falen fallen
+falic phallique phalliques
+falli folly
+falls fals pfalz
+falo falot falou
+falte fauci
+falx volks
+familia familya
+fanaal fanal phanal
+fanaux fano
+fand fant pfand
+fanfarona fanfarrona
+fanfic fanfik
+fani fanny
+fans fence
+fara farra
+farah farra
+faraud farro
+farc fark
+fardeau fardeaux fardo
+fark fuck
+farmar pharma
+farme farmer
+faro farro
+farpa farpar
+farta fartar fartas
+farty fati
+farve fava
+fasan fazan
+fascina fascinar fascinas
+fase faze fazer
+fase phase
+fasst fast faste
+fata fatha
+fataal fatal fatale fatales
+fatalisme fatalizm
+fati vati
+fatig fatigue fatigues
+fato fatoe
+fatua fatwa
+faul foul fowl
+fausser fosse fouce
+faute fought
+favela fawela
+favoriet favorit
+feague figue
+fealty filtti
+febo febu
+fece feche
+feci fetchy
+fede feder
+feed fidji figi fiji
+feedar fida
+feedee fidi
+feeks fiks
+feeler fiele file viele
+feelie feely fiili fili
+feeling filin
+feeniks feniks
+feest first
+feile fila filar pfeile phyla
+fein fine
+felc felds
+feld felt veld
+felicita felicitar
+felipe filipe filipi
+feliz fiilis files philis
+fella fellah felle fellow
+fellen felon
+feminiini feminini
+fena fenar
+fenece fenecer
+fenek fennec fennek
+fenil fenyl
+fenol phenol
+feodaal feodal
+feoffee fifi
+feriti ferriitti
+fermenti fermentti
+ferrar ferrare
+ferrar ferrat
+fertil fertile
+fese fesser
+fessed fest first
+festa festar
+festa feste fester veste
+festival festiwal
+festoen festoon
+feti fetti fetty
+fetisch fetisj
+fetor fiete
+fiado fiadu
+fiasco fiasko
+fica ficar fika
+ficcer ficke fikken
+ficelle ficelles
+ficha fichar
+ficken fikken
+fickst fixed
+fickte fictor
+fico ficou
+ficus fiikus fikus
+fieira fiera
+fielen phelan
+fiets viez
+fietse fietsen vize
+fighi figi
+fight veit
+figueiredo figueredo
+figura figurar
+fiksu fixo
+fila filar filas
+filai file filee filer filet filez
+filas filasse filassent filasses
+filateli philatelie
+file pfeil phial
+fileira filera
+filho fille filles
+filia filiar
+filial filiale
+filigran filigrane
+filip philippe
+filipa philippa
+filipin philippine philippines
+filipino filippiino
+filipo philippot
+filippus filipus
+fillip philip philipp phillip
+film filme filment filmes films
+filma filmas
+filmai filme filmer filmez
+filo filou filu
+filo philo
+filosof filosoof
+filosofi filosofie
+filozof philosophe
+fils fios fiss
+fina finar
+final finale finales finals
+finale finali
+finaliza finalizar
+finas finasse finasses
+finasse finasser
+finaux fino finou
+finca finka
+finca finke
+finche finque
+fine finne
+fing thing
+finiitti finiti
+finisaj finissage
+finish finnish
+finishen finisher
+finna finne
+fiord fjord
+fioul fjol fuel
+firma firmar
+firme firmi
+fisc fisk
+fisch fish ghoti
+fischen fission
+fissura fissurar fisura
+fissurar fisurar
+fito phyto
+fitoterapi fytotherapie
+fiumi fumy
+fiut fjut fute
+fixe fixer
+fizic physique
+fizyonomi physionomie
+flaca flaqua flaquas
+flacas flaquasse flaquassent flaquasses
+flachs flaks flax
+flag flak flaque flaquent flaques
+flag flinguent
+flair flare
+flak flock
+flama flamas
+flan flanc flancs flaw fleadh
+flanel flanell flanelle
+flap flop
+flash flesh
+flat flate flattai flatter flattez
+flat flet flett
+flaughter flotte
+flauta flaute
+flavi flavie
+flaw fleadh floor flow
+flax flecks flex
+fleak fleek flic
+flechse flexer flexor
+fleck flek
+fleece fleecy fliisi
+fleece flis fliz vlies
+fleeky flikki
+flegma phlegma
+flemme phlegm
+flens flense
+flexibel flexible flexibles
+flexibiliza flexibilizar
+flic flick flik
+flicker flikken
+flippen flipper
+flits flitz
+flitsen flitze
+flitsen flitzen
+floes flos
+floks fluks phlox
+flooey fluir
+floor flor fluor
+flora florar
+florear floria
+florecer florescer
+floreiro florero
+floresta florestar
+flot flott flotte
+flouse flouze flues flus
+flug fluke fluks pflug
+flugs fluks
+flui fluir
+flum flume
+flut flute
+flute flydt
+foaie foyer
+fobos phobos
+foca focar
+foca focka foka
+focal fokal
+focus fokus
+foda fonda fondas
+fode fondai fonder fondez
+fodi fugi fuji
+fogou fugu
+fokstrot foxtrot
+fole folie volli
+folg folk volk
+foncer foncez fosse
+fond fong vong
+fonde fondes ford
+fondu fondue
+fone foni fooni
+foneem fonem phonem
+fonetic fonetiek
+fonologi phonologie
+font fonte fort forte fought
+fooler foula fugle fula
+foon foune founes
+football futbal
+footsie ftse fuzzi
+fora fura furra
+forasteira forastera
+forasteiro forastero
+foresee fosse
+form forme
+forma formar
+forma format
+formaat format
+formiga formigar
+fornica fornicar
+foro forro
+fosa fossa
+fosa fossar
+fosar fossar
+fosfaat phosphat phosphate
+fosfata fosfatar
+fosiliza fossilizar
+foso fosso
+fossiel fossil fossile
+fotka vodka
+foto photo
+foto photon
+fotocopi photocopie
+fotokopi fotokopie
+foton photon
+fouad fuad
+fouailler foyer foyers
+foucault fuco
+fouetter fuete
+foufou fufu
+fougasse fugas fugaz
+fouka fuca
+foulard fular
+fourreau furro
+frac frack frag
+frac frak
+fracasar fracassar
+fracaso fracasso
+fram frem
+franc frank
+francese franceze
+franco franko
+francofilie frankofiili
+fresco fresko
+fresk frisk
+frieira friera
+frigidaire frijider
+frime pfriem
+frita fritar
+frottee frotter
+frustra frustrar
+fruteira frutera
+fruteiro frutero
+fuchi fuki
+fucking fugging
+fugt vogt voigt
+fuleiro fulero
+fuma fumar
+funest funeste funestes
+fungee fungi
+funk thank
+furo furro
+fusco fusku
+fusie fusil
+fusili fusilli
+fuso fuzo
+futura futurar
+gaba gabber
+gabar gabare gabares gabarre
+gabara gabarra
+gabe gaber
+gabe gabi gaby
+gabel gabelle
+gaca gaza
+gacho gaco
+gacki gangui
+gadam gadames
+gadji gaji
+gado gadoue
+gaelic gallig
+gafe gaffer
+gaga gangan
+gago gagu
+gaia gaja
+gaillet gaje
+gaio gaju
+gala galar
+galaksi galaxie
+galde gale galle
+gale galer
+gale galet
+galeri galleri
+gales galice
+galicja galitzia
+gall gaul gold gulv
+gallo galo galop galops
+gallon gellen
+galo galon galons galop
+galoot galut gelut
+galopa galopar
+galope galoper
+gama gamar gamma
+gambero gamberro
+gamel gammel
+gamer gaymer
+gana ghana ghanaer
+ganadeira ganadera
+ganadeiro ganadero
+gancho gancio
+gang gangue garg
+gang geng
+gangia ganja
+gani ganir
+ganna hane hannah
+gans ganz
+gara garra
+garage garaj
+garat garra
+garer garra
+gaspacho gazpacho
+gaspar gaspard
+gasta gastar
+gasthaus gasto
+gata gatar
+gate geet geht
+gateira gatera
+gaudy godi gondi
+gaul gowl
+gaum gauxholme gomme gomment gorm
+gaunt gont
+gaur gaure gord gore
+gauze gonze
+gavotte gawot
+gawf goth
+gaza gazas
+gazai gaze gazer gazez
+gaze ghazi
+gazella geselle
+gazelle gesell
+gazet gazette
+gazi ghazi
+gechi jack jekkie
+gecko geco gekko
+gedeck gedek
+geek geeky
+geez guise
+geige geiger
+geil guile gyle
+geisha gueixa
+geld gelt
+geli jelly
+gemen yemen
+gemi gemmy
+gene genie
+geni genie genny jenny
+genre joor
+gent ghent
+geodeesi geodesi
+geologi geologie
+gerilya guerrilla
+germe germer
+gest guessed guest
+gesti jesty
+geta guetta
+gets getz
+getto ghetto gueto
+ghiado guiado
+ghid guide guides
+ghimel gimel
+ghinda guinda
+ghini gini
+ghiro giro
+ghisa giza guisa guisar
+ghislain ghyslain gile
+ghoster goste
+ghoti gootti
+ghoulie ghouly gooly guli
+gier guia
+gift yift
+gigote gigoter
+gilde gilder guilder
+gilet gillette
+gili guili
+gilt guilt
+gingell jingle
+gita guita
+gitar guitar
+gitara guitarra
+giter jitter
+giunta junta
+giuri jury
+glace glacer
+glace glas glass
+glacial glaciale glaciales
+glad gland glands glas
+glad glande
+glamour glamur
+glan glane
+glanc glanz
+glance glans
+glas glass
+glean glin
+gleet glied
+glif glyphe
+glisa glissar
+globaliza globalizar
+globaux globo
+glomb glomp
+gloop glup
+gloria gloriar
+glorifica glorificar
+glos gloss
+glosa glosar glosas
+glotis glottis
+glottal glottale
+glout glut glute
+glucosa glukosa
+gnarly naali nalli nollie
+gnocchi nhoque
+gnom gnome
+gnoquer nhoque
+godard gouda
+goegelen googele googelen googlen googler
+goelasj goulash
+goethe guettai
+goethe guettai guetter guettez
+golear golia
+goleiro golero
+golf golfe
+golfe golfen
+gomita gomitar
+goni gooni
+googel google googol guggul
+google googler
+gook guck
+goopy goupil
+gorfo gorfou gorfous
+gormy gummi
+gorse gosse gosses goth
+gostar gusta
+gota gotha
+goteira gotera
+gouacher guache
+gouaille guai
+gouan guomindang
+goudjarati gudscharati
+goulart gular
+goulash gulasch
+goulet gule
+gourmer gourmet
+gourmet gurme
+graal gral
+grab grappe
+gracja grazia
+grad grat gratte
+grada gradar
+grafic grafik
+grafica grafika
+grafiteiro grafitero
+grai graj
+gram gramme
+grama gramar
+gran grann
+grana granar
+granit granite
+grapefruit grepfrut
+graph graphe graphes
+graphit graphite
+gras grasse grasses
+grasa grassa grassar
+graso grasso
+greca greka
+green grin
+grega gregar
+griefar grifa grifar
+gripa gripar
+grita gritar
+grito gritou
+groll grolle
+gros gross
+gros grosse grosses
+grosero grosseiro
+groso grosso
+grosor grossor
+grossura grosura
+groupe grub
+grus gruz
+guacamole salsamole
+guai guay
+guarda guardar
+gucci guci
+guia guiar
+guio guyot
+gujana guyana
+gula gule
+guna gunar
+gusa guza
+gypse jips
+haali hali halli holle holly
+habitant habitants habitas
+hache harsch hasch hast
+hadis hadith
+hadis hadiz jadiz
+haeckse hexe hexer
+hahnen hannen
+haida heide hider
+haie higher hire hiya
+haies hias
+hais hice
+haka jaca
+haki khaki
+hakki hockey
+hala halla
+hale haler
+hale halle
+hallo hallow halo
+hallu halu
+halt hold
+halts holz
+hama xamar
+hamas jamas
+hance hans
+hank honk
+happi harpy hoppy
+hata hatta
+hatti haughty hearty hottie
+haught haut honte
+haus house houss
+haussai hausser haussez oostzee
+hausse horse
+haussement haussements osma
+havana havanna
+heap hieb
+heater hitte
+heaty hiitti hitti
+hegemoni hegemonie
+heini heinie
+heischen hycean
+held helt
+helen hellen
+hella helle
+hello helo
+hemosiderina hemossiderina
+hence hens
+hende henna henne
+hertz herz
+hiato iato
+hibisco ibisco
+hidalgo idalgo
+hidatodo idatodo
+hidjab hijab
+hidra hydra
+hiena jena
+hiki jiqui
+hilda ilda
+hile hille
+hille hiller
+himalaia himalaja himalaya
+himalaia himalaya
+hinde hinder
+hindi indi indie
+hinodo inodo
+hipaa hippa hippe hipper
+hipertrofia hipertrofiar
+hipnos hypnos
+hipnose ipnosi
+hipogloso hipoglosso
+hipoteca hipotecar
+hipoteca ipoteca
+hipoteque ipoteche
+hipoteque ipotechi
+hippie riper
+hisopo hissopo
+hispano ispano
+hjal jarl yarl yawl
+hjelm yelm
+hobby robai robe rober robez
+hockey ochi
+hoki hokki
+holanda olanda
+holocausto olocausto
+homard omar
+homofiili homofili
+homotsygootti homozygotie
+honda onda
+hondo ondo
+honesta onesta
+honestamente onestamente
+honesto onesto
+hooley hoolie huuli
+hoopoe huppu
+hoops hubs hups whoops
+hoopy hupi
+hopas opas
+horda orada
+hornear ornear
+hortar orta
+horto ortho
+horus ouros
+hosca oscar
+hosco osco
+hospedeiro hospedero
+hoste oste
+hosteau hosto osto
+hoummous houmous hummus humus umus
+hounsi unssi
+hourra hourrah hurra urra urrar
+housard usar
+houston husten
+houthi ooty outil outils utti
+huaca waka
+huachana wacana
+huala wallah
+hualas wallace
+hubris ubres
+huchi ukki
+huco ukko
+hugo huugo
+huhu huhuu
+huit weet wheat
+hula hule
+hullu hulu
+hulluus hulus
+huma oemma
+humana humanar umana
+humanamente umanamente
+humanista umanista
+humano umano
+humar umar
+humedece humedecer umedecer
+humedecer umedecer
+humedecido umedecido
+hummus humus
+hunas unas
+hundan undan
+huni hunni
+hurtig hurtti
+huta juta
+huthi huti huuti
+hutteau yytoo
+huttu hutu
+hverken verken
+hymnique imnic
+iakoutsk jakuck
+iaque jaki yaki
+iarda jarda
+iatagan jatagan
+ibis iibis
+ichor icke ikke
+icona ikona
+iconic ikonik
+iconoclasme ikonoklazm
+idam idham
+idea idear
+ideaal ideal
+idealiza idealizar
+ideologi ideologie
+ider ieder
+idiolecte idiolekt
+idioot idiot
+idioticon idiotikon
+idol idole idoles
+idol idool
+idolatri idolatrie
+ieda jeder
+iemenita yemenita
+iepe jeppe
+ieri jeri
+igloo iglou iglu
+ihrer irra
+iiris iris
+ilegaliza ilegalizar
+ilumina iluminar
+image images imaj
+imagina imaginar imaginas
+imam iman
+imbeciel imbecile
+imita imitar imitas
+imitas imitasse imitasses
+imitere imiteren
+immediatamente inmediatamente
+immediato inmediato
+immens immense
+immune inmune
+imola imolar
+impas impasse
+imperfect imperfekt
+impresa impreza
+inactif inaktif
+inadecuado inadequado
+inala inalar
+inalador inhalador
+inalar inhalar
+inca inka
+incipientemente insipientemente
+incubator inkubator
+indeks index
+indiche indique
+indoor indor
+inefficace ineficaz
+inercja inerzia
+inertai inerte inerter inertez
+infaam infam
+inflasi inflatie
+influenca influenza
+influencer influenser
+ingen onion
+inhibida inibida
+inhibidas inibidas
+inhibido inibido
+inhibidor inibidor
+inhibidos inibidos
+inhibir inibir
+inhumano inumano
+inicia iniciar initia
+inicial initial initiale initiales
+inicie initier
+inicuo iniquo
+inlet inlett
+inna inne innen
+insect insekt
+inspirasi inspiratie
+instinctief instinktiv
+instrumenti instrumentti
+insulti insultti
+intens intense
+intensief intensiv
+inti intti
+intonasi intonatie
+invalida inwalida
+ioga joga yoga
+ioga yoga
+ione jonne jonnee
+ioni joni jonni yoni
+iota jota
+irak iraq
+iraki iraque iraqui
+irchi irkki
+ires iris
+iriitti iriti
+iritasi irritatie
+irkoutsk irkutsk
+isaac isaak izaak
+isaak izak
+isabel isabelle
+isabela isabella izabela
+isba izba
+isca iscar iska
+ische issue
+ischemia isquemia
+isco isko
+isco isku
+iscra iskra
+islamisme islamizm
+ismo istmo
+isola isolar
+isoler izole
+isotone izoton
+isses issus
+isthme isthmes istm
+itali italie
+italiaan italian
+italik italique
+itera iterar
+iucca jukka
+iura jura
+iuri juri jurri juuri yuri
+ivette yvette
+iwon yvonne
+jacht jagd jagt yacht
+jacka jaka
+jackett jackette jaquette
+jacob jakob
+jacuzzi jakuzi
+jage jagen
+jaguar jaguars
+jaja yaya
+jaju yayu
+jakki jakkie yarke
+jakku yaku
+jakuza yakusa yakuza yakuzas
+jama llama
+jang shanyang
+jang yang
+janine jeanine jeannine
+jard yard
+jaser jazer
+jasmin yasmin yasmine
+jasp jaspe
+jaspe jasper
+jata jatta yatta
+jatsi yahtzee yatzy
+jaun jawn john
+java jawa
+jazz jazze jazzent jazzes
+jazz jess
+jazz jets
+jean jeanne
+jeck yinque
+jecke yekke
+jedi yedi
+jeesus jessus yesus
+jelle yeller yellow
+jemen yemen
+jeni jenni yeni
+jenisei jenissei
+jeremia yeremia
+jeti jetti yeti
+jewel joule juul
+jiddisch yiddish
+jipe jipi
+jippie yippee yippie yippy
+joch yogh
+joel yoel
+joelen uhlan
+joepie juppi youpi
+jogurt yogurt
+johannes yohanes
+johlen jolen
+joik jojk
+jojo yoyo
+jokken yorker
+joko jooko yoko
+jonas joonas
+jong yong
+joogi yogi
+jool yawl
+jorg york
+josef jozef
+jota rota
+joujou juju
+joule jules
+jouta joutas juta
+joviaal jovial
+juan yuan
+juda yuda
+judas yudas
+juhu yoohoo yuhu
+juju youyou yuyu
+juka yucca
+jukatan yucatan
+juko yuko
+juku yuko
+juli julli juuli uley yuli
+jullie jylli
+jumi yumi
+junak yunak
+junno juno
+jupe jupes
+jurumi yurumi
+just used
+juta utah
+jute jytte
+jute yute
+juvel juwel
+kaaos kaos
+kaard kaart kard kart
+kaatsen katze
+kabbala kabbalah
+kabbalah kabbelen
+kabil kabyle
+kaboel kaboul kabul
+kabuli kebuli
+kafe kaffe
+kafein kaffein
+kafka kawka
+kaften kofta
+kain kein keinen kine
+kajak kayak kayake kayakent kayakes kayaks
+kajmak kaymak
+kalen kalle
+kalifaat kalifat
+kalitatif qualitatif
+kalken khalkha
+kameel kamel
+kamer kammer
+kamfer kampfer
+kanat khanaat
+kaneel kanel
+kanns kans
+kanoet kanot
+kaos kaus kouse
+kapelan kapellan
+kapen kappe
+kapen kappen
+kapitel kapitell
+karena karna
+kariboe karibu
+karst karsts
+kasen kasse
+kata qatar
+katania katanya
+katar qatar
+kateder katheder
+kathode katode
+kation katyon
+katoen kattun katun
+katoenen kattunen
+keaton kiten
+kebab kebabs
+keboen kebun
+kecap ketchup
+keeko keko queco
+keelie kiili kili
+keema kieme kiemen
+keeper kiepe kiepen kippah
+keffen kefir
+kefir kiefen
+kehle kelen
+kehren keren
+keif kife
+keine kinda
+keke kiikki kiki kikki quiqui
+keki queque
+kelk quelque quelques
+kell quel quelle quelles quels
+kelpo quelpo
+kelte kelter
+kende kenna kennen
+kenia kenya quenya
+keppo quepo
+kere keren
+keso queso
+ketamina quetamina
+khoja koca koja
+khoomei kumi kummi
+khoya koja
+khutor kuto
+kibboets kibboutz kibuc kibutz
+kibboets kibbutz
+kibi quibe
+kibla quibla
+kicha quija
+kicken kicker kikken
+kicken kikken
+kicker kike quike quique
+kicker kikker
+kidam quidam
+kids kits
+kief kiev
+kieken kigge kikke
+kielty kiltti
+kiesen kiezen
+kiev kiew
+kiilu kilu quilo
+kiiri kiri
+kiisi kisi kissi
+kiiski quisqui
+kiisto quisto
+kiito quito
+kiivi kivi kiwi
+kika sika
+kikuju kikuyu
+kilki kilkki
+kille killer
+killed kilt
+killiin qilin
+kilobit kilobitti
+kilociclo quilociclo
+kilte kilter
+kima quima
+kimchi kimci
+kimono quimono
+kinda kinde kinder
+kini kinni
+kinoa quinoa
+kinois quinua
+kiosk kiosque
+kioto quioto
+kipa kippa
+kipa kippah
+kipi kippi
+kippah kippe kipper
+kippo quipo
+kipu quipo quipu
+kirgistan kirgizstan
+kish quiche
+kisko quisco
+kista quista
+kistu quisto
+kita quita quitar
+kitas quitas
+kitee quite quitter
+kitsch kizh
+kitu quito
+kiwi quivi
+klaar klar
+klakson klaxon
+klare klaren
+klecks kleks
+klemme klemmen
+kleve kleven
+klicken klikken
+klimaat klimat
+klinis klinisch
+klise klisee
+klise klissen
+kloc klotz
+klokke klokken
+klomb klomp
+knaap knap knapp
+knacker naken
+knald knall
+knicken knikken
+knight neid night nite
+knocker nocke
+knocky nakki nakkie narky
+knop knopp
+knotty naatti nanti nantis nantit naughty
+knout knut
+knowing nein nine
+knows naze
+kobold kobolt
+kodeks kodex
+koedoe kudu
+koeken kuchen
+koepel kupel
+koerd kurd kurt
+koeren kure
+koers kurs
+koge kogge
+koju koyu
+koki kokki
+kolaps kollaps
+koloni kolonie kolonni
+koloniaal kolonial
+kolos koloss
+kolossaal kolossal
+koma kumma kuuma
+komeet komet
+komiek komik
+komite komitee
+kommt komt
+kompas kompass
+komplet komplett
+kompot kompott
+kond kont
+kone kunde
+kooks kuks
+korb korp
+kord kort
+korn quorn
+kose koze
+koste kosten
+kotelet kotelett
+kotelett kotlet
+koti kotti
+kotsen kotze
+kotsen kotzen
+kotten quarter
+kouban kuuba
+koubek kubek
+koulak kulak
+koumis kuumis
+koumiss kumys
+koupiansk kupiansk
+kraag krach
+kraak krak
+kraal kral
+kraam kram
+kraan kran
+kracke kraken
+kradse krasy
+kreek krek
+krock krok
+kroeg kruch krug
+krop kropp
+krug kruk
+ksilofon xylofoon
+kucu kutsu
+kuir queer
+kulu kuulu
+kumulatif kumulativ
+kurki kurkki
+kurkku kurku
+kursi kurssi
+kuttu kutu
+kvaak kwak
+kvark quark
+kvart kwart
+kveeni kweenie
+kvell quell
+kvinde queene
+kviss quiz
+laaki laki lakki locky
+laba lava
+label labelle
+labiel labil labile
+labo lavabo
+laca laka
+lacas lacasse
+lace lacer lasser
+lace lacis lascie lassi
+lacera lacerar
+lacha laja
+lachi laki
+laci late lati latir latte
+lacke laquais
+lackmus lakmus
+lacra lacrar
+lactone lakton
+lactose laktoz
+lacuna lakuna
+ladder lade laden
+ladeira ladera
+ladite luddit
+ladra ladrar
+lady leady ledi
+lady ledi lesdits
+lady leidi
+laetitia leticia
+laghi lagi
+lago lagu
+lagosta lagostar
+laica laika
+laical laikal
+laiche like liker
+laie leihe liar lier lyre
+laien leihen lien lion
+laik like
+laisser lesse
+lajk like
+lajt light
+lake laken
+lakmoes lakmus
+laksatif laxatif
+lalli loli
+lame lamer
+lameira lamera
+lameiro lamero
+lamela lamelar
+lami lamie
+lamie lamier
+lamin lamine
+lamina laminar
+lamoen lamun
+lampai lamper lampez lappee
+lampant lampas lapa lapaa
+lanca lancha lancia
+lanca lanza
+lance lans launce
+lancer lancez lasse lasser
+land lant
+lande landen launder
+lande landes lard laud
+landtag lantak
+lang langue long
+lansa lanza
+lantan lanthan
+laos laus louse
+laotian lauschen
+lapa lapas
+lapas lapasse lapassent lapasses
+lappen larper
+larga largar
+lari larie larry
+larsen larson larsson lassen lawson
+larva larwa
+lasa lassa lassar lhasa
+lasca lascar laska
+lascar lazcar
+lasco lasku
+laser lazar lesen
+lasi lassi lassie lossy
+laso lasso lazo
+lassar lazar
+lassen lhasa
+lasso lasu
+lasst last
+last lost
+latah latte latten
+late laten latte
+late latte
+lati lattis
+latin latine latines
+latin latte
+latin letten
+lato latu
+latore latorre
+lauda laudar
+lauder lodde
+launder london
+laune lohn loon
+laure laurent laures lore lors
+laut lout
+laute lauter
+lauten loughton
+lava lavar lawa
+lava laver lover
+lave laver
+lave laves live
+lave lavi lavis
+lawks logs loks
+lawson lossen
+layet leje
+layon lejo
+leach leech lich liche
+leader leda lide liede lieder
+leads leeds
+leaf lief life
+leafed lift
+leafs liefs
+league ligue ligues
+leaked leakt liegt
+leaky leeky liikki liki
+leal lille
+leam leme lime limes
+leant lent
+leany lini linie linni
+leapling liebling
+lease leaser lisa
+leased least list liste liszt
+leasy leesy lise
+leaving lieving
+leca lecker
+lecca leka
+lecco leko
+lechy letchi
+lecionar lesionar
+ledsen lessen lesson
+leed lidt
+leegio legio
+leego lego leigo
+lees leese lise
+leest lest
+lega legar
+legaliza legalizar
+leggy legi
+leghe legue
+leghi legi
+lego leigo
+lego lingot
+lehne lenen
+lehnen lenen
+leia leja
+leid light lite
+leida lejda
+leiden lydon
+leidig lydick
+leids lights
+leila leyla
+leila lille lyla
+leim lime
+leime lima limer
+leimen lyman
+leis lice lyse
+leise lisa
+lekken lekker
+lelek lellek
+lelie lelli
+leme lemi
+lemma lemme
+lemur lima lime
+lena lenne
+lena lina
+lend lind
+lene lenne
+lenin lennin
+leon liian
+lesa lesar
+lese lezen
+lesi lesse
+leslie lesly
+lessen lesser lessor
+lest leste
+leste lester
+leto letto
+leto linteau
+letreiro letrero
+lette letten letter
+lettisch lettish
+leucine lusin
+leuken lykke
+leute loiter
+leva levar lewa
+leve levee levi levy lewi
+lever lieven liever live livre
+levere leveren
+levin lewin
+levita levitar
+levy livi
+lezh linge
+liaan lian
+liant liard
+liar liard
+libel libelle
+liberaal liberal
+liberta libertad libertar
+libia libya
+libidinal libidinale
+licha lija
+lichi litchi lychee
+lichid liquide
+licou liku
+lida lider lieder
+lide ligi
+lidia lydia
+liege lige
+liement liima lima limas limma
+lieze lisa
+life live
+lifte lifter
+liga ligar
+ligava ligawa
+ligna lignas linha
+lignasse lignassent lignasses linhas
+lignions linio
+ligue liguer
+liila lila lilas
+liippa lipa lippa
+liiri liri
+liito liitto lito
+liitu litu
+likken liqa liquor
+lila lilas
+lilac lilak
+lilian liliane
+lilian lilja
+lilli lilly lily
+lima limar limas limat
+limace limas
+lime limer
+limiet limit limite limites
+limiitti limite
+limita limitar
+limite limiter
+limo limon
+limoen limun
+limoux limu
+lincoln linken
+lind lint
+linda linde linden
+linden lyndon
+line liny
+lineair linier
+link linq
+linke linken linker
+linki linkki
+linkku linku
+links lynx
+linne linnen linner
+lino linon
+linse linze
+lion lions lure lyon
+lion lions lyon
+lipid lipit
+lipo lippo
+lipom lipome lipomes
+lisa liza
+lisca liska
+lise lisser
+lise lyser
+lisse lyssa
+lissu lisu
+list liszt
+lista listar
+liste lister
+listo liston
+litani litanie
+liteira litera
+liturghi liturgi
+livree livrer
+lobby lobi
+lobbye lobbyen
+loca locar loka louca
+local locale locales lokal
+local lokaal lokal
+locaux loco
+loche loches loess
+locht logt
+loci loki lokki
+locke lokke lokken
+loco louco
+locomotief lokomotif
+locuaz loquaz
+locura loucura
+locus lokus
+lode loden
+lodo lodu
+loeder ludder luder
+loeien luwian
+loempia lumpia
+loenen luna lunar lune
+loesoe lusu
+loesse lossy
+logies logis
+logo loguons
+logotip logotype
+logra lograr
+loir loire luar
+loli lolli lolly
+loli lolli lolly loly
+lollo lolo
+lommo lomo
+loochoo lucu
+loodsen lotse
+look luki lukki luukki
+loonie loony luni lunni
+loop loopy luppi luuppi
+looper lupe
+loos loose lose
+loot luci
+lootear lucia
+loots lutes lutz
+lootus lotus
+loozen lose lozen
+loozen losen lozen
+loquear louquear
+lores loures
+loro louro
+loser lousa
+loser lusa
+loser luser
+lota lotar
+lotar lothar
+loti luti
+loto lotto
+loto lotu
+louba luba
+louche lucia lusche
+loulou lulo lulu
+louma loumas luma
+louva louvas luva
+louvain love
+louvo lovo
+loyaal loyal
+lubrifica lubrificar
+luca lucre luke
+luca luka
+lucas lukas
+lucca lukka
+luce luche
+lucho lucio
+luco lukko luukko
+ludiek ludique ludiques
+lufa lufar
+luisa luiza
+luku luukku
+lully lyyli
+lulo luulo
+lulu lyly
+luly luuli
+lumen luumen
+lumi luumi
+lunen lyne
+lupo luppo
+luso luzu
+luta lutar
+luta luther
+luto lutu luuttu luutu
+luxe luxent luxes
+maagd magd
+maagi moggy
+maakloon maklon
+maakt magd
+maand mahnt
+maani mahoney mahony mani manni
+maarts marts
+maatto manteau manteaux mato matto mentaux
+maca macker
+maca maka
+maca manquant
+macabra makabra
+macaca macacar
+macadamia makadamia
+macao machaon machaons makao
+macaque makaak makak
+macaroni makaroni
+macarra makara
+macas makas
+macau makau
+macera macerar
+maceta macetar
+macha maja
+macha matcha
+machi maki maqui maquis
+machi mate mati
+machia maquia maquiar
+machin masche
+machina machinas mashina
+machina maquinar
+machinaal machinal
+machinaient machinais machinait maschine
+macina matina
+macis masse
+macis matiz
+macke makar make maken
+macla makler
+maco mako
+macro makro
+macu maku
+macul makul
+macula makula
+macumba makumba
+madagascar madagaskar
+madeira madeirar madera
+madeireira maderera
+madeireiro maderero
+madeiro madero
+madre madri madrid
+madrigueira madriguera
+madruga madrugar
+madura madurar
+maffioso mafioso
+maga mager
+magali magalie
+magasiner magazine
+maggi maghi magie
+maggi magi
+maghino magno
+magiar magyar
+magna magnat mania
+mago magot
+mahlen malen
+mahne mane manen
+maia maja maya
+maid might mite
+maike meike mica micah
+mail meel mehl
+mail mejl
+maila mailas mela melar mellah
+maila mailas mela mellah
+mailai mailez mele
+mailant mailas mela melaa
+maile mailen mehle mele
+mailhot maillot maio mayo
+maillet maje
+main mein meinen mine
+mainz meins
+maio maju
+maiolica majolika
+maiorca mallorca
+mais mice
+majami miami
+majoor mayor
+maka makke marcour marker
+make makee manquer
+make manquait
+makelaar makelar
+maki makki makkie markey marquee
+makia maquiar
+makila maquila
+maksi maxi
+maksimal maximal
+makt marked
+mala malla
+malad malat
+malais male malet malin
+malaise males
+malaisie malesi
+malajalam malayalam
+malaui malawi
+male malen malle
+malem malham
+males malice
+malesia malezja
+mali malie
+malik malique
+malin maline malines
+malo malot
+malogra malograr
+malou malu
+malt malte
+malte malter
+malva malwa
+mama mamar
+mamadeira mamadera
+mamado mamadou
+mami mamie mamies
+mami mammie
+mammouth mammut mamut
+mamsell mamzelle
+mana manar
+mana manne mannen
+mancha mancia
+manche manches marsh mosh
+manchet manchette
+mandi mandig
+manea manear
+maneira maneirar manera
+manen mannen
+mang meng
+manga mangga
+mangia manja
+manhua manhwa mannois
+mani manie manies
+maniaque manyak
+manica manika
+manifest manifeste
+manipula manipular
+manitou manitu
+manne mannee
+manoesj manouche
+manor menon
+mantau manto
+mantoue matu
+maous mouse
+maque maquer
+mara marar
+maraan marran
+marathon maraton
+marca marcar
+marca marka
+marcha marchar marchas
+marche marches marsch
+marcie masi massi mossy
+mare maren
+marga margar
+mari marie
+mari marie marre marri
+marien marin marine
+marin marine
+marina marinar
+marisqueira marisquera
+maritim maritime
+mark marker
+maro marro
+marques marquis
+marre marrer
+mars marz masz
+marta marter
+marta martyr matten
+marten matten
+masa massa maza
+masacra masakra
+masacrar massacrar
+masacre massacre
+masaj massage
+mascar maska
+mascara maskara
+mascate maskat
+masculin maskulin
+masculina maskulina
+mase masse
+masgid masjid mesjid
+masif massif massifs massiv
+masificar massificar
+maso masos
+maso masson
+masochismo masoquismo
+masse masser
+massudo masudo
+mast must
+masturba masturbar
+mata matar
+mata matter
+matais mate mathais matin
+matas matasse matasses
+match matchs matsch
+match metche
+mate mater matter
+matea matear
+matematica mathematica
+maten mathe matte
+materiaal material
+mathias matthias mattias
+mathis matiz
+mato matou matu
+matsen matzo
+maudis maudit modi modig moodi
+maumy momie momies
+maunder monden
+maurice morres
+maurras mora morra
+maus mouse
+mause mouser
+maut mought
+maxim maxime
+maximiser maximize
+maximiza maximizar
+mayan mayen
+mazout mazut
+meady mehdi midi
+meager miege
+mealer mile mille
+mealie mealy mielie mili milli
+meanie mini minni
+meant mend
+meats meets metes midz
+meaty miitti miti
+mecca mekka
+mece mese
+meche mesh
+meco mekko
+medaille medalje
+meddo medo
+medhi medi mehdi
+medi mehdi mesdites mesdits
+mediateca mediateka
+mediene medina
+medio meedio
+medis medisch
+medra medrar
+meemi meme
+meep miep
+meeren mehrere mere meren
+meest mest
+meesten miste
+meeting mitin
+mego meigo
+mehlig melick
+meine mightna minah miner minor myna
+meinem mime
+meines minos minus
+meise miser
+meiste meister
+melani melanie
+melchite melkiet
+meld melt
+mele melee meli mellie melly
+meles melis
+melica melika
+melisa melissa
+melissa melisse
+melkisedek melquisedec
+melkmachine melkmaschine
+melodi melodie
+meme memey miimi mimi mimir mimmi
+memo mesmo
+memoria memoriar
+mene menen
+menea menear
+menge mengen
+mengele mengelen
+menhir menir
+menischi meniski
+menno meno
+mens mense
+mensa mensen
+menu menyy
+meow miau
+merca mercar
+merce merci mercie mercis
+merce mersi
+merci messe messi messie messy
+meritocratie meritokrasi
+mesa messe messer
+mesaj message
+meschino mesquino mezquino
+mesclar mezcla
+mesclar mezclar
+mese meze
+mesi messi messie
+mesquita mezquita
+mesquite mezquite
+messe messin
+messe mincer
+messiin messine
+meta meter
+meta meter metre miete mythe
+meta mette
+metaal metal metall
+metaboliza metabolizar
+metafisica metafysica
+metafoor metafor
+metal mettle
+metaleiro metalero
+metan methaan methan
+mete meter mette mettez
+mete mettez
+methode metode
+methodologie metodologi
+methyl metil
+meto mettons
+meto metu
+metoo mito mitu
+metris metrisch
+mets metts metz
+mexico mexiko
+mezanin mezzanine
+miam mjam
+miaou miau
+mica micar mika
+micado mikado
+micha mija mikha
+michael mikael
+miche mish
+michel michelle
+micho micio
+mico mikko miko
+microbi mikrobi
+microscoop mikroskop
+microscopie mikroskooppi
+miel miels
+miene mina mine
+miette mljet
+mignon minjan
+mignot minho
+migra migrar
+miilu milu
+miimikko mimico
+miina mina minant minas minna
+miinus minus minuus
+miksi mixe
+mikst mixte
+mikveh mikwe
+mila milan milla
+mild milt
+mildiou mildiu
+miliar milyar
+milieu millier
+miliisi militie
+milita militar
+miljoen miljon
+millah mille miller
+mima mimar
+mimosa mimoza
+mina minar minas
+minai mine miner minez
+minas minasse minassent minasses minaz
+mineiro minero
+minera minerar
+miniem minim
+minimiza minimizar
+ministeri ministerie
+ministra ministrar
+minne minnen
+mino minons
+mino minot
+minoune minun minuun
+minucia minuciar
+minuta minutar
+minute minutes minuut
+minuti minuutti
+mira mirar
+mira mirra
+mirca mirka
+mirkku mirku
+misa missa missar
+mischen mission
+mischi miski
+misco mixco
+mise misent
+miseria mizeria
+misi missi
+misia misja
+misil missile
+misisipi missisipi mississippi
+misjo mission missions
+miskin miskine
+missed mist
+missie missy
+missouri misuri
+mistal mistel
+miste misten mister
+mita mitar mitas
+mitai mite miter mitez
+mitan mitant mitas mitta
+mitar mitard mitards
+mito mytho mythos
+mitoman mythomane
+mitomani mythomanie
+mitra mitrar
+mixa mixar mixas
+mixai mixe mixer mixez
+mixen mixer
+mneme nimi
+moabiet moabit
+mobiel mobil
+mobiili mobili
+mobilia mobiliar
+mobiliza mobilizar
+moca moka mokka mooca
+mocchi mochi
+moco mokko moko mouco
+moda modar
+moda modder
+mode monder
+model modell
+model modelles
+modela modelar
+modera moderar
+moderaat moderat
+modi mondit
+modificere modificeren
+moeder mudder
+moefti mufti
+moeren mure
+moeten mootah
+moeten muten
+mohre mooren more
+moire muar
+moku mouco
+mola mollah
+mole molen
+mole molet mollet
+mole moli
+moleiro molero
+molesta molestar
+molle mollen
+mollo molo
+moloso molosso
+momenti momentti
+monaco monako
+monarchi monarki
+mond mont
+mone montner
+monica monika
+monitora monitorar
+monoclonal monoklonal
+monokl mononcle
+monoliet monolit
+monolit monolithe
+mononucleosis mononukleosis
+monoplaan monoplan
+monopol monopole
+monopol monopool
+monopoli monopolie monopoly
+monorail monorel
+monoton monotoon
+monotreem monotrem
+montagnais motanie
+monter mote
+monumenti monumentti
+moody mudi
+moof move
+moola moulant moulas mulla muulla
+moola mule
+mooli muli mulig mulli muuli
+moony muni munii munir
+moottori motori
+mora morar moura mourar
+mora morra
+moraal moral morral
+morar mourar
+moras mouras
+moreau moro morro
+moreel morel
+moreira morera
+morena morrena
+morgen morren
+morisco mourisco
+moro mouro
+morphin morphine
+morphine muffin
+morsel mossel
+mortar motte motten
+morva morwa
+mosambik mozambik
+mosca moscar
+mosche mosque
+mosco moscou
+moskiitto moskito mosquito
+mosqueteiro mosquetero
+mosquiteiro mosquitero
+mosterd mostert
+motek mottek
+motivasi motivatie
+moto motto
+moucher muche
+mouiller muie
+moujik mujik
+moula moulas mula
+moulai mouler mule
+moulin mule
+moult moulte mult
+moussa moussas musa muzza
+moussai mousse mousser moussez musse
+moussant moussas musa mussa muusa
+mousse moussy musse muusi muussi
+moutonne moutonnent moutonnes muton
+moven mover
+mucha muja
+muchi muki muque
+muco muko
+muco muku
+mucus mykkyys
+muda mudar
+mude muji
+muesli musli
+muesli musli mysli
+mullah mulle muller
+mullo mulo
+mulo mulu
+mummu muumuu
+munshi munsyi
+munt mynt
+mura murar
+muri murri muuri
+murmura murmurar
+musa muza
+muschi mushy
+muselina musselina
+museu muzeu
+musica musicar
+musical muzikaal
+musiikki musiki
+musique musiques muziek
+muta mutar
+muti mutti
+muto muutto
+mykologi mykologie
+mystiek mystique
+mythologie mytologi
+naakt nackt
+naar narr
+naba nava
+nabby nabi
+nabo nabot
+nacas nakaz
+nace nascer
+nacer nascer
+nacho natio
+nacido nascido
+nacken naken
+nada nadar
+nadadeira nadadera
+nadeau nado
+nades najis
+nadia nadja
+nahme name namen
+naia naja
+naif naiv
+naik nike
+naissez nesse
+nakie naquis naquit
+nana nanar nanas
+nancy nasi
+nani nenni
+naps nops
+narada narrada
+naro narro
+narre narrer
+nasaal nasal nasales nazal
+nasca nazca
+nasci nasi natie nazi
+nasco nazco
+naseau naso
+nasi nazi
+nasyonal national nationale nationales
+nata nathan natter
+natacha natasha natasya
+natal natale natales
+natali natalie nataly nathalie
+nataux nato
+nate natter
+nati natie nazi
+natif nativ
+nativ native natives
+nato natto
+naughty noti
+naumachia naumaquia
+nava nawa
+navajo navarro
+naval nawal
+nave navet
+nave navi nawi
+navette nawet
+nazaat nazad
+nazaret nazareth
+neap nippe
+neat neet niet
+neaten nieten
+nebel nippel
+neblina neblinar
+nebrasca nebraska
+necesita necessitar
+necesitado necessitado
+necesitar necessitar
+necken nekken
+nectarine nektarine
+nede neede
+needy nidi
+neek nique
+neeky nick niki nikki niqui
+neeson niesen
+nega negar
+nega neger
+neghi negue
+negreiro negrero
+negrusco negruzco
+nehmen nemen
+neidvoll nightfall
+neist niest
+nele neli nelli
+nele nelly
+neonataal neonatal
+neptun neptune
+nerf nerv nerw
+nesa niesen
+neshaw nichon
+nesi nesse
+nesta nester
+neto netto
+nets netz
+neuss noice
+neva newa
+neve nevi nevvy
+newbie noob nubi
+newman noemen numen
+newness noenes
+news nous
+niala njalla
+niani nyanyi
+nice niece
+nice niisi nissi
+nice nisse
+niche nisch
+nichel nikel
+nick nike nikke niquer
+nickel nikkel
+nickson niksen nixon
+nico nikko niko
+nicola nicolas
+nicolas nikolas
+niel nielle
+niels nils
+nierbeken nierbekken
+niesen niezen
+niete nieten nitte
+nihilista niilista
+niilo nilo
+niini nini ninni
+niitto nito
+niksen nixe
+nimf nymph
+nina ninar
+nipa nippa
+nisa niza
+nisbe nispen
+nisso nisu
+nitraat nitrat
+nitrat nitrate
+nitrifica nitrificar
+nivaux niveau nivo
+njet nyet
+nobel novel
+nobilita nobilitar
+noce noche
+noedel noodle nudel
+noest noosed
+nogueira noguera
+noir noix nouent
+nome nommer
+nominaal nominal
+nominatief nominativ
+nonaan nonan
+noni nonii nonni nooni
+noniin nonyn
+nonna nonne
+noor nord
+noori nori norri
+normaal normal
+normatif normativ
+nosa nossa
+nostalgie nostalji
+nota notar
+nota notas
+notabl notable
+note noter
+notro noutro
+notros noutros
+nouba nuba
+nougat nuga
+nougat nugaa
+nougat nugat
+nova nowa
+nove nover
+nove novi
+nubla nublar
+nude nyde
+nudey nudi nudie
+numi nummi
+nupes nyps
+nuta nutar
+nuti nuutti
+nuto nuttu
+oaie oyez
+oars onze ores
+obelischi obeliski
+obiekt object objekt
+object objekt
+oblicuo obliquo
+oblitera obliterar
+obra obrar
+obreira obrera
+obreiras obreras
+obreiro obrero
+obreiros obreros
+observasi observatie
+ocapi okapi
+occasion okazjo
+oceania oseania
+ocelot oslo
+ocna okna
+ocra okra
+octaan octane oktan
+octeto oktetto
+ocupa ocupar okupa
+ocupado okupado
+ocupar okupar
+odile ordeal
+oelama ulama
+oele ugle
+oezbekistan uzbekistan
+oferta ofertar
+offen often orfen orphan
+officiel officiell officielle officielles officiels
+officier offizier
+offiziell oficjel
+ofusca ofuscar
+ohne onen unde
+ohrring oorring
+oirlo orlo
+okay okei okey
+oksford oxford
+oksida oxida oxidar
+olep olympe
+oligarchi oligarki
+olivia oliwia
+ollie orly
+ollon olonne
+omelett omelette omelettes omlet
+omiso omisso
+omme ommen ormer
+onani onanie
+ondulat undulat
+oolit oolithe
+opaak opak
+opaal opal opale
+opak opaque
+opale opalin
+opera operar
+operasi operatie
+opina opinar
+opini opinie
+oponce opos
+opresor opressor
+opta optar
+optatif optativ
+optiek optik optique
+optimaal optimal
+optis optisch
+orar ourar
+orbitaal orbital
+orca orka
+orco orko
+organ organe organes
+orkaan orkan
+orla orlar
+ornaat ornat
+oros ouros
+orquestra orquestrar
+ortho orto
+ortodoks ortodox
+osaca osaka
+oscar oskar
+osga ozga
+otero outeiro
+otolit otolithe
+otoman ottomane
+otorgar outorgar
+otra outra
+otras outras
+otro outro
+otros outros
+otte oughta
+ouagadougou wagadugu
+ouest west
+ouip ouipe weep
+ourdou urdu
+oustau ousteau usto
+ouzbek uzbek
+ovales owal
+ovni ovnis
+oxalat oxalate
+oxid oxide oxyde oxydes
+ozan ozanne
+ozon ozone
+paadje patsche
+paakki pakki parky pocky
+paali pali palli parley
+paappa papa pappa
+paard part
+paarlo parlo
+paars parts
+paasi parsi pasi passi passie posse
+paasta pasta
+paatti panty parti party pati patti
+paba pava
+paca paka
+pacane pakan
+pacay pakai
+pace pache
+pacer pascer
+pacha paja
+pacha pascha pasja
+pachet paket
+pachete paquete
+pachi paki paqui
+pacifica pacificar
+pacificatie pasifikasi
+packen pakken parken
+pacte pakt
+pacu paku
+pada pendant pendants
+padat pendante pendantes
+paddy padi
+padje parture
+padoue padu
+paga pagar
+pagaille pagailles pagaj pagaye
+paghe pague
+pagi pague
+pago pagu
+paia paya
+paierons paieront perron
+paillasse payas
+paillette payet
+pain pang peng
+paio payu
+paisson peso pinson
+pajda payda
+pakken parka parker
+pakking parking
+palace palas pallas
+palagi pelangi
+palais pale
+palataliza palatalizar
+palea palear
+palear paliar
+palestra palestrar
+palet pallet
+paletot palto
+pali palix pally
+paliatif palliativ
+palid pallide
+palier pallier
+palisada palizada
+palisade palissade
+pallu palu
+palm palme palmes
+palm paum pomme
+palmi palmy
+palo palot
+pals palse
+palsi policy
+pampa papa pappa
+pana panar
+panacea panasea
+panamakanaal panamakanal
+panar panhard
+pancha pancia
+pancheon panschen
+pancreas pankreas
+pandan pendant
+pande pander panne
+pandemi pandemie
+pane paner paonner
+paneel panel
+paneleiro panelero
+panere paneren
+pangi panji
+panic paniek panique paniques
+panichi panike paniki
+panike paniquer
+panisch panisse
+pank penk
+panneau pano paonneau
+panni pawnee
+pansement pasma passement
+pantofel pantoffel
+pants panz
+panty penti
+papa papar
+papa pappe pappen
+papabel papable
+papai papaye
+papaia papaja
+papaie papayer
+pape papi papis papy
+papeira papera
+papeleira papelera
+papeleiro papelero
+papier papir
+papo papou papu
+pappi pappie parpi poppy
+paprica paprika
+papuc papug
+para parar
+para parra
+paradeiro paradero
+paradoks paradox
+paradoksal paradoxaal
+paradox paradoxe paradoxes
+paragraph paragraphe
+paranoia paranoja
+paranormal paranormale
+parasiet parasit
+parasit parasite
+parc park parque
+parca parka
+parcela parcelar
+parchi parki
+parcoure parcourent parcoures parcours parcourt parkour
+pare paren
+parece parecer
+parecer parescer
+parecido parescido
+parker parque parquer
+parla parlar
+parla parlar parlas patelinas
+parnass parnasse
+paro parou
+parola parolar
+parser passen passer
+parson passen pawson
+parte party
+parthie parti partie parties partis party
+parti partti
+parti party
+partisan partisane
+partitif partitiv
+parto partout
+partout partu
+pasa passa passah passar
+pasada passada
+pasado passado
+pasador passador
+pasadora passadora
+pasados passados
+pasai pasaj
+pasaj passage passages
+pasar passar
+pascal pascale paskal
+pascer pase passe passer
+paschi paski
+pascua pasqua
+pasear passear
+pasen passe passen
+pasen passen
+pasi passe passy
+pasif passief pensif pensifs
+pasif passif passiv
+pasja passear
+paso passo passou pazo
+pasos passos
+passa passant pensant pensas
+passed past
+passo pasul
+pasta pastar
+pasta paste pastor
+pastel pastell
+pasteleira pastelera
+pasteleiro pastelero
+pastelist pastelliste
+pastora pastorar
+pastori pastorie
+pataca pataka
+patas pataz
+patat patente
+patchouli patchuli
+pate patte
+patela patella
+pathos patos
+patin patine
+patinage patinaj
+patiseri patisserie
+pato patu
+patoteiro patotero
+patriarchi patriarki
+patrocina patrocinar
+paucal pokal
+paul powell
+paula polle pollen
+pauli pauly poli polir poorly
+paulien polje
+pauline polin
+paulownia polonia
+paumer pome
+paunce pons
+pauper poppe poppen
+pausa pausar pauza
+pause pausi
+pauver pover power
+pavie pawi
+paviljong pavillon
+pawnee poni pony
+pawnee pony
+pawpaw pompon
+peach pitch
+peachy pichi pici pitchi piti
+peaky pichi piikki piki pique
+peaty petit piti pythie
+peausser pose posse
+peca pecar peka
+pecari pekari
+pece peche
+pecks pecs
+peco pekko
+pedaal pedal
+pedal peddel peddle pedel
+pedala pedalar
+pedale pedali
+pedaller peddelen
+pedel pedell
+pedofiili pedofili
+pedreira pedrera
+pedreiro pedrero
+peeler pile
+peelie peely piili pili pilli
+peelo pello pelo
+peeper piepen
+peepy pipi
+peer pige
+peesi pesi pessi
+peewee pewee piumhi piwi
+pega pegar
+pegas pegaz
+peggy pegi
+peggy pegi pegue
+pego pegou
+pehlvi pelvi
+peida peidar peyda
+peil pile
+peilen pylon
+pein pine
+peiner pene
+peiner pene penne
+pekki pequi
+pela pelar pella
+pela pella
+pele peller
+pelea pelear
+pelet pellet
+peli pelli
+pelican pelikaan pelikan
+pelle pellen
+pelle peller
+pelleter pelte
+pelo pelu peluu
+pelote plot plotte
+pena penar
+penalti penalty
+pence pens
+penetra penetrar
+peni penni penny pennys
+penne penner
+pennen pennon
+pentaan pentan
+penthaus penthouse
+peon pian
+pera perra
+percebe perceber
+perdu perdue perdues perdus
+perecer perese
+peregrina peregrinar
+pereira perera
+perfectie perfeksi
+perfectif perfektiv
+perforasi perforatie
+perita perrita
+perito perrito
+perl perle
+permanece permanecer
+permuta permutar
+pero perro
+peron perron
+perpetua perpetuar
+perplex perplexe perplexes
+perrau perraut perro perrot
+perro peru
+persia persja
+person persoon
+perversi perversie
+pesa pesar
+pesca pescar
+pesche pesque
+peschi peski
+peschi pesky
+pesen pezen
+pesimista pessimista
+peso pesu
+pesqueiro pesquero
+pest peste pestent pestes
+pesta pestas
+pestai peste pester pestez
+pesten pester
+pesti pesty
+pesto pestons
+peta peter
+peta piitta pita pitta
+peterseli peterselie
+peti petit petits
+petisi petitie
+petit petite petites
+petroleira petrolera
+petroleiro petrolero
+pfic piefig
+pias piasse piastre
+pica picar pika
+pica pizza
+picap pickup pikap
+picar picard picards piccard
+piccolo pikkolo
+picha pichar pisha pixar
+pichar pishar pixar
+pickel pickle picul
+picken pikken
+picker pikken
+picknick picnic pyknic
+pico picot piikko
+pico pikku
+picota picotar
+picote picoter
+pidgin pigeon pijin
+piecer piesen
+pieghi piegi
+pieper pipa
+piest pist piste pistent pistes pizd
+pigiama pyjama
+piika pika pikaa piquant
+piilo pilo
+piilu pillu pilo pilou
+piimaa piment
+piina pinant pinas pinna
+piippo pipeau pipo
+piippu pipo
+piisku pisco pisku
+pijama pyjama
+pika pike
+pikant piquant
+pikee pique piquer piquet
+piketti piketty
+piknik piquenique
+piksel pixel
+pila pilar
+pilaar pilar
+pile piler
+pillar pille
+piloot pilot
+pilot pilote pilotes
+pilota pilotar
+piloti pilotis
+pils pilz
+pimee pyme
+pimpel pimple
+pina pinar pinas
+pinacle pinakel
+pinai pine piner pinez
+pinar pinard
+pineau pino pinot
+pinhata piniata
+pini pinni
+pinke pinker
+pinsa pinza
+pinsi pinssi
+pinta pinte
+pinti pintti
+pion pionne
+pion piyon
+pion pure
+pioneiro pionero
+piotr pjotr
+pipeauter pipote
+pipet pipette
+pipeta pipetar
+pira pirar
+pira pirra
+piraat pirat
+pirat pirate
+piroca pirocar
+pirop pyroop
+pirus piruus
+pisa pisar piza pizza
+pisa pizza
+pisan pisans pizza
+pisca piscar pizca
+piscar pizcar
+pisces pises
+pisces pissis
+piscine pisin
+pisco pizco
+pise pisser
+pissa pissant
+pisse pissen pisser
+pista pistas
+pistai piste pister pistez
+pistol pistool
+pistola pistolar
+pistoleiro pistolero
+pita pitar
+pita pitta pitten
+pitaia pitaja pitaya
+pitbul pitbull
+pitchen pitcher
+pito piton python
+pito pitou pitu
+pitonne pitonnent pitonnes python
+piva piwa
+pizza pizzas
+plaat plate plates platt platte
+plaats plac platz
+plaatsen platze
+plaatsen platzen
+placa placar
+placar placard
+place placent places plads plas
+place placer placez
+placenta plasenta
+plack plak plaque plaques
+plafon plafond
+plage plages plaj
+plagiar plagiat
+plaid plead pled
+plainte pled plinthe
+plak planque plaque
+plan plane planes
+plana planar
+plancha plancia
+planck plank plonk
+plancton plankton
+planeet planet
+planetair planeter
+plankki plonky
+plant plent
+plante plat plot
+planten planter
+plas plass
+plasma plasmar plazma
+plastic plastik plastique plastiques
+plastichi plastiki
+plataan platan platane
+platan platten
+plateau plateaux plato
+plateforme plattform
+platin platine
+pleck plek
+pleite plighter
+pleksiglas plexiglas
+plene plin
+plethon pleton
+plic plik
+pliis plis
+plisado plissado
+plog plug
+plomb plomp
+plos plus
+plosief plosiv
+poca pocar pouca
+poca poqua poquas
+pocas poucas
+pocero posseiro
+poche poches ponch porsche punch
+pochon posho
+pocke pokken porker
+poco poko pouco
+pocos poucos
+poda podar
+podcast podkast
+poedel poodle puddel pudel
+poedoe pudu
+poels puls
+poeri puri
+poeroet purut
+poetin putin
+poets putz
+poghi porgy
+poids pois poix pouah
+poio pojo
+poio poju
+pokaz poquasse poquassent poquasses
+poke pokki pooki
+poke pook
+pola poula
+polacca polaka
+polack polak polaque
+polca polka
+pole polen
+polemis polemisch
+poli polir pooli
+polia polier
+police polis
+poliep polip
+poligami polygamie
+poligon polygone
+poliisi polisi politie
+poliitikko politico politiikko
+polikliniek poliklinik
+polip polype
+polir poulie pule puli pulli
+polir pulih
+politbureau politbyroo
+politic politiek politik
+politica politika
+politiser politize
+polo polu
+polo poolo
+polo pullo pulo
+polo pulo pulu
+polynom polynoom
+pome pommer
+pomeri pommeri
+pompom pompon
+ponceau poso posso
+ponter pote
+ponti pontti
+pontifical pontifikal
+pooch puig putsch putz
+poofy pufe
+poolen poule pule
+poolen pulen
+pooler poulet pule
+poort port
+popa poupa poupar
+popo poppoo poupo
+popod popote
+pori porie
+pori porre
+poro porro
+porre porree
+porsi portie
+porta portar
+porte porter
+porti portti
+porto portos
+porto portto
+ports potz
+posa possa
+posa poza
+posar pousa pousar poza
+pose poser poze
+pose posi
+pose posse
+posesor possessor
+posi posse
+posibilitar possibilitar
+positief positif positiv
+poso posso pozo
+possessif possessiv
+post postes
+posta postar
+postaux posto
+poste poster
+postem poststem
+posthume posthuum postuum
+posto postu
+postula postular
+pota potar
+pote potee
+poteau poto
+potentaat potentat
+poti potti
+pouding poudings pudding puddings puding
+pouffer pufe
+pouillot pujo
+poulaille pulaj
+poulpe pulp
+poupon pupo
+pourga purga purgar
+pousser puse puucee puusee
+poustie puusti
+poutine putin
+powder puder
+praag prach
+praat prat
+practic praktik
+praf praw
+pragmatica pragmatika
+pravi prawi
+precursor prekursor
+precursori prekursori
+preda predar
+predecesor predecessor
+preek prik
+preferensi preferentie
+premi premie
+premia premiar
+premisa premissa
+prenataal prenatal
+prepara preparar
+preparaat preparat
+pres przez
+presbiterian presbyteriaan
+presionar pressionar
+presta prestar
+pret przed
+prevensi preventie
+priem prim
+priem prime
+priimi primi
+prik prikk
+primaat primat
+primair primer
+primeira primera
+primeiras primeras
+primeiro primero
+primeiros primeros
+primitiv primitive
+prinsip prinsipp
+priora priorar
+pris prise
+privaat privat
+privacy privasi
+probleem problem
+problematic problematiek
+problematis problematisch
+procede proceder
+proces proses
+procesador processador
+procesadores processadores
+procesar processar
+procura procurar
+proef pruf
+profaan profan
+profana profanar
+profesar professar
+profesor professor
+profesora professora
+profesorado professorado
+profetis profetisch
+profiili profili
+program programm
+programa programar
+progresista progressista
+prohibicionista proibicionista
+prohibida proibida
+prohibidas proibidas
+prohibido proibido
+prohibidos proibidos
+prohibir proibir
+projectie proyeksi
+proletariaat proletariat
+promisor promissor
+proost prost
+propaga propagar
+propicia propiciar
+prosa proza
+proseguir prosseguir
+prosesi prosessi
+prosodi prosodie
+prosodis prosodisch
+prospera prosperar
+prossumidor prosumidor
+protectoraat protektorat
+proteesi protesi
+protesta protestar
+psaki saki sakki sarky
+psalms sommes
+psalter solgte
+psiche psique
+psicose psicosi
+psikolog psychologue psychologues
+psikoz psychose
+psique sique
+psoe soer
+public publics publiek publique publiques
+public publik
+publicar publika
+pucha puja
+pude puji
+pugna pugnar
+pula pular
+pula pulla puula puulla
+pula pulle
+pulica pulicar
+pulley pulli
+pulsi pulssi
+punha punya
+punir puuni
+punsi punssi
+punto puunto
+pupili pupilli
+puppu pupu
+pure puree pyree
+pure purree
+purga purgar
+purifica purificar
+puro puuro
+puschen pushen
+pusi pussi pussy
+puteiro putero
+puto putto puutto
+puto putu
+putos putus
+putos puutos
+puts putz
+putte putter
+quai quais quer quet quin quint
+quali qualy
+qualifica qualificar
+quase quasi
+quean queen
+queca quinqua
+queda quedar
+queira quera
+quetsch quetsche
+quiche quicher
+quiche quis
+quillon quillons
+raaven raeven rave raven
+rabat rabatt
+rabbinat rabbinats rabina
+rabo rabot
+race rejs
+racisme rasisme
+racketter raquete
+racla rakla
+radca razza
+radicaal radical radikal
+ragout ragu
+raia raya
+raid rajd
+raide rider
+rajch reich
+rajon rayon
+rali rallye
+ranca ranka
+rancho rancio
+randi rani
+rapace rapas rapaz
+rape raper rapper
+rapier rapir
+raque raquer
+rasa raser
+rasa raza
+rasio ratio
+ratai rataj
+rating reitin
+raven reven
+rayon rejon
+real reel riel
+rebo rimbaud
+reboot ribut
+reck rinque
+record rekord
+rectal rectale rectales rektal
+rector rektor
+redar rheda
+rede reden reede rheden
+referee referi
+rega regar
+reggae regue
+reina reyna
+reino reyno
+rejkiawik reykjavik
+reka rzeka
+relai relais
+reles relish
+rema remar rhema
+remi remir remy
+remi remis remmi
+remisi remissi
+rende rennen
+rendte rente
+reno reynaud
+reparasi reparatie
+replica replika
+reptil reptile
+resa reza
+resesi resessi
+reso rezo
+respect respekt
+rest reste restent restes
+resta restas
+restau resto restos
+resursi resurssi
+resver rever
+reta retter
+retensi retentie
+rhenen rinde
+rhino rhinow
+rhododendron rododendron
+richard rixar
+rico rikko
+ricos rikos
+riemann riemer
+riemen rime
+riesa risa
+righi rigi
+riikki riki rikki riqui
+riimi rimi rimmi
+riisa risa rissa
+riisi risi
+riitto rito
+rima rimar rimas
+rimai rime rimer rimez
+rimas rimasse rimassent rimasses
+ripa ripar
+rischi riski
+riso rizo
+risoto risotto
+rito ritou ritoux
+ritte ritten
+riviera riwiera
+roba robas rouba
+robek sobek zobek zoubek
+robo robot
+robot roubo
+roce rose rosee
+roche roches
+rocker roque roquer
+roco rokko
+rode roden
+rodo rondeau
+roebel rubel
+roede rude
+roemeen rumen ruumen
+roer rouai rouer rouez
+rola roller
+rollo rolo
+romaan roman
+romand rooma
+romansa romanza
+romantica romantika
+romb romp
+romoesja romusha romusya
+ronce ronces ross rosse rosses
+ronde ronden
+rookie rukki ruukki
+roomba rumba
+rosa roza
+rosa rusa
+roska roskaa
+roso rozo
+rossi rosy
+rota roter
+rougir rugir
+rouir ruir
+rousseau ruso
+rousseau russo
+routai router routez rute
+ruanda rwanda
+ruben ruuben
+rubiini rubini
+rucha ruja
+ruco ruko
+runico ruunikko
+runu ruunu
+rusca ruska
+ruschi ruski
+rusco rusko
+saai sair
+saal zaal
+saana sana sanaa sanna
+saara sahara
+saara sara sarah
+saati saatti sati senti
+saba sabbat
+sabe saber
+sabe sabi
+sabia savia
+sabin sabine
+sabla sablas zablah
+sablai sable sabler sablez
+sabo sabot
+saca sacar saka
+sacha sachar
+sacha saja
+sacho sacio
+saci sassy
+sacia saciar
+saco sakko
+sacquer sake saque saquer zaque
+sacra sakra
+sacraal sakral
+sacrament sakrament
+sacrifica sacrificar
+sadeu sady
+sadin sardine
+sadist sadiste
+sado sados
+sado sadu
+sadz satz
+safa safar zafa
+safado zafado
+safar zafar
+safe safi
+safe zeef
+safo safou
+safra zafra
+saga sagas zaga
+saga sager
+sagace sagas sagaz
+sagaie sage
+sagde sage
+sager zaga
+sago sagu
+sago zago
+sagom sagum
+sahlin salin saline
+saia saya
+saie saye
+sain sane sein seine
+saio sayu
+saisi saisie sesi
+saisi saisie sezi
+sajet sayet
+saki saque
+sakki shakki sharkey
+saksofon saxophone
+sala salas
+salad salade sallad
+salas salaz
+salaud salo salop
+salce salse
+sale saler
+saleilles salej
+saleiro salero
+salema zalema
+sales salisse
+sali salie salis
+salina salinar
+saliva salivar salivas
+salope salopes salopp
+salt sault solt
+saluta salutar
+salva salwa
+sama samar
+samara zamarra
+samarcanda samarkanda
+samba zamba
+sambia zambia
+sambo zambo
+samen samme
+sami sammi
+samoaan samoan
+samoem samum
+sampi sappi sarpy
+sampoo shampoo
+samurai samuraj
+sana sanar
+sancta santa
+sancto santo
+sandhi tsade
+sang seng
+sangi songy
+sani sanie
+sanitair saniter
+sank senk
+sanni sarnie
+sanskriet sanskrit
+santen xanten
+saona sauna
+saouler souler sule
+sapa zapa
+sapador zapador
+sapata zapata
+sapateado zapateado
+sapateira zapatera
+sapateiro zapatero
+sapato zapato
+sape saper
+sapear zapear
+sapo sapu
+saponifica saponificar
+sara sarah sarrar
+sara sarar
+sarai saraj saray
+sarca sarka
+sarcofaghi sarkofagi
+sare sari
+sare sarre
+sarma zarma
+saro sarro
+sarrau sarro
+sarsen sassen
+sasi sassi saucy
+sata sataa satta sentant
+satelit satelliet
+satin sentein
+satir satyr
+satiris satirisch
+satura saturar
+saucier saussier
+saudi sondit
+sauf soof
+saulaie sohle sole
+sauna zona
+saurir sorrir
+sauter sote zote
+sautillant sotija
+sauva sovar
+sava sawa
+sawney soni
+scaba skaba
+scala skaala
+scala skala
+scald skald
+scali skali
+scall skal
+scall skol
+scalpel skalpel
+scan sken
+scandal skandal
+scane scanner
+scarpa skarpa
+scaup skop
+sceli shelley shelly
+sceller sele seller
+scemata schemata
+scene sene szene
+scepsis skepsis
+sceptique septik septique
+sceptisch skeptis
+scerpa sherpa
+schaap schab
+schabbat shabbat
+schade shadda
+schal schall sjaal syal
+schanghai shanghai
+schank schenck
+scheiden xiden
+schein shine sinh
+scheit shite shyt
+schekel sjekel
+schellfisch shellfish
+schelte shelter
+schelten shelton
+schenck schenk shank
+schickse shiksa
+schiefer shiva xiva
+schild shield
+schilling shilling skilling
+schippe shipper
+schippen shippon
+schitte shitter xitter
+schivi skeevy
+schlick shlick
+schmidt schmied
+schminke schminken
+schmu shmoo
+schob schop shop
+schof sjoof
+schoki shokki
+schon sean shaun shawn shorn
+school skul
+schotte shorter
+schotter xota
+schrapnell shrapnel
+schredder shredder
+schtetl shtetl
+schub shoop
+schultz schulz
+schur shower sure
+schwartz schwarz
+sciampo shampoo
+sciita xiita
+sciiti sheety shitti
+scille skeel squille
+scinder sede
+sciogunato shogunato xogunato
+sclerosi skleroosi
+scone skun
+sconse scorse skos skunks
+scontro skontro
+scoop skub skup
+scoot skut skute
+scooter skuter
+scope skoppe
+scopi scorpy skopi
+scorch scotch
+score scoren
+scored skod
+scorn skon
+scorza skorca
+scout skaut
+scsi sectie seksi sexy
+scula skula
+scylla sila
+scyphe sief
+seamy simi simmi syme symi
+sean shan shaun shawn shone sian
+seax seeks sikhs siks
+seba sebba
+sebe sebi
+sebo seebu
+secesionista secessionista
+seco secul
+seco seko
+second seken
+secondi sekondi
+secreet secret
+secreta secretar
+sect secte sectes sekt
+sector sektor
+secuaz sequaz
+secuestrador sequestrador
+secuestrar sequestrar
+sede sedgy
+seekuh zeekoe
+seele zelen
+seelen zelen
+seelie siili sili silli syli
+seelow zelo
+seena seinant seinas
+sege singer
+seghi seguir
+segmenti segmentti
+segura segurar
+sehili seili
+seiche seiches seix sesh
+seien zion
+seiet zayat
+seile xyla
+seim seinem zyme
+sein seinen zayn
+sein sign sine syne
+seinai seiner seinez sene
+seine senna
+seine senne zenne zennor
+seksapil sexappeal
+sekse seksen sexer
+seksu sexo
+seksuel sexuell
+selfi selfie
+sellu selo
+selos selus
+semaine semen
+semi semis
+semiitti semiti
+semmel zemmel
+senden zenden
+sengen zengen
+seni senni
+seniel senil
+seoel seoul seul
+seoir soar soir soirs suar
+seoul soul zool
+sepal simple simples
+separa separar
+separata separrata
+sepse sepsi
+sept setter
+septeto septetto
+sequer sicaire
+serena serenar
+seri serie serri
+seria seriar
+servi servir
+servisch serwis
+serw surf
+seto setto
+sevel seville
+seymour simon
+sfat swat
+sfata swata
+sfora swora
+shabbos sjabbes
+shanti shanty
+sharen sharon
+shit shyt skit
+shock syok
+shogi sogi
+shogun syogun
+shooting syuting
+shtick stick
+shtum stumm
+shul sjoel
+siak tjack
+sicli siikli sikli
+sicuri sikuri
+siden sieden
+sieden zieden
+sieder zieder
+siehst ziste
+siehste xyster
+siej tjej
+siel zeal ziel
+siem xeme
+siemens simens
+sien zien zine
+siesta sjesta
+siff zipf
+sifilis syphilis
+sigge sigue
+sigle ziegler
+sigmacismo sigmatismo
+signal sinyal
+signaux sinyo
+significa significar
+siilo silo
+siimon simon
+siion sion
+siipi sipi sippi
+siiri siri sirri
+siisti sisti
+sile siler sillee
+silhouette siluet
+silicate silikat
+silice sillis
+silicone silikoni
+silofonista xilofonista
+silt zilt
+siluri siluuri
+silvi sylvie
+silvia sylvia
+simetri symmetrie
+simoun simun
+simula simular
+sinaps synapse
+sinapse sinapsi
+since sinds
+sines sinnes
+singe zingen zinger
+singen zingen
+sini sinni
+sink zinc zink
+sinken zinken
+sinne zinnen
+sinnen zinnen
+sinnlos zinloos
+sinode synode
+sinonim synoniem
+sinopse sinopsi synopsie
+sippe zipper
+siroop sirop
+sisi sissi
+sismik sismique
+sistem systeem
+sitcom sitkom
+sits sitz
+sitsi tsetse
+sitte zitten
+situa situar
+sjakie xaque
+skab skabb
+skal skall
+skate skatet
+skaten skateten
+skelet skelett
+skelet squelette squelettes
+skene skini
+skir skyr
+skoby skubbe
+skock skok
+skopie skopje
+skuj skuy
+skupi skuuppi
+sladd slowed
+slag slog
+slaughter slotte
+slav slave
+slavisme slawizm
+sleep sliep slip
+slepen slippe
+slib slip
+sloep sloop slup
+sloomy slummi
+sloop slop
+sloot slott
+sloot slut
+slot slott
+sluice slush
+smaak smak
+smaak smak smock
+smal small
+smal small smalt
+small smol
+smid smit
+smochin smoking
+smoke smuk
+snack sneck snek
+snacken snekke
+sncc snick snik
+snel snell
+snew snjo
+snicker snikken
+snob snop
+snobisme snobizm
+snoek snook
+snoep snoop
+snoepen snooper
+snoepie snoopy
+snoer snor
+snoet snoot
+snokken snorker
+snoose snus
+soared sonde sord sword
+sobra sobrar
+sobre sobri
+sobreira sobrera
+sobreiro sobrero
+sobremaneira sobremanera
+soca socar socca zoca
+soci sotchi
+sociaal sosial
+soco sokko soko zoco
+soco soku
+sode sonder
+soefi soufie sufi
+soenda sunda
+soera sura
+soeten souter suitor
+soezen susa
+soezen susan
+sofa sofas sopha
+sofisma sofismar
+sohle sole zolen
+sohlen zolen
+sohn zone zonent zones zoon
+soia soja
+soia soja soya
+soir suor
+sola solar
+solapa solapar
+soldaat soldate
+soleira solera
+solenn solenne sollen
+soli sooli
+soli sorely
+solidair solider
+sollo solo soolo
+solve solvent
+soma somar
+someiro somero
+sonat sonate
+sonde zonde
+sondere sonderen
+sone sonne zone zonne zonnen
+sone zone
+sonet sonnet
+sonett zonet
+song zhong zong
+soni sonni sony sooni
+sonne sonnet sonnets
+sono sonos
+sony zooni
+soosi soossi sosi
+sopeira sopera
+sopita sopitar
+soquete zoquete
+sora zorra
+sordiino sordino
+sorgo sorgu
+sori sorri sorry
+soro zorro
+sorti sortti
+sortie sotie soties sottie sotties
+sosegado sossegado
+sosegar sossegar
+sotho suttu
+soto souto
+sotu souto
+souchy suci
+souchy sushi susyi
+souci soucy sushi susi
+soucoupe sukub
+souda soudas suda
+soudai souder soudez sude
+souffler soufflez sufle suflee
+souhaites sweat
+soukoun sukun
+soula soulas sula
+soulan soulas sula sulaa suula suulla
+soumis soumy sumi sumir sumy zoomi
+soupai souper soupez supe
+soupant soupas suppa
+souple supel
+soupy supi
+sourat surra surrar
+sourcil sursis
+souvenir suvenir
+sova sowa
+soviet sovjet
+soviet sovjet sowiet
+sowchos sowchoz
+spaan spand
+spaat spad spat spath spathe
+spaghetti spaghettis
+spaia spaja
+spall spawl spol
+span spawn
+spare sparen
+sparta spatten
+spartan spatten
+spasi spatie
+spasm spasme
+spasme spazm
+spat spot
+spawn spon
+speak speke spic spiek spik
+speaker spieken
+spean spin
+spec speck spek
+specced specked spekt
+specie spesi
+spectacle spektakl
+spectral spektral
+spectroscoop spektroskop
+speed speid spid
+speedy spiedie spiidi
+spel spell
+speld spelt
+spelen spille
+speler spiller
+spellen speller
+spendi spendy
+spenen spinde
+sphex sphinx
+sphinx sphynx
+spic spick spik
+spidde spieden
+spies spis
+spil spill
+spinal spinale
+spindel spindle
+spini spinni
+spinnu spinu
+spiraal spiral
+spits spitz
+spleen splin
+splitten splitter
+spod sport spot
+spoel spool
+sponde spondee
+spoon spun
+spoor spor
+spooring sporing
+spore sporen
+sporti sportti
+sposa spoza
+spray spre
+spray sprei
+spriet sprit
+squat squatte squattent squattes
+staaki stocky
+staal stal stalle
+staan stan
+staart start
+staat stad stat
+staats stad
+stabiel stabil
+stabilisator stabilizator
+stabiliser stabilize
+stack steak steck stek
+stad stand
+stad start stat stot
+stage stages staj
+stai staj
+stakk stalk
+stal stall
+stalactite stalaktit
+stalagmit stalagmite
+stalin staline
+stalk stock
+stall stol
+stammen starmer
+stancja stanzia
+stand stent
+standard standart
+stap stop
+starve stav
+stasi statie
+statica statika
+statik statique
+statistic statistique statistiques
+statue statut staty
+stavi stawi
+steak steek stek
+steal steel steele stele stil style
+steam stiem
+steek stick stique
+steel stel
+steele stele
+steelie steely stelae stele stilig
+steen sten
+steeve steve stiv
+stel stell
+stela stella
+stele stelen
+stella stellar stellen steller
+stenti stentti
+step steppe
+steppe stepper
+stethoscoop stetoscop stetoskop
+stevia stewia
+stewed stod
+stewp stoep stoop stoup stup stupe
+stich stick stik
+sticker stikken
+stickie sticky
+stigma stima
+stil still styll
+stilo stylo
+stinken stinker
+stippel stipple
+stockasse stockassent stockasses stokaas
+stoefen stufa
+stoel stol stool stul
+stoepa stupa
+stoer stor
+stogi storge
+stom storm
+stoolie stuli
+storey storie story
+straat strat
+strai streg
+stras strass
+stream striem
+streek strek
+stres stress
+strg string
+striptease striptiz
+strok strook
+stroop strop
+structural struktural
+studie stydi
+sturen styre
+stylisch stylish
+suba suva
+subiet subite
+subliem sublime sublimes
+sublima sublimar
+sucesor sucessor
+sucesora sucessora
+suchi suki suukki
+suchumi sujumi sukhumi
+sucitar suscitar
+suco suko suukko
+suco suku suukku
+suhlen zoelen
+suite svit
+suite sweat sweet
+sukijaki sukiyaki
+sukini zucchini
+sulo zulo
+sumaca zumaca
+sumatera sumatra
+sumo zumo
+suni sunni suny
+sunti suntti
+suon sworn
+supera superar
+superi supperi
+suplica suplicar
+supo suppo
+supresor supressor
+sure surree
+suri suuri
+surta surtar
+sussu susu
+sutek sutekh
+sutte suty
+sutura suturar
+svastika swastika
+svend swend
+swack swag
+swahili swahilie
+sylt zult
+taakka taka takaa takka
+taala tala talla
+taarlo tarlo
+taart tart tarte
+taata tentant
+taattu tattoo tatu
+taba tabac
+tabaca tabaka
+tabaqueira tabaquera
+tabas tabasse tabassent tabasses
+tabe tabee
+tabebuia tabebuya
+tabelle tabellen
+tableau tableaux tablo
+tablet tablett tablette tablettes
+tablier tabliye
+taboe tabou tabu
+taboo tebu
+taboune tabun
+tabula tabular
+tabulae tabule
+taca tacar taka
+taca tacker taka
+tace tache
+tacha taja
+tache tanche tosh
+tachi taci tati
+tachine takin
+tacho taco
+tacho tajo
+tacken taken
+tackle tackler tacler
+taco tacot tako
+tact takt
+tactile taktil
+tactique taktik
+tadschikistan tagikistan tajikistan
+taffetas tafta
+tagar tagga taggas tagua taguas
+tagi tanguy
+tags taks taxe taxes
+taifun typhoon
+taiga tajga
+tailandia tajlandia thailandia
+taille talje
+taipei tajpej
+taisez taze tese teze
+taisez tese
+taiwan tajwan
+tajfun tayfun
+takana takkanah
+takki tokki
+taksa taxa
+taksi taxi
+takson taxon
+taksonomi taxonomie
+tala talar
+tala taler
+talak talaq
+talc talcs talg talk
+tale talen
+tale taler
+talio talion
+taliom thallium
+taller tolle
+tallies thalys
+tallin tallinn
+talud talus
+tama tamar tamma
+tamis tamiz
+tamis tammy
+tamisa tamiza
+tammi tommy
+tana tanna tannas
+tanach tanaj
+tanche tanque
+tand tant
+tand taunt
+tandis tardy
+tanen tanne
+tanen tannen
+taney tawney tawny tony tourney
+tang tank
+tang tong
+tanga tangga
+tania tanja
+tania tanya
+tansania tanzania
+tantine tartine
+tapa tapar
+tapa tappen
+tape taper
+tape tapi tapie tapir tapis tapit
+tapear tapia
+tapear tapiar
+tapeta tapetar
+tapioca tapioka
+tapir tapirent
+tapis tapisse tapissent tapisses tapiz
+tappen tarpan
+tara tarar
+taraud tarauds taro tarot tarro
+tarda tardar
+tarda tardar tardas
+tarde tarder
+tarief tarif
+tarif tarifs
+taro tarro
+tartar tartare
+tarte tarter
+tasca tascar taska
+tasche tasque
+tasco taxco
+tato tatou tattoo tatu
+tatta tenta tentas
+tattoo teto
+tatua tatuar
+taun town
+taureau taureaux torro
+taureau torro
+taveler tavle
+taverna tawerna
+teaky tiikki tiki tikki
+teater theater
+teba tebaa
+teca teka
+tece tecer tese
+tece teesi tesi
+techie techy teki
+technique teknik
+techno tecno tekkno
+techy teci tetchy
+tecla teclar
+tecla tekla
+teco teko
+teddy tedi
+teemme teme temer
+teener tienen tina
+teenie teeny
+teensy tinsi
+teepee tiipii tipi tippi
+teer till
+teeri teri terri
+tees tisse
+teetto teto
+teig tike tyke
+teil tile
+teile tyler
+teio theo
+teito teitto
+teken theke
+teksas texas
+tekst texed text texte textes
+tekstil textil
+tektoniek tektonik
+tektonis tektonisch
+tela teller
+tele teli tellie telly
+telefon telefoon
+teleks telex
+teles tellies
+telescoop teleskop
+tellen teller
+telugo telugu
+tema thema
+temen themen
+temes temmes
+temi temmi
+tempe tempi
+tempel temple
+temple temples topple
+tendens tendenz
+tendi tendie
+tenia tenya
+tenis tennis
+tenisman tennisman
+tenne tenner tenor
+tennison tennissen
+tenti tentti
+tenu tenue tenues
+teodise theodicee
+teodolit theodolit
+teofani theophanie
+teokrasi theocratie
+teori theorie
+tepo teppo
+terakota terracota
+terb terp
+termiet termit thermiet
+termina terminar
+terminaal terminal
+termino terminou
+termo thermaux
+termodinamika thermodynamica
+termos thermos
+terra terras
+terrar terras
+terras terrasse
+tesa tesar
+tese tesi
+test testent testes tests
+testa testar
+testa testas
+testai teste tester testez
+testo texto
+teta theta
+teta theta tinta
+tete tetter
+teti tetty
+tetras tetraz
+teun turn
+teuton toeten tuten
+texaan texane
+textil textile
+themavocaal themavokal
+thing ting tyng
+thomas toma
+thomas tomas
+thora torrar
+thoulouse thoulouze toulouse toulouze
+thrash trash
+thronen tonen
+thuja tuia tuja
+thule tule tuli tulli tuuli
+tian tjaa
+tibial tibiale
+tica tika
+tiche ticket
+ticker tikka tikken
+tico tiko
+tiefe tyfen
+tifa typha
+tiimi timi timmi
+tiiro tiro tirro
+tiitta titan titta
+tiitto tito
+tiitus titus
+tiket tiquette
+tikka tique
+tilsit tilsitt
+timid timide
+tinti tintti
+tipo tippuu tipu
+tipo typo typos
+tippen tipper
+tipptopp tiptop
+tiramisu tiramisus
+tiri tirri
+titaan titan titane
+titel tittel
+tithi titi
+titte titter
+tittel tittle
+tiul tulle
+tjoene tuna tuner
+toalett toilette
+toast tossed tost
+toast tost
+toaster toste
+toba tomba
+toca tocar touca
+tocador toucador
+tocas tokas
+toco tocou tokko toko
+toco toku
+toendra tundra
+toernooi turnoi
+toestel tustel
+toeten tooter tute
+toeter tuter
+toetoep tutup
+toets toots
+toeven tuva
+toeven tuvan
+tofe toffee
+toffee tofi
+tofo tofoe tofu
+tofou tofu
+toilette toilettes
+toki toqui
+tokio tokyo
+tollo tolo
+toma tomar
+tomateira tomatera
+tomateiro tomatero
+tomo tomou
+tonaal tonal
+tone tonen
+toneel tonel
+toni tonni tony tooni
+tonneau tono
+tons tuns
+tonti tontti
+toope tope
+tope toper
+topera toupeira
+topi toppi
+topo toppo
+toponiem toponim
+tora torah torar toura
+torada tourada
+toreador toureador
+torear tourear
+torero toureiro
+toro touro
+tortura torturar
+tosi tossir
+toso tozo
+tossir tussi
+tosta tostar
+totaal total
+totalitair totaliter
+toub tube
+toucan tukka tuukka
+toulou tulu
+toulouse tulus
+toupet tupee
+toupet tupet
+toupie tupi tuppi
+tour tours
+tournee turne turnee
+toustes tust
+toutou tuttu tutu tuutu
+tove toven
+traan tran
+tract tragt trakt
+tractir traktir
+traga tragar
+tram trame trames
+trama tramar
+tramvai tramwaj
+trance trans
+trance trans transe
+trap trapp
+trapaceiro trapacero
+trapeira trapera
+tras traz
+trata tratar
+travami trawami
+travi trawi
+trecker trekker
+trekke trekken
+trema tremar
+trena trenar
+trend trent
+trepa trepar
+tribo tribu
+tribuni tribuuni
+tricolori trikolori
+tricot tricots trikot
+tricota tricotar
+trieb tripe tripes
+triko trikoo
+triljoen triljon
+trimeri trimmeri
+tripa tripar
+tripeiro tripero
+tripel triple triples
+tripleks triplex
+tris triz
+trisecar trissecar
+triti tritti
+triviaal trivial
+troca trocar
+trods tros
+trodse trossen
+troef truf
+troep troupe trup
+troia troja
+trol trold troll
+trola trolar
+troli trolig trolli trooli
+tron troon
+troneira tronera
+tropa tropar
+tropis tropisch
+trott trotte trottent trottes
+trottinett trottinette
+trug truk
+truli trulli
+trumeau trymoo
+tsatsiki tzatziki
+tuba tube
+tubal tubel
+tubano tuvano
+tube tuve
+tubeira tubera
+tubey tubi tubie tuubi
+tubo tuvo
+tucan tukan
+tuco tukko
+tucson tuusan
+tuffi twofie
+tuit tweet twit
+tukey tuki tukki tuuki
+tukku tuku
+tula tule
+tumppu tumpu
+tuna tunar
+tunica tunika
+tuniek tunique tuniques
+turba turbar
+turbina turbinar
+turchi turki turkki
+turco turku
+ture tuure
+turgovia turgowia
+turista turistar
+turo turro
+tusa tussa tuza
+tusch tush
+tutela tutelar
+tutora tutorar
+tutsi tutsie
+tutti tuutti
+tutu tyty
+tuvalu tuwalu
+tvilling twilling
+tweet tweeter twitter
+twist twiste
+ubicuo ubiquo
+ucraina ukraina
+uculele ukulele
+udin uudin
+udine ydin
+udku utku
+ufana ufanar
+ukas ukaz
+ulco ulko
+ulises ulisses
+ulula ulular
+umico ummikko
+unico unikko
+unifica unificar
+unik unique
+uppsala upsala
+upsilon ypsilon
+uras uraz
+urin uurrin
+urto uurto
+usai uzay
+usos uzus
+uzbeche uzbeque
+uzbechi uzbeque
+vaag wach
+vaals vals valse
+vaars vars
+vaarsel varsel
+vaart vart ward wart
+vaassen vase
+vaca vacar
+vaca vaka
+vacatie vakasi
+vaccin vaksin
+vada vadas wada
+vadi wadi
+vaga vagar waga
+vagant wagant
+vage waage
+vaghi wagi
+vagina wagina
+vagon wagon
+vagos wagus
+vaia vaiar
+vainquis vainquit weki
+vainquons weko
+vaisselle wesel
+vala wala
+valabel valable
+valais valet wale
+valca walka
+valchi walki
+valchiria walkiria
+vale valer valet
+vale vali vally wali
+valeria waleria
+valet walet
+valid valide valides
+valida validar
+valina walina
+valiza waliza
+valk walk
+vallia walia
+valo walu
+vals valse
+valse valser
+valt vault
+valuta waluta
+vampir wampir
+vams wams
+vanda wanda
+vande vane wanne
+vane vanner
+vang wang
+vara wara
+varan varann waran
+vare varen
+varen wahren waren
+varie varre
+varlig volley
+varm warm
+varmuus warmoes
+varna warner
+vasal vassal wasal
+vasca wazka
+vase vazen
+vaso vazo
+vasta vastar
+vaticaan vatican vatikan
+vatten warta
+vatu ventoux
+vault volt wollt wolt
+vaulter volthe wollte
+vaunt vond vont
+vaza vazar waza
+vector wektor
+veda vedar
+vede veggie
+veels wales
+veessen wesen
+vega viga wiege
+vega wega
+vegan wiegen
+veiga wega
+vela velar
+vela velar vila ville wiele
+veld wellt welt
+veli velli wely
+vellen welle
+venda vendor wende
+venda wenda
+vene vinde
+vente venter
+vepse webs
+vera verra verras verrat
+verbaal verbal
+verbal verbale verbales
+verbaux verbo
+verificatie verifikasi
+verk werk
+vers wers
+verseau verso
+verst werst
+vertical verticale verticales vertikal
+vesper wespe
+vessey vessie wessi
+vest veste west
+vesta vesten weste
+vesta westa
+vestan vesten westen
+vetche vetchy vete
+veteraan veteran
+veto wetu
+vette vetter wette
+vevay vive vivi
+vial vile weil
+vias wirs
+vibrasi vibratie
+vibrator wibrator
+vicaria wikaria
+vice vise weis
+vichy vixe
+vicia viciar
+vicunha wikunia
+vida vidar vidas
+vida wieder
+vide vider
+vide vidi
+vidocq widok
+vieil vieille vieilles wiej
+vien vienne viennent viennes
+vieren viren
+vietnam wietnam
+vignette vinyet
+viikki vikki wiki
+viili vili villi wheelie
+viiri viri wiri
+vikt wiegt wikt
+vila villa
+vilain vilains wile
+vili villig wili
+vill ville will
+villa willa
+villa wille
+villain villein villen willen
+villi willi
+vilt wild willt
+vilt wild wilt
+vina wina
+vinas vinasse
+vind vint wind
+vinden winde
+vinden winden
+vine viner
+vine wein
+vinil vinyle
+vink wink
+vinkel winkel
+vinous weines
+vint wint
+viol viool
+viola violar
+viola wiola
+viole violer violez
+violet violett
+viraal viral
+virus wirus
+visa visar viza wiza
+visa wiese
+viser vize
+visi visie vizir
+visi visse
+visiona viziona
+visita visitar
+viso wieso
+vison wizo
+visse visser
+vissen wissen
+visst whist
+vita weite
+vita wita
+vitaal vital vitale vitales
+vitae vite
+vitali witali
+vitamin vitamine
+vitamina witamina
+vitaux vito
+vitz witz
+viva vivar
+vivace vivas vivaz
+vive viver
+vlaag wlach
+vlei vlie
+vlot wlot
+voar voir voire
+voar voua vouas
+vocaal vokal
+vocal vocale vocales wokal
+voga vogar vouga
+volan wohlan
+volde wolle
+volet volley wole
+voleter volte volter
+volfram wolfram
+volga wolga
+volta wolta
+vomita vomitar
+voodoo vudu wudu
+vora wora
+vorde vorden
+vort wort
+vota votar
+vota votas
+votai vote voter votez
+votan wotan
+vrac wrack
+vrede vreden
+vret wreed
+vrikke wreken
+vroed vrut
+vugge woge
+vulcan wulkan
+vulgata wulgata
+vuvuzela wuwuzela
+waggon wagon
+wain wean ween wheen wien
+walc waltz walz
+waldeck waldek
+watch watt watts
+watts worts
+wayne when
+weaste whist
+weefie wefie wifi
+weird wyrd
+whiskey whisky
+whist wist
+woke wokki
+wraak wrak
+xena zener zine
+xenofobie xenophobie
+xenofoob xenophob
+yakoute yakut
+year yeux
+youssouf yusuf
+youtube yutup
+youtuben youtuber
+zagaia zagaja
+zalanais zalane
+zapas zapasse zapassent zapasses zappasse zappasses
+zarathoestra zaratustra
+zebo zeboe zebu
+zeeuws zeus
+zelda zelden
+zest zeste
+zeta zette zetten
+zigoto zigotteau
+zinc zink
+zindik zindiq
+zipe zipper
+zitten zittern
+zodiac zodiak zodiaque
+zoek zouk
+zoeloe zoulou zulo zulu
+zoemen zoome zoomen
+zoemen zoomen
+zombi zombie
+zona zonar zonas
+zonasi zonatie
+zoni zooni
+zoomi zoomie zoomy
+zoozoo zouzou
+zucchini zukini
+zuni zunir
