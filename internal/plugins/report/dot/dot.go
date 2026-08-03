@@ -65,17 +65,9 @@ func Render(w io.Writer, r report.Report) error {
 	// hiding one behind --filter would hide exactly what --fail-on gates on —
 	// but they are drawn as an attribute of a node, so a stranded finding had
 	// nothing to attach to and vanished from this format alone.
-	shown := make(map[string]bool, len(r.Nodes))
-	for _, n := range r.Nodes {
-		shown[n.ID] = true
-	}
 	stranded := map[string]int{}
-	for _, f := range r.Findings {
-		for _, n := range f.Nodes {
-			if !shown[n] {
-				stranded[f.Severity+":"+f.Kind]++
-			}
-		}
+	for _, s := range report.StrandedFindings(r) {
+		stranded[s.Finding.Severity+":"+s.Finding.Kind]++
 	}
 	if len(stranded) > 0 {
 		fmt.Fprintln(w)

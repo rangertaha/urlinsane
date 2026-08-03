@@ -429,3 +429,42 @@ func FormatFor(path string) (string, bool) {
 	}
 	return "", false
 }
+
+// Stranded is a finding whose node the filter removed from the report.
+type Stranded struct {
+	// Node is the "type:key" reference, as Finding.Nodes carries it.
+	Node string
+	// Finding is the finding that node carried.
+	Finding Finding
+}
+
+// StrandedFindings returns the findings whose nodes are not in the report's
+// node list, so a renderer can surface them separately.
+//
+// Findings are never filtered — hiding one behind --filter would hide exactly
+// what --fail-on gates on — but every format draws them as an attribute of a
+// node, so a finding whose node was filtered out has nothing to attach to and
+// vanishes unless the renderer says so itself.
+//
+// This exists because two renderers worked that out independently and one got
+// it wrong. Finding.Nodes holds "type:key" references; csv built its lookup set
+// with those and dot built its with NodeRow.ID, a hex node id, so dot's test
+// never matched and EVERY finding read as stranded — an unfiltered `-o dot`
+// drew a "findings on filtered nodes" cluster listing findings that were right
+// there in the graph. A renderer calls this rather than deriving the set again;
+// the key is built once, here.
+func StrandedFindings(r Report) []Stranded {
+	shown := make(map[string]bool, len(r.Nodes))
+	for _, n := range r.Nodes {
+		shown[n.Type+":"+n.Key] = true
+	}
+	var out []Stranded
+	for _, f := range r.Findings {
+		for _, n := range f.Nodes {
+			if !shown[n] {
+				out = append(out, Stranded{Node: n, Finding: f})
+			}
+		}
+	}
+	return out
+}
