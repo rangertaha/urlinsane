@@ -151,8 +151,20 @@ func lock(dir string) (func(), error) {
 		if !os.IsExist(err) {
 			return nil, err
 		}
+		// Breaking a stale lock removes only the file that was observed to be
+		// stale. An unconditional Remove let two waiters both break the same
+		// lock: the first removed it and created its own, the second then
+		// removed *that* fresh lock and created a third, and both proceeded
+		// into the critical section — reintroducing exactly the lost update
+		// the lock exists to prevent, with the loser's scan silently absent
+		// from the index and its blocks left unreferenced.
+		//
+		// Re-stat and compare identity, so a lock created between the two
+		// calls is a different file and is left alone.
 		if fi, serr := os.Stat(path); serr == nil && time.Since(fi.ModTime()) > lockStale {
-			os.Remove(path)
+			if again, serr := os.Stat(path); serr == nil && os.SameFile(fi, again) {
+				os.Remove(path)
+			}
 			continue
 		}
 		if time.Now().After(deadline) {
@@ -170,13 +182,10 @@ func (ix *Index) save() error {
 	if err != nil {
 		return err
 	}
-	// Write and rename: a crash mid-write must not leave an index that parses
-	// as neither the old nor the new one.
-	tmp := ix.path + ".tmp"
-	if err := os.WriteFile(tmp, append(b, '\n'), 0o640); err != nil {
-		return err
-	}
-	return os.Rename(tmp, ix.path)
+	// A crash mid-write must not leave an index that parses as neither the old
+	// nor the new one — which needs the flush writeAtomic does, not just the
+	// rename this used to do on its own.
+	return writeAtomic(ix.path, append(b, '\n'), 0o640)
 }
 
 // Scans returns every saved scan of one target, newest first.

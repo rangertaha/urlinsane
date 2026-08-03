@@ -237,3 +237,39 @@ func TestLockIsReleased(t *testing.T) {
 		t.Error("the lockfile was left behind")
 	}
 }
+
+// Both durable writes in this package go through writeAtomic, so neither can
+// publish a half-written file. The index used to rename without flushing, and
+// the blockstore used to os.WriteFile straight over the target.
+func TestWriteAtomicPublishesWholeFilesOnly(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "scans.json")
+
+	if err := writeAtomic(path, []byte("first"), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	if err := writeAtomic(path, []byte("second"), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	got, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(got) != "second" {
+		t.Errorf("file = %q, want the second write", got)
+	}
+
+	// No temporary survives a successful publish; one left behind is a
+	// half-written file that outlived the write.
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(entries) != 1 || entries[0].Name() != "scans.json" {
+		var names []string
+		for _, e := range entries {
+			names = append(names, e.Name())
+		}
+		t.Errorf("directory holds %v, want only scans.json", names)
+	}
+}

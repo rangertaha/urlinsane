@@ -87,37 +87,10 @@ func (s *FSBlockstore) Put(c cid.Cid, block []byte) error {
 	if ok, _ := s.Has(c); ok {
 		return nil
 	}
-	dir := s.shardDir(c)
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := os.MkdirAll(s.shardDir(c), 0o755); err != nil {
 		return err
 	}
-
-	tmp, err := os.CreateTemp(dir, ".put-*")
-	if err != nil {
-		return err
-	}
-	// Removes the temporary on every failure path; a no-op once the rename
-	// below has moved it away.
-	defer os.Remove(tmp.Name())
-
-	if _, err := tmp.Write(block); err != nil {
-		tmp.Close()
-		return err
-	}
-	// fsync before publishing. Without it the rename can reach the disk ahead
-	// of the bytes, which after a power loss is the same short block by another
-	// route.
-	if err := tmp.Sync(); err != nil {
-		tmp.Close()
-		return err
-	}
-	if err := tmp.Close(); err != nil {
-		return err
-	}
-	if err := os.Chmod(tmp.Name(), 0o644); err != nil {
-		return err
-	}
-	return os.Rename(tmp.Name(), s.path(c))
+	return writeAtomic(s.path(c), block, 0o644)
 }
 
 // MemBlockstore is an in-memory blockstore, for tests and for a scan that is
