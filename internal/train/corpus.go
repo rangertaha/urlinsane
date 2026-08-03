@@ -22,6 +22,14 @@ type nodeView struct {
 	a  *graph.Analysis
 	id graph.NodeID
 	n  *graph.Node
+	// out is the edge index for this graph, keyed by source then relation.
+	//
+	// Built once per Paths call. Answering EdgeProps from Analysis.Edges()
+	// instead re-walks and re-sorts the whole edge list on every lookup, and
+	// Features asks for six relations per node — so featurizing was six full
+	// sweeps per node and Paths was quadratic. Measured over a 2000-node scan:
+	// 24.1s before, 141ms after.
+	out map[graph.NodeID]map[string][]Bag
 }
 
 func (v nodeView) Type() string { return v.n.Type.Name() }
@@ -36,16 +44,51 @@ func (v nodeView) Prop(field string) (graph.Value, bool) {
 	return v.n.Props.Get(f)
 }
 
-func (v nodeView) EdgeProps(rel string) []Bag {
-	var out []Bag
-	for _, e := range v.a.Edges() {
-		if e.From != v.id || e.Rel.Name() != rel {
-			continue
-		}
-		out = append(out, edgeBag{e})
-	}
-	return out
+func (v nodeView) EdgeProps(rel string) []Bag { return v.out[v.id][rel] }
+
+// featurizer owns the per-graph index and hands out views over it.
+//
+// It exists so a nodeView cannot be built without its index. The first version
+// let callers construct one directly, and a nodeView with a nil index reports
+// every node as having no edges — silently, because "no edges" is a legitimate
+// answer. That is the shape this repository keeps retiring: correctness by
+// remembering to pass something. Here the constructor is the only way in.
+type featurizer struct {
+	a    *graph.Analysis
+	out  map[graph.NodeID]map[string][]Bag
+	byID map[graph.NodeID]*graph.Node
 }
+
+// newFeaturizer indexes every edge by its source and relation, in one pass.
+func newFeaturizer(a *graph.Analysis) *featurizer {
+	f := &featurizer{
+		a:    a,
+		out:  make(map[graph.NodeID]map[string][]Bag),
+		byID: make(map[graph.NodeID]*graph.Node),
+	}
+	for _, n := range a.Nodes() {
+		f.byID[n.ID] = n
+	}
+	for _, e := range a.Edges() {
+		byRel := f.out[e.From]
+		if byRel == nil {
+			byRel = make(map[string][]Bag)
+			f.out[e.From] = byRel
+		}
+		rel := e.Rel.Name()
+		byRel[rel] = append(byRel[rel], edgeBag{e})
+	}
+	return f
+}
+
+// view returns the Featurable for one admitted node.
+func (f *featurizer) view(id graph.NodeID) nodeView {
+	return nodeView{a: f.a, id: id, n: f.byID[id], out: f.out}
+}
+
+// Symbols featurizes one node of a finished graph, the same way inference
+// featurizes a View.
+func (f *featurizer) Symbols(id graph.NodeID) []string { return Features(f.view(id)) }
 
 // edgeBag reads an admitted edge's props, matching what graph.EdgeView exposes
 // at run time.
@@ -111,12 +154,11 @@ func Paths(g *graph.Graph, seed graph.NodeID) []model.Path {
 		children[p] = append(children[p], n.ID)
 	}
 
+	f := newFeaturizer(a)
+	byID := f.byID
+
 	// Deterministic: children in (type, key) order, so the corpus a scan
 	// produces does not depend on admission order or map iteration.
-	byID := map[graph.NodeID]*graph.Node{}
-	for _, n := range nodes {
-		byID[n.ID] = n
-	}
 	for p := range children {
 		kids := children[p]
 		sort.Slice(kids, func(i, j int) bool {
@@ -129,13 +171,21 @@ func Paths(g *graph.Graph, seed graph.NodeID) []model.Path {
 		children[p] = kids
 	}
 
+	// Memoized: an interior node appears in every path through it, and
+	// featurizing it once per path rather than once per node made the seed of
+	// a thousand-leaf scan cost a thousand featurizations.
+	cache := make(map[graph.NodeID]model.Trace, len(nodes))
 	trace := func(id graph.NodeID) model.Trace {
-		n := byID[id]
-		return model.Trace{
+		if t, ok := cache[id]; ok {
+			return t
+		}
+		t := model.Trace{
 			Rel:     rel[id],
-			Props:   Features(nodeView{a: a, id: id, n: n}),
+			Props:   f.Symbols(id),
 			Outcome: Outcome(a, id),
 		}
+		cache[id] = t
+		return t
 	}
 
 	// The parent tree is finalized at a barrier, so a graph that has never run
@@ -173,11 +223,27 @@ func Paths(g *graph.Graph, seed graph.NodeID) []model.Path {
 // the engine rebuilds. A graph replayed out of the store therefore arrives with
 // every edge and no parents at all, and Paths refuses it.
 //
-// A scheduler with no operators is the smallest correct way to get one. It runs
-// barrier 0, finds no eligible work, and stops — so the only thing it does is
-// finalize parents and recompute belief, which is exactly what is missing.
+// A scheduler with no operators is the smallest way to get one: it runs barrier
+// 0, finds no eligible work, and stops.
+//
+// The observer set is saved and restored around it, and that is not defensive
+// tidying. NewScheduler *rebuilds* the set from the operators it is given, and
+// with no operators the set comes out empty — at which point Graph.observes
+// answers true for everything, and a pure variant generator's "I produced this"
+// counts as evidence the name exists. Measured before the restore was added:
+// exampl.com, whose only lookup returned an authoritative absence, reported
+// Outcome "live". Every corpus built from a rehydrated scan was labelled that
+// way, and the AUC computed from it was meaningless.
+//
+// The set is scan state, persisted with the graph precisely so a re-render
+// agrees with the run that produced it (store side tables, FormatVersion 2).
+// Losing it here would undo that on the one path — rehydration — where it
+// matters most.
 func Finalize(g *graph.Graph) error {
-	return graph.NewScheduler(g, nil, graph.Limits{MaxRounds: 1}).Run(context.Background())
+	observers := g.Observers()
+	err := graph.NewScheduler(g, nil, graph.Limits{MaxRounds: 1}).Run(context.Background())
+	g.SetObservers(observers)
+	return err
 }
 
 // CorpusOf builds a training corpus from one scan.
