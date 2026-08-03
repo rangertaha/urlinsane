@@ -262,12 +262,16 @@ func TestSourcesLoadEachShape(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	for _, tc := range []struct{ kind, code, url string }{
-		// Three columns: the check URL is what the prober calls, so that is the
-		// one stored.
-		{"package", "pypi", "https://pypi.org/pypi/%s/json"},
-		{"username", "github", "https://github.com/%s"},
-		{"email", "gmail.com", "gmail.com"},
+	for _, tc := range []struct{ kind, code, url, check string }{
+		// Three columns are two facts: the page names the platform, the check
+		// URL is what the prober calls. Keeping only the check URL named pypi
+		// after its JSON API, and GitHub after api.github.com from the repo
+		// list while the username list called it github.com — one forge, two
+		// platform nodes.
+		{"package", "pypi", "https://pypi.org/project/%s/", "https://pypi.org/pypi/%s/json"},
+		// Two columns: one URL answers both questions.
+		{"username", "github", "https://github.com/%s", ""},
+		{"email", "gmail.com", "gmail.com", ""},
 	} {
 		var got dataset.Source
 		if err := dataset.DB.Where("type = ? AND code = ?", tc.kind, tc.code).
@@ -276,6 +280,9 @@ func TestSourcesLoadEachShape(t *testing.T) {
 		}
 		if got.URL != tc.url {
 			t.Errorf("%s/%s url = %q, want %q", tc.kind, tc.code, got.URL, tc.url)
+		}
+		if got.CheckURL != tc.check {
+			t.Errorf("%s/%s check url = %q, want %q", tc.kind, tc.code, got.CheckURL, tc.check)
 		}
 	}
 	if got := count(t, &dataset.Source{}); got != 3 {
@@ -416,5 +423,40 @@ func TestImportUsesTheCanonicalLanguageRow(t *testing.T) {
 	dataset.DB.Model(&dataset.Language{}).Where("code = ?", "iw").Count(&iw)
 	if iw != 0 {
 		t.Error("a separate iw row was created")
+	}
+}
+
+// One forge, one platform. The repo and username lists both name GitHub, and
+// storing only the check URL made the repo row point at api.github.com while
+// the username row pointed at github.com. Downstream that is two platform
+// nodes, and no analyzer can then see that a username and a repository sit on
+// the same forge -- which is the whole point of clustering them.
+func TestASourceNamedByTwoListsGetsOnePlatformURL(t *testing.T) {
+	fresh(t)
+	dir := write(t, map[string]string{
+		"usernames.lst": "github https://github.com/%s\n",
+		"repos.lst":     "github https://github.com/%s https://api.github.com/users/%s\n",
+	})
+	if err := Sources(dir); err != nil {
+		t.Fatal(err)
+	}
+
+	var username, repo dataset.Source
+	if err := dataset.DB.Where("type = ? AND code = ?", "username", "github").
+		First(&username).Error; err != nil {
+		t.Fatal(err)
+	}
+	if err := dataset.DB.Where("type = ? AND code = ?", "repository", "github").
+		First(&repo).Error; err != nil {
+		t.Fatal(err)
+	}
+
+	if username.URL != repo.URL {
+		t.Errorf("github is %q as a username host and %q as a repo host; one forge, two platforms",
+			username.URL, repo.URL)
+	}
+	// And the API endpoint is still there to probe with, in its own column.
+	if repo.CheckURL != "https://api.github.com/users/%s" {
+		t.Errorf("repo check url = %q, want the API endpoint kept", repo.CheckURL)
 	}
 }

@@ -41,13 +41,26 @@ type Transition struct {
 }
 
 type Source struct {
-	ID      uint
-	Type    string `gorm:"index"` // package | repository | username | email
-	Code    string
-	Params  string // {}
-	URL     string // URL with named regex
-	Success string // regex for a successful response
-	Failed  string // regex for a failed response
+	ID     uint
+	Type   string `gorm:"index"` // package | repository | username | email
+	Code   string
+	Params string // {}
+	// URL is the page a human would open: https://www.npmjs.com/package/%s.
+	// It names the platform and is what a report links to.
+	URL string
+	// CheckURL is the endpoint the prober calls to decide existence:
+	// https://registry.npmjs.org/%s. Empty means URL answers both questions,
+	// which is the shape the username and email lists have.
+	//
+	// The two are separate columns because they are separate facts, and folding
+	// them into one lost whichever was not stored. Keeping only the check URL
+	// named the platform after the API host, so GitHub arrived as
+	// api.github.com from the repo list and github.com from the username list —
+	// two platform nodes for one forge, and no analyzer able to see that a
+	// username and a repository sit on the same one.
+	CheckURL string
+	Success  string // regex for a successful response
+	Failed   string // regex for a failed response
 }
 
 // models is the dataset schema (read-only reference data).
