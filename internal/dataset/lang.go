@@ -327,9 +327,23 @@ func transitions(code, name string) ([]Transition, map[uint]string, bool) {
 		byID[v.ID] = v.Token
 		ids = append(ids, v.ID)
 	}
+	// Select the ids in SQL rather than binding them.
+	//
+	// Passing the id slice to `src IN ?` binds one host parameter each, and the
+	// driver caps those at 32766 (999 on older builds). Past the cap the query
+	// errors, this returns !ok, and edges() and groups() hand back nil -- a
+	// relation that is silently empty rather than one that failed. The shipped
+	// es/misspelling relation crossed the line at 36,650 tokens, and Spanish
+	// common misspellings generated nothing at all with no error to say so.
+	//
+	// A subquery has no such limit, stays one round trip, and lets SQLite use
+	// the index instead of materialising the list -- which is also what
+	// gen.One does when it clears the edges of a relation it is replacing.
 	var rows []Transition
-	if err := DB.Where("src IN ?", ids).Order("src, dest").
-		Find(&rows).Error; err != nil {
+	if err := DB.Where("src IN (?)",
+		DB.Model(&Vocabulary{}).Select("id").
+			Where("language = ? AND dataset = ?", lang, ds),
+	).Order("src, dest").Find(&rows).Error; err != nil {
 		return nil, nil, false
 	}
 	return rows, byID, true
