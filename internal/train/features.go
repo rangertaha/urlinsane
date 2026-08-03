@@ -63,8 +63,20 @@ type Bag interface {
 // They are declared, not discovered, because an operator's trigger has to name
 // its read set for the digest to be sound. A model that read a field the
 // engine did not declare would be served stale views forever.
+// "live" is deliberately absent. It is declared on the domain schema
+// (decompose.FieldLive) and no production operator sets it, so the symbol never
+// fired — but the reason not to add it is stronger than that: it is the label.
+// Existence is what the model is asked to anticipate, so feeding it in as a
+// feature would make belief a restatement of the answer rather than an estimate
+// of it, and the resulting score would look excellent and mean nothing. The
+// observation *relations* below have a weaker version of the same problem, which
+// is documented on Evaluate.
+//
+// "rank" is also set by nothing today, so it never fires either. It is kept
+// because it is legitimate signal if it ever arrives — popularity is known
+// before any lookup runs — and an unset field costs one map miss.
 var (
-	Fields = []string{"live", "punycode", "created", "rank"}
+	Fields = []string{"punycode", "created", "rank"}
 	Rels   = []string{graph.VariantRel, "RESOLVES_TO", "NS", "MX", "REGISTERED_BY", "EXISTS_ON"}
 )
 
@@ -122,10 +134,7 @@ func Features(n Featurable) []string {
 		add("has:nonascii")
 	}
 
-	// Props the observation operators set.
-	if v, ok := n.Prop("live"); ok {
-		add("live:%v", v.Flag())
-	}
+	// Props the observation operators set. Not "live" — see Fields.
 	if _, ok := n.Prop("punycode"); ok {
 		add("has:punycode")
 	}
