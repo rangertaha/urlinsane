@@ -1,15 +1,27 @@
 #!/usr/bin/env bash
 #
-# Fetch the MaxMind GeoLite2 database that internal/config embeds.
+# Fetch the MaxMind GeoLite2 database that enables the `geo` operator.
 #
-# The previous version of this script was broken three ways: it wrote to
+# It installs into the application directory, not the source tree. The database
+# used to be embedded with //go:embed and this script wrote it to
+# internal/config/ for `make build` to pick up; it is not embedded any more
+# (189a5ef), because the copy that shipped was corrupt and 49 MB of unusable
+# bytes rode along in every release. Geolocation is opt-in now: this file is
+# read from disk at startup and the operator is planned only if it is there.
+#
+# Leaving the old destination in place would have been worse than no script at
+# all, because config.optional() names this script as the remedy — so following
+# the advice would have written 49 MB somewhere nothing reads and reported
+# success.
+#
+# Earlier still it was broken three ways: it wrote to
 # internal/plugins/collectors/geo, a directory deleted with the old collectors;
 # it fetched from git.io, which GitHub retired in 2022; and its guard read
-# `[ -f ! $FILE ]`, which tests the literal "-f" and so never fired — the file
-# was re-downloaded on every run regardless.
+# `[ -f ! $FILE ]`, which tests the literal "-f" and so never fired.
 set -euo pipefail
 
-DEST="internal/config/maxmind.db.gz"
+# Matches config.DirName + config.MaxMindDB. Override for a non-standard home.
+DEST="${URLINSANE_DIR:-$HOME/.config/urlinsane}/maxmind.db.gz"
 TMP="$(mktemp)"
 trap 'rm -f "$TMP"' EXIT
 
@@ -36,7 +48,8 @@ if ! gzip -t "$TMP" 2>/dev/null; then
     exit 1
 fi
 
+mkdir -p "$(dirname "$DEST")"
 mv "$TMP" "$DEST"
 trap - EXIT
 echo "wrote $DEST ($(stat -c%s "$DEST") bytes)"
-echo "note: run 'make build' to embed it"
+echo "the geo operator will appear in the plan on your next scan; no rebuild needed"
