@@ -60,10 +60,11 @@ func (datasetLister) Sources(kind string) ([]Source, error) {
 	}
 	out := make([]Source, 0, len(rows))
 	for _, r := range rows {
-		// CheckURL is left empty: the dataset no longer carries a separate
-		// existence endpoint, and the probe falls back to URL when it is unset.
+		// Both URLs, so the platform is named after the page rather than the
+		// API host. A row with no CheckURL — the username and email lists — is
+		// unchanged: the probe falls back to URL when it is unset.
 		// Success/Failed regexes are not read yet.
-		out = append(out, Source{Code: r.Code, URL: r.URL})
+		out = append(out, Source{Code: r.Code, URL: r.URL, CheckURL: r.CheckURL})
 	}
 	return out, nil
 }
@@ -127,6 +128,29 @@ type sourceOp struct {
 // The three packages beside this one supply those two things and nothing else,
 // which is the whole reason this constructor is exported rather than each of
 // them reimplementing the probe loop.
+// HasSources reports whether a lister has anything for a kind, so a source
+// operator can leave itself out of the plan rather than join it and fail.
+//
+// A nil lister was the only case the constructors checked, which covered "no
+// dataset at all" and missed "a dataset whose table for this kind is empty".
+// The second is just as unable to answer: the operator is planned, --explain
+// promises it, and every call returns "no sources configured". §4's rule is
+// that the plan lists what may run.
+//
+// A lister that errors keeps its operator. That is not an authoritative empty
+// but a broken lookup, and a broken lookup should surface at run time as the
+// error it is, not as an operator that quietly went missing.
+func HasSources(list SourceLister, kind string) bool {
+	if list == nil {
+		return false
+	}
+	sources, err := list.Sources(kind)
+	if err != nil {
+		return true
+	}
+	return len(sources) > 0
+}
+
 func NewSourceOp(o Options, id, on, kind string, list SourceLister, prober Prober) graph.Operator {
 	resource := o.SourceResource
 	if resource == "" {
@@ -168,14 +192,13 @@ func (o sourceOp) Exec(ctx context.Context, v graph.View) (graph.Delta, graph.Ou
 		return graph.Delta{}, graph.Failed(errors.New("observe: no " + o.kind + " sources configured"))
 	}
 
-	ctx, cancel := o.Call(ctx)
-	defer cancel()
-
 	var d graph.Delta
 	self := v.Ref()
 	var undetermined error
 
 	for _, s := range sources {
+		// The parent context, not a deadline of this operator's own: an
+		// interrupt or the scheduler's OpTimeout must still stop the sweep.
 		if ctx.Err() != nil {
 			undetermined = ctx.Err()
 			break
@@ -184,8 +207,20 @@ func (o sourceOp) Exec(ctx context.Context, v graph.View) (graph.Delta, graph.Ou
 		if check == "" {
 			check = s.URL
 		}
-		found, perr := o.prober.Exists(ctx, Expand(check, v.Key()))
+
+		// One deadline per probe, which is what Base.Call is for and what its
+		// documentation says it does. Taken once around the whole loop instead,
+		// it bounded all sixty-six username platforms together: the first few
+		// were contacted, the deadline expired, and the rest were never asked.
+		// A hit among the first few then returned OK, so a name reported as
+		// found on one platform had sixty others silently unchecked behind it.
+		probe, cancel := o.Call(ctx)
+		found, perr := o.prober.Exists(probe, Expand(check, v.Key()))
+		cancel()
+
 		if perr != nil {
+			// One source timing out is that source undetermined, not the sweep
+			// abandoned: the next one still gets its own deadline.
 			undetermined = perr
 			continue
 		}

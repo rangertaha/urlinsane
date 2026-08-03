@@ -20,7 +20,9 @@ const ID = "pkg"
 // Returning nothing rather than an operator that always fails is the rule the
 // whole plan rests on: --explain must not promise work that cannot happen.
 func New(o observe.Options, list observe.SourceLister, prober observe.Prober) []graph.Operator {
-	if list == nil {
+	// Nothing configured for this kind is the same as no lister at all: the
+	// operator could only ever report that it has no sources.
+	if !observe.HasSources(list, "package") {
 		return nil
 	}
 	return []graph.Operator{observe.NewSourceOp(o, ID, observe.TypePackage, "package", list, prober)}

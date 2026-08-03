@@ -27,11 +27,28 @@ func TestNewOmitsOperatorsWithoutTheirDependency(t *testing.T) {
 		}
 	}
 
+	// A lister that lists nothing is not a dependency met. It was accepted as
+	// one, so a dataset whose source tables were empty planned all three
+	// operators and every call returned "no sources configured" -- the same
+	// --explain lie, one layer down.
+	ops = New(observe.Options{
+		Resolver: &observetest.FakeResolver{},
+		Whois:    observetest.FakeWhois{},
+		Sources:  fakeSources{},
+		Prober:   &fakeProber{},
+	})
+	for _, op := range ops {
+		switch op.Id() {
+		case "pkg", "usr", "repo":
+			t.Errorf("operator %q planned against a lister with no sources", op.Id())
+		}
+	}
+
 	ops = New(observe.Options{
 		Resolver: &observetest.FakeResolver{},
 		Whois:    observetest.FakeWhois{},
 		Geo:      observetest.FakeGeo{},
-		Sources:  fakeSources{},
+		Sources:  registries(),
 		Prober:   &fakeProber{},
 	})
 	ids := map[string]bool{}
