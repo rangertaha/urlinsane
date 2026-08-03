@@ -14,7 +14,7 @@ require (
 	github.com/sirupsen/logrus v1.9.4
 	github.com/urfave/cli/v2 v2.27.7
 	golang.org/x/net v0.56.0
-	gorm.io/gorm v1.31.1
+	gorm.io/gorm v1.31.2
 )
 
 require (
