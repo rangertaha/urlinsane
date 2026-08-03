@@ -5,6 +5,8 @@ package store
 
 import (
 	"fmt"
+	"io/fs"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -789,5 +791,49 @@ func TestRehydratePreservesExistenceForEveryNode(t *testing.T) {
 		if got, want := after.Existence(n.ID), before.Existence(n.ID); got != want {
 			t.Errorf("%s: existence = %v after rehydrate, want %v", n.Key, got, want)
 		}
+	}
+}
+
+// A block is either absent or whole. os.WriteFile truncates before it writes,
+// so a crash mid-write left a short file at the block's path -- and because the
+// path exists, Has reports the block stored and every later Put skips it. In a
+// content-addressed store the bytes at path(c) would then no longer hash to c,
+// permanently, with nothing to notice.
+func TestBlockstorePutLeavesNoPartialBlock(t *testing.T) {
+	root := t.TempDir()
+	bs, err := NewFSBlockstore(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	block, c, err := encodeList(2, func(e *enc) { e.str("hello"); e.i64(3) })
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := bs.Put(c, block); err != nil {
+		t.Fatal(err)
+	}
+
+	// Nothing but the block itself: a temporary left behind is a partial write
+	// that survived, which is what the rename exists to prevent.
+	var files []string
+	if err := filepath.WalkDir(root, func(p string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if !d.IsDir() {
+			files = append(files, filepath.Base(p))
+		}
+		return nil
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if len(files) != 1 || !strings.HasSuffix(files[0], ".cbor") {
+		t.Fatalf("store holds %v, want exactly one .cbor block", files)
+	}
+
+	// And what is there is the whole block.
+	got, err := bs.Get(c)
+	if err != nil || string(got) != string(block) {
+		t.Fatalf("Get = %q (err %v), want the whole block", got, err)
 	}
 }
