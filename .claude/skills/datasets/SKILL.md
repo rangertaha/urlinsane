@@ -786,6 +786,31 @@ CLDR's spelled-out number rules (RBNF) or a grammar reference. `0 zero zeroth`
 per line — digit, cardinal, ordinal — and it stops being worth automating at
 about thirty lines.
 
+### phonetics/homophone.lst — cross-language sound-squats
+
+Not a language's data, so it does not live under `languages/`: a group like
+`boutique boetiek butik` belongs to no single code. It is embedded straight from
+the `.lst` by `datasets/phonetics.go` rather than imported into the database,
+because every row in that database hangs off a language id.
+
+Derived, not curated. Regenerate from WikiPron:
+
+```bash
+# fetch the broad transcriptions you want, e.g. deu_latn_broad.tsv, then
+python3 scripts/crosshomophones.py <tsv-dir> datasets/phonetics/homophone.lst
+```
+
+The rule is: normalise the IPA (strip stress, length, syllable marks and
+combining diacritics), group spellings by the result, and keep a group only
+when it draws on **two or more languages** — a single-language group is an
+ordinary homophone and `hs` already has it. Then filter to typeable spellings
+(`[a-z][a-z0-9-]{2,}`), four characters minimum, two to six members: shorter
+words and larger groups are phonetic sinks that collide with everything.
+
+1.2M pronunciations across 15 languages yields about 7,600 groups. The header
+of the file records the source and the filters; keep it accurate if you change
+them.
+
 ### packages/*.lst — popular library names
 
 A different tree and a different job: these are the names a dependency-confusion
