@@ -135,9 +135,12 @@ func Sources(dir string) error {
 			row := &dataset.Source{Type: k.kind, Code: f[0]}
 			switch {
 			case len(f) >= 3:
-				// The check URL is what the prober calls, so it is the one
-				// that goes in URL. The page URL has no column in this schema.
-				row.URL = f[2]
+				// Both, in the columns they belong in. URL is the page, which
+				// names the platform; CheckURL is what the prober calls. Storing
+				// only the check URL used to name npm after registry.npmjs.org
+				// and GitHub after api.github.com, so the same forge reached
+				// through two lists became two platform nodes.
+				row.URL, row.CheckURL = f[1], f[2]
 			case len(f) == 2:
 				row.URL = f[1]
 			default:
