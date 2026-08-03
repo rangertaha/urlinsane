@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"unicode"
 
 	"golang.org/x/net/publicsuffix"
 )
@@ -105,11 +106,57 @@ func classify(target string) (typ, cleaned string, err error) {
 			"%q is an IP address; there is nothing to typosquat — scan the name that resolves to it", s)
 	}
 
-	if _, err := canonUsername(s); err == nil {
-		return TypeUsername, s, nil
+	if looksLikeHandle(s) {
+		if _, err := canonUsername(s); err == nil {
+			return TypeUsername, s, nil
+		}
 	}
 	return "", "", fmt.Errorf(
 		"cannot tell what %q is: expected an email, a repo URL, a registry:package, a domain or a username", target)
+}
+
+// looksLikeHandle guards the username rule, which is the last one and therefore
+// the one that decides what happens to a target nothing else recognised.
+//
+// canonUsername alone is not that guard. It leans permissive on purpose,
+// because it also admits the usernames the variant algorithms generate — and
+// those are meant to include the shapes a strict validator would reject, since
+// a squatted handle is often exactly the odd-looking one. Permissiveness is
+// right for a generated candidate and wrong for a seed: a seed is what a person
+// typed, and the only thing left to do with an unrecognisable one is say so.
+//
+// Without this, canonUsername's three rejected characters made every other
+// string a username. "exmaple,com" was scanned as a handle, "npm:" and
+// ":lodash" -- both a fumbled package spec -- were scanned as handles, and ".."
+// was scanned as a handle. Each produced variants, probed every platform, and
+// returned an empty report that read exactly like a clean result.
+// The punctuation a handle may contain. Every major platform's account name
+// grammar is a subset of this: GitHub and GitLab allow "-", "_" and ".", npm
+// and PyPI the same, and "+" survives from the email local parts usernames are
+// also decomposed out of.
+//
+// Anything else means the target is not a handle. A ":" says a package spec was
+// meant and got fumbled; a "," is a dot typed on the wrong key; brackets are an
+// address. None of them can be registered as an account anywhere, so reading
+// one as a username scans a namespace that cannot contain it.
+func handlePunct(r rune) bool {
+	return r == '-' || r == '_' || r == '.' || r == '+'
+}
+
+func looksLikeHandle(s string) bool {
+	named := false
+	for _, r := range s {
+		switch {
+		case unicode.IsLetter(r) || unicode.IsDigit(r):
+			named = true
+		case handlePunct(r):
+		default:
+			return false
+		}
+	}
+	// Punctuation alone is not a name: "..", "--" and "..." are nothing anyone
+	// can register.
+	return named
 }
 
 // hostOf reduces a URL to its hostname, and leaves anything that is not one
@@ -178,12 +225,21 @@ func looksLikeRepo(s string) bool {
 // registry added after this line was written.
 func isRegistryToken(s string) bool {
 	s = strings.TrimSpace(s)
-	if s == "" || strings.ContainsAny(s, "./\\ \t") {
+	if s == "" {
 		return false
 	}
 	switch strings.ToLower(s) {
 	case "http", "https", "git", "ssh", "ftp", "file":
 		return false
+	}
+	// A bare word, spelled out rather than listed as the characters it may not
+	// contain. Excluding "./\ \t" left everything else in, so the "[" of an
+	// IPv6 literal read as a registry and "[::1]" was scanned as the package
+	// ":1]" on registry "[".
+	for _, r := range s {
+		if !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '-' && r != '_' {
+			return false
+		}
 	}
 	return true
 }
