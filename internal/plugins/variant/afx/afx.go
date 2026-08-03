@@ -24,7 +24,9 @@ func affixSquatting(name string) []string {
 	for _, s := range affixSuffixes {
 		out = append(out, name+s)
 	}
-	return out
+	// An empty name would return the bare affixes, which are not variations of
+	// anything.
+	return variant.Clean(name, out)
 }
 
 // Spec declares the algorithm.

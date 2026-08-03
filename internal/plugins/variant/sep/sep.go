@@ -23,7 +23,9 @@ func separatorSubstitution(name string) []string {
 	for _, s := range separators {
 		out = append(out, strings.Join(tokens, s))
 	}
-	return out
+	// One of the separators is the one the name already uses, and rejoining on
+	// it reproduces the name.
+	return variant.Clean(name, out)
 }
 
 // Spec declares the algorithm.

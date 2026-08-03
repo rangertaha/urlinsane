@@ -21,7 +21,9 @@ func tldSwap(suffixes []string) variant.Generate {
 		for _, s := range suffixes {
 			out = append(out, variant.JoinDomain(prefix, core, s))
 		}
-		return out
+		// The suffix list contains the name's own suffix, so the swap that
+		// replaces it with itself rebuilds the input.
+		return variant.Clean(name, out)
 	}
 }
 

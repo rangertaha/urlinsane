@@ -18,7 +18,9 @@ func adjacentInsertion(token string, adj variant.Adjacency) (out []string) {
 				token[:i]+string(char)+key+token[i+len(string(char)):])
 		}
 	}
-	return
+	// Inserting a neighbour before a character and after the one behind it are
+	// the same edit, so every interior position is reachable twice.
+	return variant.Clean(token, out)
 }
 
 // Spec declares the algorithm.
