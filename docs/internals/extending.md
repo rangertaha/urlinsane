@@ -686,8 +686,8 @@ X". The pipeline's `DependsOn` list is what made plugin order load-bearing and
 its cache unsound.
 
 {: .todo }
-> `plugins.IDs()` exists and is documented as backing `--list plugins`, but
-> `listTopic` registers no such topic and nothing calls it. Two related gaps:
+> There is no `--list plugins`. A `plugins.IDs()` was written to back one and
+> has been removed, since nothing called it. A related gap remains:
 > `--list algorithms` renders `variantall.Specs(variant.Options{})`, so
 > plugin-contributed algorithms are missing from it — they do appear in
 > `--list operators`, which goes through `scan.Operators`.

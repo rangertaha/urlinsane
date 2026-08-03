@@ -355,24 +355,6 @@ func Algorithms(src Source, env Env) ([]variant.Spec, error) {
 	return out, nil
 }
 
-// IDs lists every registered plugin id, sorted, for --list plugins.
-func IDs() []string {
-	mu.RLock()
-	defer mu.RUnlock()
-	out := make([]string, 0, len(operators)+len(analyzers)+len(algorithms))
-	for _, e := range operators {
-		out = append(out, e.id)
-	}
-	for _, e := range analyzers {
-		out = append(out, e.id)
-	}
-	for _, e := range algorithms {
-		out = append(out, e.id)
-	}
-	sort.Strings(out)
-	return out
-}
-
 // for_ returns the Env one plugin is built from: the shared services unchanged,
 // with that plugin's settings resolved — its declared defaults when there is no
 // source, and the file's per-key overrides on top of them when there is.
