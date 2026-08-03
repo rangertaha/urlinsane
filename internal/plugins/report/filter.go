@@ -24,11 +24,21 @@ type Filter struct {
 	// Live,Absent` rendered an empty report and exited 0.
 	spec string
 
-	// existence marks the filter as belonging to the existence family, which
-	// is the one family whose members are alternatives rather than
-	// conjunctions. Set where the filter is built, from the parse that already
-	// knows the answer, rather than recovered afterwards from its text.
-	existenceFilter bool
+	// family names the attribute this filter tests, when that attribute can
+	// hold exactly one value per node — existence, type, and risk or depth
+	// compared for equality. Two filters in the same family are ALTERNATIVES,
+	// because no node can satisfy both and requiring both would render an empty
+	// report; filters in different families narrow, as filters normally do.
+	//
+	// Empty for a comparison (`risk>high`, `depth<=2`), where conjunction is
+	// meaningful and is what the user asked for.
+	//
+	// It is set here, from the parse that already knows the answer, rather than
+	// recovered afterwards from the spec text. It began as a bool covering only
+	// existence, which fixed `--filter Live,Absent` and left every other family
+	// broken in exactly the same way: `--filter type=domain,type=ip` matched no
+	// node at all and rendered an empty report with exit 0.
+	family string
 
 	fn func(NodeRow) bool
 }
@@ -70,7 +80,7 @@ func ParseFilter(s string) (Filter, error) {
 			return Filter{}, fmt.Errorf(
 				"report: %q is not a severity; want info, low, medium, high or critical", arg)
 		}
-		return Filter{spec: spec, fn: func(n NodeRow) bool {
+		return Filter{spec: spec, family: equalityFamily("risk", op), fn: func(n NodeRow) bool {
 			return compare(op, int(n.severity), int(sev))
 		}}, nil
 
@@ -78,7 +88,7 @@ func ParseFilter(s string) (Filter, error) {
 		if op != "=" && op != "==" {
 			return Filter{}, fmt.Errorf("report: type filters compare with '=', not %q", op)
 		}
-		return Filter{spec: spec, fn: func(n NodeRow) bool {
+		return Filter{spec: spec, family: "type", fn: func(n NodeRow) bool {
 			return strings.EqualFold(n.Type, arg)
 		}}, nil
 
@@ -87,7 +97,7 @@ func ParseFilter(s string) (Filter, error) {
 		if _, err := fmt.Sscanf(arg, "%d", &d); err != nil {
 			return Filter{}, fmt.Errorf("report: depth filter wants a number, got %q", arg)
 		}
-		return Filter{spec: spec, fn: func(n NodeRow) bool {
+		return Filter{spec: spec, family: equalityFamily("depth", op), fn: func(n NodeRow) bool {
 			return compare(op, n.Depth, d)
 		}}, nil
 	}
@@ -153,10 +163,21 @@ func ValidateTypes(filters []Filter, known []string) error {
 
 func existence(spec string, want graph.Existence) Filter {
 	return Filter{
-		spec:            spec,
-		existenceFilter: true,
-		fn:              func(n NodeRow) bool { return n.existence == want },
+		spec:   spec,
+		family: "existence",
+		fn:     func(n NodeRow) bool { return n.existence == want },
 	}
+}
+
+// equalityFamily names the family for a comparison filter, but only when the
+// comparison is equality — that is the case where two filters on one attribute
+// are mutually exclusive and so must be alternatives. `risk>medium` and
+// `risk>high` can both hold, so they keep narrowing.
+func equalityFamily(field, op string) string {
+	if op == "=" || op == "==" {
+		return field
+	}
+	return ""
 }
 
 // split parses `field op arg`, longest operator first so ">=" is not read as
@@ -188,28 +209,43 @@ func compare(op string, got, want int) bool {
 
 // keep reports whether a node survives the filter set.
 //
-// Filters within one existence family are alternatives — `--filter live
-// --filter absent` means "either", since a node cannot be both and requiring
-// all would render an empty report. Across families they narrow: `--filter live
-// --filter risk>medium` means both. Treating every filter as a conjunction
-// would make the common two-value existence query silently return nothing.
+// Filters within one family are alternatives — `--filter live --filter absent`,
+// `--filter type=domain --filter type=ip` — because a node has exactly one
+// existence and exactly one type, so requiring both would render an empty
+// report. Across families they narrow: `--filter live --filter risk>medium`
+// means both.
+//
+// The rule is per family rather than special-cased for existence. It was
+// special-cased, and every other family was silently broken the same way the
+// existence one had been: two type filters, or two `risk=` filters, matched no
+// node and produced an empty report with exit 0 — a scan that looks like it
+// found nothing rather than a query that cannot match. A filter kind declares
+// its family where it is parsed and inherits this; nothing here needs to learn
+// about it.
 func keep(filters []Filter, n NodeRow) bool {
 	if len(filters) == 0 {
 		return true
 	}
-	var sawExistence, matchedExistence bool
+	// saw/matched per family, so an unmatched family fails the whole row while
+	// a matched one is satisfied by any single member.
+	saw := map[string]bool{}
+	matched := map[string]bool{}
 	for _, f := range filters {
-		switch {
-		case f.existenceFilter:
-			sawExistence = true
-			if f.fn(n) {
-				matchedExistence = true
-			}
-		default:
+		if f.family == "" {
 			if !f.fn(n) {
 				return false
 			}
+			continue
+		}
+		saw[f.family] = true
+		if f.fn(n) {
+			matched[f.family] = true
 		}
 	}
-	return !sawExistence || matchedExistence
+	for fam := range saw {
+		if !matched[fam] {
+			return false
+		}
+	}
+	return true
 }
