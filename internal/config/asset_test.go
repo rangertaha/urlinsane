@@ -200,27 +200,15 @@ func TestOptionalIsSilentWhenAbsent(t *testing.T) {
 }
 
 // Present but malformed is the opposite case: somebody tried to supply one and
-// it will not work, which is exactly what they need told.
-func TestOptionalReportsAMalformedFile(t *testing.T) {
-	dir := t.TempDir()
-	// The corruption that shipped: a gzip magic whose 0x8b became U+FFFD.
-	if err := os.WriteFile(filepath.Join(dir, MaxMindDB), mangle(goodGzip), 0o640); err != nil {
-		t.Fatal(err)
-	}
-	f := optional(dir, MaxMindDB, isGzip)
-	if !f.Present {
-		t.Error("Present is false for a file that is there")
-	}
-	if f.Err == nil {
-		t.Fatal("a malformed geolocation database was accepted")
-	}
-	if !strings.Contains(f.Err.Error(), MaxMindDB) {
-		t.Errorf("Err = %v, want it to name the file", f.Err)
-	}
-	if !(Setup{GeoIP: f}).FirstRun() {
-		t.Error("a malformed optional file is not reported")
-	}
-}
+// it will not work, which is exactly what they need told. That assertion now
+// lives in TestOptionalStillReportsAnyOtherBadFile.
+//
+// The version here used mangle(goodGzip) as its "user supplied a bad file"
+// fixture, which is not one — those exact bytes are what this tool installed on
+// every machine that ran an earlier release, and reporting them blames the user
+// for the tool's litter on every run. The successor keeps the assertion and
+// fixes the fixture; TestOptionalIgnoresTheDatabaseWeShippedBroken covers the
+// case this one had wrong.
 
 // A valid file is used, and only its header is read — the database is tens of
 // megabytes and the check is three bytes.
@@ -233,5 +221,71 @@ func TestOptionalAcceptsAValidFile(t *testing.T) {
 	f := optional(dir, MaxMindDB, isGzip)
 	if !f.Present || f.Err != nil {
 		t.Errorf("a valid database was rejected: present=%v err=%v", f.Present, f.Err)
+	}
+}
+
+// The database earlier releases installed is not a user's failed attempt to
+// supply one, and must not be reported as one.
+//
+// Every machine that ran an earlier release has 49 MB of mangled gzip at this
+// path, because the tool wrote it there. Once the embed was removed, optional()
+// found it, failed the header check, and printed "geolocation database
+// unavailable ... is unusable" before every scan — a warning on every run, about
+// the tool's own litter, for a feature the user had just turned off. That is the
+// exact complaint removing the embed was meant to answer.
+func TestOptionalIgnoresTheDatabaseWeShippedBroken(t *testing.T) {
+	dir := t.TempDir()
+	// The real thing: a gzip header round tripped through a text decoder.
+	corrupt := append(mangle(goodGzip), make([]byte, 4096)...)
+	if err := os.WriteFile(filepath.Join(dir, MaxMindDB), corrupt, 0o640); err != nil {
+		t.Fatal(err)
+	}
+
+	f := optional(dir, MaxMindDB, isGzip)
+
+	if f.Err != nil {
+		t.Errorf("Err = %v, want nil: the tool installed this file, so blaming "+
+			"the user for it on every run is wrong", f.Err)
+	}
+	if f.Present {
+		t.Error("Present is true for bytes that are not a database; an operator " +
+			"would be planned against it")
+	}
+	if (Setup{GeoIP: f}).FirstRun() {
+		t.Error("the tool's own broken artifact made every run report a setup problem")
+	}
+}
+
+// The exception is exactly that fingerprint and nothing wider. A user who
+// supplies their own broken file still gets told, because that one they can fix.
+func TestOptionalStillReportsAnyOtherBadFile(t *testing.T) {
+	dir := t.TempDir()
+	// Right length, wrong format — a .mmdb saved without compressing it, say.
+	if err := os.WriteFile(filepath.Join(dir, MaxMindDB),
+		append([]byte("\xab\xcd\xefMaxMind.com"), make([]byte, 4096)...), 0o640); err != nil {
+		t.Fatal(err)
+	}
+
+	f := optional(dir, MaxMindDB, isGzip)
+
+	if f.Err == nil {
+		t.Fatal("a file the user supplied and cannot work was accepted silently")
+	}
+	if !f.Present {
+		t.Error("Present is false for a file that is there")
+	}
+	if !strings.Contains(f.Err.Error(), "mmdb.sh") {
+		t.Errorf("Err = %v, want it to say how to get a working one", f.Err)
+	}
+}
+
+// A real gzip cannot be mistaken for the corruption, because the byte that
+// distinguishes them is the one the corruption destroys.
+func TestShippedCorruptionCannotCollideWithRealGzip(t *testing.T) {
+	if isShippedCorruption(goodGzip) {
+		t.Error("a valid gzip header was taken for the shipped corruption")
+	}
+	if !isShippedCorruption(mangle(goodGzip)) {
+		t.Error("the shipped corruption was not recognised")
 	}
 }
