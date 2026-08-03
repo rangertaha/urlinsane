@@ -833,3 +833,53 @@ func TestFrontierZeroIsUnbounded(t *testing.T) {
 		t.Errorf("admitted %d ip nodes with no frontier, want all 5", ips)
 	}
 }
+
+// A negative bound reached the scheduler unchanged, because withDefaults only
+// looked for zero. Workers panicked in make(chan); the rest were quieter and
+// worse -- a negative Attempts or MaxRounds made the loop it bounds run zero
+// times, so the scan expanded nothing and reported a successful, empty run.
+func TestNegativeLimitsAreTreatedAsUnset(t *testing.T) {
+	l := Limits{
+		MaxDepth:   -1,
+		MaxRounds:  -1,
+		Revisions:  -1,
+		Attempts:   -1,
+		Workers:    -1,
+		NodeBudget: -1,
+		Frontier:   -1,
+		OpTimeout:  -time.Second,
+	}.withDefaults()
+
+	for _, tc := range []struct {
+		name string
+		got  int
+		want int
+	}{
+		{"Revisions", l.Revisions, 3},
+		{"Attempts", l.Attempts, 2},
+		{"Workers", l.Workers, 1},
+		{"MaxRounds", l.MaxRounds, 64},
+		// Zero is this field's documented "unbounded", so a negative means
+		// that rather than a bound of minus one.
+		{"MaxDepth", l.MaxDepth, 0},
+		{"NodeBudget", l.NodeBudget, 0},
+		{"Frontier", l.Frontier, 0},
+	} {
+		if tc.got != tc.want {
+			t.Errorf("%s = %d, want %d", tc.name, tc.got, tc.want)
+		}
+	}
+	if l.OpTimeout != 0 {
+		t.Errorf("OpTimeout = %s, want 0", l.OpTimeout)
+	}
+}
+
+// The panic the clamp exists to stop.
+func TestANegativeWorkerCountDoesNotPanic(t *testing.T) {
+	l := Limits{Workers: -4}.withDefaults()
+	// This is the expression that panicked with "makechan: size out of range".
+	sem := make(chan struct{}, l.Workers)
+	if cap(sem) < 1 {
+		t.Fatalf("semaphore capacity = %d, want at least 1", cap(sem))
+	}
+}

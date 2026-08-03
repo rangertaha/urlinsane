@@ -69,6 +69,18 @@ func SelectOperators(all []Operator, ids []string) ([]Operator, error) {
 	return out, nil
 }
 
+// Selection reports the ids a --algorithm/--collect selection names and whether
+// it names them to exclude.
+//
+// Exported for the callers that have to re-examine a selection after the plan
+// is compiled. SelectOperators promises that an id the user named is never
+// silently dropped, but it can only keep that promise over the set it is handed:
+// compilation prunes operators the seed type cannot reach, afterwards, and a
+// named operator lost there is lost just as quietly.
+func Selection(ids []string) (set map[string]bool, exclude bool, err error) {
+	return parseSelection(ids)
+}
+
 // parseSelection splits a selection into the id set and whether it excludes.
 // Ids are comma-split as well as repeatable, so -c dns,ptr and -c dns -c ptr
 // are the same.

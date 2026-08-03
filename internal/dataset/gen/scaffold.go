@@ -45,7 +45,6 @@ var Relations = []Relation{
 	{"positive", "Words with a favourable connotation, one per line."},
 	{"negative", "Words with an unfavourable connotation, one per line."},
 	{"word", "The language's vocabulary, one word per line."},
-	{"token", "Sub-word fragments names are built from, one per line."},
 }
 
 // aliases are curated directories whose name is a code kb does not use, mapped

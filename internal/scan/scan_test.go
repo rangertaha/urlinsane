@@ -477,3 +477,58 @@ func (testLanguage) Numerals() map[string][]string   { return nil }
 func (testLanguage) Homoglyphs() map[string][]string { return nil }
 func (testLanguage) Homophones() [][]string          { return nil }
 func (testLanguage) Misspellings() [][]string        { return nil }
+
+// Selection and compilation are two gates and only the first refused to drop a
+// named algorithm quietly. "tld" exists, so --algorithm tld passes selection;
+// nothing produces a domain from a package, so Compile prunes it. The run then
+// went ahead with no variant operator at all and reported a clean empty result
+// -- doing nothing presented as a finding of nothing.
+func TestEveryNamedAlgorithmPrunedIsAnError(t *testing.T) {
+	_, err := Run(context.Background(), Options{
+		Target:     "npm:lodash",
+		Algorithms: []string{"tld"}, // domain-only, unreachable from a package
+		Observe:    offline(),
+	}, report.Options{})
+	if err == nil {
+		t.Fatal("a scan with every named algorithm pruned reported success")
+	}
+	if !strings.Contains(err.Error(), "tld") {
+		t.Errorf("error does not name the algorithm that was lost: %v", err)
+	}
+}
+
+// Naming more algorithms than a seed can use is reasonable: the survivors run.
+// Only losing all of them means the scan can generate nothing.
+func TestSomeNamedAlgorithmsPrunedStillRuns(t *testing.T) {
+	res, err := Run(context.Background(), Options{
+		Target:     "npm:lodash",
+		Algorithms: []string{"tld", "co"}, // tld is pruned, co is not
+		Limits:     graph.Limits{MaxDepth: 1},
+		Observe:    offline(),
+	}, report.Options{Format: "json"})
+	if err != nil {
+		t.Fatalf("run: %v", err)
+	}
+	var variants int
+	for _, e := range res.Graph.Edges() {
+		if e.Rel.Name() == graph.VariantRel {
+			variants++
+		}
+	}
+	if variants == 0 {
+		t.Fatal("the surviving algorithm produced no variants")
+	}
+}
+
+// An exclusion asks for the operator to be absent. Pruning it is that wish
+// granted, not denied, so it must not be an error.
+func TestExcludingAPrunedAlgorithmIsNotAnError(t *testing.T) {
+	if _, err := Run(context.Background(), Options{
+		Target:     "npm:lodash",
+		Algorithms: []string{"^tld"},
+		Limits:     graph.Limits{MaxDepth: 1},
+		Observe:    offline(),
+	}, report.Options{Format: "json"}); err != nil {
+		t.Fatalf("excluding a pruned algorithm failed the run: %v", err)
+	}
+}

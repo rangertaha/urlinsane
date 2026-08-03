@@ -35,6 +35,15 @@ func Render(w io.Writer, r report.Report) error {
 		if err := json.Unmarshal(b, &m); err != nil {
 			return err
 		}
+		// A payload of its own may already carry "kind", and Finding does: its
+		// kind is which analyzer concluded what — "campaign", "homoglyph" — and
+		// assigning the record discriminator over it left every finding line
+		// saying only that it was a finding. Move it aside first, under a name
+		// derived from the record kind, so both survive: a finding line carries
+		// "kind":"finding" and "finding_kind":"campaign".
+		if own, ok := m["kind"]; ok {
+			m[kind+"_kind"] = own
+		}
 		m["kind"], _ = json.Marshal(kind)
 		return enc.Encode(m)
 	}

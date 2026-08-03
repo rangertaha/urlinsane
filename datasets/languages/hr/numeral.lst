@@ -1,1 +1,38 @@
 # A number, then the words denoting it: 1 one first
+# Script: LATIN (Croatian Gaj alphabet).
+0 nula nulti
+1 jedan prvi
+2 dva drugi
+3 tri treći
+4 četiri četvrti
+5 pet peti
+6 šest šesti
+7 sedam sedmi
+8 osam osmi
+9 devet deveti
+10 deset deseti
+11 jedanaest jedanaesti
+12 dvanaest dvanaesti
+13 trinaest trinaesti
+14 četrnaest četrnaesti
+15 petnaest petnaesti
+16 šesnaest šesnaesti
+17 sedamnaest sedamnaesti
+18 osamnaest osamnaesti
+19 devetnaest devetnaesti
+20 dvadeset dvadeseti
+21 dvadesetjedan
+22 dvadesetdva
+23 dvadesettri
+24 dvadesetčetiri
+30 trideset trideseti
+40 četrdeset četrdeseti
+50 pedeset pedeseti
+60 šezdeset šezdeseti
+70 sedamdeset sedamdeseti
+80 osamdeset osamdeseti
+90 devedeset devedeseti
+100 sto stoti
+1000 tisuća tisućiti
+1000000 milijun milijunti
+1000000000 milijarda milijarditi
