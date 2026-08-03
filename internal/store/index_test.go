@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -328,5 +329,46 @@ func TestReleasingABrokenLockDoesNotRemoveItsReplacement(t *testing.T) {
 	unlockB()
 	if _, err := os.Stat(path); !os.IsNotExist(err) {
 		t.Error("B's release left the lock file behind")
+	}
+}
+
+// A stale lock that cannot be broken must time out, not spin.
+//
+// The stale branch used to `continue` straight back to the top, which was safe
+// only while the remove could not fail. Once it could — an empty lockfile the
+// token comparison refused to touch, a read-only directory, a permission change
+// — lock() span at full speed and never reached its deadline. It hung
+// TestStaleLockIsBroken for the whole ten-minute test timeout, which is how it
+// was found.
+func TestAnUnbreakableStaleLockTimesOutRatherThanSpinning(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, lockName)
+	if err := os.WriteFile(path, []byte("someone-elses-token"), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	old := time.Now().Add(-time.Hour)
+	if err := os.Chtimes(path, old, old); err != nil {
+		t.Fatal(err)
+	}
+	// Read-only directory: the entry is stale and cannot be unlinked.
+	if err := os.Chmod(dir, 0o500); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chmod(dir, 0o700) })
+
+	done := make(chan error, 1)
+	go func() { _, err := lock(dir); done <- err }()
+
+	select {
+	case err := <-done:
+		if err == nil {
+			t.Fatal("took a lock that could not be broken")
+		}
+		if !strings.Contains(err.Error(), "locked by another process") {
+			t.Errorf("err = %v, want the lock timeout", err)
+		}
+	case <-time.After(30 * time.Second):
+		t.Fatal("lock() did not return: it is spinning on a stale lock it cannot " +
+			"remove instead of honouring its deadline")
 	}
 }

@@ -167,30 +167,33 @@ func lock(dir string) (func(), error) {
 				os.Remove(path)
 				return nil, errors.Join(werr, cerr)
 			}
-			return func() { removeIfToken(path, token) }, nil
+			return func() { removeIfUnchanged(path, token) }, nil
 		}
 		if !os.IsExist(err) {
 			return nil, err
 		}
 		// Breaking a stale lock removes only the lock observed to be stale — see
-		// removeIfToken. An unconditional Remove let two waiters both break the
-		// same lock and both proceed into the critical section.
+		// removeIfUnchanged. An unconditional Remove let two waiters both break
+		// the same lock and both proceed into the critical section.
+		//
+		// The observed contents are what is compared, empty included: a process
+		// killed between the O_EXCL create and the token write leaves an empty
+		// lockfile, and that is precisely the abandoned lock stale-breaking
+		// exists for. Refusing to touch a lock with no token made it
+		// unbreakable.
 		if fi, serr := os.Stat(path); serr == nil && time.Since(fi.ModTime()) > lockStale {
 			if held, rerr := os.ReadFile(path); rerr == nil {
-				if len(held) == 0 {
-					// An empty lockfile is what a process killed between the
-					// O_EXCL create and the token write leaves behind, and it
-					// is precisely the abandoned lock the stale break exists
-					// for. removeIfToken refuses it -- an empty token matches
-					// nothing -- so it was never broken and every waiter spun
-					// on it forever. Nobody ever claimed this lock, and it is
-					// older than lockStale, so the creator is gone.
-					os.Remove(path)
-				} else {
-					removeIfToken(path, string(held))
-				}
+				removeIfUnchanged(path, string(held))
 			}
-			continue
+			// Falls through to the deadline check rather than looping straight
+			// back. `continue` here was safe only while the remove could not
+			// fail; a stale lock that cannot be removed — a read-only
+			// directory, a permission change, a holder rewriting it — turned
+			// this into a spin at full speed that never timed out. It is what
+			// hung TestStaleLockIsBroken for the full ten-minute test deadline.
+		}
+		if time.Now().After(deadline) {
+			return nil, fmt.Errorf("store: index locked by another process (%s)", path)
 		}
 		time.Sleep(poll)
 	}
@@ -205,7 +208,7 @@ func newToken() (string, error) {
 	return fmt.Sprintf("%d:%x", os.Getpid(), b), nil
 }
 
-// removeIfToken deletes the lock file only if it still holds the given token.
+// removeIfUnchanged deletes the lock file only if it still holds want.
 //
 // One implementation, used by the breaking path and the release path, because
 // they enforce the same rule — remove only the lock you observed — and only one
@@ -230,12 +233,15 @@ func newToken() (string, error) {
 // both files report inode 37495985, so SameFile says a replacement *is* the
 // original. The breaking side was therefore unsound in the same way, and both
 // are fixed by this.
-func removeIfToken(path, token string) {
-	if token == "" {
-		return
-	}
+// want is compared as bytes rather than tested for emptiness, and that matters
+// for the breaking path: a process killed between the exclusive create and the
+// token write leaves an *empty* lockfile, which is exactly the case stale-
+// breaking exists for. An earlier version of this refused to touch a lock with
+// no token, so an empty stale lock could never be broken — and because the
+// stale branch looped back without checking the deadline, lock() span forever.
+func removeIfUnchanged(path, want string) {
 	held, err := os.ReadFile(path)
-	if err != nil || string(held) != token {
+	if err != nil || string(held) != want {
 		return
 	}
 	os.Remove(path)
