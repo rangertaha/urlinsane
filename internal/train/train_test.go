@@ -410,3 +410,94 @@ func hasSymbol(xs []string, want string) bool {
 	}
 	return false
 }
+
+// Baum-Welch is unsupervised, so which latent state means "promising" is
+// whatever order EM converged to. Focus has to be chosen on the evidence after
+// fitting, or belief can come out confidently backwards — which is what
+// happened on a real scan: IPv6 addresses at 1.0 and every live typosquat at
+// 0.0.
+func TestAnchorFocusPicksTheStateThatEmitsLive(t *testing.T) {
+	g, seed := scan(t)
+	res, _, err := Fit(DefaultConfig(), Scan{Graph: g, Seed: seed})
+	if err != nil {
+		t.Fatalf("fit: %v", err)
+	}
+
+	h, focus, err := AnchorFocus(res.Model)
+	if err != nil {
+		t.Fatalf("anchor: %v", err)
+	}
+	if len(h.Focus()) != 1 || h.Focus()[0] != focus {
+		t.Fatalf("focus = %v, want [%s]", h.Focus(), focus)
+	}
+
+	// The chosen state must be the one most likely to emit a live observation.
+	chosen := -1
+	for i, s := range h.States() {
+		if s == focus {
+			chosen = i
+		}
+	}
+	if chosen < 0 {
+		t.Fatalf("focus %q is not a state of the model", focus)
+	}
+	for i := range h.States() {
+		if h.LogEmission(i, []string{LiveSymbol}) > h.LogEmission(chosen, []string{LiveSymbol}) {
+			t.Errorf("state %d emits live more often than the anchored state %q", i, focus)
+		}
+	}
+}
+
+// Anchoring changes which state is reported and nothing else: the transition
+// and emission tables are the fitted ones.
+func TestAnchorFocusPreservesTheModel(t *testing.T) {
+	g, seed := scan(t)
+	res, _, err := Fit(DefaultConfig(), Scan{Graph: g, Seed: seed})
+	if err != nil {
+		t.Fatalf("fit: %v", err)
+	}
+	before := res.Model
+	after, _, err := AnchorFocus(before)
+	if err != nil {
+		t.Fatalf("anchor: %v", err)
+	}
+
+	if len(after.States()) != len(before.States()) || len(after.Symbols()) != len(before.Symbols()) {
+		t.Fatal("anchoring changed the alphabet")
+	}
+	for i := range before.States() {
+		for _, sym := range before.Symbols() {
+			b := before.LogEmission(i, []string{sym})
+			a := after.LogEmission(i, []string{sym})
+			if diff := a - b; diff > 1e-9 || diff < -1e-9 {
+				t.Fatalf("emission for state %d symbol %q moved by %g", i, sym, diff)
+			}
+		}
+	}
+}
+
+// A corpus with no live observation cannot orient a model, and saying so beats
+// picking a state arbitrarily.
+func TestAnchorFocusRefusesWithoutLiveEvidence(t *testing.T) {
+	g := graph.New(registry(t))
+	seed, err := g.Seed("domain", "example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	origin := graph.NodeRef{Type: "domain", Key: "example.com"}
+	ref := graph.NodeRef{Type: "domain", Key: "exmple.com"}
+	g.Apply(graph.Provenance{Operator: "co", Round: 1}, seed, graph.Delta{
+		Edges: []graph.EdgeRef{{From: origin, Rel: graph.VariantRel, To: ref}},
+	})
+	barrier(t, g)
+	g.SetObservers([]string{"dns"})
+	g.SetStatus(node(t, g, "exmple.com"), "dns", graph.StatusEmpty) // absent, never live
+
+	res, _, err := Fit(DefaultConfig(), Scan{Graph: g, Seed: seed})
+	if err != nil {
+		t.Fatalf("fit: %v", err)
+	}
+	if _, _, err := AnchorFocus(res.Model); err == nil {
+		t.Fatal("anchored a model whose corpus recorded no live observation")
+	}
+}
