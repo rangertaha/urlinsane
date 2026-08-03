@@ -92,6 +92,40 @@ func TestExperiment(t *testing.T) {
 	t.Logf("%d scans, labels: live=%d absent=%d unknown=%d untried=%d",
 		len(scans), live, absent, unknown, untried)
 
+	// Does an observation edge exist only when the label is live? If so, the
+	// featurizer can read the answer off the graph it is scoring.
+	for i, s := range scans {
+		a := s.Graph.Analyze()
+		obs := map[string]bool{"RESOLVES_TO": true, "NS": true, "MX": true,
+			"REGISTERED_BY": true, "EXISTS_ON": true}
+		var lw, ln, aw, an int
+		for _, n := range a.Nodes() {
+			has := false
+			for _, e := range a.Edges() {
+				if e.From == n.ID && obs[e.Rel.Name()] {
+					has = true
+					break
+				}
+			}
+			switch Outcome(a, n.ID) {
+			case "live":
+				if has {
+					lw++
+				} else {
+					ln++
+				}
+			case "absent":
+				if has {
+					aw++
+				} else {
+					an++
+				}
+			}
+		}
+		fmt.Printf("%-14s live: with-obs-edge=%d without=%d | absent: with-obs-edge=%d without=%d\n",
+			keys[i], lw, ln, aw, an)
+	}
+
 	// Leave-one-out over every scan. One split on three scans is one number
 	// from one sample; rotating at least says whether the answer depends on
 	// which scan was held out.
@@ -109,13 +143,18 @@ func TestExperiment(t *testing.T) {
 		held := scans[h]
 
 		base := Evaluate(held.Graph)
-		held.Graph.SetBeliefModel(BeliefFrom(res.Model))
+		bm, err := BeliefFrom(res.Model)
+		if err != nil {
+			t.Fatalf("serve: %v", err)
+		}
+		held.Graph.SetBeliefModel(bm)
 		if err := Finalize(held.Graph); err != nil {
 			t.Fatalf("rescore: %v", err)
 		}
 		fitted := Evaluate(held.Graph)
 
 		fmt.Printf("hold out %-14s train=%s\n", keys[h], Describe(corpus, res))
-		fmt.Printf("  base   %s\n  fitted %s\n", base, fitted)
+		fmt.Printf("  prior  %s\n  fitted %s  (focus=%v, declared=%v)\n",
+			base, fitted, res.Model.Focus(), DefaultConfig().Focus)
 	}
 }

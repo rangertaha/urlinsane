@@ -105,6 +105,49 @@ func TestBaumWelchSeparatesTheRegimes(t *testing.T) {
 	if math.Abs(up-down) < 0.1 {
 		t.Fatalf("live and absent nodes got indistinguishable beliefs %v and %v", up, down)
 	}
+	// Direction, not only magnitude. The version of this test that checked the
+	// gap alone passed a model that was exactly backwards: with Seed 2 or 5 and
+	// this same fixture, up=0.0019 and down=0.9839 — a gap of 0.98, and every
+	// resolving node ranked below every absent one.
+	if up < down {
+		t.Errorf("belief is inverted: a resolving node scored %v, an absent one %v", up, down)
+	}
+}
+
+// Which state means "live" is not decided by the names in Config.States.
+//
+// Baum-Welch is unsupervised: it fills its states in whatever order it happens
+// to converge to, and the initialisation jitter is what decides the order. So
+// Config.Focus names a state whose meaning is unknowable in advance, and the
+// orientation is a coin flip — made *reproducible*, not made safe, by the fixed
+// seed that DefaultConfig uses for rebuildable models.
+//
+// This test is the evidence for that, and it is why callers must not trust
+// Config.Focus: internal/train.Fit re-derives the focus from the fitted model's
+// own emissions (AnchorFocus) precisely because this sweep fails.
+func TestFocusOrientationIsNotDecidedByConfig(t *testing.T) {
+	var inverted []int64
+	for _, seed := range []int64{1, 2, 5, 20260801} {
+		cfg := trainConfig()
+		cfg.Seed = seed
+		res, err := Train(syntheticCorpus(), cfg)
+		if err != nil {
+			t.Fatalf("seed %d: %v", seed, err)
+		}
+		h := res.Model
+		up := h.Mass(h.Forward(h.Prior(), "VARIANT_OF", []string{"resolves=true", "mx=true"}))
+		down := h.Mass(h.Forward(h.Prior(), "VARIANT_OF", []string{"resolves=false"}))
+		t.Logf("seed %-9d focus=%v live=%.4f absent=%.4f", seed, h.Focus(), up, down)
+		if up < down {
+			inverted = append(inverted, seed)
+		}
+	}
+	if len(inverted) == 0 {
+		t.Errorf("no seed produced an inverted model, so the premise that "+
+			"Config.Focus is unreliable no longer holds here — check whether "+
+			"internal/train.Fit still needs to anchor, and update its comment; "+
+			"seeds tried: %v", []int64{1, 2, 5, 20260801})
+	}
 }
 
 // TestTrainIsReproducible: the recorded seed is what makes a model rebuildable,

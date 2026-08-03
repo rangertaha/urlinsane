@@ -38,7 +38,14 @@ type Quality struct {
 	// AUC is the probability that a randomly chosen live node outranks a
 	// randomly chosen absent one. 0.5 is a coin toss, which is what the uniform
 	// model scores by construction.
+	//
+	// Meaningless unless Comparable > 0: with one class there are no pairs to
+	// be right or wrong about. Check Comparable, or read String, which prints
+	// n/a rather than a number that looks like a perfectly inverted model.
 	AUC float64
+	// Comparable is the number of (live, absent) pairs AUC is computed over.
+	// Zero means AUC is undefined, not that it is zero.
+	Comparable int
 	// PrecisionAt is the fraction of the top k that were live, for a few k.
 	PrecisionAt map[int]float64
 	// BaseRate is the fraction of judged nodes that were live — what
@@ -48,8 +55,15 @@ type Quality struct {
 }
 
 func (q Quality) String() string {
-	return fmt.Sprintf("scored %d (live %d, absent %d, skipped %d) AUC=%.3f base=%.3f p@10=%.3f p@25=%.3f p@50=%.3f",
-		q.Scored, q.Live, q.Absent, q.Skipped, q.AUC, q.BaseRate,
+	auc := fmt.Sprintf("%.3f", q.AUC)
+	if q.Comparable == 0 {
+		// "AUC=0.000" reads as a model that ranked every live node below every
+		// absent one — the worst possible score — when in fact only one class
+		// was observed and there is nothing to score.
+		auc = "n/a"
+	}
+	return fmt.Sprintf("scored %d (live %d, absent %d, skipped %d) AUC=%s base=%.3f p@10=%.3f p@25=%.3f p@50=%.3f",
+		q.Scored, q.Live, q.Absent, q.Skipped, auc, q.BaseRate,
 		q.PrecisionAt[10], q.PrecisionAt[25], q.PrecisionAt[50])
 }
 
@@ -74,11 +88,34 @@ func Rank(g *graph.Graph) []Scored {
 	return out
 }
 
-// Evaluate measures how well the installed belief model ordered a scan.
+// Evaluate measures how well the installed belief model ordered a *finished*
+// scan.
 //
 // Only nodes with a settled observation are judged. A node whose lookups all
 // failed is not evidence either way, and counting it as absent would score the
 // model on the network's behaviour rather than on the name's.
+//
+// # What this does not measure
+//
+// It is not predictive skill, and the difference matters more than the number.
+// Features emits edge:RESOLVES_TO, edge:NS, edge:MX and edge:REGISTERED_BY, and
+// those edges exist because an observation succeeded — which is the same event
+// that makes Existence report Live. Measured over the three saved scans, no
+// absent node anywhere carries an observation edge:
+//
+//	example.com  live: 61 with, 14 without | absent: 0 with, 13 without
+//	github.com   live: 21 with,  1 without | absent: 0 with,  0 without
+//	paypal.com   live: 26 with,  9 without | absent: 0 with,  6 without
+//
+// So on a finished graph the rule "has an observation edge" alone scores about
+// 0.9, and a model scoring 0.867 here has largely learned to read the answer
+// off the graph it is being asked about. That is not a bug in Evaluate — it is
+// what evaluating on a completed scan can tell you, which is whether belief is
+// *consistent* with the outcome, not whether it would have predicted it.
+//
+// Skill would have to be measured on belief as it stood at the barrier where
+// the expansion decision was taken, before the observation that settles
+// Existence had run. Nothing captures that yet.
 func Evaluate(g *graph.Graph) Quality {
 	a := g.Analyze()
 	q := Quality{PrecisionAt: map[int]float64{}}
@@ -111,7 +148,8 @@ func Evaluate(g *graph.Graph) Quality {
 	// and zeroing them made a scan where everything resolved print
 	// "base=0.000 p@10=0.000", which reads as a perfectly inverted model rather
 	// than as one class observed.
-	if q.Live > 0 && q.Absent > 0 {
+	q.Comparable = q.Live * q.Absent
+	if q.Comparable > 0 {
 		q.AUC = auc(judged)
 	}
 

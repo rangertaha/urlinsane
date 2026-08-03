@@ -35,9 +35,34 @@ const LiveSymbol = model.OutcomePrefix + "live"
 // which is the honest outcome for a corpus with nothing in it — and why Fit's
 // summary reports the outcome counts.
 func AnchorFocus(h *model.HMM) (*model.HMM, string, error) {
+	want, _, err := focusOn(h)
+	if err != nil {
+		return h, "", err
+	}
+
+	// Refit nothing: only the reported state changes. The tables are rebuilt
+	// from the model's own accessors and handed back to model.New, so the
+	// result is the same distribution with a different state reported — and
+	// its identity stays a function of its tables, which is what its CID is.
+	spec := specOf(h)
+	spec.Focus = []string{want}
+	out, err := model.New(spec)
+	if err != nil {
+		return h, "", fmt.Errorf("train: re-focusing: %w", err)
+	}
+	return out, want, nil
+}
+
+// focusOn returns the state that most strongly emits a live observation, and
+// its index.
+//
+// Shared by AnchorFocus and BeliefFrom's guard so the two cannot disagree about
+// which state is the right one — a guard that computed it differently would
+// either reject correct models or pass inverted ones.
+func focusOn(h *model.HMM) (string, int, error) {
 	states := h.States()
 	if len(states) < 2 {
-		return h, "", fmt.Errorf("train: %d states; nothing to choose between", len(states))
+		return "", 0, fmt.Errorf("train: %d states; nothing to choose between", len(states))
 	}
 	// Membership in the alphabet, not SymbolIndex: an unknown symbol maps to
 	// the out-of-vocabulary slot rather than to -1, so asking for its index
@@ -52,7 +77,7 @@ func AnchorFocus(h *model.HMM) (*model.HMM, string, error) {
 		}
 	}
 	if !known {
-		return h, "", fmt.Errorf("train: %q is not in the model's alphabet; the corpus recorded no live observation to orient on", LiveSymbol)
+		return "", 0, fmt.Errorf("train: %q is not in the model's alphabet; the corpus recorded no live observation to orient on", LiveSymbol)
 	}
 
 	best, bestLog := 0, h.LogEmission(0, []string{LiveSymbol})
@@ -61,18 +86,7 @@ func AnchorFocus(h *model.HMM) (*model.HMM, string, error) {
 			best, bestLog = i, l
 		}
 	}
-
-	// Refit nothing: only the reported state changes. The tables are rebuilt
-	// from the model's own accessors and handed back to model.New, so the
-	// result is the same distribution with a different state reported — and
-	// its identity stays a function of its tables, which is what its CID is.
-	spec := specOf(h)
-	spec.Focus = []string{states[best]}
-	out, err := model.New(spec)
-	if err != nil {
-		return h, "", fmt.Errorf("train: re-focusing: %w", err)
-	}
-	return out, states[best], nil
+	return states[best], best, nil
 }
 
 // specOf reconstructs a Spec from a fitted model.

@@ -390,9 +390,9 @@ func TestFitProducesAUsableBeliefModel(t *testing.T) {
 
 	// The fitted model satisfies the engine's interface and is not the uniform
 	// one: belief must actually vary, or nothing has been learned.
-	bm := BeliefFrom(res.Model)
-	if bm == nil {
-		t.Fatal("BeliefFrom returned nil")
+	bm, err := BeliefFrom(res.Model)
+	if err != nil {
+		t.Fatalf("BeliefFrom rejected a model Fit produced: %v", err)
 	}
 	g2 := graph.New(registry(t))
 	if _, err := g2.Seed("domain", "example.com"); err != nil {
@@ -477,7 +477,11 @@ func TestAnchorFocusPreservesTheModel(t *testing.T) {
 
 // A corpus with no live observation cannot orient a model, and saying so beats
 // picking a state arbitrarily.
-func TestAnchorFocusRefusesWithoutLiveEvidence(t *testing.T) {
+//
+// Fit is where it is refused, because Fit is where the anchoring happens. It
+// used to return such a model happily and leave the orientation to whoever
+// called AnchorFocus next — which was nobody.
+func TestFitRefusesACorpusWithoutLiveEvidence(t *testing.T) {
 	g := graph.New(registry(t))
 	seed, err := g.Seed("domain", "example.com")
 	if err != nil {
@@ -493,11 +497,15 @@ func TestAnchorFocusRefusesWithoutLiveEvidence(t *testing.T) {
 	g.SetStatus(node(t, g, "exmple.com"), "dns", graph.StatusEmpty) // absent, never live
 
 	res, _, err := Fit(DefaultConfig(), Scan{Graph: g, Seed: seed})
-	if err != nil {
-		t.Fatalf("fit: %v", err)
+	if err == nil {
+		t.Fatal("Fit returned a model whose corpus recorded no live observation; " +
+			"its orientation would be arbitrary and belief could be inverted")
 	}
-	if _, _, err := AnchorFocus(res.Model); err == nil {
-		t.Fatal("anchored a model whose corpus recorded no live observation")
+	if res != nil {
+		t.Error("a model was handed back alongside the error")
+	}
+	if !strings.Contains(err.Error(), "cannot be oriented") {
+		t.Errorf("err = %v, want it to say the model cannot be oriented", err)
 	}
 }
 
