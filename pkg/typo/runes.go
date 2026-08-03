@@ -87,6 +87,12 @@ func (u *uniq) tokens() []string { return u.out }
 // is.
 func insertEverywhere(token, sep string) []string {
 	rs := runesOf(token)
+	// An empty token has one gap, and filling it yields the separator on its
+	// own -- "-" as a variant of "". That is a name invented out of nothing
+	// rather than a typo of anything, so there is nothing to insert into.
+	if len(rs) == 0 {
+		return nil
+	}
 	u := newUniq()
 	for i := 0; i <= len(rs); i++ {
 		u.add(token, joinRunes(rs[:i], sep, rs[i:]))
