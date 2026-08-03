@@ -38,6 +38,7 @@ import (
 	"bytes"
 	_ "embed"
 	"fmt"
+	"github.com/rangertaha/urlinsane/internal/atomicfile"
 	"github.com/rangertaha/urlinsane/internal/dataset"
 	"gopkg.in/yaml.v3"
 	"os"
@@ -213,7 +214,13 @@ func extract(dir, name string, data []byte, valid validator) File {
 			return f
 		}
 	}
-	if err := os.WriteFile(f.Path, data, 0o640); err != nil {
+	// Atomically: mere existence is the "already extracted" test above, so a
+	// write that ran out of disk or was interrupted would otherwise leave a
+	// truncated file that is never re-extracted and never re-checked. For
+	// dataset.db that is worse than it sounds — dataset.Config self-heals a
+	// corrupt file by replacing it with an empty database, so the tool would
+	// run for ever with no reference data at all.
+	if err := atomicfile.Write(f.Path, data, 0o640); err != nil {
 		f.Err = fmt.Errorf("config: writing %s: %w", f.Path, err)
 		return f
 	}
@@ -308,7 +315,11 @@ func (f *Settings) Save() error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(f.path, data, 0o640)
+	// Atomic: a settings file half-rewritten by an interrupt parses as neither
+	// the old configuration nor the new one, and the loader treats an unreadable
+	// file as "use defaults" — so a truncated write silently discards every
+	// setting the user had.
+	return atomicfile.Write(f.path, data, 0o640)
 }
 
 // Path is where the file was loaded from.
