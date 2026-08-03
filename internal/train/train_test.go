@@ -501,3 +501,67 @@ func TestAnchorFocusRefusesWithoutLiveEvidence(t *testing.T) {
 		t.Fatal("anchored a model whose corpus recorded no live observation")
 	}
 }
+
+// AUC has to be right before any number it produces means anything.
+func TestAUCHasKnownValues(t *testing.T) {
+	live := func(b float64) Scored { return Scored{Belief: b, Live: true} }
+	dead := func(b float64) Scored { return Scored{Belief: b} }
+
+	for _, tc := range []struct {
+		name string
+		in   []Scored
+		want float64
+	}{
+		// Every live node above every absent one.
+		{"perfect", []Scored{live(1), live(0.9), dead(0.2), dead(0.1)}, 1},
+		// Exactly inverted: worse than useless, and the number must say so.
+		{"inverted", []Scored{dead(1), dead(0.9), live(0.2), live(0.1)}, 0},
+		// All tied — what a uniform model produces. Must be the coin toss.
+		{"uniform", []Scored{live(1), dead(1), live(1), dead(1)}, 0.5},
+		// One of two pairs concordant.
+		{"half", []Scored{live(1), dead(0.5)}, 1},
+	} {
+		if got := auc(tc.in); got != tc.want {
+			t.Errorf("%s: auc = %v, want %v", tc.name, got, tc.want)
+		}
+	}
+}
+
+// Unknown and untried are not negatives. Scoring against observations nobody
+// made would reward a model for agreeing with the network's failures.
+func TestEvaluateSkipsUnsettledNodes(t *testing.T) {
+	g, _ := scan(t)
+	// A variant whose lookup broke: no evidence either way.
+	origin := graph.NodeRef{Type: "domain", Key: "example.com"}
+	ref := graph.NodeRef{Type: "domain", Key: "exmpl.com"}
+	g.Apply(graph.Provenance{Operator: "co", Round: 1}, node(t, g, "example.com"),
+		graph.Delta{Edges: []graph.EdgeRef{{From: origin, Rel: graph.VariantRel, To: ref}}})
+	g.SetStatus(node(t, g, "exmpl.com"), "dns", graph.StatusFailed)
+
+	q := Evaluate(g)
+	if q.Skipped == 0 {
+		t.Error("nothing was skipped, but a failed lookup and untried nodes exist")
+	}
+	if q.Scored != q.Live+q.Absent {
+		t.Errorf("scored %d but live+absent is %d", q.Scored, q.Live+q.Absent)
+	}
+	for _, s := range Rank(g) {
+		if s.Key == "exmpl.com" && s.Live {
+			t.Error("a node whose lookup failed was counted as live")
+		}
+	}
+}
+
+// The uniform model must score exactly 0.5 — it is the baseline everything
+// else has to beat, so it cannot be allowed to look good by accident of the
+// tie-break order.
+func TestUniformModelScoresACoinToss(t *testing.T) {
+	g, _ := scan(t)
+	q := Evaluate(g) // no model installed: belief is uniform
+	if q.Live == 0 || q.Absent == 0 {
+		t.Skip("fixture has only one class")
+	}
+	if q.AUC != 0.5 {
+		t.Errorf("uniform AUC = %v, want exactly 0.5", q.AUC)
+	}
+}
