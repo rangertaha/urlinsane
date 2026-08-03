@@ -280,3 +280,72 @@ func TestExistenceCountsEverythingWhenNoObserversDeclared(t *testing.T) {
 		t.Fatalf("existence = %v, want live", got)
 	}
 }
+
+// generation counts how far down the parent chain a node sits, which makes the
+// order recomputeBelief visits nodes in directly observable.
+type generation struct{}
+
+func (generation) Initial() (float64, State) { return 1, 1 }
+func (generation) Step(parent State, _ string, _ View) (float64, State) {
+	n, ok := parent.(int)
+	if !ok {
+		n = 1 // the interface requires nil to be treated as the initial state
+	}
+	return float64(n + 1), n + 1
+}
+
+// Belief must step from the parent's state as of this barrier. It was ordered
+// by depth, and depth counts observation hops only -- structural and variant
+// edges cost none, so a parent and its child routinely share one. Within a
+// depth the sort fell through to type and key, which say nothing about descent,
+// and a child sorted before its parent stepped from the previous barrier's
+// state (or nil, on the first).
+//
+// The existing chain tests all used RESOLVES_TO, which costs depth, so every
+// one of them ordered correctly by accident.
+func TestBeliefStepsDownAChainThatCostsNoDepth(t *testing.T) {
+	g, seed := seeded(t)
+	g.SetBeliefModel(generation{})
+
+	// Keys chosen so the old sort put the grandchild first: within depth 0 and
+	// type "domain", "aaa.com" < "example.com" < "zzz.com".
+	g.Apply(op("decompose"), seed, Delta{Edges: []EdgeRef{
+		{From: NodeRef{Type: "domain", Key: "example.com"}, Rel: "TLD_OF",
+			To: NodeRef{Type: "domain", Key: "zzz.com"}},
+		{From: NodeRef{Type: "domain", Key: "zzz.com"}, Rel: "TLD_OF",
+			To: NodeRef{Type: "domain", Key: "aaa.com"}},
+	}})
+	g.recomputeBelief()
+
+	for _, tc := range []struct {
+		key  string
+		want float64
+	}{
+		{"example.com", 1}, // the seed
+		{"zzz.com", 2},     // its child
+		{"aaa.com", 3},     // its grandchild
+	} {
+		var got float64
+		var found bool
+		for _, n := range g.Nodes() {
+			if n.Key == tc.key {
+				got, found = g.Belief(n.ID), true
+			}
+		}
+		if !found {
+			t.Fatalf("%s is not in the graph", tc.key)
+		}
+		if got != tc.want {
+			t.Errorf("%s belief = %v, want %v; it stepped from a parent that had not been recomputed",
+				tc.key, got, tc.want)
+		}
+	}
+
+	// Every node sits at one depth, which is the condition that made the old
+	// ordering wrong. If this stops holding the test has stopped testing it.
+	for _, n := range g.Nodes() {
+		if d := g.Depth(n.ID); d != 0 {
+			t.Fatalf("%s is at depth %d; the chain must cost no depth for this to bite", n.Key, d)
+		}
+	}
+}

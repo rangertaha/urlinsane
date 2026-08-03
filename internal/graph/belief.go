@@ -129,26 +129,74 @@ func betterParent(g *Graph, a, b parentRef) bool {
 func (g *Graph) recomputeBelief() {
 	g.finalizeParents()
 
-	// Nodes in depth order, so a parent's belief is always current before its
+	// Down the parent forest, so a parent's state is always current before its
 	// children read it.
+	//
+	// Depth order does not give that. Depth counts observation hops, and
+	// structural and variant edges cost none, so a parent and its child
+	// routinely share one — the whole decomposition of a seed and every variant
+	// of every part of it sit at depth 0 together. Within a depth the old sort
+	// fell through to type and key, which have nothing to do with descent: for
+	// example.com -> zzz.com -> aaa.com, all structural, "aaa.com" sorted first
+	// and stepped from a parent that had not been recomputed yet. It read the
+	// previous barrier's state, or nil on the first, and a three-generation
+	// chain came out believing it was two. Forward filtering over a chain that
+	// is not a chain means nothing.
+	//
+	// Siblings keep the old (depth, type, key) order, so a run whose ordering
+	// was already correct produces exactly the values it did before.
 	ids := make([]NodeID, 0, len(g.nodes))
 	for _, id := range g.order {
 		ids = append(ids, id)
 	}
 	sortByDepthThenKey(g, ids)
 
+	children := make(map[NodeID][]NodeID, len(ids))
+	roots := make([]NodeID, 0, 1)
 	for _, id := range ids {
 		p, ok := g.parent[id]
 		if id == g.seed || !ok {
-			g.belief[id], g.bstate[id] = g.model.Initial()
+			roots = append(roots, id)
 			continue
 		}
-		// The parent's state, not its scalar. Depth ordering guarantees the
-		// parent was recomputed first in this same pass, so this is the state
-		// belonging to the current barrier and not a stale one.
-		v := g.fullView(id)
-		g.belief[id], g.bstate[id] = g.model.Step(g.bstate[p.node], p.rel, v)
+		children[p.node] = append(children[p.node], id)
 	}
+
+	// Breadth-first rather than recursive: a chain is as long as the graph is
+	// deep, and recursion here would put that on the stack.
+	done := make(map[NodeID]bool, len(ids))
+	queue := append(make([]NodeID, 0, len(ids)), roots...)
+	for i := 0; i < len(queue); i++ {
+		id := queue[i]
+		if done[id] {
+			continue
+		}
+		done[id] = true
+		g.stepBelief(id)
+		queue = append(queue, children[id]...)
+	}
+
+	// A node the walk never reached is in a parent cycle, which finalizeParents
+	// is not supposed to be able to produce. Give it a value anyway rather than
+	// leaving it with a stale one from an earlier barrier: a missing belief
+	// gates admission and network calls just as firmly as a wrong one.
+	for _, id := range ids {
+		if !done[id] {
+			done[id] = true
+			g.stepBelief(id)
+		}
+	}
+}
+
+// stepBelief recomputes one node from its parent's current state.
+func (g *Graph) stepBelief(id NodeID) {
+	p, ok := g.parent[id]
+	if id == g.seed || !ok {
+		g.belief[id], g.bstate[id] = g.model.Initial()
+		return
+	}
+	// The parent's state, not its scalar.
+	g.belief[id], g.bstate[id] = g.model.Step(g.bstate[p.node], p.rel, g.fullView(id))
 }
 
 func sortByDepthThenKey(g *Graph, ids []NodeID) {
