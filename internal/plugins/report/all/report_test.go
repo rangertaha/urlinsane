@@ -441,6 +441,33 @@ func TestNDJSONIsOneTaggedObjectPerLine(t *testing.T) {
 	}
 }
 
+// A Finding carries its own "kind" -- which analyzer concluded what -- and the
+// record discriminator was assigned straight over it, so every finding line
+// said only that it was a finding. The analyzer that raised it, which is the
+// whole content of the field, was gone.
+func TestNDJSONKeepsAFindingsOwnKind(t *testing.T) {
+	out := render(t, scan(t), report.Options{Format: "ndjson"})
+
+	var seen bool
+	for _, line := range strings.Split(strings.TrimSpace(out), "\n") {
+		var m map[string]any
+		if err := json.Unmarshal([]byte(line), &m); err != nil {
+			t.Fatalf("line is not JSON: %q", line)
+		}
+		if m["kind"] != "finding" {
+			continue
+		}
+		seen = true
+		own, ok := m["finding_kind"].(string)
+		if !ok || own == "" {
+			t.Fatalf("finding line lost the analyzer discriminator: %q", line)
+		}
+	}
+	if !seen {
+		t.Fatal("no finding lines in the fixture")
+	}
+}
+
 func TestDOTQuotesHostileKeys(t *testing.T) {
 	// Variant algorithms generate exactly the strings that break naive quoting;
 	// an unescaped quote produces a file graphviz refuses to parse.
@@ -648,5 +675,84 @@ func TestTableFlattensMultilineValues(t *testing.T) {
 				t.Fatal("json lost the newline the table flattened")
 			}
 		}
+	}
+}
+
+// --- what every format owes the reader ---------------------------------------
+
+// The class test for the five renderers.
+//
+// The package's claim is that all five project one intermediate "so they cannot
+// disagree". They can, and did, because each one decides for itself which parts
+// of that intermediate to surface — so the disagreements show up one renderer at
+// a time and only under a filter.
+//
+// Two run-level facts have to survive into every format whatever the filter
+// says. `report.Build` never filters findings, because hiding one behind
+// `--filter live` would hide exactly what `--fail-on` gates on; and a scan that
+// stopped early must never export as a complete one. CSV surfaced findings only
+// as a column on node rows, so filtering the nodes away deleted the findings
+// with them, and CSV had no partial marker at all — an analyst exporting a
+// truncated scan to a spreadsheet got a file indistinguishable from a whole one.
+func TestEveryFormatSurvivesFiltering(t *testing.T) {
+	g := scan(t)
+
+	// A filter that keeps almost nothing: the findings in this fixture are on
+	// live variant nodes, so selecting only absent ones strands them.
+	absent, err := report.ParseFilters([]string{"absent"})
+	if err != nil {
+		t.Fatalf("parse: %v", err)
+	}
+	opts := func(format string) report.Options {
+		return report.Options{
+			Format:  format,
+			Target:  "example.com",
+			Filters: absent,
+			Partial: true, PartialWhy: "interrupted",
+		}
+	}
+
+	built := report.Build(g, report.Options{Filters: absent, Partial: true})
+	if len(built.Findings) == 0 {
+		t.Fatal("fixture is wrong: no findings survive Build, so this proves nothing")
+	}
+	var stranded int
+	shown := map[string]bool{}
+	for _, n := range built.Nodes {
+		shown[n.Type+":"+n.Key] = true
+	}
+	for _, f := range built.Findings {
+		for _, n := range f.Nodes {
+			if !shown[n] {
+				stranded++
+			}
+		}
+	}
+	if stranded == 0 {
+		t.Fatal("fixture is wrong: every finding still has a visible node row")
+	}
+
+	for _, format := range report.Formats() {
+		t.Run(format, func(t *testing.T) {
+			out := render(t, g, opts(format))
+
+			// The partial marker, however the format spells it.
+			if !strings.Contains(strings.ToLower(out), "partial") {
+				t.Errorf("%s does not say the scan was partial:\n%s", format, out)
+			}
+
+			// At least one finding kind, even though its nodes were filtered out.
+			var carried bool
+			for _, f := range built.Findings {
+				if strings.Contains(out, f.Kind) {
+					carried = true
+					break
+				}
+			}
+			if !carried {
+				t.Errorf("%s dropped every finding when the nodes were filtered away; "+
+					"findings are deliberately never filtered:\n%s", format, out)
+			}
+		})
 	}
 }

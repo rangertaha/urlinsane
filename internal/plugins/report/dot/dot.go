@@ -61,6 +61,35 @@ func Render(w io.Writer, r report.Report) error {
 		fmt.Fprintf(w, "  %s -> %s [%s];\n", quote(e.From), quote(e.To), strings.Join(attrs, " "))
 	}
 
+	// Findings whose nodes the filter removed. Findings are never filtered —
+	// hiding one behind --filter would hide exactly what --fail-on gates on —
+	// but they are drawn as an attribute of a node, so a stranded finding had
+	// nothing to attach to and vanished from this format alone.
+	shown := make(map[string]bool, len(r.Nodes))
+	for _, n := range r.Nodes {
+		shown[n.ID] = true
+	}
+	stranded := map[string]int{}
+	for _, f := range r.Findings {
+		for _, n := range f.Nodes {
+			if !shown[n] {
+				stranded[f.Severity+":"+f.Kind]++
+			}
+		}
+	}
+	if len(stranded) > 0 {
+		fmt.Fprintln(w)
+		fmt.Fprintln(w, "  subgraph cluster_filtered_findings {")
+		fmt.Fprintf(w, "    label=%s; style=dashed; color=\"#e0a0a0\";\n",
+			quote(fmt.Sprintf("findings on filtered nodes (%d)", len(stranded))))
+		for _, k := range sortedKeys(stranded) {
+			fmt.Fprintf(w, "    %s [label=%s shape=note fontcolor=\"#aa4444\" color=\"#e0a0a0\"];\n",
+				quote("finding:"+k),
+				quote(fmt.Sprintf("%d %s", stranded[k], k)))
+		}
+		fmt.Fprintln(w, "  }")
+	}
+
 	// The ledger is drawn, not merely counted: a diagram that silently omits
 	// what was pruned reads as a complete map of the territory.
 	if len(r.Ledger) > 0 {
