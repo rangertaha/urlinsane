@@ -10,7 +10,32 @@ import (
 	"io"
 	"sort"
 	"strings"
+	"unicode/utf8"
 )
+
+// Representable reports whether an example survives a JSONL round trip.
+//
+// JSON strings are UTF-8 by definition, and encoding/json silently coerces
+// invalid input to U+FFFD rather than refusing it. Most generators cannot
+// produce invalid UTF-8, but bf can and does: it models a bit flipping in a
+// resolver's memory, so it flips bits inside multi-byte runes, and
+// bf("münchen") returns 16 byte sequences out of 64 that are not text.
+//
+// Written anyway, those 16 come back changed, and scoring the corpus against
+// its own oracle then reports a model that reproduced it *exactly* as 75%
+// precise. That is the failure this package is least able to detect from the
+// outside, because nothing errors and the numbers look plausible.
+func Representable(e Example) bool {
+	if !utf8.ValidString(e.Input) {
+		return false
+	}
+	for _, v := range e.Expect {
+		if !utf8.ValidString(v) {
+			return false
+		}
+	}
+	return true
+}
 
 // WriteJSONL writes examples one per line.
 //
@@ -27,6 +52,15 @@ func WriteJSONL(w io.Writer, examples []Example) error {
 	bw := bufio.NewWriter(w)
 	enc := json.NewEncoder(bw)
 	for _, e := range examples {
+		// Refused, not coerced. A corpus that does not round trip is not a
+		// corpus, and writing one silently costs a whole experiment: the model
+		// is graded against expectations the file cannot hold. Filter with
+		// Representable if some examples are expected to be unwritable.
+		if !Representable(e) {
+			return fmt.Errorf(
+				"aitypo: %s/%q produced a variant that is not valid UTF-8 and cannot survive JSONL; "+
+					"filter with Representable, or drop this task from the corpus", e.Task, e.Input)
+		}
 		if err := enc.Encode(e); err != nil {
 			return fmt.Errorf("aitypo: writing example %s/%s: %w", e.Task, e.Input, err)
 		}

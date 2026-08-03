@@ -120,6 +120,12 @@ func (s Summary) String() string {
 
 // Summarize aggregates per task, macro-averaged over inputs.
 //
+// It takes the Registry rather than a needs map so a task cannot be
+// mislabelled by omission. A map lookup that misses yields NeedsNothing, which
+// is indistinguishable from a real entry — so an incomplete map silently
+// reported a memorised table as a learned rule, which is the one distinction
+// this package exists to keep.
+//
 // Macro, not micro: micro-averaging would weight an input by how many variants
 // it happens to produce, so a ten-character name would count ten times as much
 // as a three-character one and the score would mostly measure the corpus's
@@ -127,7 +133,7 @@ func (s Summary) String() string {
 //
 // Results are grouped by task and returned in task order, so two runs of the
 // same evaluation print identically.
-func Summarize(results []Result, needs map[string]Needs) []Summary {
+func Summarize(results []Result, reg Registry) []Summary {
 	type acc struct {
 		n              int
 		exact, p, r, f float64
@@ -160,7 +166,7 @@ func Summarize(results []Result, needs map[string]Needs) []Summary {
 		n := float64(a.n)
 		out = append(out, Summary{
 			Task:       id,
-			Needs:      needs[id],
+			Needs:      reg[id].Needs,
 			N:          a.n,
 			ExactMatch: a.exact / n,
 			Precision:  a.p / n,
