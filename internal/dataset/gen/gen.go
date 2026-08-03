@@ -25,7 +25,6 @@ import (
 	"bufio"
 	"os"
 	"path/filepath"
-	"regexp"
 	"sort"
 	"strings"
 
@@ -54,7 +53,6 @@ func Extract(file string) (lines [][]string, err error) {
 	}
 	defer readFile.Close()
 
-	space := regexp.MustCompile(`\s+`)
 	fileScanner := bufio.NewScanner(readFile)
 	fileScanner.Split(bufio.ScanLines)
 	// Word lists can be long and homoglyph lines carry many multi-byte runes;
@@ -62,11 +60,19 @@ func Extract(file string) (lines [][]string, err error) {
 	fileScanner.Buffer(make([]byte, 0, 64*1024), 4*1024*1024)
 
 	for fileScanner.Scan() {
-		line := strings.TrimSpace(space.ReplaceAllString(fileScanner.Text(), " "))
-		if line == "" {
+		// strings.Fields, not a `\s+` regexp: Go's \s is ASCII-only, so a
+		// no-break space or any other Unicode separator was not a separator
+		// here. It survived into the middle of a token instead -- the shipped
+		// ru corpus carries three such lines, and "всё же" reached the
+		// database as one word -- and a line whose only separator is a Unicode
+		// space collapsed to a single token, contributing vocabulary and no
+		// transitions at all while the import still reported success.
+		// strings.Fields splits on unicode.IsSpace, which covers all of them.
+		fields := strings.Fields(fileScanner.Text())
+		if len(fields) == 0 {
 			continue
 		}
-		lines = append(lines, strings.Split(line, " "))
+		lines = append(lines, fields)
 	}
 	return lines, fileScanner.Err()
 }

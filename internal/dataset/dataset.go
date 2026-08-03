@@ -4,6 +4,7 @@ package dataset
 
 import (
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/glebarez/sqlite"
@@ -26,16 +27,28 @@ type Dataset struct {
 	Description string
 }
 
+// Vocabulary is one token of one relation of one language.
+//
+// (language, dataset) is indexed because it is how every read starts: lang.go's
+// tokens, edges and groups all select a whole relation by that pair. Without
+// the index SQLite full-scans the table, and the table is 436k rows in the
+// shipped database -- so a scan over the language-driven algorithms paid a full
+// scan per language per relation, and adding a corpus for one language slowed
+// the reads for all the others.
 type Vocabulary struct {
 	ID       uint
-	Language uint // language ID
-	Dataset  uint // dataset ID
+	Language uint `gorm:"index:idx_vocabularies_language_dataset,priority:1"` // language ID
+	Dataset  uint `gorm:"index:idx_vocabularies_language_dataset,priority:2"` // dataset ID
 	Token    string
 }
 
+// Transition is one weighted edge between two vocabulary tokens.
+//
+// Src is indexed for the same reason: transitions are always read as "the edges
+// leaving this relation's vocabulary", which is a lookup by Src, over 386k rows.
 type Transition struct {
 	ID          uint
-	Src         uint // vocab ID
+	Src         uint `gorm:"index"` // vocab ID
 	Dest        uint // vocab ID
 	Probability float64
 }
@@ -76,23 +89,41 @@ func models() []interface{} {
 	}
 }
 
-// Config opens the dataset database. It self-heals a corrupt or unreadable file
-// by recreating it empty, and falls back to an in-memory database, so a bad
+// Config opens the dataset database, falling back to an in-memory one so a bad
 // dataset can never crash the tool (previously a malformed file panicked inside
-// the gorm/sqlite migrator).
+// the gorm/sqlite migrator). It removes the file only when it is provably not a
+// database; see the comment in the body for why that distinction matters.
 func Config(path string) {
-	if err := open(path); err == nil {
+	err := open(path)
+	if err == nil {
 		return
-	} else {
-		log.Warnf("dataset db %q is unusable (%v); recreating it empty", path, err)
 	}
 
-	// The on-disk file is corrupt — remove it and try a fresh, empty database.
-	_ = os.Remove(path)
-	if err := open(path); err == nil {
-		return
+	// Delete only what is provably not a database, and never leave an empty one
+	// in its place.
+	//
+	// This used to remove the file on *any* open failure and immediately create
+	// a fresh empty database at the same path. open() fails for transient
+	// reasons too -- AutoMigrate runs DDL whenever the on-disk schema predates a
+	// change, and the driver is opened without a busy timeout, so a second
+	// process running at the same moment gets "database is locked" -- and the
+	// remedy destroyed the reference data with nothing to restore it:
+	// config.extract only re-extracts when the file is *absent*, and the empty
+	// replacement is present and opens cleanly. Every later scan then generated
+	// no language-driven variants at all and still reported success.
+	//
+	// A file carrying the SQLite header is a database that would not open right
+	// now, which is not the same as a corrupt one. Leave it where it is and run
+	// from memory; the next run, without the contention, opens it.
+	if isSQLiteFile(path) {
+		log.Errorf("dataset db %q could not be opened (%v); leaving it in place "+
+			"and running from memory for this run", path, err)
 	} else {
-		log.Errorf("could not recreate dataset db %q (%v); falling back to in-memory", path, err)
+		// Not a database at all. Remove it and do NOT recreate: an empty file
+		// here would look valid forever, where an absent one is re-extracted.
+		_ = os.Remove(path)
+		log.Errorf("dataset db %q is not a database (%v); it has been removed and "+
+			"will be re-extracted on the next run", path, err)
 	}
 
 	// Last resort: an in-memory database is always valid, keeping the tool
@@ -101,6 +132,26 @@ func Config(path string) {
 		log.Errorf("in-memory dataset db failed: %v", err)
 		DB = nil
 	}
+}
+
+// isSQLiteFile reports whether path begins with the SQLite file header.
+//
+// The point is to tell "a database I cannot open right now" from "not a
+// database", because only the second is safe to delete. Reading the first
+// sixteen bytes is enough: the header is a fixed string and every SQLite file
+// starts with it.
+func isSQLiteFile(path string) bool {
+	f, err := os.Open(path)
+	if err != nil {
+		return false
+	}
+	defer f.Close()
+
+	var hdr [16]byte
+	if _, err := io.ReadFull(f, hdr[:]); err != nil {
+		return false
+	}
+	return string(hdr[:]) == "SQLite format 3\x00"
 }
 
 // open opens, probes and migrates the database at path, assigning DB on success.

@@ -88,3 +88,30 @@ func TestBuildLeavesNoTemporaryBehind(t *testing.T) {
 		t.Error("a failed build left its temporary behind")
 	}
 }
+
+// A Unicode separator separates.
+//
+// Extract used a `\s+` regexp, and Go's \s is ASCII-only, so U+00A0 and its
+// relatives were not separators: they survived into the middle of a token. The
+// shipped ru corpus carries three such lines. Worse, a line whose ONLY
+// separator is a Unicode space collapsed to a single token, so it contributed
+// vocabulary and no transitions and the whole relation line silently vanished
+// with the import reporting success.
+func TestExtractSplitsOnUnicodeWhitespace(t *testing.T) {
+	root := write(t, map[string]string{
+		"languages/en/misspelling.lst": "wrong right\nalso fine\nplain pair\n",
+	})
+	got, err := Extract(filepath.Join(root, "languages", "en", "misspelling.lst"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i, want := range [][]string{{"wrong", "right"}, {"also", "fine"}, {"plain", "pair"}} {
+		if i >= len(got) {
+			t.Fatalf("line %d missing; got %q", i, got)
+		}
+		if len(got[i]) != len(want) || got[i][0] != want[0] || got[i][1] != want[1] {
+			t.Errorf("line %d = %q, want %q; a Unicode space was not treated as a separator",
+				i, got[i], want)
+		}
+	}
+}
