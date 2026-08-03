@@ -147,21 +147,20 @@ func TestExtractRefusesTruncatedAndAbsentAssets(t *testing.T) {
 //
 // It runs the real validators over the real embedded bytes, so a corrupt asset
 // cannot reach a release quietly. It deliberately does not require the assets to
-// be valid — maxmind.db.gz is not, and has not been for as long as it has been
-// in the repository — because the invariant that matters to a user is weaker and
-// more useful: whatever ships, the tool says so rather than pretending.
+// be valid, because the invariant that matters to a user is weaker and more
+// useful: whatever ships, the tool says so rather than pretending.
 //
-// If this fails, an asset went bad AND Init stayed silent about it. Both halves
-// have to break for the tool to mislead anyone.
+// Only dataset.db is embedded now. The geolocation database was removed from
+// the binary — see TestOptionalIsSilentWhenAbsent — because the one that
+// shipped was corrupt, so 49 MB of unusable bytes rode along in every release
+// and warned on every run.
 func TestShippedAssetsValidateOrAreReported(t *testing.T) {
 	for _, a := range []struct {
 		name  string
 		data  []byte
 		valid validator
-		file  func(Setup) File
 	}{
-		{DatasetDB, datasetDB, isSQLite, func(s Setup) File { return s.Dataset }},
-		{MaxMindDB, maxmindDB, isGzip, func(s Setup) File { return s.GeoIP }},
+		{DatasetDB, datasetDB, isSQLite},
 	} {
 		t.Run(a.name, func(t *testing.T) {
 			dir := t.TempDir()
@@ -177,18 +176,62 @@ func TestShippedAssetsValidateOrAreReported(t *testing.T) {
 				if f.Err == nil {
 					t.Errorf("%s is corrupt and extract reported success", a.name)
 				}
-				// And the run has to be able to tell the user.
-				s := Setup{}
-				switch a.name {
-				case DatasetDB:
-					s.Dataset = f
-				case MaxMindDB:
-					s.GeoIP = f
-				}
-				if !s.FirstRun() {
-					t.Errorf("%s is corrupt but the setup reports nothing worth showing", a.name)
-				}
 			}
 		})
+	}
+}
+
+// An optional file nobody supplied is not an error.
+//
+// Geolocation is off unless a database is present. Reporting its absence would
+// put a warning on every run of a feature nobody turned on, which is how people
+// learn to ignore warnings.
+func TestOptionalIsSilentWhenAbsent(t *testing.T) {
+	f := optional(t.TempDir(), MaxMindDB, isGzip)
+	if f.Present {
+		t.Error("Present is true for a file that is not there")
+	}
+	if f.Err != nil {
+		t.Errorf("Err = %v, want nil: an optional file nobody supplied is not a failure", f.Err)
+	}
+	if (Setup{GeoIP: f}).FirstRun() {
+		t.Error("an absent optional file made the setup worth reporting")
+	}
+}
+
+// Present but malformed is the opposite case: somebody tried to supply one and
+// it will not work, which is exactly what they need told.
+func TestOptionalReportsAMalformedFile(t *testing.T) {
+	dir := t.TempDir()
+	// The corruption that shipped: a gzip magic whose 0x8b became U+FFFD.
+	if err := os.WriteFile(filepath.Join(dir, MaxMindDB), mangle(goodGzip), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	f := optional(dir, MaxMindDB, isGzip)
+	if !f.Present {
+		t.Error("Present is false for a file that is there")
+	}
+	if f.Err == nil {
+		t.Fatal("a malformed geolocation database was accepted")
+	}
+	if !strings.Contains(f.Err.Error(), MaxMindDB) {
+		t.Errorf("Err = %v, want it to name the file", f.Err)
+	}
+	if !(Setup{GeoIP: f}).FirstRun() {
+		t.Error("a malformed optional file is not reported")
+	}
+}
+
+// A valid file is used, and only its header is read — the database is tens of
+// megabytes and the check is three bytes.
+func TestOptionalAcceptsAValidFile(t *testing.T) {
+	dir := t.TempDir()
+	big := append(append([]byte(nil), goodGzip...), make([]byte, 1<<20)...)
+	if err := os.WriteFile(filepath.Join(dir, MaxMindDB), big, 0o640); err != nil {
+		t.Fatal(err)
+	}
+	f := optional(dir, MaxMindDB, isGzip)
+	if !f.Present || f.Err != nil {
+		t.Errorf("a valid database was rejected: present=%v err=%v", f.Present, f.Err)
 	}
 }

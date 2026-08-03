@@ -59,9 +59,6 @@ const (
 	ConfigFile = "config.yaml"
 )
 
-//go:embed maxmind.db.gz
-var maxmindDB []byte
-
 //go:embed dataset.db
 var datasetDB []byte
 
@@ -75,6 +72,15 @@ type File struct {
 	// operators that needed it are left out of the compiled plan instead (§4),
 	// and this is what lets the CLI say which, and why.
 	Err error
+	// Present is whether the file is there at all.
+	//
+	// It separates "you did not supply this" from "this is broken", which for
+	// an optional file are opposite situations: the first is a feature nobody
+	// turned on and must be silent, the second is a failure and must not be.
+	// Without the distinction an optional file has to be reported as an error
+	// on every run, which is how a warning becomes something people stop
+	// reading.
+	Present bool
 }
 
 // Setup is what Init did, for the caller to report.
@@ -136,7 +142,7 @@ func Init() (Setup, error) {
 	s := Setup{Dir: dir, Created: created}
 
 	s.Dataset = extract(dir, DatasetDB, datasetDB, isSQLite)
-	s.GeoIP = extract(dir, MaxMindDB, maxmindDB, isGzip)
+	s.GeoIP = optional(dir, MaxMindDB, isGzip)
 	s.Settings = File{Path: filepath.Join(dir, ConfigFile)}
 
 	// Opening is separate from extracting: a file that is present but corrupt
@@ -187,6 +193,55 @@ func isSQLite(b []byte) error {
 		return fmt.Errorf("not a SQLite database: header is %q", b[:len(sqliteMagic)])
 	}
 	return nil
+}
+
+// optional reports on a file the tool uses if it is there and does without if it
+// is not.
+//
+// Geolocation is the only one, and it is optional because the database that
+// shipped was corrupt: every byte >= 0x80 replaced by the UTF-8 replacement
+// character, including the 8b of its gzip magic, so it had never worked from a
+// shipped binary. Embedding it cost 49 MB in every release and produced a
+// warning on every run for a feature nobody could use.
+//
+// So it is not shipped. MaxMind's terms make redistribution a decision rather
+// than a detail, the data expires, and a scanner that quietly ships a stale
+// geolocation database is worse than one that asks. Fetch it with
+// scripts/mmdb.sh — which needs MAXMIND_LICENSE_KEY — and drop it at the path
+// below; the geo operator appears in the plan the next time you scan, and stays
+// out of it until then.
+//
+// Absent is silent. Present but malformed is not: that is somebody's failed
+// attempt to supply one, and it is exactly what they need told.
+func optional(dir, name string, valid validator) File {
+	f := File{Path: filepath.Join(dir, name)}
+	fh, err := os.Open(f.Path)
+	if err != nil {
+		return f // not supplied; the operators that wanted it are omitted
+	}
+	defer fh.Close()
+	f.Present = true
+
+	// The header, not the file. A geolocation database is tens of megabytes and
+	// the validators read a magic number; reading it all to check three bytes
+	// would put a 49 MB read on the startup path of every scan.
+	head := make([]byte, 64)
+	n, err := fh.Read(head)
+	if err != nil && n == 0 {
+		f.Err = fmt.Errorf("config: reading %s: %w", f.Path, err)
+		return f
+	}
+	if valid != nil {
+		if err := valid(head[:n]); err != nil {
+			// The remedy is in the message because the likeliest holder of a
+			// broken file is somebody upgrading: earlier releases extracted a
+			// corrupt geolocation database here, and it is now 49 MB of bytes
+			// nothing will ever read.
+			f.Err = fmt.Errorf("config: %s is unusable (%w); remove it, or replace it with a real one (scripts/mmdb.sh)",
+				f.Path, err)
+		}
+	}
+	return f
 }
 
 // extract writes a shipped file if it is not already there, refusing bytes that
