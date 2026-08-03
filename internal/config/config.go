@@ -213,6 +213,14 @@ func isSQLite(b []byte) error {
 //
 // Absent is silent. Present but malformed is not: that is somebody's failed
 // attempt to supply one, and it is exactly what they need told.
+//
+// With one exception, and it is not a special case so much as the same rule
+// applied honestly. Every machine that ran an earlier release has the corrupt
+// database sitting at this path, because the tool put it there. Reporting that
+// as a failed attempt to supply one blames the user for the tool's own litter,
+// and it does so on every run of a feature they never switched on — which is
+// precisely the "warning on every run" this change existed to remove. Nobody
+// supplied it, so it is treated as not supplied.
 func optional(dir, name string, valid validator) File {
 	f := File{Path: filepath.Join(dir, name)}
 	fh, err := os.Open(f.Path)
@@ -231,17 +239,35 @@ func optional(dir, name string, valid validator) File {
 		f.Err = fmt.Errorf("config: reading %s: %w", f.Path, err)
 		return f
 	}
+	if isShippedCorruption(head[:n]) {
+		// Ours, not theirs. Silent, and Present stays false so no operator
+		// plans against it. Left on disk rather than deleted: it is 49 MB in
+		// the user's own directory, and a tool that removes files there
+		// without being asked is a worse tool than one that wastes the space.
+		return File{Path: f.Path}
+	}
 	if valid != nil {
 		if err := valid(head[:n]); err != nil {
-			// The remedy is in the message because the likeliest holder of a
-			// broken file is somebody upgrading: earlier releases extracted a
-			// corrupt geolocation database here, and it is now 49 MB of bytes
-			// nothing will ever read.
 			f.Err = fmt.Errorf("config: %s is unusable (%w); remove it, or replace it with a real one (scripts/mmdb.sh)",
 				f.Path, err)
 		}
 	}
 	return f
+}
+
+// mangledGzipMagic is a gzip header that has been through a text decoder: the
+// 1f survives, the 8b does not, and U+FFFD (ef bf bd) is what replaces it.
+//
+// Nothing produces those four bytes on purpose. They are the fingerprint of the
+// database earlier releases shipped and extracted, so matching them identifies
+// the tool's own artifact rather than any file a user might have supplied — and
+// a real gzip cannot collide, because a real gzip has 8b in the second byte.
+var mangledGzipMagic = []byte{0x1f, 0xef, 0xbf, 0xbd}
+
+// isShippedCorruption reports whether these are the bytes this tool installed
+// broken.
+func isShippedCorruption(b []byte) bool {
+	return bytes.HasPrefix(b, mangledGzipMagic)
 }
 
 // extract writes a shipped file if it is not already there, refusing bytes that
