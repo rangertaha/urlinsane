@@ -5,6 +5,7 @@ package train
 
 import (
 	"context"
+	"math"
 	"strings"
 	"testing"
 
@@ -563,5 +564,52 @@ func TestUniformModelScoresACoinToss(t *testing.T) {
 	}
 	if q.AUC != 0.5 {
 		t.Errorf("uniform AUC = %v, want exactly 0.5", q.AUC)
+	}
+}
+
+// specOf must round-trip the whole model, not just its emissions.
+func TestSpecOfRoundTripsTransitionsAndPrior(t *testing.T) {
+	g, seed := scan(t)
+	res, _, err := Fit(DefaultConfig(), Scan{Graph: g, Seed: seed})
+	if err != nil {
+		t.Fatal(err)
+	}
+	before := res.Model
+	after, _, err := AnchorFocus(before)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(after.Rels()) != len(before.Rels()) {
+		t.Fatalf("relations: %v vs %v", after.Rels(), before.Rels())
+	}
+	for _, rel := range before.Rels() {
+		for from := range before.States() {
+			for to := range before.States() {
+				b := before.LogTransition(rel, from, to)
+				a := after.LogTransition(rel, from, to)
+				if math.Abs(a-b) > 1e-9 && !(math.IsInf(a, -1) && math.IsInf(b, -1)) {
+					t.Errorf("transition %s %d->%d moved: %g -> %g", rel, from, to, b, a)
+				}
+			}
+		}
+	}
+	bp, ap := before.Prior(), after.Prior()
+	if len(bp) != len(ap) {
+		t.Fatalf("prior length %d vs %d", len(bp), len(ap))
+	}
+	for i := range bp {
+		if math.Abs(ap[i]-bp[i]) > 1e-9 && !(math.IsInf(ap[i], -1) && math.IsInf(bp[i], -1)) {
+			t.Errorf("prior[%d] moved: %g -> %g", i, bp[i], ap[i])
+		}
+	}
+	if len(after.Symbols()) != len(before.Symbols()) {
+		t.Errorf("alphabet changed: %d -> %d", len(before.Symbols()), len(after.Symbols()))
+	}
+	// Provenance must survive: a model that forgets what it was fitted on
+	// cannot be traced back to its data.
+	bpr, apr := before.Provenance(), after.Provenance()
+	if len(apr.Corpus) != len(bpr.Corpus) {
+		t.Errorf("provenance corpus changed: %d CIDs -> %d", len(bpr.Corpus), len(apr.Corpus))
 	}
 }
