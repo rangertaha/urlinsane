@@ -4,6 +4,7 @@
 package train
 
 import (
+	"context"
 	"sort"
 
 	"github.com/ipfs/go-cid"
@@ -88,8 +89,9 @@ func Outcome(a *graph.Analysis, id graph.NodeID) string {
 // it, which is correct: it was observed once per descendant lineage, and
 // Baum-Welch weights a transition by how often it was traversed.
 //
-// The graph must have completed at least one barrier, which every real scan
-// has: parents are assigned there and nowhere else.
+// The graph must have completed at least one barrier, which every live scan
+// has and no rehydrated one does — parents are assigned there, and the store
+// does not persist them. Call Finalize after loading from the store.
 func Paths(g *graph.Graph, seed graph.NodeID) []model.Path {
 	a := g.Analyze()
 
@@ -162,6 +164,20 @@ func Paths(g *graph.Graph, seed graph.NodeID) []model.Path {
 	}
 	walk(seed, nil)
 	return out
+}
+
+// Finalize gives a graph the barrier its expansion tree comes from.
+//
+// Parents are assigned at a barrier and are *not* persisted: the side tables
+// carry depth and closure but not the tree, because the tree is derived state
+// the engine rebuilds. A graph replayed out of the store therefore arrives with
+// every edge and no parents at all, and Paths refuses it.
+//
+// A scheduler with no operators is the smallest correct way to get one. It runs
+// barrier 0, finds no eligible work, and stops — so the only thing it does is
+// finalize parents and recompute belief, which is exactly what is missing.
+func Finalize(g *graph.Graph) error {
+	return graph.NewScheduler(g, nil, graph.Limits{MaxRounds: 1}).Run(context.Background())
 }
 
 // CorpusOf builds a training corpus from one scan.
