@@ -10,7 +10,7 @@
 // database, and is read from there: one implementation for every language,
 // and adding a language is adding a directory.
 //
-// Nothing here holds behaviour. The algorithms in internal/operators/variant
+// Nothing here holds behaviour. The algorithms in internal/plugins/variant
 // decide what to do with vowels; this decides only what the vowels are.
 package dataset
 

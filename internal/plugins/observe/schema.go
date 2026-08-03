@@ -8,7 +8,7 @@ import "github.com/rangertaha/urlinsane/internal/graph"
 // Fields returns the node props these operators assert that the schema does not
 // already declare, grouped by node type.
 //
-// internal/operators/decompose owns registration and registers field lists
+// internal/plugins/decompose owns registration and registers field lists
 // "at the minimum the design names", to be appended to as collectors land.
 // These are that append. Until they are registered, every assertion below is
 // refused as an unknown field — and refused quietly, because the applier
