@@ -554,6 +554,21 @@ func (g *Graph) SetObservers(ids []string) {
 	}
 }
 
+// Observers returns the registered observer set, sorted.
+//
+// It exists so the set can be persisted with the scan. Existence is computed
+// from it, so a graph rebuilt without it answers differently from the run that
+// produced it — the same bytes yielding two different verdicts, which is the
+// one thing this store exists to rule out.
+func (g *Graph) Observers() []string {
+	out := make([]string, 0, len(g.observers))
+	for id := range g.observers {
+		out = append(out, id)
+	}
+	sort.Strings(out)
+	return out
+}
+
 // observes reports whether an operator's status counts toward existence.
 //
 // With no observer set registered the answer is yes for everything. That is the

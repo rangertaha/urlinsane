@@ -731,3 +731,63 @@ func TestStatusAndScoresSurviveInSortedOrder(t *testing.T) {
 		}
 	}
 }
+
+// A rehydrated graph must compute existence the way the scan did.
+//
+// Existence rolls up "did any operator that actually looked something up return
+// ok". The observer set is what makes that discrimination possible, and it was
+// not persisted: a rebuilt graph fell back to "everything observes", so a
+// decomposer's successful *parse* counted as evidence the name exists. `typo`
+// and `report` then reported different existence off the same bytes — the one
+// outcome a content-addressed store is supposed to make impossible.
+func TestRehydratePreservesExistence(t *testing.T) {
+	s := memStore()
+	f := build(t, buildOpts{})
+
+	// Only dns looks anything up. "decompose" and "test" parse and record.
+	f.g.SetObservers([]string{"dns"})
+
+	// A node whose sole ok came from a non-observer: parsed, never looked up.
+	user := f.ids["user:bob"]
+	f.g.SetStatus(user, "decompose", graph.StatusOK)
+
+	want := f.g.Analyze().Existence(user)
+	if want == graph.Live {
+		t.Fatalf("fixture is wrong: a parse-only node reads %v before saving", want)
+	}
+
+	root := f.save(t, s)
+	r, err := s.Rehydrate(root, testRegistry(t))
+	if err != nil {
+		t.Fatalf("rehydrate: %v", err)
+	}
+
+	if got := r.Graph.Analyze().Existence(user); got != want {
+		t.Errorf("existence after rehydrate = %v, want %v — the observer set was lost, "+
+			"so a parsed name reads as one that exists", got, want)
+	}
+	if got := r.Graph.Observers(); len(got) != 1 || got[0] != "dns" {
+		t.Errorf("observers after rehydrate = %v, want [dns]", got)
+	}
+}
+
+// Every node's existence survives the round trip, not just the one the test
+// above singles out.
+func TestRehydratePreservesExistenceForEveryNode(t *testing.T) {
+	s := memStore()
+	f := build(t, buildOpts{})
+	f.g.SetObservers([]string{"dns"})
+
+	root := f.save(t, s)
+	r, err := s.Rehydrate(root, testRegistry(t))
+	if err != nil {
+		t.Fatalf("rehydrate: %v", err)
+	}
+
+	before, after := f.g.Analyze(), r.Graph.Analyze()
+	for _, n := range f.g.Nodes() {
+		if got, want := after.Existence(n.ID), before.Existence(n.ID); got != want {
+			t.Errorf("%s: existence = %v after rehydrate, want %v", n.Key, got, want)
+		}
+	}
+}

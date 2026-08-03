@@ -42,7 +42,15 @@ import (
 // itself (the side block and the scan root). It is not carried by node and
 // edge blocks: those are the addressed form and adding a version byte to them
 // would invalidate every content address already in a store.
-const FormatVersion = 1
+//
+// It is bumped when either block's shape changes, even if only one of them did,
+// so the mismatch is caught at the root — which is read first and reports "scan
+// root format version 1, this build writes 2" — rather than deeper down as an
+// arity failure on a block whose name means nothing to the reader.
+//
+// 2: the side block gained the observer set, without which a rehydrated graph
+// computed existence differently from the scan that produced it.
+const FormatVersion = 2
 
 // cidPrefix matches internal/graph: CIDv1, dag-cbor, sha2-256. Both must agree
 // or a node's CID would depend on who hashed it.

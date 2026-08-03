@@ -101,7 +101,7 @@ func (s *Store) Save(g *graph.Graph, opts SaveOptions) (cid.Cid, error) {
 // here walks a slice in a defined order; introducing a map range in this
 // function would silently change the scan root's CID between identical runs.
 func collectSide(g *graph.Graph, nodes []*graph.Node, edges []*graph.Edge) *Side {
-	side := &Side{Version: FormatVersion}
+	side := &Side{Version: FormatVersion, Observers: g.Observers()}
 
 	// Status and scores live in graph-internal maps. They are read through the
 	// analysis surface, which sorts them by operator and by key; ranging the
