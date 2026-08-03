@@ -60,3 +60,19 @@
 อ
 ย
 ว
+# Thai is an abugida: the tone marks, thanthakhat, mai taikhu, nikhahit and
+# phinthu are graphemes too. Added from CLDR exemplarCharacters for 'th'.
+ฯ
+ๆ
+๎
+์
+็
+่
+้
+๊
+๋
+ฤ
+ฦ
+ํ
+ๅ
+ฺ
