@@ -1,3 +1,8 @@
+---
+title: Typosquatting (draft essay)
+nav_exclude: true
+---
+
 # Typosquatting
 
 

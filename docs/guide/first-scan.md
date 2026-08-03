@@ -102,7 +102,7 @@ magnitude. Generation is microseconds; the time is entirely network.
 | Flag | Why |
 |---|---|
 | `-a, --algorithm` | Restrict generation. `-a cs,co,acs` is a reasonable quick pass; `-a ^bf` runs everything except bit flipping |
-| `-d, --depth` | How far observation walks from the seed. `-d 0` observes only the variants themselves |
+| `-d, --depth` | How far observation walks from the seed. Default 3. **`-d 0` means no limit**, not "no hops" — use `--filter depth<=0` to see only the variants |
 | `-o, --output` | `table` (default), `json`, `ndjson`, `csv`, `dot` |
 
 And one for finding out what a build can do:

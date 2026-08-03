@@ -1,3 +1,9 @@
+---
+title: Design document
+parent: Reference
+nav_order: 2
+---
+
 # Graph Engine Design
 
 Status: design, not yet implemented. Supersedes the linear stage pipeline in

@@ -1,3 +1,9 @@
+---
+title: CLI reference
+parent: Reference
+nav_order: 1
+---
+
 # CLI
 
 The command-line reference for `urlinsane`. This is the *what*; `DESIGN.md` §12
@@ -21,7 +27,7 @@ for building the reference data the scanner reads.
 
 ```
 urlinsane typo   [<scope>] <target> [flags]   scan                          ✓
-urlinsane report <target> [flags]             render a saved scan of it     ◦
+urlinsane report <target> [flags]             render a saved scan of it     ✓
 ```
 
 A bare `urlinsane` prints help and exits `0`; the root does not scan.
@@ -75,7 +81,7 @@ composite node itself*, so a bare email also yields whole-address variants.
 positionals the first must name registered `Nameable` types; with one, it is the
 target. Three or more is an error.
 
-### 1.2 `report` — render a saved scan ◦
+### 1.2 `report` — render a saved scan ✓
 
 ```bash
 urlinsane typo acme.com --save-graph        # scan once, keep the graph
@@ -109,13 +115,13 @@ ten minutes can be sliced repeatedly for nothing.
 
 | Flag | Alias | Default | Description | |
 |---|---|---|---|---|
-| `--output` | `-o` | `table` | as `typo` | ◦ |
-| `--save` | | | as `typo` | ◦ |
-| `--filter` | `-f` | | as `typo` | ◦ |
-| `--verbose` | `-v` | | include provenance and engine belief | ◦ |
+| `--output` | `-o` | `table` | as `typo` | ✓ |
+| `--save` | | | as `typo` | ✓ |
+| `--filter` | `-f` | | as `typo` | ✓ |
+| `--verbose` | `-v` | | include provenance and engine belief | ✓ |
 | `--ledger` | | | candidates declined by a budget or bound | ◦ |
-| `--at` | | latest | render this root `CID` rather than the newest scan | ◦ |
-| `--scans` | | | every saved scan of this target, newest first | ◦ |
+| `--at` | | latest | render this root `CID` rather than the newest scan | ✓ |
+| `--scans` | | | every saved scan of this target, newest first | ✓ |
 | `--store` | | `~/.config/urlinsane/blocks` | blockstore to read | ◦ |
 
 The scan-shaping flags — `--depth`, `--algorithm`, `--language`, `--keyboard`,
@@ -123,18 +129,18 @@ The scan-shaping flags — `--depth`, `--algorithm`, `--language`, `--keyboard`,
 what a finished scan contains, and under §12.2 an inapplicable flag is an error
 rather than a no-op.
 
-**What is missing is the index beside the store.** Every stored root already
-records its seed type and key, so each scan knows its own target — but nothing
-maps a target back to its roots, and the root deliberately carries **no
-timestamp, no run id and no partial flag**, because a clock reading inside it
-would make every re-scan produce a different CID. "Newest first" and "this scan
-was interrupted" are therefore not answerable from roots alone.
+**The index sits beside the store.** Every stored root already records its seed
+type and key, so each scan knows its own target — but nothing in the store maps
+a target back to its roots, and the root deliberately carries **no timestamp, no
+run id and no partial flag**, because a clock reading inside it would make every
+re-scan produce a different CID. "Newest first" and "this scan was interrupted"
+are therefore not answerable from roots alone.
 
 That is by design, not an oversight: `store.Root` says what a caller
 needing the time of a scan should do, which is keep it *beside* the root. So the
-index `report` needs carries, per entry: target, root CID, when it ran, and
-whether it was partial. It is the only new mechanism required — the store, the
-replay, the CID check and the renderer all exist (§9).
+index carries, per entry: target, root CID, when it ran, and whether it was
+partial. It is `~/.config/urlinsane/scans.json`, written by `--save-graph` and
+read by `report`.
 
 Partial-ness comes from that index rather than a flag: a scan interrupted at a
 round barrier (§6) is reported partial however often it is re-rendered, because
@@ -158,7 +164,7 @@ that is a fact about the scan and not about the rendering.
 | `--verbose` | `-v` | | include provenance and engine belief | ✓ |
 | `--quiet` | | | silence stderr; the exit code is the whole answer | ◦ |
 | `--tui` | | | interactive view of the same scan (§5.3) | ◦ |
-| `--save-graph` | | | persist the graph to the store; prints its root `CID` | ◦ |
+| `--save-graph` | | | persist the graph to the store; prints its root `CID` | ✓ |
 | `--why` | | | how `NAME` was reached, from a saved graph (§12.7) | ◦ |
 | `--store` | | `~/.config/urlinsane/blocks` | graph store to save into | ◦ |
 | `--ledger` | | | list candidates declined by a budget or bound | ◦ |
@@ -210,8 +216,10 @@ Languages and keyboards are no longer plugins, so "all registered" now means
 all the *data* present. Keyboards come from `pkg/kb` and are always available:
 203 shipped layouts collapse to 133 distinct adjacency sets, and it is the
 distinct sets the algorithms run over. Languages come from the dataset
-database, which `typo` does not yet open — so today they resolve to none, and
-the language-driven algorithms generate nothing (§9).
+database, which `typo` opens on startup: the shipped one carries 113, and the
+language-driven algorithms run over all of them. What is missing is `-l` and
+`-k` themselves — neither flag is registered, so the sets cannot be narrowed
+(§9).
 
 ### 2.2 Advanced
 
@@ -255,7 +263,7 @@ value.
 | `relations` | `rels` | `NAME  CLASS  DEPTH COST` | ✓ |
 | `operators` | `ops` | `ID  VERSION  RESOURCE  BINDS ON  EMITS` | ✓ |
 | `algorithms` | `algos` | `ID  TITLE  APPLIES TO` | ✓ |
-| `languages` | `langs` | `ID  NAME` — from the dataset database, so empty until `typo` opens it (§9) | ✓ |
+| `languages` | `langs` | `ID  NAME` — from the dataset database; 113 in the shipped one | ✓ |
 | `keyboards` | | `ID  NAME` — the 133 distinct layouts in `pkg/kb` | ✓ |
 | `formats` | | one per line | ✓ |
 | `filters` | | `FILTER  SELECTS` | ✓ |
@@ -495,14 +503,17 @@ Application data lives in `~/.config/urlinsane`, created on first run.
 |---|---|---|
 | `dataset.db` | reference data: vocabulary and weighted transitions | ✓ |
 | `maxmind.db.gz` | geolocation database | ✓ |
-| `blocks/` | the content-addressed graph store | ◦ |
-| `config.yaml` | plugin settings | ◦ |
+| `blocks/` | the content-addressed graph store | ✓ |
+| `scans.json` | the index from a target to its saved scans (§1.2) | ✓ |
+| `config.yaml` | plugin settings | ✓ |
 
 `dataset.db` and `maxmind.db.gz` are embedded in the binary and written out if
-absent — but only by `datasets`, which is the sole caller of `config.Init()`
-(§9). Nothing creates `blocks/`; `store` would, on first save. **First-run setup is reported, not silent** ◦ — when extraction fails,
-the operators that needed it are omitted from the plan, and a scan with no
-geolocation must not look like a target with no geolocation (§12.6).
+absent, by every command that calls `config.Init()` — `typo`, `report`, and
+`datasets import` and `download`. `blocks/` and `scans.json` are created by the
+first `typo --save-graph`. **First-run setup is reported, not silent** ✓ — when
+extraction fails, the operators that needed it are omitted from the plan, and a
+scan with no geolocation must not look like a target with no geolocation
+(§12.6).
 
 ### 7.1 `config.yaml`
 
@@ -560,42 +571,34 @@ language plugins themselves.
 
 Collected so nothing above is mistaken for a promise.
 
-**Commands**: `report` (§1.2). `internal/store` can already save, reload
-and CID-verify a graph, and `internal/report` can render one — but nothing calls
-either, `--save-graph` is not implemented, and there is no index from a target
-to the scans of it. The stale `~/.config/urlinsane/index.db` is a leftover of
-the deleted SQLite model and is not that index.
+**Commands**: none. `typo` and `report` are both built. A stale
+`~/.config/urlinsane/index.db` on an older install is a leftover of the deleted
+SQLite model and is not the scan index — that is `scans.json` (§1.2).
 
-**Flags**: `--quiet`, `--save-graph`, `--why`, `--ledger`, `--plan`, `--model`,
+**Flags**: `--quiet`, `--why`, `--ledger`, `--store`, `--plan`, `--model`,
 `--<op>.model`, `--trace`, `--help-all`, and §12.2's operator-scoped flags.
-`--language`, `--keyboard` and `--collect` are registered but do not yet reach
-the plan.
+`--language`, `--keyboard` and `--collect` are not registered at all, so they
+are rejected as unknown flags rather than accepted and ignored.
 
 **Views**: the progress bar, `--tui` and its per-target progress, `ndjson`
-emitting per completed record, and the three-state legend.
+emitting per completed record rather than all of them once the scan ends, and
+the three-state legend — the counts are in the footer, the glyphs are not.
 
-**Interaction** (§12.3, §12.5–§12.7): first-run setup reporting,
-omitted-operator and declined-candidate warnings, and the self-explaining empty
-report.
+**Interaction** (§12.3, §12.5–§12.7): declined-candidate warnings and the
+self-explaining empty report. First-run setup reporting is built; the only
+omitted-operator warnings are the two `typo` prints itself, for geolocation and
+for plugin settings.
 
-**Elsewhere**: `--ttl` cross-run caching, `--resume` and graph diffing, and
-`config.yaml` — `internal/config` is complete and tested with no caller.
+**Elsewhere**: `--ttl` cross-run caching, and `--resume` and graph diffing.
 
 ### 9.1 Gaps between what builds and what runs
 
-Each of these compiles and is tested; none is reachable from the command line.
+Everything below compiles and is tested; what fails is the data it is handed.
 
-- **`typo` never calls `config.Init()`.** `cmd/datasets` is its only caller, so
-  a scan never opens the dataset database and never extracts the embedded
-  `dataset.db` or `maxmind.db.gz`. `--list languages` returns nothing and the
-  language-driven algorithms generate nothing rather than erroring;
-  geolocation and the dataset-backed source operators are omitted from the plan
-  rather than failing loudly. `--list keyboards` is unaffected — `pkg/kb` is
-  compiled in and needs no database.
-- **The shipped `dataset.db` predates the dataset curation** and holds two
-  languages, `ar` and `en`. The thirty curated trees under `datasets/languages/`
-  reach it only through `datasets import`, which has not been re-run.
-- **`cmd/urlinsane/typo.go` does not import `internal/plugins`**, so no
-  registered plugin operator, analyzer or algorithm can reach a scan. The
-  registries and the wiring in `internal/scan` are both complete; what is
-  missing is the blank import and the `Settings` source.
+- **Geolocation never opens.** The embedded `maxmind.db.gz` is not gzip: its
+  header reads `1f ef bf bd 08 08`, a gzip magic whose `0x8b` was replaced by
+  the UTF-8 replacement character, so the file was at some point round-tripped
+  through a text conversion. Every run therefore prints `geolocation
+  unavailable: gzip: invalid header` and the geo operator is left out of the
+  plan rather than planned and failed. Extraction works; the shipped bytes do
+  not.

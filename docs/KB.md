@@ -1,3 +1,9 @@
+---
+title: Keyboards
+parent: Reference
+nav_order: 3
+---
+
 # Keyboards
 
 `pkg/kb` is URLInsane's keyboard layout library. It answers three questions
