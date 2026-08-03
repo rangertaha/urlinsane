@@ -206,6 +206,11 @@ func CharacterOmission(token string) (tokens []string) {
 // For example, if the original word is 'example', a Singular-Plural might result
 // in 'examples', or vice versa.
 func SingularPluralise(token string) (tokens []string) {
+	// The client reports "" as both singular and plural and inflects it to ""
+	// twice, which is two empty variants of an empty name.
+	if token == "" {
+		return nil
+	}
 	pluralize := nlp.NewClient()
 	if pluralize.IsPlural(token) {
 		tokens = append(tokens, pluralize.Singular(token))
@@ -274,18 +279,46 @@ func shadowed(token, word string, wordset []string) bool {
 //	"ixample", "exomple", or "exaple", where vowels like "a", "e", and "o"
 //
 // are swapped, causing the token to differ from its correct form.
-func VowelSwapping(token string, vowels ...string) (words []string) {
-	for _, vchar := range vowels {
-		if strings.Contains(token, vchar) {
-			for _, vvchar := range vowels {
-				new := strings.Replace(token, vchar, vvchar, -1)
-				if new != token {
-					words = append(words, new)
+// One vowel moves at a time. strings.Replace with -1 rewrote every occurrence
+// at once, so a name with a repeated vowel never produced the typo anyone
+// actually makes: "google" gave "gaagle" but never "gaogle" or "goagle", and
+// "example" gave "ixampli" rather than the "ixample" this comment promises.
+// Every case in the test suite happened to use each vowel at most once, where
+// the two are the same, so nothing caught it.
+//
+// Positions are found by substring search rather than by rune index, because a
+// language's vowel set is not always one rune per entry.
+func VowelSwapping(token string, vowels ...string) []string {
+	u := newUniq()
+	for _, from := range vowels {
+		if from == "" {
+			continue
+		}
+		for off := 0; off < len(token); {
+			i := strings.Index(token[off:], from)
+			if i < 0 {
+				break
+			}
+			at := off + i
+			for _, to := range vowels {
+				if to != from {
+					u.add(token, token[:at]+to+token[at+len(from):])
 				}
+			}
+			off = at + len(from)
+		}
+		// And the systematic substitution, which is what this function used to
+		// return on its own. It is a rarer typo than a single slip but a real
+		// one, and a name it generates is registrable like any other, so it is
+		// kept rather than traded away for the per-position case. uniq drops
+		// the duplicate when the vowel occurs once.
+		for _, to := range vowels {
+			if to != from {
+				u.add(token, strings.ReplaceAll(token, from, to))
 			}
 		}
 	}
-	return
+	return u.tokens()
 }
 
 // HomophoneSwapping occurs when words that sound the same but have different
@@ -496,8 +529,6 @@ func CardinalSwap(token string, numerals map[string][]string) (variations []stri
 						for k, v := range fn(cardinals, variant, reverse) {
 							tokens[k] = v
 						}
-
-						fn(cardinals, variant, reverse)
 					}
 				}
 			}

@@ -1038,3 +1038,31 @@ func TestOrdinalSwap(t *testing.T) {
 // 		})
 // 	}
 // }
+
+// A vowel that occurs twice must still be swappable one position at a time.
+// strings.Replace with -1 rewrote every occurrence at once, so "google" gave
+// "gaagle" but never "gaogle" — and a single slip is the commoner typo of the
+// two. Every existing case in TestVowelSwapping uses each vowel at most once,
+// where all-at-once and per-position agree, so none of them could see it.
+func TestVowelSwappingMovesOneVowelAtATime(t *testing.T) {
+	got := map[string]bool{}
+	for _, v := range VowelSwapping("google", enVowels...) {
+		got[v] = true
+	}
+
+	for _, want := range []string{"gaogle", "goagle", "geogle", "goegle"} {
+		if !got[want] {
+			t.Errorf("VowelSwapping(google) did not produce %q; only whole-token substitutions were generated", want)
+		}
+	}
+	// The systematic substitution is a real typo too and must not be traded away.
+	for _, want := range []string{"gaagle", "geegle"} {
+		if !got[want] {
+			t.Errorf("VowelSwapping(google) lost the all-at-once variant %q", want)
+		}
+	}
+	// A variant equal to its origin is not a typo.
+	if got["google"] {
+		t.Error("VowelSwapping returned the origin as its own variant")
+	}
+}
