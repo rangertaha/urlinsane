@@ -6,8 +6,9 @@ nav_order: 2
 
 # Graph Engine Design
 
-Status: design, not yet implemented. Supersedes the linear stage pipeline in
-`internal/engine/processor.go`.
+Status: implemented. It superseded the linear stage pipeline in
+`internal/engine/processor.go`, which no longer exists; where this document and
+the code disagree, the code is right and the disagreement is a bug in this file.
 
 ## Summary
 
@@ -44,7 +45,7 @@ correct data, not a bug. The type-flow graph is cyclic for the same reason.
 Neither can be topologically sorted, and termination never relies on
 acyclicity (§8).
 
-So nothing is topologically sorted to decide execution order. `internal/engine/dag`
+So nothing is topologically sorted to decide execution order. `internal/graph/dag`
 survives for **plan presentation**: condensing the type-flow graph into strongly
 connected components and ordering that condensation, so `--explain` renders in
 a readable layered form. That requires Tarjan SCC plus a topo sort of the
@@ -1690,7 +1691,7 @@ as a closed enum and `entity.Classify` as the seeding path; `--type`,
 §9), `--format`, `--file`, `--dir`, `--options`, and the global
 `--delay`/`--random` throttle (replaced by per-resource buckets, §6.3).
 
-Kept: `internal/engine/dag`, moved and reworked for SCC condensation; the
+Kept: `internal/engine/dag`, moved to `internal/graph/dag` and reworked for SCC condensation; the
 store's content-addressing approach.
 
 Demoted rather than dropped: the language and keyboard plugin families. Both

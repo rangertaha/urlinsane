@@ -66,7 +66,7 @@ var NameableTypes = []string{TypeDomain, TypeEmail, TypePackage, TypeRepo, TypeU
 // only the variant operators — can register the relation without restating the
 // field list, since an operator asserting a prop the relation never declared is
 // rejected at apply time. Where the shared operator schema is installed instead
-// (internal/operators/decompose.Register), that is authoritative and this must
+// (internal/plugins/decompose.Register), that is authoritative and this must
 // stay identical to it; a second registration of the same name is an error, not
 // a merge.
 func RelDef() graph.RelDef {
