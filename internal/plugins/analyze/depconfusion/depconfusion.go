@@ -36,6 +36,11 @@ func (DepConfusion) Exec(_ context.Context, a *graph.Analysis) ([]graph.Finding,
 		// run was told to care about — the seed, or one read out of a manifest —
 		// that no public registry carries, where an attacker publishing it
 		// would win resolution.
+		//
+		// Seed-closure membership would read better than "is not a variant",
+		// and does not work: a manifest-derived package is emitted as a bare
+		// node with no structural edge, so it is outside the closure and would
+		// be skipped. Revisit if a MANIFEST producer is ever written.
 		if analyze.IsVariant(a, n.ID) {
 			continue
 		}
