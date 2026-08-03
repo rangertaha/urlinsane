@@ -112,60 +112,135 @@ lists first. Record the choice in a comment at the top of each file you fill.
 
 ### Step 1 — homoglyph.lst
 
-Highest value, and the file general search is worst at. Do not search for
-"letters that look like X". Use, in order:
-
-1. **Unicode confusables** (TR39 `confusables.txt`) — the authoritative source.
-   Fetch it, then for each character of the target script collect the entries
-   that map to the same skeleton.
-2. **The script's Unicode block** plus the Latin/Cyrillic/Greek blocks, for
-   cross-script neighbours.
-3. Only then, a search, to catch script-specific conventions the tables miss.
-
-Format: one line per base character, that character first, then its
-look-alikes separated by spaces.
+**Source: Unicode confusables (UTS #39).** This is the authoritative data and it
+is a file, not a search.
 
 ```
-a à á â ã ä å ɑ а ạ ǎ ă ȧ ӓ
+https://www.unicode.org/Public/security/latest/confusables.txt
 ```
 
-Cross-script entries are the point: a Cyrillic `а` on the Latin `a` line is the
-attack this tool exists to find. A line with only diacritic variants of its own
-script is doing half the job.
+Format is `SOURCE ; TARGET ; TYPE # comment`, hex code points, semicolon
+separated, one *source* per line:
+
+```
+0430 ;	0061 ;	MA	# ( а → a ) CYRILLIC SMALL LETTER A → LATIN SMALL LETTER A
+```
+
+It maps confusable → skeleton, which is the direction this file needs
+**inverted**: group every line by its TARGET, and each group becomes one
+`homoglyph.lst` line with the target first.
+
+```python
+# confusables.txt -> cross-script look-alikes, grouped by target
+groups = {}
+for line in open("confusables.txt", encoding="utf-8"):
+    line = line.split("#")[0].strip()
+    if not line:
+        continue
+    src, tgt, *_ = [c.strip() for c in line.split(";")]
+    if " " in tgt:            # multi-character skeletons are not homoglyphs
+        continue
+    groups.setdefault(chr(int(tgt, 16)), []).append(chr(int(src, 16)))
+```
+
+**Confusables alone is not enough, and this is the part that is easy to get
+wrong.** It carries cross-script look-alikes but *not* accented forms: the
+group for `a` contains `ɑ α а` and no `à á â ã ä å`, because those are handled
+by normalisation rather than by confusion. The curated files contain both. Get
+the accented half from Unicode decomposition:
+
+```python
+# every character whose NFD base is the target -> the accented variants
+import unicodedata as u
+variants = [chr(cp) for cp in range(0x20, 0x2500)
+            if (d := u.normalize("NFD", chr(cp)))[:1] == ("a",)
+            and len(d) > 1 and all(u.combining(x) for x in d[1:])]
+# a: à á â ã ä å ā ă ą ǎ ǟ ǡ ǻ ȁ ȃ ȧ ḁ ạ ả ấ ...  (29 in the BMP range above)
+```
+
+Union the two, then **drop what nobody can type into a name**: the
+mathematical alphanumeric blocks (`𝐚 𝑎 𝒂 𝓪 …`, U+1D400–U+1D7FF) and fullwidth
+forms dominate the raw confusables output and are neither valid in a domain
+label nor plausible in a package name. Keep diacritics, cross-script letters
+and digit-shaped look-alikes.
+
+A line holding only diacritic variants of its own script is doing half the job;
+so is one holding only the cross-script half.
 
 ### Step 2 — misspelling.lst
 
-Pairs, **wrong first**, one pair per line: `hwile while`.
+**English — Wikipedia's machine-readable list**, which is already pairs:
 
-Sources that reliably yield results, in order of yield:
-- the target language's Wikipedia "commonly misspelled words" page
-- open spellchecker correction lists (Hunspell/aspell `.dic` companions)
-- keyboard-adjacent slips derived from the layout `kb` ships for that code
-- verb/noun forms that native writers habitually confuse
+```
+https://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines
+```
+
+Format is `wrong->right`, one per line, so the conversion is
+`line.replace("->", " ")`.
+
+**Other languages** — most large Wikipedias keep the same page under their own
+name; search `site:<lang>.wikipedia.org` for the local equivalent of "commonly
+misspelled words". Where none exists, generate from two sources instead:
+
+1. **Keyboard-adjacent slips**, derived from the layout `pkg/kb` already ships
+   for that code. These are mechanical and language-specific, and no external
+   source is needed — `urlinsane typo --list keyboards | grep -i <language>`.
+2. **A spellchecker word list** (see below) plus that language's known
+   confusion pairs — verb forms, agreement, borrowed spellings.
 
 Scale for calibration: English 4,256 pairs, German 1,349. A few hundred is
 already useful; do not stall trying to match English.
 
 ### Step 3 — synonym.lst
 
-**Not a thesaurus.** These are the brand-adjacent words an attacker appends to a
-name: login, verify, secure, account, pay, invoice, billing, support, delivery,
-update, confirm. One theme per line, in the target language, the most natural
-word first.
+**No corpus exists for this one**, because it is not a thesaurus. These are the
+brand-adjacent lure words an attacker appends to a name, and the way to get them
+is to look at what real lures in that language say:
+
+- search for phishing advisories published by that country's bank, postal
+  service or CERT — they quote the lure text
+- the local words on a login button, a parcel-tracking notice, an invoice
+- APWG and national CERT advisories often reproduce the subject lines
+
+Translate the *concepts* (login, verify, secure, account, pay, invoice,
+billing, support, delivery, update, confirm), never the English file line by
+line: what a German phishing page puts on its button is not the dictionary
+translation of what an English one does. One theme per line, most natural word
+first. About 65 groups matches the curated set.
+
+### Step 4 — grapheme.lst, vowel.lst and word.lst
+
+**Alphabet — CLDR exemplar characters**, which is exactly this data per locale:
 
 ```
-start beginn anfang starten
+https://github.com/unicode-org/cldr-json
+  -> cldr-misc-full/main/<code>/characters.json
 ```
 
-Do **not** translate the English file line by line. Ask instead what a phishing
-page in that language says on its button, and what a parcel-delivery SMS in that
-country says. The curated set runs to about 65 groups.
+`exemplarCharacters` is a bracketed list, e.g. Greek
+`[α ά β γ δ ε έ ζ η ή θ ι ί ϊ ΐ κ λ μ ν ξ ο ό π ρ σ ς τ υ ύ ϋ ΰ φ χ ψ ω ώ]`.
+Strip the brackets and split: that is `grapheme.lst`, one per line.
+`vowel.lst` is the subset that is syllabic in that script — decide from the
+script, not from the Latin five.
 
-### Step 4 — the mechanical files
+**Word lists — Hunspell dictionaries:**
 
-`vowel.lst` (one syllabic character per line), `grapheme.lst` (the script's
-letters), `numeral.lst` (`0 zero zeroth`), `homophone.lst`, `antonym.lst`.
-These come from the script and a dictionary, not from research.
+```
+https://github.com/wooorm/dictionaries   # 92 languages, BCP-47 directories
+```
+
+Each holds `index.dic` (one word per line after the count on line 1) and
+`index.aff`.
+
+> **Check the licence before copying anything.** That repo is MIT but each
+> dictionary keeps its original licence, and they differ — GPL-2.0, LGPL-2.1,
+> MIT, Apache-2.0. This repo is **GPL-3.0-or-later**, so a GPL-2.0-**only**
+> dictionary cannot be copied into it. Read `dictionary-<code>/license`, and if
+> it is incompatible use the dictionary to *check* words you sourced elsewhere
+> rather than as the source.
+
+`numeral.lst` is `digit word ordinal` per line (`0 zero zeroth`) and comes from
+CLDR's spelled-out number rules or a grammar reference, not from a corpus.
 
 ### Step 5 — write
 
@@ -215,9 +290,9 @@ gmail.com
 ```
 
 Three columns is `code page-url check-url`, two is `code url`, one is a bare
-provider domain. `%s` is replaced by the name. Where a third column exists it is the endpoint
-that answers existence cleanly — usually an API — and it is what gets stored and
-probed; the page URL is for humans.
+provider domain. `%s` is replaced by the name. Where a third column exists it
+is the endpoint that answers existence cleanly — usually an API — and it is
+what gets stored and probed; the page URL is for humans.
 
 ## Commands
 

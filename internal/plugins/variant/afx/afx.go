@@ -30,12 +30,14 @@ func affixSquatting(name string) []string {
 // Spec declares the algorithm.
 func Spec() variant.Spec {
 	return variant.Spec{
-		// Affix squatting is a whole-key algorithm: "py-" belongs in front
-		// of the package name, not in front of a domain's registrable
-		// label, and the ecosystem affixes only make sense unsplit.
+		// Not a whole-key algorithm, though it reads like one. The whole key
+		// of a package is "npm:lodash", and prefixing that gives "py-npm:lodash"
+		// — a package in a registry nobody has. The core is the name with its
+		// registry or forge stripped, which is what an affix belongs in front
+		// of; the split puts the qualifier back afterwards.
 		ID: "afx", Title: "Affix Squatting", Version: 1,
 		Types: []string{variant.TypePackage, variant.TypeRepo, variant.TypeUsername},
-		Whole: true,
+		Whole: false,
 		Gen:   affixSquatting,
 	}
 }

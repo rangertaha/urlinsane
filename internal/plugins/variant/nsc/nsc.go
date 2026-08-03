@@ -30,9 +30,14 @@ func namespaceConfusion(name string) []string {
 // Spec declares the algorithm.
 func Spec() variant.Spec {
 	return variant.Spec{
+		// The conventions below are namespace conventions, so the algorithm has
+		// to be handed a namespace. On the whole key it was handed
+		// "npm:@acme/tool", split that on the first "/" into org "npm:@acme",
+		// and confused a namespace that was half registry qualifier. The core
+		// is "@acme/tool", which is the thing scoping actually applies to.
 		ID: "nsc", Title: "Namespace Confusion", Version: 1,
 		Types: []string{variant.TypePackage, variant.TypeRepo},
-		Whole: true,
+		Whole: false,
 		Gen:   namespaceConfusion,
 	}
 }

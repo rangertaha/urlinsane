@@ -44,9 +44,23 @@ type Splitter func(nodeType, key string) Parts
 
 // DefaultSplit is the decomposition the shipped operators use.
 //
-// Only domains and emails have structure worth preserving. A username, package
-// or repo name is varied whole: "acme/tool" is one name, and splitting it would
-// exclude exactly the org-name confusions that make repo squatting work.
+// Every type whose canonical key carries a qualifier keeps that qualifier out
+// of the core. A package key is "npm:lodash" and a repo key is
+// "github.com/acme/tool", so varying the whole key does not vary the name — it
+// varies the registry and the forge. Character omission over "npm:lodash"
+// produced "pm:lodash": a package in a registry that does not exist, generated
+// by every Whole:false algorithm, for every package and repo the tool was
+// pointed at.
+//
+// What is left in the core is still varied whole. "acme/tool" is one name and
+// splitting it would exclude exactly the org-name confusions that make repo
+// squatting work, and a bare username has no qualifier to strip.
+//
+// The qualifiers dropped here are not lost. A repo decomposes into
+// platform:github.com and username:acme, and a scoped package into its owner,
+// each reached structurally as its own node and varied there by these same
+// operators — the same division of labour that lets the email case vary only
+// the local part.
 func DefaultSplit(nodeType, key string) Parts {
 	switch nodeType {
 	case TypeDomain:
@@ -64,6 +78,23 @@ func DefaultSplit(nodeType, key string) Parts {
 			return wholeKey(key)
 		}
 		return Parts{Prefix: "", Core: key[:at], Suffix: key[at+1:], join: joinEmail}
+	case TypePackage:
+		// "registry:name" — canonPackage requires the qualifier, so a key
+		// without one did not come from the decomposer and is left whole
+		// rather than guessed at.
+		registry, name, ok := strings.Cut(key, ":")
+		if !ok || registry == "" || name == "" {
+			return wholeKey(key)
+		}
+		return Parts{Prefix: registry + ":", Core: name, join: joinQualified}
+	case TypeRepo:
+		// "host/owner/name" — the host is the forge, and a variant of it is a
+		// domain squat that the platform node covers.
+		host, path, ok := strings.Cut(key, "/")
+		if !ok || host == "" || path == "" {
+			return wholeKey(key)
+		}
+		return Parts{Prefix: host + "/", Core: path, join: joinQualified}
 	}
 	return wholeKey(key)
 }
@@ -84,6 +115,18 @@ func JoinDomain(prefix, core, suffix string) string {
 		}
 	}
 	return strings.Join(labels, ".")
+}
+
+// joinQualified restores a qualifier the algorithm was not allowed to see.
+//
+// An empty core yields an empty key rather than a bare "npm:", matching what
+// joinEmail does with an emptied local part: omission of a one-character name
+// has no result, and "npm:" is not a package.
+func joinQualified(prefix, core, _ string) string {
+	if core == "" {
+		return ""
+	}
+	return prefix + core
 }
 
 func joinEmail(_, core, suffix string) string {

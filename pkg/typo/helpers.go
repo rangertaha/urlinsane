@@ -6,39 +6,39 @@ import (
 	"strings"
 )
 
+// characterDeletion removes one occurrence of character at a time, then all of
+// them at once.
 func characterDeletion(token string, character string) (tokens []string) {
-	var nmap = map[string]bool{}
-
-	for i, char := range token {
-		if character == string(char) {
-			nmap[token[:i]+token[i+1:]] = true
-			// tokens = append(tokens, token[:i]+token[i+1:])
+	rs := runesOf(token)
+	u := newUniq()
+	for i, r := range rs {
+		if character == string(r) {
+			u.add(token, joinRunes(rs[:i], rs[i+1:]))
 		}
 	}
-	nmap[strings.Replace(token, character, "", -1)] = true
-
-	for n := range nmap {
-		tokens = append(tokens, n)
-	}
-
-	return
+	u.add(token, strings.ReplaceAll(token, character, ""))
+	return u.tokens()
 }
 
+// characterReplace substitutes one occurrence of character at a time, then all
+// of them at once.
+//
+// The per-position branch used to be a copy of characterDeletion's and dropped
+// the character instead of writing the replacement, so the only substitution
+// this ever produced was the replace-all on the last line. Reached through
+// DotHyphenSubstitution, that meant `dhs` on "one.two.three" returned two
+// *dot omissions* — variants `do` already generates, mis-attributed to another
+// algorithm — and never the single-separator swaps it documents.
 func characterReplace(token string, character, replacement string) (tokens []string) {
-	var nmap = map[string]bool{}
-
-	for i, char := range token {
-		if character == string(char) {
-			nmap[token[:i]+token[i+1:]] = true
+	rs := runesOf(token)
+	u := newUniq()
+	for i, r := range rs {
+		if character == string(r) {
+			u.add(token, joinRunes(rs[:i], replacement, rs[i+1:]))
 		}
 	}
-	nmap[strings.Replace(token, character, replacement, -1)] = true
-
-	for n := range nmap {
-		tokens = append(tokens, n)
-	}
-
-	return
+	u.add(token, strings.ReplaceAll(token, character, replacement))
+	return u.tokens()
 }
 
 // PrefixInsertion creates tokens by prepending each prefix from the given
@@ -86,36 +86,47 @@ func numeralMap(data map[string][]string, pos int) (words map[string]string) {
 	return
 }
 
-// Adjacent returns adjacent characters on a given keyboard
+// adjacentCharacters returns the characters neighbouring char on a keyboard
+// given as rows of characters.
+//
+// Rows are ragged — "qwertyuiop" is ten keys and "zxcvbnm" is seven — so the
+// key above or below a given column may not exist. The previous version indexed
+// layout[r-1][c] and layout[r+1][c] unguarded and panicked with index out of
+// range on any character whose column exceeded the neighbouring row's length:
+// 'p' at column 9 of the top row reached column 9 of a nine-character row.
+// AdjacentCharacterSubstitution("example") with an ordinary QWERTY layout was
+// enough to crash the process.
+//
+// Rows are compared as runes, so a Cyrillic or Greek layout works the same way
+// a Latin one does.
+//
+// This models a keyboard as a grid, which is a poor model — real keys are
+// staggered and vary in width. pkg/kb measures adjacency from key geometry
+// instead, and the acs, aci and rar plugins use it. This remains for callers of
+// pkg/typo that supply their own layout.
 func adjacentCharacters(char string, layout ...string) (chars []string) {
 	chars = []string{}
-	for r, row := range layout {
-		for c := range row {
-			var top, bottom, left, right string
-			if char == string(layout[r][c]) {
-				if r > 0 {
-					top = string(layout[r-1][c])
-					if top != " " {
-						chars = append(chars, top)
-					}
-				}
-				if r < len(layout)-1 {
-					bottom = string(layout[r+1][c])
-					if bottom != " " {
-						chars = append(chars, bottom)
-					}
-				}
-				if c > 0 {
-					left = string(layout[r][c-1])
-					if left != " " {
-						chars = append(chars, left)
-					}
-				}
-				if c < len(row)-1 {
-					right = string(layout[r][c+1])
-					if right != " " {
-						chars = append(chars, right)
-					}
+	rows := make([][]rune, len(layout))
+	for i, row := range layout {
+		rows[i] = []rune(row)
+	}
+
+	// at reports the character at (r, c), and whether that key exists.
+	at := func(r, c int) (string, bool) {
+		if r < 0 || r >= len(rows) || c < 0 || c >= len(rows[r]) {
+			return "", false
+		}
+		return string(rows[r][c]), true
+	}
+
+	for r := range rows {
+		for c := range rows[r] {
+			if char != string(rows[r][c]) {
+				continue
+			}
+			for _, n := range [][2]int{{r - 1, c}, {r + 1, c}, {r, c - 1}, {r, c + 1}} {
+				if s, ok := at(n[0], n[1]); ok && s != " " {
+					chars = append(chars, s)
 				}
 			}
 		}
