@@ -206,25 +206,32 @@ wrong-layout translation — is [Keyboards]({{ site.baseurl }}/KB/).
 
 ## Geolocation
 
-`maxmind.db.gz` is embedded and extracted the same way as the dataset, and the
-`geo` operator reads it.
+Geolocation is **off unless you supply a database**, and nothing ships one.
 
-{: .warning }
-> **The shipped geolocation database is currently corrupt**, so `geo` never
-> runs. `internal/config/maxmind.db.gz` begins `1f ef bf bd 08` — a gzip magic
-> whose `0x8b` byte has been replaced by the UTF-8 replacement character, which
-> means the file was round-tripped through a text conversion at some point
-> before it was committed. Every run prints:
->
-> ```
-> geolocation unavailable: observe: open geoip database: gzip: invalid header
-> ```
->
-> Deleting `~/.config/urlinsane/maxmind.db.gz` does not help — it is re-extracted
-> from the same broken bytes. A working copy has to come from
-> [MaxMind](https://www.maxmind.com/en/geoip-databases) and be re-embedded.
-> (The same corruption affects the PDFs in `docs/papers/`; `dataset.db` is
-> unaffected.)
+The database that used to be embedded was corrupt — its gzip magic read
+`1f ef bf bd`, the `0x8b` replaced by the UTF-8 replacement character — so
+`geo` had never worked from a shipped binary, while 49MB of unusable bytes rode
+along in every release and warned on every run. Removing it halves the binary,
+from 96MB to 46MB.
+
+To turn geolocation on, put a GeoLite2 database at
+`~/.config/urlinsane/maxmind.db.gz`:
+
+```bash
+MAXMIND_LICENSE_KEY=... scripts/mmdb.sh
+```
+
+The `geo` operator appears in `--list operators` and in `--explain` the next
+time you scan, and stays out of the plan until then. A licence key is needed
+because MaxMind's terms make redistributing the data a decision rather than a
+detail, and a scanner that quietly ships a stale geolocation database is worse
+than one that asks.
+
+**Absent is silent; present but broken is not.** A file that is not there is a
+feature nobody turned on. A file that is there and unusable is somebody's failed
+attempt, and the run says so, names it, and tells you to remove or replace it —
+which is what an upgrading user needs, since older releases left a corrupt copy
+in that exact path.
 
 What that failure demonstrates is the general rule for missing reference data:
 **the operators that needed it are left out of the plan rather than failing at

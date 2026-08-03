@@ -152,7 +152,14 @@ func runTypo(c *cli.Context) error {
 	// a nil locator it is left out of the plan rather than planned and failed
 	// (§4). Same for settings — an unreadable config file must not decide
 	// whether a scan happens.
-	if setup.GeoIP.Err == nil {
+	//
+	// Absent is silent. The database is not shipped — the one that was is
+	// corrupt, and MaxMind's terms make redistributing a replacement a decision
+	// rather than a detail — so geolocation is off until somebody supplies one,
+	// and warning about a feature nobody turned on every single run is how a
+	// warning stops being read. Present but unusable still says so, because
+	// then somebody tried.
+	if setup.GeoIP.Present && setup.GeoIP.Err == nil {
 		if db, err := observe.OpenGeoIP(setup.Dir); err == nil {
 			opts.Observe.Geo = db
 		} else {
