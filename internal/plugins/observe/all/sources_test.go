@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/rangertaha/urlinsane/internal/graph"
 	"github.com/rangertaha/urlinsane/internal/plugins/observe"
@@ -182,4 +183,40 @@ func allSourceOps(o observe.Options, list observe.SourceLister, prober observe.P
 		observe.NewSourceOp(o, "usr", observe.TypeUsername, "username", list, prober),
 		observe.NewSourceOp(o, "repo", observe.TypeRepo, "repository", list, prober),
 	}
+}
+
+// slowProber blocks each call until its context expires, so a probe consumes
+// exactly the deadline it was given and no more.
+type slowProber struct{ asked []string }
+
+func (p *slowProber) Exists(ctx context.Context, rawURL string) (bool, error) {
+	p.asked = append(p.asked, rawURL)
+	<-ctx.Done()
+	return false, ctx.Err()
+}
+
+// The per-source timeout is per source. Taken once around the whole loop, the
+// first registry consumed the entire budget and every later one was skipped
+// without being contacted -- so a sweep of sixty-six username platforms could
+// report on one of them and stay silent about the rest.
+func TestEachSourceGetsItsOwnTimeout(t *testing.T) {
+	prober := &slowProber{}
+	ops := allSourceOps(observe.Options{Timeout: 10 * time.Millisecond}, registries(), prober)
+	observetest.Run(t, observe.TypePackage, "lodash", ops...)
+
+	if len(prober.asked) != 2 {
+		t.Errorf("probed %v, want both registries contacted; a shared deadline stops after the first",
+			prober.asked)
+	}
+}
+
+// A source that times out is that source undetermined, not the sweep
+// abandoned -- and an undetermined sweep is never absence.
+func TestATimedOutSourceDoesNotStopTheSweep(t *testing.T) {
+	prober := &slowProber{}
+	ops := allSourceOps(observe.Options{Timeout: 10 * time.Millisecond}, registries(), prober)
+	g := observetest.Run(t, observe.TypePackage, "acme-internal-utils", ops...)
+
+	// Every source timed out, so nothing is proven absent.
+	observetest.WantStatus(t, g, observe.TypePackage, "acme-internal-utils", "pkg", graph.StatusTimeout)
 }
