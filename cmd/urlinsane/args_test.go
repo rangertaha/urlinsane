@@ -4,7 +4,10 @@
 package main
 
 import (
+	"errors"
+	"io"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/urfave/cli/v2"
@@ -116,5 +119,48 @@ func TestReorderHandlesShortInput(t *testing.T) {
 		if got := reorder(testCmds(), in); !reflect.DeepEqual(got, in) {
 			t.Errorf("reorder(%v) = %v", in, got)
 		}
+	}
+}
+
+// An unknown command must fail, not print the help and succeed.
+//
+// urfave/cli falls through to the app-level Action when it cannot match a
+// subcommand, so "no command" and "a command this tool does not have" arrive at
+// the same place. Treating both as "show the help, exit 0" made every mistyped
+// verb a silently successful run: `urlinsane typoo acme.com --fail-on high`
+// printed the help to stdout and exited 0, so a CI gate keyed on the 0/1/2
+// contract recorded a clean pass for a scan that never happened.
+func TestUnknownCommandIsAnError(t *testing.T) {
+	app := newApp()
+	app.Writer = io.Discard
+	app.ErrWriter = io.Discard
+	// urfave calls os.Exit for an ExitCoder by default, which would kill the
+	// test binary; this hands the error back instead.
+	app.ExitErrHandler = func(*cli.Context, error) {}
+
+	err := app.Run([]string{"urlinsane", "typoo", "acme.com", "--fail-on", "high"})
+	if err == nil {
+		t.Fatal("an unknown command succeeded; a mistyped verb is a green CI build")
+	}
+	if !strings.Contains(err.Error(), "typoo") {
+		t.Errorf("error does not name the unknown command: %v", err)
+	}
+	// Exit 1, not the 2 that means "a finding was found".
+	var coder cli.ExitCoder
+	if errors.As(err, &coder) && coder.ExitCode() != exitError {
+		t.Errorf("exit code = %d, want %d", coder.ExitCode(), exitError)
+	}
+}
+
+// No command at all is not an error: the help is the right answer and 0 is the
+// right code.
+func TestNoCommandPrintsHelpWithoutFailing(t *testing.T) {
+	app := newApp()
+	app.Writer = io.Discard
+	app.ErrWriter = io.Discard
+	app.ExitErrHandler = func(*cli.Context, error) {}
+
+	if err := app.Run([]string{"urlinsane", "--help"}); err != nil {
+		t.Fatalf("--help failed: %v", err)
 	}
 }
