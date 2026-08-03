@@ -496,22 +496,37 @@ func SplitTokens(token string) (parts []string, seps []string) {
 	isSep := func(r rune) bool { return r == '-' || r == '_' || r == '.' }
 	digit := func(r rune) bool { return r >= '0' && r <= '9' }
 
+	// prevSep says the previous rune was a separator, which is the only thing
+	// that makes this one part of the same run.
+	//
+	// The test used to be the count coincidence `len(parts) == len(seps)`, and a
+	// LEADING separator makes those counts line up for a later, unrelated
+	// boundary too: "-my-lib" put "-" in seps with parts still empty, so when
+	// the real boundary arrived the counts matched and its "-" was appended to
+	// the leading one. The result was parts ["my" "lib"] with seps ["--"], which
+	// rejoins to "my--lib" -- breaking the invariant this function documents,
+	// and handing TokenOrderSwap a "reordering" that merely moved and doubled
+	// the leading hyphen. The length guard below could not see it, because one
+	// separator holding two characters still counts as one.
+	prevSep := false
 	for i, r := range rs {
 		switch {
 		case isSep(r):
 			flush()
 			// Runs of separators belong to one boundary: "a--b" is two tokens.
-			if n := len(seps); n > 0 && len(parts) == n {
-				seps[n-1] += string(r)
-				continue
+			if prevSep && len(seps) > 0 {
+				seps[len(seps)-1] += string(r)
+			} else {
+				seps = append(seps, string(r))
 			}
-			seps = append(seps, string(r))
+			prevSep = true
 		default:
 			if i > 0 && len(cur) > 0 && digit(r) != digit(rs[i-1]) {
 				flush()
 				seps = append(seps, "")
 			}
 			cur = append(cur, r)
+			prevSep = false
 		}
 	}
 	flush()
@@ -560,26 +575,90 @@ func numeralSwap(token string, data map[string]string) (variations []string) {
 	sort.Strings(keys)
 
 	seen := map[string]bool{token: true}
-	var walk func(str string, reverse bool)
-	walk = func(str string, reverse bool) {
-		for _, num := range keys {
-			word := data[num]
-			var variant string
-			if reverse {
-				variant = strings.Replace(str, num, word, -1)
-			} else {
-				variant = strings.Replace(str, word, num, -1)
+
+	// used is the set of keys already applied on THIS path, and it is what
+	// makes the walk terminate at all.
+	//
+	// Blocking a replacement that contains its own pattern is necessary but not
+	// sufficient, because the growth can be spread across two keys that are each
+	// individually well behaved. The shipped English numerals do exactly that:
+	// "ten" -> "10" and "10" -> "tenth" both look contracting, and together they
+	// rewrite "kitten" to "kit10" to "kittenth" to "kit10th" to "kittenthth",
+	// two characters longer every cycle. The seen set never closes it because
+	// every string really is new, and `urlinsane typo -a ons kitten.com` ran
+	// until the kernel killed it for running out of memory.
+	//
+	// Applying each key at most once per path bounds the walk to len(keys) steps
+	// and so bounds the length, whatever shape the data has. It costs nothing
+	// real: chaining the same numeral rewrite twice does not model a typo anyone
+	// makes, and "onetwothree" -> "123" still works because those are three
+	// different keys.
+	var walk func(str string, reverse bool, used map[string]bool, allow []string)
+	walk = func(str string, reverse bool, used map[string]bool, allow []string) {
+		for _, num := range allow {
+			if used[num] {
+				continue
 			}
+			word := data[num]
+			from, to := word, num
+			if reverse {
+				from, to = num, word
+			}
+
+			// A replacement that contains its own pattern can never remove it.
+			// "ten" -> "tenth" leaves a "ten" behind, so the next round rewrites
+			// that one too and the string grows by the difference every time;
+			// the seen set cannot close the walk because every result is longer
+			// than the last and so genuinely new.
+			//
+			// This is not hypothetical and not a degenerate fixture: a numeral
+			// line is stored as a clique, so "10 ten tenth" puts "ten" in as a
+			// key mapping to "tenth", and the shipped English numerals do the
+			// same for four/fourth, six/sixth, seven/seventh, eleven/eleventh
+			// and the rest. `urlinsane typo -a ons kitten.com` ran until the
+			// process was killed for running out of memory.
+			if from == "" || strings.Contains(to, from) {
+				continue
+			}
+
+			variant := strings.Replace(str, from, to, -1)
 			if variant == str || seen[variant] {
 				continue
 			}
 			seen[variant] = true
 			variations = append(variations, variant)
-			walk(variant, reverse)
+
+			used[num] = true
+			walk(variant, reverse, used, allow)
+			delete(used, num)
 		}
 	}
-	walk(token, false)
-	walk(token, true)
+	// Only rewrite numerals that are in the NAME, never ones an earlier rewrite
+	// in the same path just wrote.
+	//
+	// Without this the walk chases its own output: "shop8" became "shopeight",
+	// then "shopeighth", then "shop8h" -- that last from matching the "eight"
+	// inside the "eighth" it had itself introduced. "shop8h" is not a numeral
+	// swap of anything, and the same path produced "kittenthth" and
+	// "shoponezerothth". Eligibility is fixed against the original token, which
+	// still lets "onetwothree" reach "123": those are three different numerals
+	// and all three are present to begin with.
+	eligible := func(reverse bool) []string {
+		out := make([]string, 0, len(keys))
+		for _, num := range keys {
+			from := data[num]
+			if reverse {
+				from = num
+			}
+			if from != "" && strings.Contains(token, from) {
+				out = append(out, num)
+			}
+		}
+		return out
+	}
+
+	walk(token, false, map[string]bool{}, eligible(false))
+	walk(token, true, map[string]bool{}, eligible(true))
 	return variations
 }
 

@@ -16,6 +16,8 @@ var hostileTokens = []string{
 	"a", "ab", "1", "11", "a1", "1a",
 	"中", "🙂", "é", "é", "لا", "ß",
 	"a.b-c_d", "example.com", "npm:lodash",
+	// Names containing a numeral word, so the numeral walk is actually entered.
+	"kitten", "listen", "sixflags", "content", "fourteen",
 	strings.Repeat("a", 300),
 	strings.Repeat("ab-", 100),
 }
@@ -39,6 +41,18 @@ var hostileNumerals = map[string]map[string][]string{
 	"emptyStrings": {"": {""}, "1": {""}},
 	"substrings":   {"1": {"one"}, "11": {"eleven"}, "111": {"onehundredeleven"}},
 	"singleWord":   {"0": {"zero"}},
+
+	// The shape the shipped English numerals actually have, and the one that
+	// took the process down. "10 ten tenth" is stored as a clique, so "ten" is
+	// a key mapping to "tenth" -- a replacement containing its own pattern --
+	// and "ten" -> "10" with "10" -> "tenth" spreads the same growth across two
+	// keys that each look well behaved. `urlinsane typo -a ons kitten.com` ran
+	// until it was killed for running out of memory.
+	"cliqueGrowth": {
+		"10": {"ten", "tenth"}, "ten": {"10", "tenth"}, "tenth": {"10", "ten"},
+		"6": {"six", "sixth"}, "six": {"6", "sixth"}, "sixth": {"6", "six"},
+		"4": {"four", "fourth"}, "four": {"4", "fourth"}, "fourth": {"4", "four"},
+	},
 }
 
 // A generator must return from every one of these. A generator that does not is
@@ -140,6 +154,25 @@ func TestSplitTokensSurvivesHostileInput(t *testing.T) {
 				t.Errorf("SplitTokens(%q) = %d parts and %d separators; a token "+
 					"boundary needs exactly one separator between each pair",
 					in, len(parts), len(seps))
+			}
+			// And the invariant the function documents: rejoining reproduces
+			// the input exactly. Counting alone could not see the leading
+			// separator being folded into a later boundary -- "-my-lib" came
+			// back as parts ["my" "lib"] with seps ["--"], one separator
+			// holding two characters, which passes the count check and
+			// rejoins to "my--lib".
+			if parts != nil {
+				var b strings.Builder
+				for i, p := range parts {
+					if i > 0 {
+						b.WriteString(seps[i-1])
+					}
+					b.WriteString(p)
+				}
+				if b.String() != in {
+					t.Errorf("SplitTokens(%q) rejoins to %q; parts=%q seps=%q",
+						in, b.String(), parts, seps)
+				}
 			}
 		}()
 	}
