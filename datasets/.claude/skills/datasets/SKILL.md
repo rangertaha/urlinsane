@@ -83,61 +83,125 @@ joined. Match the file you are editing rather than imposing these.
 `#` at the start of a word makes it a comment. Blank lines are ignored. Runs of
 whitespace collapse, so alignment is free.
 
-## Researching and populating a language
+## Populating a language
 
-`go run ./cmd/datasets languages` scaffolds a directory for every language
-`pkg/kb` ships. Most are stubs: a comment line and nothing else. As of this
-writing 30 of 111 are curated and 81 hold one placeholder line, so "add a
-language" almost always means filling in a scaffold rather than making one.
+A procedure, not advice. Run it start to finish for one language code; it is
+resumable, because each step writes its own file.
 
-Fill it in this order. The list is ordered by how much each file changes what
-the scanner can find, so a language stopped halfway is still useful:
-
-1. **`homoglyph.lst`** — the highest-value file by a wide margin, and the one a
-   general search engine is worst at. Work from the script's Unicode blocks and
-   from the confusables data (Unicode TR39), not from "letters that look
-   similar" in prose. One line per base character, that character first:
-   `a à á â ã ä å ɑ а ạ ǎ ă ȧ ӓ`. Include cross-script neighbours — Cyrillic `а`
-   on a Latin `a` line is the entire point.
-2. **`misspelling.lst`** — pairs, wrong first: `hwile while`. Sources that work:
-   a Wikipedia "commonly misspelled words" page in that language, spellchecker
-   correction lists, and keyboard-adjacent errors for that language's layout.
-   German has 1,349 pairs and English 4,256; a few hundred is already useful.
-3. **`synonym.lst`** — despite the name, not a thesaurus. These are the
-   brand-adjacent words an attacker bolts onto a name: login, verify, secure,
-   pay, invoice, support, delivery, account. One theme per line, in that
-   language. The curated set runs to ~65 groups; match that shape.
-4. **`vowel.lst`**, **`grapheme.lst`** — small, mechanical, from the script.
-5. **`homophone.lst`**, **`numeral.lst`**, **`antonym.lst`** — lower value; fill
-   if the language makes them easy.
-
-While researching:
-
-- **Check the script, not the language.** Azerbaijani is written in Latin,
-  Cyrillic and Arabic depending on where; the file should carry the script the
-  target audience actually types.
-- **Verify a claim before adding it.** A wrong homoglyph produces variants that
-  nobody would ever mistype, which costs scan time on every future run and is
-  invisible once merged.
-- **Do not translate the English file.** The English synonym groups reflect
-  English phishing lures. Another language's lures are its own.
-
-**Never rewrite entries that are already there.** Add to a file; pass existing
-lines through untouched. The one time a bulk pass normalised existing entries it
-destroyed data — see the editing rules above — so the safe shape for a
-populating pass is: read the file, keep every existing line verbatim, append
-what is new, deduplicate exact repeats only.
-
-Then:
+`go run ./cmd/datasets languages` scaffolds a directory per language `pkg/kb`
+ships. Most are stubs holding a single comment line. Find the work:
 
 ```bash
-wc -l datasets/languages/<code>/*.lst   # sanity: did anything shrink?
-go run ./cmd/datasets build datasets
-urlinsane typo --list languages | grep <code>
-urlinsane typo -a hr -l <code> -d 0 example.com   # homoglyphs actually fire
+for d in datasets/languages/*/; do
+  printf "%s %s\n" "$(wc -l < $d/synonym.lst)" "$(basename $d)"
+done | sort -n | head -20
 ```
 
-A file that shrank is the signal to stop and look, not to continue.
+### Step 0 — establish the script
+
+Do this before any other research; it decides what every later file contains.
+
+```bash
+urlinsane typo --list keyboards | grep -i '<language name>'
+```
+
+The keyboard layouts `kb` ships for the code tell you which script the target
+audience actually types. Azerbaijani, Serbian, Uzbek and Kazakh are each written
+in more than one; pick the script of the layouts, not the one an encyclopaedia
+lists first. Record the choice in a comment at the top of each file you fill.
+
+### Step 1 — homoglyph.lst
+
+Highest value, and the file general search is worst at. Do not search for
+"letters that look like X". Use, in order:
+
+1. **Unicode confusables** (TR39 `confusables.txt`) — the authoritative source.
+   Fetch it, then for each character of the target script collect the entries
+   that map to the same skeleton.
+2. **The script's Unicode block** plus the Latin/Cyrillic/Greek blocks, for
+   cross-script neighbours.
+3. Only then, a search, to catch script-specific conventions the tables miss.
+
+Format: one line per base character, that character first, then its
+look-alikes separated by spaces.
+
+```
+a à á â ã ä å ɑ а ạ ǎ ă ȧ ӓ
+```
+
+Cross-script entries are the point: a Cyrillic `а` on the Latin `a` line is the
+attack this tool exists to find. A line with only diacritic variants of its own
+script is doing half the job.
+
+### Step 2 — misspelling.lst
+
+Pairs, **wrong first**, one pair per line: `hwile while`.
+
+Sources that reliably yield results, in order of yield:
+- the target language's Wikipedia "commonly misspelled words" page
+- open spellchecker correction lists (Hunspell/aspell `.dic` companions)
+- keyboard-adjacent slips derived from the layout `kb` ships for that code
+- verb/noun forms that native writers habitually confuse
+
+Scale for calibration: English 4,256 pairs, German 1,349. A few hundred is
+already useful; do not stall trying to match English.
+
+### Step 3 — synonym.lst
+
+**Not a thesaurus.** These are the brand-adjacent words an attacker appends to a
+name: login, verify, secure, account, pay, invoice, billing, support, delivery,
+update, confirm. One theme per line, in the target language, the most natural
+word first.
+
+```
+start beginn anfang starten
+```
+
+Do **not** translate the English file line by line. Ask instead what a phishing
+page in that language says on its button, and what a parcel-delivery SMS in that
+country says. The curated set runs to about 65 groups.
+
+### Step 4 — the mechanical files
+
+`vowel.lst` (one syllabic character per line), `grapheme.lst` (the script's
+letters), `numeral.lst` (`0 zero zeroth`), `homophone.lst`, `antonym.lst`.
+These come from the script and a dictionary, not from research.
+
+### Step 5 — write
+
+**Keep every existing line verbatim.** Read the file, append what is new,
+deduplicate exact repeats only. Never normalise, case-fold, strip diacritics or
+filter by length — see the editing rules above for what that destroyed last
+time.
+
+### Step 6 — verify
+
+```bash
+wc -l datasets/languages/<code>/*.lst          # nothing shrank
+go run ./cmd/datasets build datasets
+urlinsane typo --list languages | grep '<code>'
+```
+
+Then confirm the rows actually landed, per relation:
+
+```bash
+sqlite3 internal/config/dataset.db "
+  select d.name, count(*) from vocabularies v
+    join languages l on v.language = l.id
+    join datasets  d on v.dataset  = d.id
+   where l.code = '<code>' group by d.name order by 2 desc;"
+```
+
+Every file you filled must appear with a plausible count. A relation missing
+from that output did not import — check the directory name against
+`--list languages`, since a retired code is merged (`iw` becomes `he`) and an
+unrecognised one is kept as-is, so data can land under a code you did not
+expect.
+
+There is **no `--language` flag** to scan with one language in isolation; `-l`
+is specified but not built. The query above is the check.
+
+**A file that shrank is the signal to stop and look, not to continue.**
 
 ## Source lists
 
