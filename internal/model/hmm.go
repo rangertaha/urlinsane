@@ -182,7 +182,14 @@ func New(s Spec) (*HMM, error) {
 		}
 	}
 
-	if len(s.Emit) != 0 && len(s.Emit) != ns {
+	// `s.Emit != nil`, matching the transition guard above, not `len(s.Emit) != 0`.
+	// The two say different things about an empty-but-present table: a caller
+	// passing `Emit: [][]float64{}` has a table with zero rows, which is a
+	// malformed spec, but the length form read it as "no table supplied" and
+	// waved it through — and the row read below tests `s.Emit != nil`, which is
+	// true for an empty slice, so it indexed straight past the end and panicked
+	// out of a constructor whose whole job is to reject malformed specs.
+	if s.Emit != nil && len(s.Emit) != ns {
 		return nil, fmt.Errorf("model: emission table has %d rows, want %d", len(s.Emit), ns)
 	}
 	h.logEmit = make([][]float64, ns)
