@@ -11,6 +11,7 @@ import (
 	"fmt"
 
 	"github.com/rangertaha/urlinsane/internal/graph"
+	"github.com/rangertaha/urlinsane/internal/plugins/analyze"
 )
 
 type DepConfusion struct{}
@@ -21,6 +22,21 @@ func (DepConfusion) Exec(_ context.Context, a *graph.Analysis) ([]graph.Finding,
 	var out []graph.Finding
 	for _, n := range a.Nodes() {
 		if n.Type.Name() != "package" {
+			continue
+		}
+		// A generated variant is not a dependency. Being unpublished is the
+		// normal condition of almost every one of them — that is what makes it
+		// registrable — so reporting it as a supply-chain gap made every
+		// variant of a package target a CRITICAL finding, hundreds per scan,
+		// and `--fail-on` returned 2 for every package scan whatever level it
+		// was given. The unregistered-lookalike case belongs to scoring, which
+		// reports it only when the name is live.
+		//
+		// What is left is what the analyzer is actually about: a package this
+		// run was told to care about — the seed, or one read out of a manifest —
+		// that no public registry carries, where an attacker publishing it
+		// would win resolution.
+		if analyze.IsVariant(a, n.ID) {
 			continue
 		}
 		if len(a.Outgoing(n.ID, "EXISTS_ON")) > 0 {

@@ -254,3 +254,46 @@ func TestExistenceRollup(t *testing.T) {
 		t.Fatalf("with an ok = %v, want live", got)
 	}
 }
+
+// A generated variant is not a dependency. Being unpublished is the normal
+// condition of almost every variant — that is exactly what makes it registrable
+// — so flagging it as a supply-chain gap made every variant of a package target
+// a CRITICAL finding, hundreds per scan, and `--fail-on` returned 2 for every
+// package scan whatever level it was given. The CI gate was unusable.
+func TestDepConfusionIgnoresGeneratedVariants(t *testing.T) {
+	g := graph.New(registry(t))
+	seed, _ := g.Seed("package", "npm:lodash")
+	g.SetStatus(seed, "npm", graph.StatusEmpty) // absent: a real gap
+
+	// A typo variant of it, equally absent, reached by a VARIANT_OF edge.
+	origin := graph.NodeRef{Type: "package", Key: "npm:lodash"}
+	v := graph.NodeRef{Type: "package", Key: "npm:ldash"}
+	g.Apply(by("omission"), seed, graph.Delta{Edges: []graph.EdgeRef{
+		{From: origin, Rel: graph.VariantRel, To: v},
+	}})
+	vid := mustNode(t, g, "package", "npm:ldash")
+	g.SetStatus(vid, "npm", graph.StatusEmpty)
+
+	if err := g.RunAnalyzers(context.Background(), []graph.Analyzer{depconfusion.DepConfusion{}}); err != nil {
+		t.Fatalf("analyze: %v", err)
+	}
+
+	for _, f := range g.Findings() {
+		for _, id := range f.Nodes {
+			if id == vid {
+				t.Errorf("%s reported %s on a generated variant; an unpublished variant is not a dependency gap",
+					f.Severity, f.Kind)
+			}
+		}
+	}
+	// The seed itself is still the finding the analyzer exists for.
+	var seedFlagged bool
+	for _, f := range g.Findings() {
+		if f.Kind == "dep-confusion" && len(f.Nodes) > 0 && f.Nodes[0] == seed {
+			seedFlagged = true
+		}
+	}
+	if !seedFlagged {
+		t.Error("the absent seed package was not flagged; the fix removed the true positive too")
+	}
+}
