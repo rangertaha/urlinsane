@@ -163,8 +163,10 @@ Three things to read here:
   thing an operator consumes.
 
 Operators whose data is missing are simply absent from the plan rather than
-failing at run time. If you never see `geo`, its geolocation database did not
-load; if you never see `pkg`/`usr`/`repo`, the source lists are not there.
+failing at run time. If you never see `geo`, that is expected — the geolocation
+database is not shipped, and the operator stays out of the plan until you supply
+one (`scripts/mmdb.sh`, which needs `MAXMIND_LICENSE_KEY`). If you never see
+`pkg`/`usr`/`repo`, the source lists are not there.
 
 ## When something goes wrong
 

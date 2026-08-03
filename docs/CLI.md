@@ -502,15 +502,27 @@ Application data lives in `~/.config/urlinsane`, created on first run.
 | File | Contents | |
 |---|---|---|
 | `dataset.db` | reference data: vocabulary and weighted transitions | ✓ |
-| `maxmind.db.gz` | geolocation database | ✓ |
+| `maxmind.db.gz` | geolocation database — **not shipped**, supply your own | ✓ |
 | `blocks/` | the content-addressed graph store | ✓ |
 | `scans.json` | the index from a target to its saved scans (§1.2) | ✓ |
 | `config.yaml` | plugin settings | ✓ |
 
-`dataset.db` and `maxmind.db.gz` are embedded in the binary and written out if
-absent, by every command that calls `config.Init()` — `typo`, `report`, and
-`datasets import` and `download`. `blocks/` and `scans.json` are created by the
-first `typo --save-graph`. **First-run setup is reported, not silent** ✓ — when
+`dataset.db` is embedded in the binary and written out if absent, by every
+command that calls `config.Init()` — `typo`, `report`, and `datasets import` and
+`download`. `blocks/` and `scans.json` are created by the first
+`typo --save-graph`.
+
+`maxmind.db.gz` is **not** embedded and never written. Geolocation is opt-in:
+fetch the database with `scripts/mmdb.sh` (it needs `MAXMIND_LICENSE_KEY`) and
+drop it at that path, and the `geo` operator appears in the plan the next time
+you scan. Absent, it stays out of the plan and nothing is printed — reporting the
+absence of a feature nobody enabled is how people learn to ignore warnings.
+
+It was embedded until 189a5ef, and the copy that shipped had never worked (§9.1),
+so 49 MB of unusable bytes rode along in every release and warned on every run.
+If you ran one of those releases, the broken file is still in your config
+directory; it is recognised by its signature and ignored, so you can delete it or
+leave it. **First-run setup is reported, not silent** ✓ — when
 extraction fails, the operators that needed it are omitted from the plan, and a
 scan with no geolocation must not look like a target with no geolocation
 (§12.6).
@@ -595,10 +607,14 @@ for plugin settings.
 
 Everything below compiles and is tested; what fails is the data it is handed.
 
-- **Geolocation never opens.** The embedded `maxmind.db.gz` is not gzip: its
-  header reads `1f ef bf bd 08 08`, a gzip magic whose `0x8b` was replaced by
-  the UTF-8 replacement character, so the file was at some point round-tripped
-  through a text conversion. Every run therefore prints `geolocation
-  unavailable: gzip: invalid header` and the geo operator is left out of the
-  plan rather than planned and failed. Extraction works; the shipped bytes do
-  not.
+- **Geolocation is off unless you supply a database.** The `maxmind.db.gz` that
+  used to be embedded was not gzip: its header read `1f ef bf bd 08 08`, a gzip
+  magic whose `0x8b` had been replaced by the UTF-8 replacement character, so
+  the file had at some point been round-tripped through a text conversion. It
+  had therefore never worked from a shipped binary.
+
+  It is no longer embedded (189a5ef, 7a2c6ea): 49 MB left every release, and geo
+  became opt-in via `scripts/mmdb.sh` (§7). The header is now validated before
+  the bytes are written, so this class of corruption is refused rather than
+  extracted and blamed on the operator later. What is still missing is the
+  database itself, which needs a MaxMind licence key.

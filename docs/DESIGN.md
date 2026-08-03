@@ -1286,7 +1286,7 @@ today — and when extraction fails, the operators that needed them simply vanis
 
 ```
   ⚠ 2 observers were not in this plan
-      geo        no maxmind database        (first run did not complete)
+      geo        no maxmind database        (not shipped; see scripts/mmdb.sh)
       npm        no registry dataset        (datasets import not run)
 
   ⚠ 412 candidates were declined
