@@ -143,21 +143,3 @@ func similarChars(key string, data map[string][]string) (chars []string) {
 	}
 	return chars
 }
-
-// similarSounds returns common homophones, words that sound alike
-func similarSounds(str string, data ...[]string) (words []string) {
-	words = []string{}
-	for _, wordset := range data {
-		for _, word := range wordset {
-			if strings.Contains(str, word) {
-				for _, w := range wordset {
-					if w != word {
-						words = append(words, strings.Replace(str, word, w, -1))
-					}
-				}
-
-			}
-		}
-	}
-	return
-}

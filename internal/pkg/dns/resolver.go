@@ -1,43 +1,21 @@
 // Copyright 2024 Rangertaha. All rights reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
+
+// Package dns holds the resolver the observation operators query through.
+//
+// It is deliberately one variable now. The package also carried a domain
+// parser and a set of name-permutation helpers; the parser read the public
+// suffix list out of the dataset database, which made an operator's output
+// depend on whether a database happened to be open, so variant.SplitDomain
+// reads the compiled-in list instead and the parser lost its callers.
 package dns
 
-import (
-	"context"
-	"math/rand"
-	"net"
-	"strings"
-)
+import "net"
 
-// Resolver is the DNS resolver used by the collectors. It defaults to the
-// system resolver but can be pointed at custom servers with SetResolver
-// (wired from the --nameservers flag).
+// Resolver is the DNS resolver the observation operators use.
+//
+// It once had a SetResolver to point it at custom servers, wired from a
+// --nameservers flag. The flag is gone, so the setter had no caller; querying
+// several resolvers is still worth doing and is on the roadmap, but it will
+// want a resolver per operator call rather than one package-level swap.
 var Resolver = net.DefaultResolver
-
-// SetResolver points Resolver at the given DNS servers (host or host:port;
-// port 53 is assumed when omitted). Queries are spread across the servers.
-// An empty list restores the system resolver.
-func SetResolver(servers []string) {
-	var addrs []string
-	for _, s := range servers {
-		s = strings.TrimSpace(s)
-		if s == "" {
-			continue
-		}
-		if !strings.Contains(s, ":") {
-			s += ":53"
-		}
-		addrs = append(addrs, s)
-	}
-	if len(addrs) == 0 {
-		Resolver = net.DefaultResolver
-		return
-	}
-	Resolver = &net.Resolver{
-		PreferGo: true,
-		Dial: func(ctx context.Context, network, _ string) (net.Conn, error) {
-			var d net.Dialer
-			return d.DialContext(ctx, network, addrs[rand.Intn(len(addrs))])
-		},
-	}
-}
