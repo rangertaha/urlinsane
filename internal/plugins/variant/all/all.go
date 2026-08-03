@@ -30,6 +30,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/dhs"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/di"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/do"
+	"github.com/rangertaha/urlinsane/internal/plugins/variant/fsd"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/gi"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/gr"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/hi"
@@ -45,6 +46,7 @@ import (
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/sp"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/tld"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/tli"
+	"github.com/rangertaha/urlinsane/internal/plugins/variant/tos"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/vs"
 	"github.com/rangertaha/urlinsane/internal/plugins/variant/xhs"
 )
@@ -66,6 +68,7 @@ func Specs(o variant.Options) []variant.Spec {
 		dhs.Spec(),
 		bf.Spec(),
 		sp.Spec(),
+		tos.Spec(),
 		afx.Spec(),
 		sep.Spec(),
 		nsc.Spec(),
@@ -73,13 +76,14 @@ func Specs(o variant.Options) []variant.Spec {
 		tld.Spec(o.Suffixes),
 		sld.Spec(o.Suffixes),
 		tli.Spec(o.Suffixes),
+		fsd.Spec(o.Providers),
 		aci.Spec(o.Keyboards),
 		acs.Spec(o.Keyboards),
 		rar.Spec(o.Keyboards),
 		vs.Spec(o.Languages),
 		hr.Spec(o.Languages),
 		hs.Spec(o.Languages),
-		xhs.Spec(),
+		xhs.Spec(o.CrossHomophones),
 		cm.Spec(o.Languages),
 		gi.Spec(o.Languages),
 		gr.Spec(o.Languages),

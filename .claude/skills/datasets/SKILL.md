@@ -811,6 +811,27 @@ words and larger groups are phonetic sinks that collide with everything.
 of the file records the source and the filters; keep it accurate if you change
 them.
 
+### domains/private.lst — hosts that give subdomains away
+
+The PRIVATE section of the public suffix list: the part submitted by domain
+owners who delegate subdomains to third parties, as opposed to the ICANN
+section, which is registries. `duckdns.org`, `github.io`, `herokuapp.com`,
+`vercel.app`, `ddns.net`.
+
+The split is a risk one, which is why it is a separate file rather than a flag
+on the suffix list. A name under `.com` costs money and leaves a WHOIS trail; a
+name under `duckdns.org` costs nothing, takes a minute and leaves no
+registration record. The `fsd` algorithm generates only these, so a scan can ask
+the cheap question first. ~3,000 entries against the ICANN section's ~7,000.
+
+```bash
+curl -s https://publicsuffix.org/list/public_suffix_list.dat |
+  awk '/BEGIN PRIVATE/{p=1;next} /END PRIVATE/{p=0} p && !/^\/\// && NF && !/^[*!]/'
+```
+
+Wildcard (`*.`) and exception (`!`) rules are dropped: they are matching
+instructions, not names anyone can take. Source is publicsuffix.org, MPL-2.0.
+
 ### packages/*.lst — popular library names
 
 A different tree and a different job: these are the names a dependency-confusion

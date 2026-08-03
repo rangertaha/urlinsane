@@ -10,7 +10,7 @@ nav_order: 4
 - TOC
 {:toc}
 
-An algorithm generates plausible variants of a name. There are 30, each one
+An algorithm generates plausible variants of a name. There are 32, each one
 modelling a specific way a name goes wrong — the error taxonomy behind them is
 [chapter 3](../../attack/errors/).
 
@@ -38,6 +38,7 @@ type: those run on any nameable node, domain or package or handle alike.
 | `dhs` | Dot Hyphen Substitution | any | Swap dots and hyphens: `my-acme.com` ⇄ `my.acme.com` |
 | `di` | Dot Insertion | any | Insert a period: `exa.mple` |
 | `do` | Dot Omission | any | Remove a period: `wwwacme.com` |
+| `fsd` | Delegated Subdomain | domain | Put the name under a host that gives subdomains away: `paypal.duckdns.org` |
 | `gi` | Grapheme Insertion | any | Insert a grapheme from the language's alphabet |
 | `gr` | Grapheme Replacement | any | Replace a grapheme with another from the alphabet |
 | `hi` | Hyphen Insertion | any | Insert a hyphen: `ex-ample` |
@@ -52,6 +53,7 @@ type: those run on any nameable node, domain or package or handle alike.
 | `sld` | Wrong Second-Level Domain | domain | Swap the second level under a ccTLD: `bbc.co.uk` → `bbc.org.uk` |
 | `sp` | Singular Pluralise | any | Make a word singular or plural |
 | `tld` | Wrong TLD | domain | Substitute a different public suffix |
+| `tos` | Token Order Swap | any | Reorder the words: `shop-online` → `online-shop` |
 | `tli` | TLD Insertion | domain | Append a suffix, making the whole name a subdomain: `example.com.br` |
 | `vs` | Vowel Swapping | any | Swap one vowel for another: `ixample` |
 | `xhs` | Cross-language Homophone | any | Swap for a spelling that sounds the same in another language: `youtube` → `yutup` |
@@ -84,7 +86,7 @@ of every nameserver it happens to discover. See
 
 ## Which ones to run
 
-Running all 30 is the default and is right for a one-off audit where you have
+Running all 32 is the default and is right for a one-off audit where you have
 time. For anything repeated, pick by threat model.
 
 **A consumer-facing brand.** Human error dominates, and reading errors dominate
@@ -135,6 +137,19 @@ sound differently and wrote down what they heard, which a curated English
 homophone list cannot reach by construction. X-squatter (ACM TOPS 2024) measured
 these and found ~15% carry TLS certificates against 7% for other squatting
 types — they are provisioned, not just registered.
+
+**`fsd` is `tld` narrowed by risk rather than by shape.** `tld` swaps the suffix
+for any of the ~7,000 ICANN entries, where taking a name costs money and leaves
+a WHOIS trail. `fsd` uses only the ~3,000 *private* entries of the public suffix
+list — hosts that delegate subdomains to anyone, like `duckdns.org`,
+`github.io`, `vercel.app` — where it costs nothing, takes a minute and leaves no
+registration record. Ask for `fsd` when you want the cheap attacks first.
+
+**`tos` is the only generator that moves whole words.** `cs` transposes two
+adjacent *characters*, turning `shop-online` into `shpo-online`; `tos` turns it
+into `online-shop`. It matters most where multi-word names are the convention —
+every package registry — because a developer who half-remembers `node-fetch`
+remembers the words, not their order.
 
 **`cm`, `hs`, `vs`, `gi`, `gr`, `cns`, `ons`** are **language-driven**: they read
 vocabulary out of the dataset database, and what they generate depends on which

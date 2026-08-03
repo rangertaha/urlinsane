@@ -47,7 +47,8 @@ mapping, and it is the answer to "why is this one here?".
 | `hr` | Unicode UTS #39, plus the IDN homograph literature | — |
 | `cm` | Birkbeck / human spelling-error corpora | — |
 | `afx` `nsc` `sep` | Duan et al. (NDSS 2021) and the PyPI/npm supply-chain measurements | [ndss2021_1B-1_23055_paper.pdf](../../papers/ndss2021_1B-1_23055_paper.pdf) |
-| `tld` `sld` `tli` | Agten et al. and the ccTLD/level measurement work | [imc17-final215.pdf](../../papers/imc17-final215.pdf) |
+| `tld` `sld` `tli` `fsd` | Agten et al. and the ccTLD/level measurement work; `fsd` narrows to the public suffix list's private section | [imc17-final215.pdf](../../papers/imc17-final215.pdf) |
+| `tos` | ail-typo-squatting's ChangeOrder; word-order confusion in package names | — |
 
 ## Start here
 

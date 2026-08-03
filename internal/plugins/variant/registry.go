@@ -55,6 +55,18 @@ type Options struct {
 	// Suffixes feeds the TLD-swap algorithm. Nil means the compiled-in public
 	// suffix list, wildcard and exception markers stripped.
 	Suffixes []string
+	// Providers feeds the delegated-subdomain algorithm: hosts that hand out
+	// subdomains to anyone. Nil reads the public suffix list's private section
+	// from the dataset.
+	Providers []string
+	// CrossHomophones feeds the cross-language homophone algorithm: groups of
+	// spellings that sound alike to speakers of different languages. Nil reads
+	// them from the dataset.
+	//
+	// Not derived from Languages, and it cannot be: a group is in the file
+	// precisely because it crosses a language boundary, so narrowing it to the
+	// run's languages would empty it.
+	CrossHomophones [][]string
 	// Extra are algorithms contributed from outside this package, which is how
 	// a plugin adds one (internal/plugins). Passed in rather than read from a
 	// registry here, because the registry imports this package to declare a
@@ -88,6 +100,12 @@ func (o Options) WithDefaults() Options {
 	}
 	if o.Suffixes == nil {
 		o.Suffixes = PublicSuffixes()
+	}
+	if o.CrossHomophones == nil {
+		o.CrossHomophones = dataset.Groups("phonetics/homophone")
+	}
+	if o.Providers == nil {
+		o.Providers = dataset.Tokens("domains/private")
 	}
 	if o.Combos == nil {
 		o.Combos = DefaultComboKeywords()

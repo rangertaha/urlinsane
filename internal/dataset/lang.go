@@ -179,15 +179,51 @@ func ids(code, name string) (lang, ds uint, ok bool) {
 	if DB == nil {
 		return 0, 0, false
 	}
-	var l Language
-	if err := DB.Where("code = ?", code).First(&l).Error; err != nil {
-		return 0, 0, false
+	// An empty code is a dataset that belongs to no language — packages/npm,
+	// phonetics/homophone. The importer files those under language 0, so there
+	// is no Language row to look up and looking for one would fail every read.
+	if code != "" {
+		var l Language
+		if err := DB.Where("code = ?", code).First(&l).Error; err != nil {
+			return 0, 0, false
+		}
+		lang = l.ID
 	}
 	var d Dataset
 	if err := DB.Where("name = ?", name).First(&d).Error; err != nil {
 		return 0, 0, false
 	}
-	return l.ID, d.ID, true
+	return lang, d.ID, true
+}
+
+// Groups returns a language-less dataset's lines as distinct groups.
+//
+// The same shape as a language's homophone or misspelling relation, for the
+// datasets that are not *of* a language: phonetics/homophone holds spellings
+// that sound alike across languages, and belongs to none of them.
+//
+// Deduplicated by membership, which the per-language reader deliberately does
+// not do. A line is stored as a clique of transitions, so reconstructing it
+// yields the same set once per member — a group of four comes back four times.
+// The per-language callers pass their groups to a substitution that treats a
+// repeat as a no-op; a caller that generates one variant per group would emit
+// four copies of each.
+func Groups(name string) [][]string {
+	raw := groups("", name)
+	out := make([][]string, 0, len(raw))
+	seen := make(map[string]bool, len(raw))
+	for _, g := range raw {
+		key := make([]string, len(g))
+		copy(key, g)
+		sort.Strings(key)
+		k := strings.Join(key, "\x00")
+		if seen[k] {
+			continue
+		}
+		seen[k] = true
+		out = append(out, g)
+	}
+	return out
 }
 
 // tokens returns one table's vocabulary, in id order — which is the order the
