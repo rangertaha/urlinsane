@@ -1,1 +1,47 @@
 # Words that sound alike, one group per line.
+# Uzbek written in CYRILLIC, deliberately against CLDR.
+# CLDR's default for uz is the Latin alphabet and modern Uzbek is officially
+# Latin, but pkg/kb ships exactly one Uzbek keyboard layout, kbduzb 'Uzbek
+# Cyrillic'. SKILL.md step 0 says to take the script of the layouts that ship,
+# so every uz file here is Cyrillic. Alphabet cross-checked against CLDR
+# uz-Cyrl exemplarCharacters.
+# Character names first, then homophone groups. The ҳ/х, ў/у and қ/к
+# rows sound identical for most speakers, which is exactly the
+# substitution a dictated or voice-phished name produces.
+нуқта .
+эт @ at
+чизиқча -
+слэш /
+пастки чизиқ _
+ҳол хол
+ҳам хам
+ҳар хар
+шоҳ шох
+кўл кул
+кўз куз
+сўз суз
+тўй туй
+қўл қул
+тўн тун
+бўз буз
+ҳаво хаво
+ҳаёт хаёт
+ҳисоб хисоб
+ҳужжат хужжат
+шаҳар шахар
+муҳим мухим
+ҳафта хафта
+ҳақида хақида
+ҳукумат хукумат
+ҳуқуқ хуқуқ
+раҳмат рахмат
+меҳнат мехнат
+маҳсулот махсулот
+тўғри тугри
+йўқ йук
+халқ халк
+қиш киш
+парол пароль
+компютер компьютер
+сўм сум
+нол ноль

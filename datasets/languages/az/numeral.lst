@@ -1,1 +1,38 @@
 # A number, then the words denoting it: 1 one first
+# Script: LATIN.
+0 sıfır sıfırıncı
+1 bir birinci
+2 iki ikinci
+3 üç üçüncü
+4 dörd dördüncü
+5 beş beşinci
+6 altı altıncı
+7 yeddi yeddinci
+8 səkkiz səkkizinci
+9 doqquz doqquzuncu
+10 on onuncu
+11 onbir onbirinci
+12 oniki onikinci
+13 onüç onüçüncü
+14 ondörd ondördüncü
+15 onbeş onbeşinci
+16 onaltı onaltıncı
+17 onyeddi onyeddinci
+18 onsəkkiz onsəkkizinci
+19 ondoqquz ondoqquzuncu
+20 iyirmi iyirminci
+21 iyirmibir
+22 iyirmiiki
+23 iyirmiüç
+24 iyirmidörd
+30 otuz otuzuncu
+40 qırx qırxıncı
+50 əlli əllinci
+60 altmış altmışıncı
+70 yetmiş yetmişinci
+80 səksən səksəninci
+90 doxsan doxsanıncı
+100 yüz yüzüncü
+1000 min mininci
+1000000 milyon milyonuncu
+1000000000 milyard milyardıncı

@@ -1,1 +1,20 @@
 # Words with an unfavourable connotation, one per line.
+# Tatar in Cyrillic script (39 letters). pkg/kb ships kbdtat and kbdtt102, both Cyrillic; CLDR tt is Cyrillic. Zamanalif/Latin is deliberately not used here.
+начар
+куркынычлы
+ялган
+алдау
+зарарлы
+фишинг
+спам
+вирус
+зыян
+куркыныч
+кисәтү
+хата
+бозылу
+блокланган
+хакерланган
+урланган
+законсыз
+шикле

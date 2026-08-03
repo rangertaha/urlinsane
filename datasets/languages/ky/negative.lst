@@ -1,1 +1,20 @@
 # Words with an unfavourable connotation, one per line.
+# Kyrgyz in Cyrillic script (36 letters). pkg/kb ships kbdkyr (Kyrgyz Cyrillic); CLDR ky is Cyrillic. Letters CLDR keeps in auxiliary (в ф ц щ ь) are included because they belong to the standard alphabet and occur in Russian loans.
+жаман
+коркунучтуу
+жасалма
+алдамчылык
+зыяндуу
+фишинг
+спам
+вирус
+зыянкеч
+коркунуч
+эскертүү
+ката
+бузулуу
+бөгөттөлгөн
+бузулган
+уурдалган
+мыйзамсыз
+шектүү

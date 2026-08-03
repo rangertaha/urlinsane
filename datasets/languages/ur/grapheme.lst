@@ -1,1 +1,44 @@
 # Smallest functional units of the writing system, one per line.
+# Arabic script, Urdu (Nastaliq) orthography, right-to-left. CLDR ur
+# exemplarCharacters plus ں and آ. Urdu ہ ی ک ے are NOT Arabic ه ي ك — keep
+# them distinct, the difference is the squatting surface.
+ا
+آ
+ب
+پ
+ت
+ٹ
+ث
+ج
+چ
+ح
+خ
+د
+ڈ
+ذ
+ر
+ڑ
+ز
+ژ
+س
+ش
+ص
+ض
+ط
+ظ
+ع
+غ
+ف
+ق
+ک
+گ
+ل
+م
+ن
+ں
+و
+ہ
+ھ
+ء
+ی
+ے

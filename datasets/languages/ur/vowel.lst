@@ -1,1 +1,25 @@
 # Syllabic characters, one per line.
+# Arabic script, Urdu. The matres lectionis and the harakat. Do not strip
+# these — they are data, and a stripper has already collapsed pairs here once.
+ا
+آ
+و
+ی
+ے
+ؤ
+ئ
+ۓ
+ۂ
+ء
+َ
+ِ
+ُ
+ً
+ٍ
+ٌ
+ْ
+ّ
+ٰ
+ٖ
+ٗ
+ٔ

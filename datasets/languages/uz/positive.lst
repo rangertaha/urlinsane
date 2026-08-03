@@ -1,1 +1,23 @@
 # Words with a favourable connotation, one per line.
+# Uzbek written in CYRILLIC, deliberately against CLDR.
+# CLDR's default for uz is the Latin alphabet and modern Uzbek is officially
+# Latin, but pkg/kb ships exactly one Uzbek keyboard layout, kbduzb 'Uzbek
+# Cyrillic'. SKILL.md step 0 says to take the script of the layouts that ship,
+# so every uz file here is Cyrillic. Alphabet cross-checked against CLDR
+# uz-Cyrl exemplarCharacters.
+яхши
+аъло
+зўр
+хавфсиз
+ишончли
+расмий
+тасдиқланган
+тез
+осон
+бепул
+премиум
+топ
+янги
+ҳақиқий
+сифатли
+бахтли
