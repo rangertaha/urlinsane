@@ -38,3 +38,42 @@
 ष
 स
 ह
+# Devanagari is an abugida: the dependent vowel signs (matras), the nukta,
+# virama and the anusvara/visarga/candrabindu are graphemes too. Added from
+# CLDR exemplarCharacters for 'hi'.
+़
+ॐ
+ं
+ँ
+ः
+ऋ
+ऌ
+ऍ
+ऑ
+ङ
+ञ
+ण
+ळ
+ऽ
+ा
+ि
+ी
+ु
+ू
+ृ
+ॅ
+े
+ै
+ॉ
+ो
+ौ
+्
+2
+0
+0
+C
+2
+0
+0
+D
+ॄ

@@ -16,3 +16,8 @@
 อ
 ย
 ว
+# The vocalic letters and lakkhangyao are syllabic. Tone marks are not, and
+# stay in grapheme.lst only.
+ฤ
+ฦ
+ๅ
